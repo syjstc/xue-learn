@@ -1,0 +1,355 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ScenarioTheaterDefinition",
+  "type": "object",
+  "additionalProperties": false,
+  "oneOf": [
+    {
+      "required": ["version", "scenes"],
+      "properties": {
+        "version": { "const": 1 },
+        "scenes": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 14,
+          "items": {
+            "$ref": "#/properties/scenes/items/oneOf/0"
+          }
+        }
+      }
+    },
+    {
+      "required": ["version", "scenes"],
+      "properties": {
+        "version": { "const": 2 },
+        "scenes": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/properties/scenes/items/oneOf/1"
+          }
+        }
+      }
+    }
+  ],
+  "required": [
+    "type",
+    "version",
+    "title",
+    "premise",
+    "learnerRole",
+    "objective",
+    "theme",
+    "characters",
+    "meters",
+    "initialSceneId",
+    "scenes",
+    "endings"
+  ],
+  "properties": {
+    "type": { "const": "scenario_theater" },
+    "version": { "type": "integer", "enum": [1, 2] },
+    "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "premise": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "learnerRole": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "objective": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "theme": {
+      "type": "string",
+      "enum": ["office", "technical", "conversation", "field", "generic"]
+    },
+    "background": {
+      "type": "string",
+      "enum": [
+        "briefing",
+        "workspace",
+        "conversation",
+        "incident",
+        "outcome",
+        "technical_lab",
+        "workshop",
+        "meeting_room",
+        "field_site",
+        "customer_lounge"
+      ]
+    },
+    "coach": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "avatarCode"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "avatarCode": { "type": "string", "minLength": 1, "maxLength": 80 }
+      }
+    },
+    "characters": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "role", "avatar"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1, "maxLength": 40 },
+          "role": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "avatar": {
+            "type": "string",
+            "enum": ["mentor", "peer", "client", "expert", "system"]
+          },
+          "appearance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["assetCode", "gender", "ageGroup"],
+            "properties": {
+              "assetCode": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "gender": { "type": "string", "enum": ["male", "female"] },
+              "ageGroup": {
+                "type": "string",
+                "enum": ["young_adult", "middle_aged", "older_adult"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "meters": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "initial", "min", "max", "tone"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "label": { "type": "string", "minLength": 1, "maxLength": 20 },
+          "initial": { "type": "integer" },
+          "min": { "type": "integer" },
+          "max": { "type": "integer" },
+          "tone": {
+            "type": "string",
+            "enum": ["positive", "risk", "neutral"]
+          }
+        }
+      }
+    },
+    "initialSceneId": { "type": "string", "minLength": 1 },
+    "scenes": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 20,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "act",
+              "title",
+              "body",
+              "background",
+              "effect",
+              "choices"
+            ],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "act": { "type": "integer", "minimum": 1, "maximum": 3 },
+              "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "speakerId": { "type": "string" },
+              "body": { "type": "string", "minLength": 1, "maxLength": 1200 },
+              "background": {
+                "type": "string",
+                "enum": [
+                  "briefing",
+                  "workspace",
+                  "conversation",
+                  "incident",
+                  "outcome",
+                  "technical_lab",
+                  "workshop",
+                  "meeting_room",
+                  "field_site",
+                  "customer_lounge"
+                ]
+              },
+              "effect": {
+                "type": "string",
+                "enum": ["none", "fade", "pulse", "shake", "success"]
+              },
+              "choices": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 3,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "label",
+                    "consequence",
+                    "reflection",
+                    "effects"
+                  ],
+                  "properties": {
+                    "id": { "type": "string", "minLength": 1 },
+                    "label": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 180
+                    },
+                    "consequence": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "reflection": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "nextSceneId": { "type": "string", "minLength": 1 },
+                    "endingId": { "type": "string", "minLength": 1 },
+                    "effects": {
+                      "type": "array",
+                      "maxItems": 3,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["meterId", "delta"],
+                        "properties": {
+                          "meterId": { "type": "string", "minLength": 1 },
+                          "delta": {
+                            "type": "integer",
+                            "minimum": -30,
+                            "maximum": 30
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "oneOf": [
+                    {
+                      "required": ["nextSceneId"],
+                      "not": { "required": ["endingId"] }
+                    },
+                    {
+                      "required": ["endingId"],
+                      "not": { "required": ["nextSceneId"] }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "act",
+              "title",
+              "beats",
+              "background",
+              "effect",
+              "choices"
+            ],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "act": { "type": "integer", "minimum": 1, "maximum": 3 },
+              "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "beats": {
+                "type": "array",
+                "minItems": 6,
+                "maxItems": 10,
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": ["kind", "speakerId", "text"],
+                      "properties": {
+                        "kind": { "const": "dialogue" },
+                        "speakerId": { "type": "string", "minLength": 1 },
+                        "text": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": ["kind", "tone", "text"],
+                      "properties": {
+                        "kind": { "const": "narration" },
+                        "tone": {
+                          "type": "string",
+                          "enum": ["setup", "observation", "transition"]
+                        },
+                        "text": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "background": {
+                "type": "string",
+                "enum": [
+                  "briefing",
+                  "workspace",
+                  "conversation",
+                  "incident",
+                  "outcome",
+                  "technical_lab",
+                  "workshop",
+                  "meeting_room",
+                  "field_site",
+                  "customer_lounge"
+                ]
+              },
+              "effect": {
+                "type": "string",
+                "enum": ["none", "fade", "pulse", "shake", "success"]
+              },
+              "choices": {
+                "$ref": "#/properties/scenes/items/oneOf/0/properties/choices"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "endings": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "title", "summary", "coachDebrief"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "kind": { "type": "string", "enum": ["strong", "mixed", "setback"] },
+          "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "summary": { "type": "string", "minLength": 1, "maxLength": 700 },
+          "coachDebrief": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        }
+      }
+    }
+  }
+}

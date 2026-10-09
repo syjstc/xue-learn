@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xue-learn.local/schemas/quiz.json",
+  "title": "Quiz",
+  "type": "object",
+  "required": ["questions"],
+  "properties": {
+    "questions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/QuizQuestion" },
+      "minItems": 1
+    },
+    "interleaved": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/QuizQuestion" },
+      "default": []
+    }
+  },
+  "$defs": {
+    "QuizQuestion": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "question",
+            "options",
+            "correctIndex",
+            "learningTargetIds",
+            "primaryLearningTargetId",
+            "evidenceDimension",
+            "criterionRef",
+            "contextDistance"
+          ],
+          "properties": {
+            "type": { "const": "mcq" },
+            "question": { "type": "string" },
+            "options": { "type": "array", "items": { "type": "string" } },
+            "correctIndex": { "type": "integer" },
+            "primaryLearningTargetId": {
+              "type": "string",
+              "pattern": "^lt_[0-9]+$"
+            },
+            "learningTargetIds": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^lt_[0-9]+$" },
+              "minItems": 1
+            },
+            "evidenceDimension": {
+              "enum": ["memory", "understanding"]
+            },
+            "criterionRef": { "type": "string", "minLength": 1 },
+            "contextDistance": { "enum": ["same", "near", "far"] }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "question",
+            "options",
+            "correctIndices",
+            "learningTargetIds",
+            "primaryLearningTargetId",
+            "evidenceDimension",
+            "criterionRef",
+            "contextDistance"
+          ],
+          "properties": {
+            "type": { "const": "mcq_multi" },
+            "question": { "type": "string" },
+            "options": { "type": "array", "items": { "type": "string" } },
+            "correctIndices": {
+              "type": "array",
+              "items": { "type": "integer" },
+              "minItems": 2
+            },
+            "primaryLearningTargetId": {
+              "type": "string",
+              "pattern": "^lt_[0-9]+$"
+            },
+            "learningTargetIds": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^lt_[0-9]+$" },
+              "minItems": 1
+            },
+            "evidenceDimension": {
+              "enum": ["memory", "understanding"]
+            },
+            "criterionRef": { "type": "string", "minLength": 1 },
+            "contextDistance": { "enum": ["same", "near", "far"] }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "question",
+            "correctAnswer",
+            "learningTargetIds",
+            "primaryLearningTargetId",
+            "evidenceDimension",
+            "criterionRef",
+            "contextDistance"
+          ],
+          "properties": {
+            "type": { "const": "true_false" },
+            "question": { "type": "string" },
+            "correctAnswer": { "type": "boolean" },
+            "primaryLearningTargetId": {
+              "type": "string",
+              "pattern": "^lt_[0-9]+$"
+            },
+            "learningTargetIds": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^lt_[0-9]+$" },
+              "minItems": 1
+            },
+            "evidenceDimension": {
+              "enum": ["memory", "understanding"]
+            },
+            "criterionRef": { "type": "string", "minLength": 1 },
+            "contextDistance": { "enum": ["same", "near", "far"] }
+          }
+        }
+      ]
+    }
+  }
+}

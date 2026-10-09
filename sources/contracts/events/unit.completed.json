@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["type", "unitId", "goalId"],
+  "properties": {
+    "type": { "const": "unit.completed" },
+    "unitId": { "type": "string" },
+    "goalId": { "type": "string" },
+    "userId": { "type": "string" },
+    "durationSec": { "type": "number" }
+  }
+}

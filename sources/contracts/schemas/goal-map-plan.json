@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xue-learn.local/schemas/goal-map-plan.json",
+  "title": "GoalMapPlan",
+  "type": "object",
+  "required": [
+    "domainAnalysis",
+    "topicOverview",
+    "whatYouWillLearn",
+    "majorAreas",
+    "mapStructure"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "integer", "enum": [1, 2] },
+    "refinedTitle": { "type": "string" },
+    "domainAnalysis": { "$ref": "#/$defs/DomainAnalysis" },
+    "topicOverview": { "type": "string" },
+    "whatYouWillLearn": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "majorAreas": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/MajorArea" }
+    },
+    "modules": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": { "$ref": "#/$defs/CurriculumModule" }
+    },
+    "mapStructure": { "$ref": "#/$defs/MapStructure" },
+    "outOfScope": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "prerequisitesAssumed": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    }
+  },
+  "$defs": {
+    "LearningMode": {
+      "type": "string",
+      "enum": [
+        "skill_practice",
+        "conceptual_understanding",
+        "research_scholarship",
+        "professional_applied",
+        "creative_expression",
+        "mixed"
+      ]
+    },
+    "DomainAnalysis": {
+      "type": "object",
+      "required": [
+        "field",
+        "subdomain",
+        "learningMode",
+        "domainTag",
+        "topicCategory",
+        "modeClarification"
+      ],
+      "properties": {
+        "field": { "type": "string" },
+        "subdomain": { "type": "string" },
+        "learningMode": { "$ref": "#/$defs/LearningMode" },
+        "domainTag": {
+          "type": "string",
+          "enum": ["stem", "humanities", "general"]
+        },
+        "topicCategory": {
+          "type": "string",
+          "enum": [
+            "language",
+            "mathematics",
+            "natural_science",
+            "computer_science",
+            "engineering",
+            "humanities",
+            "social_science",
+            "music",
+            "arts",
+            "business",
+            "health_medicine",
+            "professional",
+            "general"
+          ]
+        },
+        "modeClarification": { "type": "string" },
+        "alternateInterpretations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["label", "whyNotChosen"],
+            "properties": {
+              "label": { "type": "string" },
+              "whyNotChosen": { "type": "string" }
+            }
+          },
+          "default": []
+        }
+      }
+    },
+    "MapStructure": {
+      "type": "object",
+      "required": [
+        "recommendedDepth",
+        "estimatedLeafUnits",
+        "layeringStrategy",
+        "nestingRationale"
+      ],
+      "properties": {
+        "recommendedDepth": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "estimatedLeafUnits": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        },
+        "layeringStrategy": { "type": "string" },
+        "nestingRationale": { "type": "string" }
+      }
+    },
+    "MajorArea": {
+      "type": "object",
+      "required": ["title", "description"],
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "mapRole": {
+          "type": "string",
+          "enum": ["leaf", "branch"],
+          "default": "leaf"
+        },
+        "estimatedChildCount": { "type": "integer" },
+        "groupingAxis": { "type": "string" }
+      }
+    },
+    "CurriculumModule": {
+      "type": "object",
+      "required": [
+        "title",
+        "summary",
+        "objective",
+        "plannedOutcomes",
+        "entryFoundationBriefs",
+        "exitCapabilityBriefs",
+        "estimatedUnitCount",
+        "unitPlanningBrief",
+        "dependsOnPrevious"
+      ],
+      "properties": {
+        "title": { "type": "string" },
+        "summary": { "type": "string" },
+        "objective": { "type": "string" },
+        "plannedOutcomes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": { "type": "string" }
+        },
+        "entryFoundationBriefs": {
+          "type": "array",
+          "maxItems": 6,
+          "items": { "$ref": "#/$defs/EntryFoundationBrief" },
+          "default": []
+        },
+        "exitCapabilityBriefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": { "type": "string" }
+        },
+        "estimatedUnitCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "unitPlanningBrief": {
+          "$ref": "#/$defs/ModuleUnitPlanningBrief"
+        },
+        "dependsOnPrevious": { "type": "string" }
+      }
+    },
+    "ModuleUnitPlanningBrief": {
+      "type": "object",
+      "required": ["scopeSize", "rationale", "progression"],
+      "properties": {
+        "scopeSize": {
+          "type": "string",
+          "enum": ["compact", "standard", "large"]
+        },
+        "rationale": { "type": "string" },
+        "progression": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "EntryFoundationBrief": {
+      "type": "object",
+      "required": [
+        "ref",
+        "title",
+        "rationale",
+        "criticality",
+        "verificationDimensions"
+      ],
+      "properties": {
+        "ref": { "type": "string", "pattern": "^ef_[1-9]\\d*$" },
+        "title": { "type": "string" },
+        "rationale": { "type": "string" },
+        "criticality": {
+          "type": "string",
+          "enum": ["critical", "recommended"]
+        },
+        "verificationDimensions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "type": "string",
+            "enum": ["memory", "understanding", "application"]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,386 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "contractVersion": {
+      "type": "string",
+      "const": "course-source.v1"
+    },
+    "snapshotId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contentHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "capturedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "workspaceId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "goalId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "moduleId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unitId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "moduleOrderIndex": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unitOrderIndex": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "workspaceId",
+        "ownerId",
+        "goalId",
+        "moduleId",
+        "unitId",
+        "moduleOrderIndex",
+        "unitOrderIndex"
+      ],
+      "additionalProperties": false
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "goalTitle": {
+          "type": "string"
+        },
+        "goalKind": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "unitKind": {
+          "type": "string"
+        },
+        "contentLanguage": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "publishedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "learningTargets": {
+          "type": "array",
+          "items": {}
+        }
+      },
+      "required": [
+        "goalTitle",
+        "goalKind",
+        "title",
+        "unitKind",
+        "contentLanguage",
+        "scope",
+        "publishedRevision",
+        "learningTargets"
+      ],
+      "additionalProperties": false
+    },
+    "preview": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "ready",
+            "missing",
+            "pending",
+            "not-required"
+          ]
+        },
+        "data": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "orderIndex": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "title": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string"
+          },
+          "contentKind": {
+            "type": "string"
+          },
+          "assessmentAfter": {
+            "type": "boolean"
+          },
+          "testGenerationStatus": {
+            "type": "string"
+          },
+          "generationStatus": {
+            "type": "string"
+          },
+          "publishedRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "availability": {
+            "type": "string",
+            "enum": [
+              "published",
+              "missing"
+            ]
+          },
+          "derivationFormat": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "material": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "introduction": {
+                    "type": "string"
+                  },
+                  "blocks": {},
+                  "keyTakeaways": {}
+                },
+                "required": [
+                  "introduction",
+                  "blocks",
+                  "keyTakeaways"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "derivationDocument": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "teachingDerivationDocument": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "teachingDerivationDerived": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "presentationVersions": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "orderIndex",
+          "title",
+          "scope",
+          "contentKind",
+          "assessmentAfter",
+          "testGenerationStatus",
+          "generationStatus",
+          "publishedRevision",
+          "availability",
+          "derivationFormat",
+          "material",
+          "derivationDocument",
+          "teachingDerivationDocument",
+          "teachingDerivationDerived",
+          "presentationVersions"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "legacyMaterial": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "introduction": {
+              "type": "string"
+            },
+            "sections": {},
+            "keyTakeaways": {}
+          },
+          "required": [
+            "introduction",
+            "sections",
+            "keyTakeaways"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "resourceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "mediaType": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "byteLength": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "availability": {
+            "type": "string",
+            "enum": [
+              "available",
+              "missing",
+              "external"
+            ]
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "resourceId",
+          "sha256",
+          "mediaType",
+          "byteLength",
+          "availability",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "contractVersion",
+    "snapshotId",
+    "contentHash",
+    "capturedAt",
+    "source",
+    "metadata",
+    "preview",
+    "sections",
+    "legacyMaterial",
+    "assets"
+  ],
+  "additionalProperties": false,
+  "title": "CourseSourceSnapshotV1"
+}

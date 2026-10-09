@@ -1,0 +1,304 @@
+.music-display {
+  color: var(--music-foreground);
+  background: var(--music-background);
+  border: 1px solid var(--music-border);
+  border-radius: var(--music-radius);
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: left;
+}
+.music-display[data-music-clocked="true"] .music-controls,
+.music-display[data-music-clocked="true"] .music-step-nav,
+.music-display[data-music-clocked="true"] .music-comparison,
+.music-display[data-music-clocked="true"] .music-attribution,
+.music-display[data-music-clocked="true"] .music-selection { display: none; }
+.music-display button,
+.music-display select {
+  font: inherit;
+  color: inherit;
+  border: 1px solid var(--music-border);
+  border-radius: 6px;
+  background: var(--music-background);
+  padding: 5px 9px;
+  cursor: pointer;
+  line-height: 1.5;
+}
+.music-display button:hover,
+.music-display select:hover {
+  background: var(--ds-primary-hover);
+}
+.music-display button:focus-visible,
+.music-display select:focus-visible,
+.music-display input:focus-visible {
+  outline: 2px solid var(--music-active);
+  outline-offset: 2px;
+}
+.music-display button[aria-pressed="true"] {
+  color: var(--music-active);
+  border-color: var(--music-active);
+  background: var(--ds-primary-soft);
+}
+.music-display button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.music-heading,
+.music-selection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  flex-wrap: wrap;
+}
+.music-heading strong {
+  font-size: 17px;
+  font-weight: 600;
+}
+.music-heading > span,
+.music-selection,
+.music-attribution {
+  color: var(--music-muted);
+  font-size: 12px;
+}
+.music-step-nav {
+  display: flex;
+  gap: 6px;
+  padding: 0 16px 12px;
+  overflow-x: auto;
+  min-height: 44px;
+}
+.music-step-nav button {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.music-score-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  border-block: 1px solid var(--music-border);
+}
+.music-score {
+  color: var(--music-foreground);
+  min-height: 225px;
+  padding: 8px 0;
+}
+.music-score svg {
+  display: block;
+  max-width: none !important;
+  fill: var(--music-foreground);
+  stroke: var(--music-foreground);
+}
+.music-score [fill]:not([fill="none"]) {
+  fill: var(--music-foreground);
+}
+.music-score [stroke]:not([stroke="none"]) {
+  stroke: var(--music-foreground);
+}
+.music-score .music-event.is-focus,
+.music-score .music-event.is-focus [fill]:not([fill="none"]) {
+  fill: var(--music-focus);
+}
+.music-score .music-event.is-playing,
+.music-score .music-event.is-playing [fill]:not([fill="none"]) {
+  fill: var(--music-active);
+}
+.music-score .music-event.is-focus [stroke]:not([stroke="none"]) {
+  stroke: var(--music-focus);
+}
+.music-score .music-event.is-playing [stroke]:not([stroke="none"]) {
+  stroke: var(--music-active);
+}
+.music-score .music-score-label {
+  fill: var(--music-muted);
+  stroke: none;
+}
+.music-numbered text {
+  stroke: none;
+}
+.music-numbered line {
+  stroke: var(--music-foreground);
+  stroke-width: 1;
+}
+.music-score.notation-staff .music-numbered,
+.music-score.notation-jianpu .music-staff {
+  visibility: hidden;
+}
+.music-keyboard-section {
+  padding: 0 16px 12px;
+}
+.music-keyboard-section .music-selection {
+  padding: 0 0 8px;
+}
+.music-keyboard-scroll {
+  overflow-x: auto;
+}
+.music-keyboard-window {
+  overflow: hidden;
+  min-width: 100%;
+  height: 102px;
+}
+.music-keyboard {
+  position: relative;
+  height: 100px;
+}
+.music-keyboard button {
+  position: absolute;
+  top: 0;
+  padding: 0;
+  border-radius: 0 0 3px 3px;
+  font-size: 9px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 0;
+}
+.music-keyboard button.white {
+  height: 98px;
+  background: var(--ds-surface);
+  color: var(--ds-muted);
+  border: 1px solid var(--ds-border);
+}
+.music-keyboard button.black {
+  height: 61px;
+  background: var(--ds-ink);
+  border: 1px solid var(--ds-ink);
+  z-index: 1;
+}
+.music-keyboard button.is-focus {
+  background: var(--music-key-focus, var(--music-focus));
+}
+.music-keyboard button.is-playing {
+  background: var(--music-active);
+  color: var(--ds-inverse);
+}
+.music-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  border-top: 1px solid var(--music-border);
+}
+.music-controls label,
+.music-selection label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+}
+.music-controls input[type="range"] {
+  width: 110px;
+  accent-color: var(--music-active);
+}
+.music-controls .music-play {
+  background: var(--music-active);
+  border-color: var(--music-active);
+  color: var(--ds-inverse);
+  min-width: 60px;
+}
+.music-comparison {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0 16px 12px;
+}
+.music-comparison span {
+  color: var(--music-muted);
+  font-size: 12px;
+}
+.music-attribution {
+  padding: 0 16px 12px;
+}
+.music-attribution summary {
+  cursor: pointer;
+}
+.music-attribution a {
+  color: var(--ds-link);
+  margin-left: 8px;
+}
+.music-display [role="alert"] {
+  padding: 0 16px;
+  color: var(--ds-danger);
+}
+@media (max-width: 480px) {
+  .music-heading,
+  .music-controls,
+  .music-selection {
+    padding-inline: 10px;
+  }
+  .music-step-nav {
+    padding-inline: 10px;
+  }
+  .music-keyboard-section {
+    padding-inline: 10px;
+  }
+  .music-controls select {
+    max-width: 160px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .music-keyboard button {
+    transition: background var(--music-transition-ms);
+  }
+}
+
+.music-score svg {
+  margin-inline: auto;
+}
+.music-step-nav [data-lp-target] {
+  opacity: 1 !important;
+  filter: none !important;
+}
+.music-selection > span {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.music-comparison {
+  min-height: 76px;
+}
+.music-comparison button {
+  max-width: calc(50% - 8px);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.music-comparison span {
+  width: 100%;
+}
+.music-display {
+  width: 100%;
+}
+.lp-stage-display-frame > .music-display {
+  align-self: stretch;
+  max-height: 100%;
+  overflow: auto;
+  font-size: 20px;
+}
+.lp-stage .music-heading strong {
+  font-size: 26px;
+}
+.lp-stage .music-heading > span,
+.lp-stage .music-selection,
+.lp-stage .music-controls label,
+.lp-stage .music-attribution {
+  font-size: 18px;
+}
+.lp-stage .music-step-nav {
+  min-height: 52px;
+}
+.lp-stage .music-controls {
+  gap: 12px;
+}
+.lp-stage .music-keyboard button {
+  font-size: 13px;
+}

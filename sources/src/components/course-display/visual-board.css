@@ -1,0 +1,424 @@
+/* Program-owned geometry; no autonomous transitions, keyframes or image URLs. */
+.visual-board.visual-board-teaching{gap:.35em;padding:.6em .8em}
+.visual-board-teaching .visual-heading{flex:none}
+/* Reserve the heading first, then fit the whole SVG into the remaining space.
+ * A grid child's intrinsic 2:1 size can exceed the flex item's used height and
+ * push otherwise valid detail text below the classroom/film clipping edge. */
+.visual-teaching-art{position:relative;width:100%;min-height:0;flex:1 1 0}
+.visual-teaching-art>.rt-diagram{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.visual-board-teaching[data-reading="true"] .visual-teaching-art{flex:none;aspect-ratio:2 / 1}
+.visual-process-viewport {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  container-type: size;
+  display: grid;
+  place-items: center;
+}
+.visual-process-stage {
+  position: relative;
+  width: min(100%, calc(100cqh * var(--process-aspect)));
+  flex: none;
+  container-type: inline-size;
+}
+.visual-process-links {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--ds-primary);
+  overflow: visible;
+}
+.visual-process-links > path {
+  stroke: var(--ds-primary);
+  stroke-width: 2.5;
+  fill: none;
+}
+.visual-process-object {
+  position: absolute;
+  transform-origin: center;
+  height: 0;
+  font-size: 2.8cqw;
+  color: var(--ds-ink);
+}
+.visual-process-node {
+  position: absolute;
+  width: 100%;
+  height: var(--process-node-height);
+  top: calc(var(--process-node-height) / -2);
+  display: grid;
+  place-items: center;
+  padding: 0.4em 0.65em;
+  text-align: center;
+}
+.visual-process-node svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--ds-primary-container);
+  stroke: var(--ds-primary);
+  stroke-width: calc(1 + var(--visual-object-emphasis) * 1.5);
+}
+.visual-process-node strong {
+  position: relative;
+  color: var(--ds-on-primary-container);
+  font-size: 1.12em;
+  font-weight: 650;
+  line-height: 1.35;
+}
+.visual-process-detail {
+  position: absolute;
+  top: calc(var(--process-node-height) / 2 + 2.2cqw);
+  left: -5%;
+  width: 110%;
+  text-align: center;
+  font-size: 0.88em;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  color: var(--ds-muted);
+}
+.visual-board[data-reading="false"]:has(.visual-process-stage) {
+  background: transparent;
+  border-radius: 0;
+  padding: 0.6em 0;
+  gap: 0.7em;
+}
+.visual-board:has(.visual-process-stage) .visual-heading::before { display: none; }
+.visual-board:has(.visual-process-stage) .visual-heading { flex: none; }
+.visual-board {
+  color: var(--ds-ink);
+  /* Classroom boards pin a light palette even inside the dark reader. */
+  background: var(--ds-surface);
+  border-radius: 0.8em;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5em;
+  padding: 1.1em 1.3em;
+  font-size: var(--visual-type);
+  line-height: 1.4;
+  container-type: inline-size;
+}
+.visual-board h3,
+.visual-board p,
+.visual-board ol {
+  margin: 0;
+}
+.visual-heading {
+  font-size: 1.45em;
+  line-height: 1.3;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+.visual-heading::before {
+  content: "";
+  display: block;
+  width: 1.6em;
+  height: 0.12em;
+  background: var(--ds-primary);
+  margin-bottom: 0.5em;
+}
+.visual-board strong {
+  font-weight: 650;
+  font-size: 1.08em;
+  overflow-wrap: anywhere;
+}
+.visual-board p {
+  color: var(--ds-muted);
+  font-size: 0.85em;
+  line-height: 1.65;
+  margin-top: 0.4em;
+  overflow-wrap: anywhere;
+}
+.visual-process {
+  display: flex;
+  padding: 1em 0;
+  list-style: none;
+  gap: 1.4em;
+}
+.visual-process li {
+  flex: 1;
+  min-width: 0;
+}
+.visual-process-track {
+  position: relative;
+  height: 6.4em;
+  display: flex;
+  align-items: flex-start;
+}
+.visual-orbit {
+  width: 4.6em;
+  height: 4.6em;
+  border-radius: 50%;
+  border: 1px solid var(--ds-border);
+  padding: 0.36em;
+  position: relative;
+  background: var(--ds-surface);
+  transform: scale(calc(1 + var(--visual-emphasis) * 0.08));
+}
+.visual-orbit > span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  font-size: 1.5em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ds-primary-dark);
+  background: var(--ds-primary-container);
+  box-shadow: 0 0 0 calc(var(--visual-emphasis) * 0.16em)
+    var(--ds-primary-light);
+}
+.visual-connector {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 2.3em;
+  left: 5em;
+  right: -0.9em;
+  color: var(--ds-primary);
+  transform: translateY(-50%);
+}
+.visual-connector i {
+  height: 2px;
+  background: currentColor;
+  flex: 1;
+  opacity: 0.45;
+}
+.visual-connector svg {
+  display: block;
+  width: 0.7em;
+  height: 0.7em;
+  flex: none;
+  margin-left: -0.35em;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.visual-spatial {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 2em;
+  align-items: center;
+  min-height: 0;
+}
+.visual-drawing {
+  width: 100%;
+  max-height: 100%;
+  overflow: visible;
+  color: var(--ds-primary);
+}
+.visual-guide {
+  stroke: var(--ds-border);
+  fill: none;
+  stroke-width: 1;
+  stroke-dasharray: 5 9;
+}
+.visual-center-arrow {
+  fill: none;
+  stroke: var(--ds-primary);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.visual-cycle-link {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+}
+.visual-node-halo {
+  fill: var(--ds-primary-container);
+}
+.visual-node {
+  fill: var(--ds-primary-container);
+  stroke: var(--ds-primary);
+  stroke-width: 1.5;
+}
+.visual-node-number {
+  fill: var(--ds-primary-dark);
+  font-size: 23px;
+  font-weight: 600;
+}
+.visual-plane {
+  fill: var(--ds-primary-container);
+  stroke: var(--ds-primary);
+  stroke-width: 1.5;
+}
+.visual-plane-edge {
+  fill: var(--ds-primary-light);
+  stroke: var(--ds-primary);
+  stroke-width: 1;
+}
+.visual-plane-line {
+  fill: none;
+  stroke: var(--ds-primary);
+  stroke-width: 1;
+  opacity: 0.25;
+}
+.visual-plane-number {
+  fill: var(--ds-primary-dark);
+  font-size: 25px;
+  font-weight: 600;
+}
+.visual-legend {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1em;
+}
+.visual-legend li {
+  position: relative;
+  display: flex;
+  gap: 1em;
+  align-items: flex-start;
+  border-left: 0.12em solid transparent;
+  padding: 0.35em 0 0.35em 0.7em;
+}
+.visual-bar-item { position: relative; }
+/* Every indicator is a pure function of the existing narration frame. No CSS
+ * transition can keep moving after pause or start again on a repeated cue. */
+.visual-focus-indicator {
+  position: absolute;
+  left: -0.8em;
+  top: 0.22em;
+  width: 0.6em;
+  height: 0.6em;
+  color: var(--ds-primary);
+  pointer-events: none;
+  transform: translateX(calc((1 - var(--visual-emphasis)) * -0.4em));
+}
+.visual-focus-indicator svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.visual-focus-indicator path, .visual-focus-arrow {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.visual-focus-ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+.visual-process-object > .visual-focus-indicator { top: -0.3em; left: -0.85em; }
+.visual-bar-item::before {
+  content: "";
+  position: absolute;
+  inset: -0.22em -0.35em;
+  border-radius: 0.3em;
+  background: var(--ds-primary);
+  opacity: calc(var(--visual-emphasis) * 0.08);
+  pointer-events: none;
+}
+.visual-bar-caption, .visual-bar-track, .visual-bar-item > p { position: relative; }
+.visual-legend li[data-active="true"] {
+  border-color: var(--ds-primary);
+}
+.visual-index {
+  color: var(--ds-primary-dark);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85em;
+  padding-top: 0.15em;
+}
+.visual-bars {
+  display: grid;
+  gap: 1em;
+}
+.visual-bar-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1em;
+  margin-bottom: 0.35em;
+}
+.visual-bar-caption > span {
+  color: var(--ds-primary-dark);
+  font-weight: 600;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.visual-bar-track {
+  height: 0.8em;
+  border-left: 1px solid var(--ds-border);
+  background: repeating-linear-gradient(
+    to right,
+    var(--ds-border-light) 0 1px,
+    transparent 1px 25%
+  );
+}
+.visual-bar-track > div {
+  height: 100%;
+  background: var(--ds-primary);
+  border-radius: 0 0.15em 0.15em 0;
+  box-shadow: 0 0 0 calc(var(--visual-emphasis) * 0.1em)
+    var(--ds-primary-container);
+}
+.visual-bar-axis {
+  display: flex;
+  justify-content: space-between;
+  color: var(--ds-muted);
+  font-size: 0.75em;
+}
+.visual-board[data-reading="true"] {
+  height: auto;
+  padding: 1.2em;
+}
+.course-display-board[data-board-type="visual"] {
+  height: auto;
+}
+@container (max-width: 520px) {
+  .visual-spatial {
+    grid-template-columns: 1fr;
+    gap: 0.5em;
+  }
+  .visual-drawing {
+    max-height: 230px;
+  }
+  .visual-process {
+    flex-direction: column;
+    gap: 1.5em;
+    padding: 0;
+  }
+  .visual-process li {
+    position: relative;
+    padding-left: 4.8em;
+    min-height: 4em;
+  }
+  .visual-process-track {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: -1.5em;
+    height: auto;
+    width: 3.4em;
+  }
+  .visual-orbit {
+    width: 3.4em;
+    height: 3.4em;
+  }
+  .visual-connector {
+    top: 3.7em;
+    bottom: 0;
+    left: 1.7em;
+    right: auto;
+    width: 0.7em;
+    flex-direction: column;
+    transform: translateX(-50%);
+  }
+  .visual-connector i {
+    width: 2px;
+    height: auto;
+  }
+  .visual-connector svg {
+    margin-left: 0;
+    margin-top: -0.35em;
+    transform: rotate(90deg);
+  }
+}

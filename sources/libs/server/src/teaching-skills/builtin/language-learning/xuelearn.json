@@ -1,0 +1,48 @@
+{
+  "schema": "xuelearn.domain-teaching-skill/v1",
+  "slug": "language-learning",
+  "topicCategory": "language",
+  "domainPaths": ["language-learning", "language-learning/communication"],
+  "tags": [
+    "language",
+    "dialogue",
+    "speaking",
+    "listening",
+    "vocabulary",
+    "grammar",
+    "pronunciation",
+    "role-play"
+  ],
+  "learningModes": ["skill_practice", "mixed"],
+  "appliesTo": [
+    "goal_plan",
+    "module_units",
+    "unit_content",
+    "scenario_theater"
+  ],
+  "references": [
+    {
+      "path": "references/unit-patterns.md",
+      "appliesTo": ["module_units", "unit_content"],
+      "keywords": [
+        "dialogue",
+        "speaking",
+        "grammar",
+        "pronunciation",
+        "listening"
+      ]
+    },
+    {
+      "path": "references/theater-patterns.md",
+      "appliesTo": ["scenario_theater"],
+      "keywords": [
+        "language",
+        "dialogue",
+        "speaking",
+        "writing",
+        "communication",
+        "role-play"
+      ]
+    }
+  ]
+}

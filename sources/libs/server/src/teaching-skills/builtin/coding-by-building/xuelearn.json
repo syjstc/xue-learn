@@ -1,0 +1,53 @@
+{
+  "schema": "xuelearn.domain-teaching-skill/v1",
+  "slug": "coding-by-building",
+  "topicCategory": "computer_science",
+  "domainPaths": ["computer-science/programming", "software-development"],
+  "tags": [
+    "programming",
+    "coding",
+    "software",
+    "debugging",
+    "testing",
+    "architecture",
+    "design",
+    "reasoning",
+    "project",
+    "build"
+  ],
+  "learningModes": ["skill_practice", "professional_applied", "mixed"],
+  "appliesTo": [
+    "goal_plan",
+    "module_units",
+    "unit_content",
+    "scenario_theater"
+  ],
+  "references": [
+    {
+      "path": "references/practice-ladder.md",
+      "appliesTo": ["module_units", "unit_content"],
+      "keywords": [
+        "code",
+        "debug",
+        "test",
+        "architecture",
+        "design",
+        "project",
+        "build"
+      ]
+    },
+    {
+      "path": "references/theater-patterns.md",
+      "appliesTo": ["scenario_theater"],
+      "keywords": [
+        "code",
+        "debug",
+        "test",
+        "architecture",
+        "design",
+        "incident",
+        "migration"
+      ]
+    }
+  ]
+}

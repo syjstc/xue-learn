@@ -1,0 +1,5 @@
+.teaching-display{width:100%;min-width:0;aspect-ratio:2 / 1;position:relative;color-scheme:light}
+.teaching-display>.rt-diagram{display:block;width:100%;height:100%;overflow:visible}
+.teaching-display .rt-diagram-chapters{display:none}
+.teaching-display .rt-music-scene{min-height:100%;width:100%}
+.teaching-display .rt-music-caption{font-size:14px;line-height:1.4;margin:0;padding-top:8px}

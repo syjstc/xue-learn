@@ -1,0 +1,145 @@
+.fer-motion-renderer {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  padding: 12px 16px 16px;
+  color: var(--ds-foreground, #1c1917);
+  overflow: visible;
+}
+
+.fer-motion-renderer[data-align="start"] {
+  place-items: center start;
+}
+
+.fer-motion-renderer[data-align="end"] {
+  place-items: center end;
+}
+
+.fer-motion-svg {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: visible;
+  font-family: KaTeX_Main, "Latin Modern Math", "STIX Two Math", "Times New Roman", serif;
+}
+
+.fer-motion-glyph {
+  fill: currentColor;
+  font-family: KaTeX_Main, "Times New Roman", serif;
+  dominant-baseline: alphabetic;
+}
+
+.fer-motion-glyph[data-italic="true"] {
+  font-family: KaTeX_Math, "Times New Roman", serif;
+  font-style: italic;
+}
+
+.fer-motion-glyph[data-script="cjk"] {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC",
+    "Source Han Sans SC", sans-serif;
+  font-style: normal;
+}
+
+.fer-motion-glyph.is-highlight-primary,
+.fer-motion-mark.is-highlight-primary {
+  color: var(--ds-primary, #7c5cfc);
+  fill: currentColor;
+}
+.fer-motion-glyph.is-highlight-success,
+.fer-motion-mark.is-highlight-success {
+  color: var(--ds-success, #16a34a);
+  fill: currentColor;
+}
+.fer-motion-glyph.is-highlight-warning,
+.fer-motion-mark.is-highlight-warning {
+  color: var(--ds-warning, #d97706);
+  fill: currentColor;
+}
+.fer-motion-glyph.is-highlight-danger,
+.fer-motion-mark.is-highlight-danger {
+  color: var(--ds-danger, #dc2626);
+  fill: currentColor;
+}
+.fer-motion-glyph.is-highlight-muted,
+.fer-motion-mark.is-highlight-muted {
+  opacity: 0.55;
+}
+.fer-motion-glyph.is-highlight-strong,
+.fer-motion-mark.is-highlight-strong {
+  filter: none;
+}
+
+.fer-motion-clocked.fer-motion-renderer {
+  height: 100%;
+  min-height: 0;
+}
+.fer-motion-clocked .fer-motion-emphasis {
+  animation: none;
+  opacity: 1;
+}
+
+.fer-motion-emphasis {
+  fill: color-mix(in srgb, var(--ds-primary, #7c5cfc) 16%, transparent);
+  opacity: 0;
+  animation: fer-motion-emphasis-in 280ms ease-out forwards;
+}
+
+.fer-motion-emphasis.is-success {
+  fill: color-mix(in srgb, var(--ds-success, #16a34a) 16%, transparent);
+}
+.fer-motion-emphasis.is-warning {
+  fill: color-mix(in srgb, var(--ds-warning, #d97706) 16%, transparent);
+}
+.fer-motion-emphasis.is-danger {
+  fill: color-mix(in srgb, var(--ds-danger, #dc2626) 16%, transparent);
+}
+.fer-motion-emphasis.is-muted {
+  fill: color-mix(in srgb, var(--ds-foreground, #1c1917) 8%, transparent);
+}
+.fer-motion-emphasis.is-strong {
+  fill: color-mix(in srgb, var(--ds-primary, #7c5cfc) 22%, transparent);
+}
+.fer-motion-emphasis.is-success.is-strong {
+  fill: color-mix(in srgb, var(--ds-success, #16a34a) 22%, transparent);
+}
+.fer-motion-emphasis.is-warning.is-strong {
+  fill: color-mix(in srgb, var(--ds-warning, #d97706) 22%, transparent);
+}
+.fer-motion-emphasis.is-danger.is-strong {
+  fill: color-mix(in srgb, var(--ds-danger, #dc2626) 22%, transparent);
+}
+
+@keyframes fer-motion-emphasis-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fer-motion-mark {
+  fill: currentColor;
+}
+
+.fer-motion-mark-frac-rule,
+.fer-motion-mark-vinculum,
+.fer-motion-mark-radical,
+.fer-motion-mark-brace-left,
+.fer-motion-mark-brace-right {
+  fill: none;
+}
+
+.fer-motion-hit {
+  fill: transparent;
+  cursor: pointer;
+}
+
+.fer-motion-debug {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-primary, #7c5cfc) 55%, transparent);
+  stroke-dasharray: 4 3;
+  pointer-events: none;
+}

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-10-09T01:10:43.360894+00:00",
+  "repository": "core",
+  "core": {
+    "package": "@xue-learn/core",
+    "version": "0.2.0",
+    "archiveSha256": "4e5c5c89f202f3243d2830bc4dc5eeca011fb6ebe66055a569a8fee3b1bf4dfc",
+    "releasedFiles": 2844
+  },
+  "tests": {
+    "jestSuites": 24,
+    "tests": 115
+  },
+  "builds": [
+    "browser",
+    "display",
+    "node",
+    "workspace-client",
+    "declarations",
+    "CommonJS SDK bundle/import",
+    "isolated OpenAPI and JSON Schema generation"
+  ],
+  "acceptanceScope": "source, independent dependency installation and builds",
+  "nativeGuiAcceptance": false,
+  "liveLearnerDataMigration": false,
+  "remotePush": false,
+  "registryPublication": false,
+  "boundaries": {
+    "hostDependencies": 0,
+    "sqlDriverDependencies": 0,
+    "privateProductDependencies": 0
+  },
+  "frozenLockfileInstall": true,
+  "initialHistoryWhitespace": {
+    "inheritedIssues": 104,
+    "introducedIssues": 0
+  }
+}

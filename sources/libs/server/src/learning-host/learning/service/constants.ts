@@ -1,0 +1,15 @@
+export const KACOM_ASSESSMENT_ACTIONS = new Set([
+  "submit_material_check",
+  "submit_section_mini_test",
+  "generate_diagnostic",
+  "generate_quiz",
+  "generate_flashcards",
+  "explain_quiz_wrong",
+  "submit_quiz",
+  "start_socratic",
+  "select_socratic_thread",
+  "finish_socratic",
+  "socratic",
+  "submit_feynman",
+  "complete",
+]);

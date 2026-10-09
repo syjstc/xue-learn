@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xue-learn.local/schemas/cornell.json",
+  "title": "CornellNotes",
+  "type": "object",
+  "required": ["notes", "cues", "summary"],
+  "properties": {
+    "notes": { "type": "string" },
+    "cues": { "type": "string" },
+    "summary": { "type": "string" }
+  }
+}

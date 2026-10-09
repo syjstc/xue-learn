@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "pathBase": "public-repository-root",
+  "license": "LicenseRef-XueLearn-Brand-Noncommercial-1.0",
+  "licenseFile": "LICENSE-BRAND",
+  "policyFile": "BRAND_POLICY.md",
+  "marks": [
+    "XueLearn",
+    "好会学"
+  ],
+  "files": []
+}

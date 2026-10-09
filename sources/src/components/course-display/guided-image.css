@@ -1,0 +1,148 @@
+.guided-image {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+.guided-image-viewport {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  border-radius: 10px;
+}
+.guided-image-viewport[data-auto-focus="true"] {
+  height: clamp(220px, calc(var(--course-board-height, 540px) - 84px), 720px);
+}
+.guided-image svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.guided-image svg,
+.guided-image-matte {
+  /* Authored labels retain their source ink in both interface themes. */
+  background: #ede7e0;
+}
+.guided-image-outline {
+  fill: none;
+  stroke: var(--course-content-link);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.guided-image-outline[data-selected] {
+  stroke: var(--course-content-accent, var(--course-content-link));
+  stroke-width: 2;
+}
+.guided-image figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--course-content-muted);
+  font-size: 14px;
+  line-height: 1.6;
+  padding-inline: 4px;
+}
+.guided-image-beat {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  border-left: 3px solid transparent;
+  border-radius: 0 8px 8px 0;
+  color: var(--course-content);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.85;
+}
+.guided-image-beat[aria-current] {
+  border-color: var(--course-content-link);
+  background: var(--course-content-surface-muted);
+}
+.guided-image-beat-number {
+  flex: none;
+  padding-top: 3px;
+  color: var(--course-content-muted);
+  font-size: 12px;
+}
+.guided-image-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.guided-image-controls button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--course-content-surface-muted);
+}
+.guided-image-controls button:disabled {
+  opacity: 0.4;
+}
+.guided-image-controls span,
+.guided-image-reading-tools {
+  font-size: 13px;
+  color: var(--course-content-muted);
+}
+.guided-image-reading-tools button {
+  padding: 6px 10px;
+  border: 1px solid var(--course-content-border);
+  border-radius: 6px;
+}
+.guided-image-lesson .course-conversation-transcript {
+  position: relative;
+  gap: 12px;
+}
+@media (max-width: 700px) {
+  .guided-image-lesson .guided-image svg {
+    max-height: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guided-image image {
+    transition: none;
+  }
+}
+
+.guided-image-camera-toggle {
+  flex: none;
+  min-height: 36px;
+  padding: 5px 10px;
+  border: 1px solid var(--course-content-border);
+  border-radius: 8px;
+  color: var(--course-content-link);
+}
+.guided-image-camera-toggle:focus-visible {
+  outline: 2px solid var(--course-content-link);
+  outline-offset: 2px;
+}
+@media (max-width: 700px) {
+  .guided-image-viewport[data-auto-focus="true"] {
+    height: clamp(220px, 44dvh, 420px);
+  }
+}
+
+/* Video uses the complete lecture surface and has no reading controls. */
+.guided-image[data-presentation="classroom"] {
+  height: 100%;
+  min-height: 0;
+  gap: 0;
+}
+.guided-image[data-presentation="classroom"] .guided-image-viewport {
+  height: 100%;
+  min-height: 0;
+  border-radius: 0;
+}
+.guided-image[data-presentation="classroom"] svg {
+  background: transparent;
+}

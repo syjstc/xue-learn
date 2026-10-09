@@ -1,0 +1,57 @@
+/** Design-pixel geometry mirrored from `lesson-performance.css` (18px em). */
+export const CLASSROOM_EM = 18;
+export const CLASSROOM_WIDTH = 1920;
+export const CLASSROOM_HEIGHT = 1080;
+
+export const CLASSROOM_INSET_LEFT = CLASSROOM_WIDTH * 0.04;
+export const CLASSROOM_INSET_RIGHT = CLASSROOM_WIDTH * 0.17;
+export const CLASSROOM_CONTENT_TOP = CLASSROOM_HEIGHT * 0.14;
+export const CLASSROOM_CONTENT_BOTTOM = CLASSROOM_HEIGHT * 0.14;
+export const CLASSROOM_OPENING_TOP = CLASSROOM_HEIGHT * 0.13;
+export const CLASSROOM_OPENING_RIGHT = CLASSROOM_WIDTH * 0.3;
+export const CLASSROOM_OPENING_BOTTOM = CLASSROOM_HEIGHT * 0.13;
+
+export const CLASSROOM_TOPIC_TOP = CLASSROOM_HEIGHT * 0.086;
+export const CLASSROOM_TOPIC_SIZE = 1.46 * CLASSROOM_EM;
+export const CLASSROOM_BRAND_TOP = CLASSROOM_HEIGHT * 0.036;
+export const CLASSROOM_BRAND_HEIGHT = 2.35 * CLASSROOM_EM;
+
+export const CLASSROOM_CARD_MAX_WIDTH = 61 * CLASSROOM_EM;
+export const CLASSROOM_CONTENT_SHIFT = 0.85 * CLASSROOM_EM;
+export const CLASSROOM_TOPIC_SHIFT = 0.5 * CLASSROOM_EM;
+
+/** Subtitle padding-inline is 3.5% of the design canvas, then 0.25em on the line. */
+export const CLASSROOM_CAPTION_PAD = CLASSROOM_WIDTH * 0.035;
+export const CLASSROOM_CAPTION_LINE_PAD = 0.25 * CLASSROOM_EM;
+export const CLASSROOM_CAPTION_FONT = 1.58 * CLASSROOM_EM;
+export const CLASSROOM_CAPTION_LETTER = 0.02 * CLASSROOM_CAPTION_FONT;
+export const CLASSROOM_CAPTION_LINE_HEIGHT = 1.3;
+export const CLASSROOM_CAPTION_BOTTOM = CLASSROOM_HEIGHT * 0.028;
+export const CLASSROOM_CAPTION_BOTTOM_OPENING = CLASSROOM_HEIGHT * 0.026;
+
+export function classroomContentRect(kind: string) {
+  if (kind === "opening") {
+    return {
+      x: CLASSROOM_INSET_LEFT,
+      y: CLASSROOM_OPENING_TOP,
+      width: CLASSROOM_WIDTH - CLASSROOM_INSET_LEFT - CLASSROOM_OPENING_RIGHT,
+      height: CLASSROOM_HEIGHT - CLASSROOM_OPENING_TOP - CLASSROOM_OPENING_BOTTOM,
+    };
+  }
+  return {
+    x: CLASSROOM_INSET_LEFT,
+    y: CLASSROOM_CONTENT_TOP,
+    width: CLASSROOM_WIDTH - CLASSROOM_INSET_LEFT -
+      (kind === "teaching_derivation" ? CLASSROOM_WIDTH * 0.18 : CLASSROOM_INSET_RIGHT),
+    height: CLASSROOM_HEIGHT - CLASSROOM_CONTENT_TOP - CLASSROOM_CONTENT_BOTTOM,
+  };
+}
+
+export function classroomCaptionBox(kind: string) {
+  const outerWidth = CLASSROOM_WIDTH - CLASSROOM_INSET_LEFT * 2;
+  return {
+    x: CLASSROOM_INSET_LEFT + CLASSROOM_CAPTION_PAD,
+    width: outerWidth - CLASSROOM_CAPTION_PAD * 2 - CLASSROOM_CAPTION_LINE_PAD * 2,
+    bottom: kind === "opening" ? CLASSROOM_CAPTION_BOTTOM_OPENING : CLASSROOM_CAPTION_BOTTOM,
+  };
+}
