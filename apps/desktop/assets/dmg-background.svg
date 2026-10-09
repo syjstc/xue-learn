@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="430" viewBox="0 0 660 430">
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffaf3"/>
+      <stop offset="0.55" stop-color="#fffdf9"/>
+      <stop offset="1" stop-color="#f5f1e9"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ed6b32"/>
+      <stop offset="1" stop-color="#f2a365"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#593721" flood-opacity="0.09"/>
+    </filter>
+  </defs>
+
+  <rect width="660" height="430" fill="url(#canvas)"/>
+  <circle cx="-22" cy="-18" r="150" fill="#f6a06f" opacity="0.10"/>
+  <circle cx="682" cy="442" r="190" fill="#9aa795" opacity="0.10"/>
+  <path d="M512 -22c28 51 68 82 124 94" fill="none" stroke="#e97842" stroke-width="2" opacity="0.13"/>
+  <path d="M-34 366c56-30 110-38 163-23" fill="none" stroke="#899888" stroke-width="2" opacity="0.13"/>
+
+  <text x="330" y="62" text-anchor="middle" fill="#342e29"
+        font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif"
+        font-size="24" font-weight="650" letter-spacing="-0.35">Install XueLearn</text>
+  <text x="330" y="89" text-anchor="middle" fill="#766d64"
+        font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif"
+        font-size="13.5">Drag XueLearn into Applications</text>
+
+  <rect x="104" y="154" width="152" height="152" rx="31" fill="#ffffff" opacity="0.80"
+        stroke="#eadfd3" filter="url(#shadow)"/>
+  <rect x="404" y="154" width="152" height="152" rx="31" fill="#ffffff" opacity="0.80"
+        stroke="#e4e1da" filter="url(#shadow)"/>
+
+  <path d="M287 230h74" fill="none" stroke="url(#accent)" stroke-width="5"
+        stroke-linecap="round" stroke-dasharray="2 10"/>
+  <path d="m350 216 16 14-16 14" fill="none" stroke="#ed7540" stroke-width="5"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="215" y="356" width="230" height="34" rx="17" fill="#ffffff" opacity="0.72" stroke="#ece3da"/>
+  <circle cx="239" cy="373" r="5" fill="#879584"/>
+  <text x="252" y="378" fill="#655e57"
+        font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif"
+        font-size="12.5">Private learning, on your Mac</text>
+</svg>

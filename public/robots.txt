@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /goals
+Disallow: /settings
+Disallow: /profile
+Disallow: /credits
+Disallow: /reviews
+Disallow: /flashcards
+
+Sitemap: https://xue-learn.com/sitemap.xml

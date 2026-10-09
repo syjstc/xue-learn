@@ -1,0 +1,30 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../dist/apps/local-runtime",
+    "module": "commonjs",
+    "types": [
+      "node",
+      "jest"
+    ],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "isolatedModules": true,
+    "noEmit": false
+  },
+  "include": [
+    "src/main.ts",
+    "src/bootstrap.ts",
+    "src/reclaim-loopback-listen.ts",
+    "src/desktop-local.module.ts",
+    "src/local-health.controller.ts",
+    "src/local-observability.controller.ts",
+    "src/local-ingress.ts",
+    "src/runtime-types.ts"
+  ]
+}

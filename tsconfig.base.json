@@ -1,0 +1,112 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": [
+      "ES2022"
+    ],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "noUncheckedSideEffectImports": false,
+    "paths": {
+      "@cognilearn/contracts": [
+        "./node_modules/@xue-learn/core/sources/libs/contracts/src/index.ts"
+      ],
+      "@cognilearn/domain": [
+        "./node_modules/@xue-learn/core/sources/libs/domain/src/index.ts"
+      ],
+      "@cognilearn/domain/*": [
+        "./node_modules/@xue-learn/core/sources/libs/domain/src/*"
+      ],
+      "@cognilearn/lab-engine": [
+        "./node_modules/@xue-learn/core/sources/libs/lab-engine/src/index.ts"
+      ],
+      "@cognilearn/lab-protocol": [
+        "./node_modules/@xue-learn/core/sources/libs/lab-protocol/src/index.ts"
+      ],
+      "@cognilearn/formal-expression-core": [
+        "./node_modules/@xue-learn/core/sources/libs/formal-expression-core/src/index.ts"
+      ],
+      "@cognilearn/formal-expression-debug-renderer": [
+        "./node_modules/@xue-learn/core/sources/libs/formal-expression-debug-renderer/src/index.ts"
+      ],
+      "@cognilearn/formal-expression-motion": [
+        "./node_modules/@xue-learn/core/sources/libs/formal-expression-motion/src/index.ts"
+      ],
+      "@cognilearn/formal-expression-motion/styles.css": [
+        "./node_modules/@xue-learn/core/sources/libs/formal-expression-motion/src/styles.css"
+      ],
+      "@cognilearn/formal-derivation": [
+        "./node_modules/@xue-learn/core/sources/libs/formal-derivation/src/index.ts"
+      ],
+      "@cognilearn/formula-analysis": [
+        "./node_modules/@xue-learn/core/sources/libs/formula-analysis/src/index.ts"
+      ],
+      "@cognilearn/teaching-derivation": [
+        "./node_modules/@xue-learn/core/sources/libs/teaching-derivation/src/index.ts"
+      ],
+      "@cognilearn/mobile-core": [
+        "./node_modules/@xue-learn/core/sources/libs/mobile-core/src/index.ts"
+      ],
+      "@cognilearn/memory": [
+        "./node_modules/@xue-learn/core/sources/libs/memory/src/index.ts"
+      ],
+      "@cognilearn/llm": [
+        "./node_modules/@xue-learn/core/sources/libs/llm/src/index.ts"
+      ],
+      "@cognilearn/runtime-contracts": [
+        "./node_modules/@xue-learn/core/sources/libs/runtime-contracts/src/index.ts"
+      ],
+      "@/*": [
+        "./src/*",
+        "./node_modules/@xue-learn/core/sources/src/*"
+      ],
+      "@cognilearn/common": [
+        "./node_modules/@xue-learn/core/sources/libs/common/src/index.ts"
+      ],
+      "@cognilearn/common/agent-user-facing": [
+        "./node_modules/@xue-learn/core/sources/libs/common/src/agent-user-facing.ts"
+      ],
+      "@cognilearn/common/normalize-html-line-breaks": [
+        "./node_modules/@xue-learn/core/sources/libs/common/src/normalize-html-line-breaks.ts"
+      ],
+      "@cognilearn/server": [
+        "./node_modules/@xue-learn/core/sources/libs/server/src/index.ts"
+      ],
+      "@cognilearn/server/*": [
+        "./node_modules/@xue-learn/core/sources/libs/server/src/*"
+      ],
+      "@cognilearn/common/*": [
+        "./node_modules/@xue-learn/core/sources/libs/common/src/*"
+      ],
+      "@cognilearn/runtime-contracts/*": [
+        "./node_modules/@xue-learn/core/sources/libs/runtime-contracts/src/*"
+      ],
+      "@cognilearn/workspace-client": [
+        "./node_modules/@xue-learn/core/sources/core/src/workspace-client.ts"
+      ],
+      "@cognilearn/desktop-persistence/*": [
+        "./persistence/sqlite/*"
+      ],
+      "@xue-learn/core/source/*": [
+        "./node_modules/@xue-learn/core/sources/*"
+      ]
+    },
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "exclude": [
+    "node_modules",
+    "tmp",
+    "dist"
+  ]
+}

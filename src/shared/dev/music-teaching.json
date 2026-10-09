@@ -1,0 +1,515 @@
+{
+  "samples": [
+    {
+      "id": "semitone",
+      "label": "半音与全音",
+      "material": {
+        "introduction": "",
+        "keyTakeaways": [],
+        "blocks": [
+          {
+            "type": "heading",
+            "level": 2,
+            "text": "半音与全音"
+          },
+          {
+            "type": "music",
+            "version": 2,
+            "id": "intervals",
+            "title": "半音与全音",
+            "layout": "column",
+            "notes": [
+              {
+                "id": "e",
+                "pitches": [
+                  "E4"
+                ]
+              },
+              {
+                "id": "f",
+                "pitches": [
+                  "F4"
+                ]
+              },
+              {
+                "id": "fs",
+                "pitches": [
+                  "F#4"
+                ]
+              },
+              {
+                "id": "b",
+                "pitches": [
+                  "B4"
+                ]
+              },
+              {
+                "id": "c",
+                "pitches": [
+                  "C5"
+                ]
+              }
+            ],
+            "views": [
+              {
+                "id": "keyboard",
+                "kind": "keyboard",
+                "label": "每向右一个相邻琴键，升高一个半音",
+                "notes": [
+                  "e",
+                  "f",
+                  "fs",
+                  "b",
+                  "c"
+                ],
+                "range": [
+                  "C4",
+                  "D5"
+                ]
+              }
+            ],
+            "marks": [
+              {
+                "id": "ef",
+                "kind": "bracket",
+                "label": "半音：E → F",
+                "anchors": [
+                  {
+                    "viewId": "keyboard",
+                    "noteId": "e"
+                  },
+                  {
+                    "viewId": "keyboard",
+                    "noteId": "f"
+                  }
+                ]
+              },
+              {
+                "id": "bc",
+                "kind": "arrow",
+                "label": "半音：B → C",
+                "anchors": [
+                  {
+                    "viewId": "keyboard",
+                    "noteId": "b"
+                  },
+                  {
+                    "viewId": "keyboard",
+                    "noteId": "c"
+                  }
+                ]
+              },
+              {
+                "id": "whole-tone",
+                "kind": "arrow",
+                "label": "全音：两个半音",
+                "anchors": [
+                  {
+                    "viewId": "keyboard",
+                    "noteId": "e"
+                  },
+                  {
+                    "viewId": "keyboard",
+                    "noteId": "fs"
+                  }
+                ]
+              }
+            ],
+            "clips": [
+              {
+                "id": "half-tone",
+                "label": "E 到 F",
+                "tempo": 90,
+                "events": [
+                  {
+                    "notes": [
+                      "e"
+                    ],
+                    "beats": 1
+                  },
+                  {
+                    "notes": [
+                      "f"
+                    ],
+                    "beats": 1
+                  }
+                ]
+              },
+              {
+                "id": "two-steps",
+                "label": "E、F、F♯",
+                "tempo": 90,
+                "events": [
+                  {
+                    "notes": [
+                      "e"
+                    ],
+                    "beats": 1
+                  },
+                  {
+                    "notes": [
+                      "f"
+                    ],
+                    "beats": 1
+                  },
+                  {
+                    "notes": [
+                      "fs"
+                    ],
+                    "beats": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "E 和 F 之间没有别的琴键。听它们相差的半音。",
+            "cue": {
+              "targetIds": [
+                "e",
+                "f",
+                "ef"
+              ],
+              "music": {
+                "figureId": "intervals",
+                "clipId": "half-tone"
+              }
+            }
+          },
+          {
+            "type": "paragraph",
+            "text": "从 E 经过 F，再到 F 升，连续移动两个半音，就得到一个全音。",
+            "cue": {
+              "targetIds": [
+                "e",
+                "f",
+                "fs",
+                "whole-tone"
+              ],
+              "music": {
+                "figureId": "intervals",
+                "clipId": "two-steps"
+              }
+            }
+          },
+          {
+            "type": "paragraph",
+            "text": "B 到右边紧邻的 C 也没有中间琴键，所以同样是半音。",
+            "cue": {
+              "targetIds": [
+                "b",
+                "c",
+                "bc"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "ledger",
+      "label": "加线与对应琴键",
+      "material": {
+        "introduction": "",
+        "keyTakeaways": [],
+        "blocks": [
+          {
+            "type": "heading",
+            "level": 2,
+            "text": "加线与对应琴键"
+          },
+          {
+            "type": "music",
+            "version": 2,
+            "id": "ledger-demo",
+            "title": "加线与对应琴键",
+            "layout": "row",
+            "notes": [
+              {
+                "id": "low-c",
+                "pitches": [
+                  "C4"
+                ]
+              },
+              {
+                "id": "high-a",
+                "pitches": [
+                  "A5"
+                ]
+              },
+              {
+                "id": "high-c",
+                "pitches": [
+                  "C6"
+                ]
+              }
+            ],
+            "views": [
+              {
+                "id": "staff",
+                "kind": "staff",
+                "label": "五条主线之外，按需要添加短线",
+                "clef": "treble",
+                "notes": [
+                  "low-c",
+                  "high-a",
+                  "high-c"
+                ]
+              },
+              {
+                "id": "ledger-keys",
+                "kind": "keyboard",
+                "label": "音符对应的琴键",
+                "notes": [
+                  "low-c",
+                  "high-a",
+                  "high-c"
+                ],
+                "range": [
+                  "C4",
+                  "C6"
+                ]
+              }
+            ],
+            "marks": [
+              {
+                "id": "lower",
+                "kind": "label",
+                "label": "下加线",
+                "anchors": [
+                  {
+                    "viewId": "staff",
+                    "noteId": "low-c"
+                  }
+                ]
+              },
+              {
+                "id": "upper",
+                "kind": "bracket",
+                "label": "上加线",
+                "anchors": [
+                  {
+                    "viewId": "staff",
+                    "noteId": "high-a"
+                  },
+                  {
+                    "viewId": "staff",
+                    "noteId": "high-c"
+                  }
+                ]
+              },
+              {
+                "id": "corresponds",
+                "kind": "link",
+                "label": "同一个音",
+                "anchors": [
+                  {
+                    "viewId": "staff",
+                    "noteId": "high-c"
+                  },
+                  {
+                    "viewId": "ledger-keys",
+                    "noteId": "high-c"
+                  }
+                ]
+              }
+            ],
+            "clips": [
+              {
+                "id": "ledger-listen",
+                "label": "依次听三个音",
+                "tempo": 90,
+                "events": [
+                  {
+                    "notes": [
+                      "low-c"
+                    ],
+                    "beats": 1
+                  },
+                  {
+                    "notes": [
+                      "high-a"
+                    ],
+                    "beats": 1
+                  },
+                  {
+                    "notes": [
+                      "high-c"
+                    ],
+                    "beats": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "加线是音符附近的短线，不会贯穿整个谱表。中央 C 在高音谱表的下加一线上。",
+            "cue": {
+              "targetIds": [
+                "low-c",
+                "lower"
+              ]
+            }
+          },
+          {
+            "type": "paragraph",
+            "text": "这两个高音需要上加线。音越高，对应的琴键越靠右。",
+            "cue": {
+              "targetIds": [
+                "high-a",
+                "high-c",
+                "upper",
+                "corresponds"
+              ],
+              "music": {
+                "figureId": "ledger-demo",
+                "clipId": "ledger-listen"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "middle-c",
+      "label": "两种写法，同一个中央 C",
+      "material": {
+        "introduction": "",
+        "keyTakeaways": [],
+        "blocks": [
+          {
+            "type": "heading",
+            "level": 2,
+            "text": "两种写法，同一个中央 C"
+          },
+          {
+            "type": "music",
+            "version": 2,
+            "id": "middle-c-demo",
+            "title": "两种写法，同一个中央 C",
+            "layout": "row",
+            "notes": [
+              {
+                "id": "central",
+                "pitches": [
+                  "C4"
+                ]
+              }
+            ],
+            "views": [
+              {
+                "id": "treble",
+                "kind": "staff",
+                "label": "高音谱表：下加一线",
+                "clef": "treble",
+                "notes": [
+                  "central"
+                ]
+              },
+              {
+                "id": "bass",
+                "kind": "staff",
+                "label": "低音谱表：上加一线",
+                "clef": "bass",
+                "notes": [
+                  "central"
+                ]
+              },
+              {
+                "id": "central-key",
+                "kind": "keyboard",
+                "label": "中央 C · C4",
+                "notes": [
+                  "central"
+                ],
+                "range": [
+                  "C4",
+                  "B4"
+                ]
+              }
+            ],
+            "marks": [
+              {
+                "id": "treble-link",
+                "kind": "link",
+                "label": "同音",
+                "anchors": [
+                  {
+                    "viewId": "treble",
+                    "noteId": "central"
+                  },
+                  {
+                    "viewId": "central-key",
+                    "noteId": "central"
+                  }
+                ]
+              },
+              {
+                "id": "bass-link",
+                "kind": "link",
+                "label": "同一个琴键",
+                "anchors": [
+                  {
+                    "viewId": "bass",
+                    "noteId": "central"
+                  },
+                  {
+                    "viewId": "central-key",
+                    "noteId": "central"
+                  }
+                ]
+              }
+            ],
+            "clips": [
+              {
+                "id": "central-listen",
+                "label": "中央 C",
+                "tempo": 90,
+                "events": [
+                  {
+                    "notes": [
+                      "central"
+                    ],
+                    "beats": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "中央 C 在高音谱表下方的加线上。先听一次。",
+            "cue": {
+              "targetIds": [
+                "treble",
+                "central",
+                "treble-link"
+              ],
+              "music": {
+                "figureId": "middle-c-demo",
+                "clipId": "central-listen"
+              }
+            }
+          },
+          {
+            "type": "paragraph",
+            "text": "在低音谱表里，它写在上方的加线上。谱上的位置变了，声音和琴键都没有变。",
+            "cue": {
+              "targetIds": [
+                "bass",
+                "central",
+                "bass-link"
+              ],
+              "music": {
+                "figureId": "middle-c-demo",
+                "clipId": "central-listen"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

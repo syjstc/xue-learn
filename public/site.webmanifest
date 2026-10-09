@@ -1,0 +1,20 @@
+{
+  "name": "好会学",
+  "short_name": "好会学",
+  "description": "AI 自学助手：辅助规划学习路径、整理内容与间隔复习",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#f5f0e8",
+  "background_color": "#f5f0e8",
+  "display": "standalone"
+}
