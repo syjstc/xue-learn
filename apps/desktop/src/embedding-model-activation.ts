@@ -1,4 +1,4 @@
-import { BUILTIN_EMBEDDING_MODEL_ID } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+import { BUILTIN_EMBEDDING_MODEL_ID } from "@xue-learn/core/runtime-contracts";
 
 type RestartableSidecar = {
   restart(): Promise<unknown>;

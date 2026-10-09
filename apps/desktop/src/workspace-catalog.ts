@@ -12,7 +12,7 @@ import {
   DESKTOP_LOCAL_DATABASE_FILENAME,
   workspaceIdSchema,
   type WorkspaceSummary,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import { z } from "zod";
 
 const CATALOG_FILENAME = "workspace-catalog.v1.json";

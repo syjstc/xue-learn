@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { UnitLearningProgressReset, UnitLearningProgressResetRepository, ResetUnitLearningProgressInput, } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { evidenceClaimIsActive } from "@xue-learn/core/source/libs/server/src/cognition/persistence/lifecycle.ts";
-import { isUnitLearningDone } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { UnitLearningProgressReset, UnitLearningProgressResetRepository, ResetUnitLearningProgressInput, } from "@xue-learn/core/domain";
+import { evidenceClaimIsActive } from "@xue-learn/core/server/cognition/persistence/lifecycle";
+import { isUnitLearningDone } from "@xue-learn/core/domain";
 import { MikroOrmVerifiedEvidenceAppendRepository } from "./verified-evidence-append.repository.ts";
 import { referenceDateValue } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;

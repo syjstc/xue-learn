@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { LearningGoalTreeDeletionRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { LearningGoalTreeDeletionRepository } from "@xue-learn/core/domain";
 import { MikroOrmLearningGoalTreeDeletionRepository } from "./learning-goal-tree-deletion.repository.ts";
 
 type Call = { sql: string; params: readonly unknown[] };

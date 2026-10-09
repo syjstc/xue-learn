@@ -3,6 +3,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
+import {checkCoreImports} from './check-core-imports.mjs';
 
 export function checkCoreDependency(root){
   const receipt=JSON.parse(fs.readFileSync(path.join(root,'core-dependency.v1.json'),'utf8'));
@@ -22,6 +23,7 @@ export function checkCoreDependency(root){
     if(!target.startsWith(core+path.sep)||digest(target)!==file.sha256)throw Error('Installed Core file differs from release: '+file.path);
   }
   console.log(`Verified ${receipt.package}@${receipt.version}: artifact and ${integrity.files.length} installed files match.`);
+  checkCoreImports(root);
   return core;
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))checkCoreDependency(process.cwd());

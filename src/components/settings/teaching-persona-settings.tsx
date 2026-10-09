@@ -9,7 +9,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { TeachingPersonaCharacterSelect } from "@/components/teaching-persona/teaching-persona-character-select";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +17,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@xue-learn/core/source/src/components/ui/dialog.tsx";
+} from "@xue-learn/core/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -33,8 +33,8 @@ import {
 } from "@/hooks/api/use-teaching-personas";
 import { groupTeachingPersonas } from "@/shared/domain/teaching-persona-selection";
 import { teachingPersonaAvatarSrc } from "@/shared/teaching-persona-avatar";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 import {
   localizeTeachingPersonaContent,
   localizeTeachingPersonaName,

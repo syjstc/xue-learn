@@ -2,7 +2,7 @@ import type { EntityManager } from "@mikro-orm/core";
 import {
   BASE_CAPABILITY_VIEW_KEYS,
   createBaseGenerationCapability,
-} from "@xue-learn/core/source/libs/server/src/learning-systems/capabilities/base.ts";
+} from "@xue-learn/core/server/learning-systems/capabilities/base";
 import { createLearningSystemPersistenceClient } from "./learning-system-persistence-client.ts";
 
 describe("createLearningSystemPersistenceClient", () => {

@@ -31,14 +31,14 @@ import {
   resolveNextLessonUnitInModule,
   resolveUnitHierarchy,
 } from "@/shared/domain/unit-tree-build";
-import type { LearningMaterialContent, SqPreview } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { LearningMaterialContent, SqPreview } from "@xue-learn/core/schemas";
 import {
   FEATURE_FEYNMAN,
   postQuizNextStep,
   type PostQuizStep,
-} from "@xue-learn/core/source/src/shared/features.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+} from "@xue-learn/core/features";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
+import { useT } from "@xue-learn/core/i18n";
 import type { SessionNavStep } from "@/shared/graph/review-mode";
 import { selectUnattemptedQuizSet } from "@/shared/graph/review-quiz-selection";
 import { isUnitLearningDone } from "@/shared/domain/unit-status";
@@ -117,7 +117,7 @@ import {
   keepReadyUnitLabContent,
   unitLabContentFromPayload,
   type UnitLabContent,
-} from "@xue-learn/core/source/src/shared/domain/unit-lab.ts";
+} from "@xue-learn/core/shared/domain/unit-lab";
 
 export function useUnitWizard({
   unitId,

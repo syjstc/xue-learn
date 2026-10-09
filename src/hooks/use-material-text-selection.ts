@@ -1,33 +1,33 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { anchorForBlock, anchorId } from "@xue-learn/core/source/src/shared/domain/material-anchor.ts";
-import type { MaterialAnchor } from "@xue-learn/core/source/src/shared/domain/material-anchor.ts";
+import { anchorForBlock, anchorId } from "@xue-learn/core/shared/domain/material-anchor";
+import type { MaterialAnchor } from "@xue-learn/core/shared/domain/material-anchor";
 import {
   contentKeyForAnchor,
   type OpenFollowUpMeta,
   type TextHighlightSpan,
-} from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+} from "@xue-learn/core/shared/domain/material-highlight";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
 import { getFollowUpAnchorRect } from "@/shared/dom/follow-up-anchor-rect";
 import {
   getHighlightTextRoot,
   rangeOffsetsInElement,
   rectForTextOffsets,
-} from "@xue-learn/core/source/src/shared/dom/text-range-rect.ts";
+} from "@xue-learn/core/shared/dom/text-range-rect";
 
 export type MaterialFollowUpHandlers = {
   inlineChat?: {
     discussions?: Array<{
       id: string;
       anchor: MaterialAnchor;
-      messages: import("@xue-learn/core/source/src/shared/domain/material-anchor.ts").FollowUpMessage[];
+      messages: import("@xue-learn/core/shared/domain/material-anchor").FollowUpMessage[];
     }>;
     activeDiscussionId?: string;
     messagesFor: (
       anchor: MaterialAnchor,
       aliases?: MaterialAnchor[],
-    ) => import("@xue-learn/core/source/src/shared/domain/material-anchor.ts").FollowUpMessage[];
+    ) => import("@xue-learn/core/shared/domain/material-anchor").FollowUpMessage[];
     send: (
       anchor: MaterialAnchor,
       message: string,

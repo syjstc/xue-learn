@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAssistant } from "@/components/agent/assistant-provider";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useGoals } from "@/hooks/api";
@@ -22,9 +22,9 @@ import {
 } from "@/hooks/api/use-teaching-personas";
 import { getAuthUser } from "@/shared/auth";
 import { teachingPersonaAvatarSrc } from "@/shared/teaching-persona-avatar";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import { localizeTeachingPersonaName } from "@/shared/teaching-persona-i18n";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 type GuideStep = "profile" | "topic" | "preferences";
 type GoalLevel = "zero" | "basic" | "advanced";

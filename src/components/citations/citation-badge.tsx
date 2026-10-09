@@ -1,6 +1,6 @@
 "use client";
 
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import { scrollToCitationSource } from "@/shared/citations/inline-citations";
 
 export function CitationBadge({

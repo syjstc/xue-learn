@@ -12,10 +12,10 @@ import {
 import type {
   BackendErrorSource,
   BackendErrorStatusFilter,
-} from "@xue-learn/core/source/libs/server/src/observability/index.ts";
-import { tBackend } from "@xue-learn/core/source/libs/common/src/index.ts";
-import { LlmLogsService } from "@xue-learn/core/source/libs/server/src/learning-host/llm-logs/llm-logs.service.ts";
-import { BackendErrorsService } from "@xue-learn/core/source/libs/server/src/learning-host/backend-errors/backend-errors.service.ts";
+} from "@xue-learn/core/server/observability";
+import { tBackend } from "@xue-learn/core/common";
+import { LlmLogsService } from "@xue-learn/core/server/learning-host/llm-logs/llm-logs.service";
+import { BackendErrorsService } from "@xue-learn/core/server/learning-host/backend-errors/backend-errors.service";
 
 const SOURCES = new Set<BackendErrorSource>(["api", "worker", "internal"]);
 

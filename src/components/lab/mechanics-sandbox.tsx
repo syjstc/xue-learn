@@ -17,7 +17,7 @@ import {
   calculateInclinedPlane,
   calculateSimplePendulum,
   type MechanicsSandbox,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { LabShell } from "./lab-shell.tsx";
 import { Slider } from "@/components/ui/slider";
 import { LabFrameHost, type LabFrameHandle } from "./lab-frame-host.tsx";

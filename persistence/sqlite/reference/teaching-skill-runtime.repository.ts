@@ -1,9 +1,9 @@
 import { createHash, randomUUID } from "node:crypto";
 import { join } from "node:path";
 import type { EntityManager } from "@mikro-orm/core";
-import type { TeachingSkillRuntimeBinding, TeachingSkillRuntimePersistence, } from "@xue-learn/core/source/libs/server/src/teaching-skills/persistence.ts";
-import { validateTeachingSkillPackage } from "@xue-learn/core/source/libs/server/src/teaching-skills/package.ts";
-import { builtinRoot, readPackageDirectory, } from "@xue-learn/core/source/libs/server/src/teaching-skills/builtin-files.ts";
+import type { TeachingSkillRuntimeBinding, TeachingSkillRuntimePersistence, } from "@xue-learn/core/server/teaching-skills/persistence";
+import { validateTeachingSkillPackage } from "@xue-learn/core/server/teaching-skills/package";
+import { builtinRoot, readPackageDirectory, } from "@xue-learn/core/server/teaching-skills/builtin-files";
 type Row = Readonly<Record<string, unknown>>;
 const GENERAL_TEACHING_SKILL_SLUG = "general-teaching";
 const BUILTINS = [

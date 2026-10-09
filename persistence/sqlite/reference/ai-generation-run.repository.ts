@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { AiGenerationRunEventRecord, AiGenerationRunRecord, AiGenerationRunRepository, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { AiGenerationRunEventRecord, AiGenerationRunRecord, AiGenerationRunRepository, } from "@xue-learn/core/domain";
 import { referenceDateValue } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
 function rows(result: unknown): readonly Row[] {

@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { ClaimEventOutboxInput, EventOutboxDeliveryRepository, EventOutboxRecord, SettleEventOutboxFailureInput, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { ClaimEventOutboxInput, EventOutboxDeliveryRepository, EventOutboxRecord, SettleEventOutboxFailureInput, } from "@xue-learn/core/domain";
 import { nullableReferenceDateValue } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
 function rows(result: unknown): readonly Row[] {

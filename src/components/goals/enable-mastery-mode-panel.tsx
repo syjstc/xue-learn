@@ -1,10 +1,10 @@
 import { Sparkles } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { useEnableGoalMastery, useGoal } from "@/hooks/api";
 import { useConfirm } from "@/hooks/use-confirm";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { supportsGoalMasteryTransition } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { supportsGoalMasteryTransition } from "@xue-learn/core/client-runtime";
 
 /** User-facing opt-in for KACOM-backed mastery on a full exploration goal. */
 export function EnableMasteryModePanel({ goalId }: { goalId: string }) {

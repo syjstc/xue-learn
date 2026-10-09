@@ -1,6 +1,6 @@
 import { QueryClient } from "@tanstack/react-query";
 import { isNotFound, isUnauthorized } from "./http.ts";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 
 const retry = (failureCount: number, error: unknown) =>
   !isNotFound(error) && !isUnauthorized(error) && failureCount < 2;

@@ -1,11 +1,11 @@
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { DevTag } from "@/components/dev/dev-tag";
 import { useDetachKacomForInternalTesting, useGoal } from "@/hooks/api";
 import { useConfirm } from "@/hooks/use-confirm";
-import { isDev } from "@xue-learn/core/source/src/shared/dev.ts";
-import { FEATURE_KACOM_DETACH } from "@xue-learn/core/source/src/shared/features.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { isDev } from "@xue-learn/core/dev";
+import { FEATURE_KACOM_DETACH } from "@xue-learn/core/features";
+import { useT } from "@xue-learn/core/i18n";
 
 /** No learner-facing control: rendered only by the local dev build. */
 export function KacomDetachDevPanel({ goalId }: { goalId: string }) {

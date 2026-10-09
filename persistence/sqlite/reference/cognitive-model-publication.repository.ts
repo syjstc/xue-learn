@@ -1,8 +1,8 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { CognitiveModelPublicationRepository, CognitiveModelPublicationResult, PublishCognitiveModelExpansionInput, } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { orderCurriculumUnits, validateCognitiveModelSnapshot, } from "@xue-learn/core/source/libs/server/src/cognitive-model/pure.ts";
-import { COGNITIVE_MODEL_SCHEMA_VERSION } from "@xue-learn/core/source/libs/server/src/cognitive-model/types.ts";
+import type { CognitiveModelPublicationRepository, CognitiveModelPublicationResult, PublishCognitiveModelExpansionInput, } from "@xue-learn/core/domain";
+import { orderCurriculumUnits, validateCognitiveModelSnapshot, } from "@xue-learn/core/server/cognitive-model/pure";
+import { COGNITIVE_MODEL_SCHEMA_VERSION } from "@xue-learn/core/server/cognitive-model/types";
 type Row = Readonly<Record<string, unknown>>;
 type JsonRecord = Record<string, unknown>;
 type ProposalEntity = JsonRecord & {
@@ -1352,8 +1352,8 @@ export class MikroOrmCognitiveModelPublicationRepository implements CognitiveMod
             ? rowValue(params.goal, "mapPlanStatus") === "approved"
                 ? await (async () => {
                     const [{ validateSnapshotPlanningCoverage }, { parseMapPlan }] = await Promise.all([
-                        import("@xue-learn/core/source/libs/server/src/cognitive-model/planning-coverage.ts"),
-                        import("@xue-learn/core/source/libs/server/src/goals/map-plan.ts"),
+                        import("@xue-learn/core/server/cognitive-model/planning-coverage"),
+                        import("@xue-learn/core/server/goals/map-plan"),
                     ]);
                     return validateSnapshotPlanningCoverage(snapshot as never, parseMapPlan(String(rowValue(params.goal, "mapPlanJson") ?? "{}")));
                 })()

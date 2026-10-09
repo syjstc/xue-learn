@@ -17,13 +17,13 @@ import {
 } from "@/hooks/api/use-memories";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { useT, type TranslationKey } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 
 const EDITABLE_KINDS: Array<Exclude<MemoryKind, "episode">> = [
   "personal_fact",

@@ -16,7 +16,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@xue-learn/core/source/src/components/ui/sheet.tsx";
+} from "@xue-learn/core/ui/sheet";
 import {
   useAgendaSettings,
   usePatchAgendaSettings,
@@ -25,14 +25,14 @@ import {
   useSelectTeachingPersona,
   useTeachingPersonas,
 } from "@/hooks/api/use-teaching-personas";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import {
   isDesktopLocalRuntime,
   supportsAgendaReminderDelivery,
-} from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+} from "@xue-learn/core/client-runtime";
 import { teachingPersonaAvatarSrc } from "@/shared/teaching-persona-avatar";
 import { localizeTeachingPersonaContent } from "@/shared/teaching-persona-i18n";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import { LlmSettingsForm } from "./llm-settings-form.tsx";
 import { ThemeSettingsForm } from "./theme-settings-form.tsx";
 

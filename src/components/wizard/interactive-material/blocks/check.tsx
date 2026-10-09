@@ -2,16 +2,16 @@
 
 import { Check, CircleHelp, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
 import {
   anchorForBlock,
   type MaterialAnchor,
-} from "@xue-learn/core/source/src/shared/domain/material-anchor.ts";
+} from "@xue-learn/core/shared/domain/material-anchor";
 import { resolveMaterialCheckQuestionType } from "@/shared/domain/material-check";
-import type { TextHighlightSpan } from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { TextHighlightSpan } from "@xue-learn/core/shared/domain/material-highlight";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import type { MaterialFollowUpHandlers } from "@/hooks/use-material-text-selection";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import {
   QuizChoiceGroup,
   QuizChoiceOption,

@@ -1,6 +1,6 @@
-import { parseJson } from "@xue-learn/core/source/src/shared/utils.ts";
+import { parseJson } from "@xue-learn/core/utils";
 
-import { FEATURE_FEYNMAN } from "@xue-learn/core/source/src/shared/features.ts";
+import { FEATURE_FEYNMAN } from "@xue-learn/core/features";
 import type { SocraticThread } from "./socratic-threads.ts";
 
 export type ReviewPracticeStep = "active_recall" | "feynman" | "socratic";

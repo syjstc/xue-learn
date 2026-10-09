@@ -9,9 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { Button } from "@xue-learn/core/ui/button";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 
 export type ProviderOption = {
   id: string;

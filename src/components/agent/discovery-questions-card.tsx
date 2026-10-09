@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { MessageCircleQuestion } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -14,8 +14,8 @@ import {
   customInputValue,
   visibleChoiceLabels,
 } from "@/shared/agent/custom-choice";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useI18n } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useI18n } from "@xue-learn/core/i18n";
 
 type Question = {
   id: string;

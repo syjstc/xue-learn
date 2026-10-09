@@ -2,7 +2,7 @@ import type { BrowserWindow, Session } from "electron";
 import {
   classifyPersonalSyncLeaseRequest,
   type PersonalSyncLeaseTarget,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import { INTERACTIVE_HTML_SCHEME } from "./interactive-html-store.ts";
 
 

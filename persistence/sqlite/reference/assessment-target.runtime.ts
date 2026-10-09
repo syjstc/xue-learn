@@ -1,7 +1,7 @@
 import type {
   AssessmentTargetRecord,
   AssessmentTargetRepository,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import type { ReferencePersistenceRuntime } from "./runtime.ts";
 
 /** Runtime adapter for learner-owned assessment target reads. */

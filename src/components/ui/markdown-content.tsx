@@ -6,5 +6,5 @@ export {
   createMarkdownComponents,
   proseMarkdownClassName,
   type ProseMarkdownVariant,
-} from "@xue-learn/core/source/src/components/markdown/prose-markdown.tsx";
+} from "@xue-learn/core/components/markdown/prose-markdown";
 export { LlmMarkdown, LlmMarkdownInline } from "@/components/markdown/llm-markdown";

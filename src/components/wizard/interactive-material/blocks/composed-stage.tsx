@@ -14,9 +14,9 @@ import {
   captionsForFigure,
   type MaterialFigureCaption,
   type MaterialStageLayout,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+} from "@xue-learn/core/domain";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
+import { cn } from "@xue-learn/core/utils";
 import { MaterialFigureCaptions } from "./figure-captions.tsx";
 
 type StageBlock = Extract<InteractiveBlock, { type: "stage" }>;

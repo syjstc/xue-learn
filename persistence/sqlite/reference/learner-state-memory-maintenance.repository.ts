@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { LearnerStateMemoryMaintenanceRepository, LearnerStateMemoryReadRecord, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { LearnerStateMemoryMaintenanceRepository, LearnerStateMemoryReadRecord, } from "@xue-learn/core/domain";
 import { nullableReferenceDateValue, referenceDateValue } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
 const sqliteExclusiveTails = new Map<string, Promise<void>>();

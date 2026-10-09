@@ -2,7 +2,7 @@ import type { EntityManager } from "@mikro-orm/core";
 import type {
   LearningSpaceItemRepository,
   LearningSpaceItemRecord,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { LearningGoalEntity } from "./learning-goal.entity.ts";
 import { LearningSpaceEntity } from "./learning-space.entity.ts";
 import { LearningSpaceItemEntity } from "./learning-space-item.entity.ts";

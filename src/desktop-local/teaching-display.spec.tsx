@@ -1,17 +1,17 @@
 import {flowParticleGeometry} from "./flow-particle-geometry.ts";
 import React from "react";
 import {renderToStaticMarkup} from "react-dom/server";
-import {TeachingDisplay} from "@xue-learn/core/source/src/components/course-display/teaching-display.tsx";
-import {materialTeachingSteps, type MaterialTeaching} from "@xue-learn/core/source/libs/domain/src/material-teaching.ts";
-import {TeachingVisualArt, supportsTeachingVisualArt} from "@xue-learn/core/source/src/components/course-display/teaching/teaching-visual.tsx";
-import type {MaterialVisual} from "@xue-learn/core/source/libs/domain/src/material-visual.ts";
-import {DisciplineScene} from "@xue-learn/core/source/src/components/course-display/teaching/templates/discipline-scenes.tsx";
+import {TeachingDisplay} from "@xue-learn/core/display/teaching-display";
+import {materialTeachingSteps, type MaterialTeaching} from "@xue-learn/core/domain/material-teaching";
+import {TeachingVisualArt, supportsTeachingVisualArt} from "@xue-learn/core/display/teaching-visual";
+import type {MaterialVisual} from "@xue-learn/core/domain/material-visual";
+import {DisciplineScene} from "@xue-learn/core/display/templates/discipline-scenes";
 
-jest.mock("@xue-learn/core/source/src/components/markdown/math-latex.tsx", () => ({MathLatex: () => null}));
-jest.mock("@xue-learn/core/source/src/components/course-display/music-teaching-display.tsx", () => ({MusicTeachingDisplay: () => null, MusicTimelineContext: require("react").createContext({clocked:false})}));
+jest.mock("@xue-learn/core/components/markdown/math-latex", () => ({MathLatex: () => null}));
+jest.mock("@xue-learn/core/display/music-teaching-display", () => ({MusicTeachingDisplay: () => null, MusicTimelineContext: require("react").createContext({clocked:false})}));
 jest.mock("katex/dist/katex.min.css", () => ({}));
-jest.mock("@xue-learn/core/source/src/components/course-display/teaching/templates/templates.css", () => ({}));
-jest.mock("@xue-learn/core/source/src/components/course-display/teaching/teaching-display.css", () => ({}));
+jest.mock("@xue-learn/core/display/templates.css", () => ({}));
+jest.mock("@xue-learn/core/display/teaching.css", () => ({}));
 
 const block: MaterialTeaching = {type: "teaching", version: 1, id: "sort_example", title: "比较与交换", templateId: "cs-sorting", content: {values: [3, 1, 2]}};
 const intervals = materialTeachingSteps(block).map((step, index) => ({targetIds: [step.id], startTick: index * 480_000, durationTicks: 480_000}));

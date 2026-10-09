@@ -6,9 +6,9 @@ import {
   resolveSettingsSection,
   settingsSectionPath,
 } from "@/components/settings/settings-sections";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
+import { cn } from "@xue-learn/core/utils";
 
 export function SettingsWorkspaceSubview() {
   const t = useT();

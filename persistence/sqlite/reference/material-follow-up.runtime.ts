@@ -1,4 +1,4 @@
-import type { MaterialFollowUpRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { MaterialFollowUpRepository } from "@xue-learn/core/domain";
 import type { ReferencePersistenceRuntime } from "./runtime.ts";
 export class MikroOrmMaterialFollowUpRuntimeAdapter implements MaterialFollowUpRepository {
   constructor(private readonly runtime: ReferencePersistenceRuntime) {}

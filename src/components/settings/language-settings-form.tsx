@@ -9,8 +9,8 @@ import {
   useT,
   type TranslationKey,
   type UiLocale,
-} from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+} from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 
 const LOCALE_LABEL_KEYS: Record<UiLocale, TranslationKey> = {
   en: "common.english",

@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { ModuleEntryFoundationQueueRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { ModuleEntryFoundationQueueRepository } from "@xue-learn/core/domain";
 import { safeReferenceDateValue } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
 const rows = (result: unknown): readonly Row[] => Array.isArray(result) ? result as Row[] : result && typeof result === "object" && "rows" in result && Array.isArray((result as {

@@ -22,7 +22,7 @@ import {
   type EmbeddingModelDownloadSource,
   type EmbeddingModelInstallStatus,
   type LocalEmbeddingModelManifest,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 
 const SOURCE_URLS: Record<EmbeddingModelDownloadSource, string> = {
   modelscope:

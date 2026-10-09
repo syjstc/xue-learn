@@ -1,4 +1,4 @@
-import type { TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import type { TranslationKey } from "@xue-learn/core/i18n";
 import type { GoalCreationSessionEvent } from "./goal-creation-session.ts";
 
 type Translate = (

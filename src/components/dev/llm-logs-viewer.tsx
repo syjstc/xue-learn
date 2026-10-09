@@ -12,11 +12,11 @@ import {
 } from "lucide-react";
 import { apiDelete, apiGet } from "@/shared/api";
 import { useConfirm } from "@/hooks/use-confirm";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Card } from "@/components/ui/card";
 import { LlmLogDetail } from "@/components/dev/llm-log-detail";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
-import { useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT, type TranslationKey } from "@xue-learn/core/i18n";
 import {
   type LlmLogRow,
   SPAN_STYLES,

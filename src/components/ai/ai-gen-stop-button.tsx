@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 
 export function AiGenStopButton({
   onStop,

@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { CompleteMaterialCheckBatchInput, MaterialCheckCompletionRepository, MaterialCheckCompletionResult, MaterialCheckTaskDefinition, MaterialCheckTaskRequirement, } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { CognitionPersistenceError } from "@xue-learn/core/source/libs/server/src/cognition/persistence/error.ts";
+import type { CompleteMaterialCheckBatchInput, MaterialCheckCompletionRepository, MaterialCheckCompletionResult, MaterialCheckTaskDefinition, MaterialCheckTaskRequirement, } from "@xue-learn/core/domain";
+import { CognitionPersistenceError } from "@xue-learn/core/server/cognition/persistence/error";
 import { MikroOrmDomainEventOutboxRepository } from "./domain-event.repository.ts";
 import { MikroOrmTaskAttemptRepository } from "./task-attempt.repository.ts";
 import { MikroOrmVerifiedEvidenceAppendRepository } from "./verified-evidence-append.repository.ts";

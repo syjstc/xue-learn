@@ -8,12 +8,12 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";
 import { UnitWizard } from "@/components/wizard/unit-wizard";
 import { useDueReviews, useSubmitReview, useUnitPage } from "@/hooks/api";
 import { isNotFound } from "@/shared/api";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 export function ReviewSessionPage() {
   const t = useT();

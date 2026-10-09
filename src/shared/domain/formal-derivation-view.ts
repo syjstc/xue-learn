@@ -4,8 +4,8 @@ import type {
   DerivationSubjectRef,
   FormulaDisplayRoleV1,
   MaterializedDerivationStateV1,
-} from "@xue-learn/core/source/libs/formal-derivation/src/index.ts";
-import type { SubjectRef } from "@xue-learn/core/source/libs/formal-expression-core/src/index.ts";
+} from "@xue-learn/core/formal-derivation";
+import type { SubjectRef } from "@xue-learn/core/formal-expression-core";
 
 const STABLE_ROLES = new Set<FormulaDisplayRoleV1>(["assumption", "definition"]);
 const OUTCOME_ROLES = new Set<FormulaDisplayRoleV1>(["result", "theorem"]);

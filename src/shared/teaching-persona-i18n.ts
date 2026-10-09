@@ -1,4 +1,4 @@
-import type { TranslationKey, TranslationParams } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import type { TranslationKey, TranslationParams } from "@xue-learn/core/i18n";
 
 type TeachingPersonaNameSource = {
   ref: string;

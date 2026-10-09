@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { AppendEventOutboxInput, AppendUnlessUnpublishedInput, EventOutboxRecord, EventOutboxRepository, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { AppendEventOutboxInput, AppendUnlessUnpublishedInput, EventOutboxRecord, EventOutboxRepository, } from "@xue-learn/core/domain";
 import { EventOutboxEntity } from "./event-outbox.entity.ts";
 import { sqlTimestampParameter } from "./date-value.ts";
 function toRecord(entity: EventOutboxEntity): EventOutboxRecord {

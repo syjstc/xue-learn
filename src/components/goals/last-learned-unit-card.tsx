@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { Play } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { LlmMarkdownInline } from "@/components/markdown/llm-markdown";
 import type { LastLearnedUnit } from "@/shared/api/types";
 import { statusLabel } from "@/shared/domain/unit-status";
 import type { UnitStatus } from "@/shared/domain/types";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
-import { useI18n, useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useI18n, useT } from "@xue-learn/core/i18n";
 
 function formatLearnedAt(iso: string, locale: string) {
   return new Date(iso).toLocaleString(locale, {

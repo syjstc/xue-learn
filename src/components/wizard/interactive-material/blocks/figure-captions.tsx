@@ -1,6 +1,6 @@
 "use client";
 
-import type { MaterialFigureCaption } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { MaterialFigureCaption } from "@xue-learn/core/domain";
 
 export function MaterialFigureCaptions({
   captions,

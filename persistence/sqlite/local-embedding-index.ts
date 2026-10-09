@@ -1,15 +1,15 @@
-import type { LocalVectorReindexStatus } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
-import type { LocalEmbeddingIndexRecord } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { getEmbeddings } from "@xue-learn/core/source/libs/server/src/llm/client.ts";
-import { ensureLlmRuntimeConfig, getLlmRuntimeConfig } from "@xue-learn/core/source/libs/server/src/llm/runtime-config.ts";
-import { runWithUserId } from "@xue-learn/core/source/libs/server/src/user-context.ts";
-import { requireGeneralMemoryPersistence } from "@xue-learn/core/source/libs/server/src/learning-systems/capabilities/general-memory/persistence.ts";
-import { retryPendingMemoryIndexes } from "@xue-learn/core/source/libs/server/src/learning-systems/capabilities/general-memory/formation.ts";
-import { requireTeachingSkillRuntimePersistence } from "@xue-learn/core/source/libs/server/src/teaching-skills/persistence.ts";
-import { retryTeachingSkillIndexes } from "@xue-learn/core/source/libs/server/src/teaching-skills/repository.ts";
-import { ensurePersonalSyncCapture } from "@xue-learn/core/source/libs/server/src/personal-sync/index.ts";
-import { requireRagVectors } from "@xue-learn/core/source/libs/server/src/rag/persistence.ts";
-import { processEmbeddingReindexBatch, type EmbeddingReindexTasks } from "@xue-learn/core/source/libs/server/src/rag/embedding-reindex.ts";
+import type { LocalVectorReindexStatus } from "@xue-learn/core/runtime-contracts";
+import type { LocalEmbeddingIndexRecord } from "@xue-learn/core/domain";
+import { getEmbeddings } from "@xue-learn/core/server/llm/client";
+import { ensureLlmRuntimeConfig, getLlmRuntimeConfig } from "@xue-learn/core/server/llm/runtime-config";
+import { runWithUserId } from "@xue-learn/core/server/user-context";
+import { requireGeneralMemoryPersistence } from "@xue-learn/core/server/learning-systems/capabilities/general-memory/persistence";
+import { retryPendingMemoryIndexes } from "@xue-learn/core/server/learning-systems/capabilities/general-memory/formation";
+import { requireTeachingSkillRuntimePersistence } from "@xue-learn/core/server/teaching-skills/persistence";
+import { retryTeachingSkillIndexes } from "@xue-learn/core/server/teaching-skills/repository";
+import { ensurePersonalSyncCapture } from "@xue-learn/core/server/personal-sync";
+import { requireRagVectors } from "@xue-learn/core/server/rag/persistence";
+import { processEmbeddingReindexBatch, type EmbeddingReindexTasks } from "@xue-learn/core/server/rag/embedding-reindex";
 
 function assertElectronSqlite(): void {
   if (process.env.XUELEARN_DESKTOP_LOCAL !== "1" || process.env.PERSISTENCE_DATABASE_KIND !== "sqlite") {

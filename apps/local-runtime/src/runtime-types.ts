@@ -1,7 +1,7 @@
 import type {
   LocalCredentialSnapshot,
   OperatingSystem,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 
 export type LocalSidecarStartMessage = {
   type: "xuelearn.local.start";

@@ -1,10 +1,10 @@
 import { Injectable, type OnModuleInit, type OnModuleDestroy } from "@nestjs/common";
-import { LearningOutboxProcessor } from "@xue-learn/core/source/libs/server/src/learning-host/outbox/processor.ts";
-import { LearningSpaceOrmProvider } from "@xue-learn/core/source/libs/server/src/learning-spaces/learning-space-orm.provider.ts";
-import { ensurePersonalSyncCapture } from "@xue-learn/core/source/libs/server/src/personal-sync/index.ts";
+import { LearningOutboxProcessor } from "@xue-learn/core/server/learning-host/outbox/processor";
+import { LearningSpaceOrmProvider } from "@xue-learn/core/server/learning-spaces/learning-space-orm.provider";
+import { ensurePersonalSyncCapture } from "@xue-learn/core/server/personal-sync";
 import { processLocalEmbeddingReindexBatch } from "@cognilearn/desktop-persistence/local-embedding-index";
-import { recordBackendError } from "@xue-learn/core/source/libs/server/src/observability/index.ts";
-import { LOCAL_OWNER_ID } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+import { recordBackendError } from "@xue-learn/core/server/observability";
+import { LOCAL_OWNER_ID } from "@xue-learn/core/runtime-contracts";
 @Injectable()
 export class LocalOutboxService extends LearningOutboxProcessor implements OnModuleInit, OnModuleDestroy {
   private timer: ReturnType<typeof setInterval> | undefined;

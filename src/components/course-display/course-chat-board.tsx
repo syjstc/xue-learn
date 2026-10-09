@@ -2,9 +2,9 @@ import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import {
   compareBlockSides,
   type CourseDisplayBlock,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import { CourseBoardContent } from "@xue-learn/core/source/src/components/course-display/course-board-content.tsx";
+} from "@xue-learn/core/domain";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
+import { CourseBoardContent } from "@xue-learn/core/display/course-board-content";
 import { useBoardFocusVisibility } from "./use-board-focus-visibility.ts";
 
 export type CourseBoardPlayback = { key: string; animate: boolean; revealedTargetIds?: readonly string[] };

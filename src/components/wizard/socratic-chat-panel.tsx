@@ -2,15 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, Sparkles } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   activeSocraticThread,
   type SocraticMessage,
   type SocraticThread,
 } from "@/shared/graph/socratic-threads";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import { LlmMarkdownInline } from "@/components/markdown/llm-markdown";
-import { ProseMarkdown } from "@xue-learn/core/source/src/components/markdown/prose-markdown.tsx";
+import { ProseMarkdown } from "@xue-learn/core/components/markdown/prose-markdown";
 import { useLearnerDisplayName } from "@/hooks/api/use-learner-profile";
 import { personalizeLearnerText } from "@/shared/domain/learner-text";
 import { SocraticThreadDrawer } from "./socratic-thread-drawer.tsx";
@@ -18,7 +18,7 @@ import {
   ConversationTurn,
   ConversationTypingIndicator,
 } from "./conversation/learning-conversation-surface.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 const BOTTOM_SCROLL_THRESHOLD = 48;
 

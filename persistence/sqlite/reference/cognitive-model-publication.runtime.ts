@@ -2,7 +2,7 @@ import type {
   CognitiveModelPublicationRepository,
   CognitiveModelPublicationResult,
   PublishCognitiveModelExpansionInput,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import type { ReferencePersistenceRuntime } from "./runtime.ts";
 
 /** Transaction-owning adapter for the complete successful KACOM publication. */

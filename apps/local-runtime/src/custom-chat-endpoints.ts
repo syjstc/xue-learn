@@ -5,12 +5,12 @@ import {
   type CustomChatEndpointProfile,
   type CustomChatEndpointsState,
   type CustomThinkingProtocol,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import {
   getUserSettingsForUser,
   upsertUserSettingsForUser,
-} from "@xue-learn/core/source/libs/server/src/user-settings.ts";
-import { saveLlmRuntimeConfig } from "@xue-learn/core/source/libs/server/src/llm/runtime-config.ts";
+} from "@xue-learn/core/server/user-settings";
+import { saveLlmRuntimeConfig } from "@xue-learn/core/server/llm/runtime-config";
 
 export async function readCustomChatEndpoints(
   userId: string = LOCAL_OWNER_ID,

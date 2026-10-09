@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { LOCAL_OWNER_ID } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+import { LOCAL_OWNER_ID } from "@xue-learn/core/runtime-contracts";
 import { WorkspaceServiceSessions } from "./workspace-service-sessions.ts";
 import { createLocalIngressMiddleware } from "./local-ingress.ts";
 

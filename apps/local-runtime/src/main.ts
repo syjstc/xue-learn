@@ -4,7 +4,7 @@ import type {
   LocalSidecarStartMessage,
 } from "./runtime-types.ts";
 import { startLocalRuntime } from "./bootstrap.ts";
-import { setCodexAccessTokenProvider } from "@xue-learn/core/source/libs/server/src/providers/llm/vendors/codex/runtime.ts";
+import { setCodexAccessTokenProvider } from "@xue-learn/core/server/providers/llm/vendors/codex/runtime";
 import { randomUUID } from "node:crypto";
 
 type ParentPort = {

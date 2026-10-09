@@ -9,20 +9,20 @@ import {
   useState,
 } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { decompileAuthoringTree } from "@xue-learn/core/source/libs/formal-expression-core/src/index.ts";
+import { decompileAuthoringTree } from "@xue-learn/core/formal-expression-core";
 import {
   materializeAtStep,
   notationFindingsForTree,
   type DerivationDocumentV1,
   type MaterializedDerivationStateV1,
-} from "@xue-learn/core/source/libs/formal-derivation/src/index.ts";
-import { FormalMotionRenderer } from "@xue-learn/core/source/libs/formal-expression-motion/src/index.ts";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+} from "@xue-learn/core/formal-derivation";
+import { FormalMotionRenderer } from "@xue-learn/core/formal-expression-motion";
+import { Button } from "@xue-learn/core/ui/button";
 import { AssistantChatMessage } from "@/components/wizard/conversation/assistant-chat-message";
 import { MaterialBlockRenderer } from "@/components/wizard/interactive-material/material-block-renderer";
-import type { TextHighlightSpan } from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import type { TextHighlightSpan } from "@xue-learn/core/shared/domain/material-highlight";
+import { cn } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 import {
   currentStepFormulaIds,
   followLiveDerivationOrdinal,

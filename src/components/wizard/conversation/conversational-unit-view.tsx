@@ -8,7 +8,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@xue-learn/core/source/src/components/ui/sheet.tsx";
+} from "@xue-learn/core/ui/sheet";
 import { LearningReferencePanel } from "../learning-reference-panel.tsx";
 import {
   CornellReferenceContent,
@@ -42,8 +42,8 @@ import { ScenarioTheaterCard } from "../scenario-theater.tsx";
 import { UnitLabCard } from "../unit-lab.tsx";
 import { useTeachingPersonas } from "@/hooks/api/use-teaching-personas";
 import { teachingPersonaAvatarSrc } from "@/shared/teaching-persona-avatar";
-import { isChatAudioFeatureEnabled, FEATURE_FEYNMAN } from "@xue-learn/core/source/src/shared/features.ts";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { isChatAudioFeatureEnabled, FEATURE_FEYNMAN } from "@xue-learn/core/features";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -51,27 +51,27 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@xue-learn/core/source/src/components/ui/dialog.tsx";
+} from "@xue-learn/core/ui/dialog";
 import { FlaskConical, Theater, Volume2, VolumeX } from "lucide-react";
 import {
   useLearningViewSettings,
   useSaveChatAudioSettings,
 } from "@/hooks/api/use-settings";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import { localizeTeachingPersonaName } from "@/shared/teaching-persona-i18n";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import {
   isDesktopLocalRuntime,
   isScenarioTheaterActivityAvailable,
   supportsChatAudioGeneration,
   supportsScenarioTheaterGeneration,
-} from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
-import { isUnitLabActivityAvailable } from "@xue-learn/core/source/src/shared/domain/unit-lab.ts";
+} from "@xue-learn/core/client-runtime";
+import { isUnitLabActivityAvailable } from "@xue-learn/core/shared/domain/unit-lab";
 import { AssistantSectionMaterial } from "../unit-sections/assistant-section-material.tsx";
 import { AnchoredLearningMaterial } from "../anchored-learning-material.tsx";
 import { loadUnitSectionStableContent } from "@/shared/api/unit-content";
 import { getAuthUser } from "@/shared/auth";
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
 import type { UnitSectionManifest } from "@/shared/api";
 import { useImmersiveLearning } from "./use-immersive-learning.ts";
 import {

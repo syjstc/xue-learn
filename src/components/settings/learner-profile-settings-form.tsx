@@ -2,7 +2,7 @@
 
 import { LearnerProfileForm } from "@/components/profile/learner-profile-form";
 import { useLearnerProfile } from "@/hooks/api/use-learner-profile";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 export function LearnerProfileSettingsForm() {
   const t = useT();

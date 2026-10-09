@@ -20,14 +20,14 @@ import {
   type LocalAiModelSettings,
   type LocalChatThinkingSettings,
   type LocalProviderConnectionResult,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import {
   chatThinkingFromSettings,
   inferCustomThinkingProtocol,
 } from "./local-provider-catalog.ts";
 import { getDesktopBridge } from "./runtime.ts";
-import { useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { useT, type TranslationKey } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 
 const thinkingProtocolLabelKeys = {
   none: "desktop.apiKeys.thinkingProtocol.none",

@@ -8,10 +8,10 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { CurrentUserId } from "@xue-learn/core/source/libs/common/src/index.ts";
-import { readTeachingSkillZipEntries } from "@xue-learn/core/source/libs/server/src/teaching-skills/index.ts";
+import { CurrentUserId } from "@xue-learn/core/common";
+import { readTeachingSkillZipEntries } from "@xue-learn/core/server/teaching-skills";
 import { unzipSync } from "fflate";
-import { TeachingSkillsService } from "@xue-learn/core/source/libs/server/src/learning-host/teaching-skills/teaching-skills.service.ts";
+import { TeachingSkillsService } from "@xue-learn/core/server/learning-host/teaching-skills/teaching-skills.service";
 
 /** Private, fixed-owner skill management for desktop-local. */
 @Controller("api/local/teaching-skills")

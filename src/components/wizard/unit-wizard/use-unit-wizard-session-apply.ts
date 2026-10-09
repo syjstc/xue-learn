@@ -11,9 +11,9 @@ import {
   DEFAULT_MATERIAL_PRESENTATION,
   type MaterialPresentationState,
 } from "@/shared/domain/material-presentation";
-import type { LearningMaterialContent, SqPreview } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import { postQuizNextStep } from "@xue-learn/core/source/src/shared/features.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { LearningMaterialContent, SqPreview } from "@xue-learn/core/schemas";
+import { postQuizNextStep } from "@xue-learn/core/features";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import type { UnitSectionManifest } from "@/shared/api";
 import { parseLearningAccess } from "@/shared/domain/learning-access";
 import type { LearningAccess } from "@/shared/domain/learning-access";

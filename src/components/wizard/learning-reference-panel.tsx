@@ -1,7 +1,7 @@
 "use client";
 
-import type { LearningMaterialContent, SqPreview } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { LearningMaterialContent, SqPreview } from "@xue-learn/core/schemas";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import { AnchoredLearningMaterial } from "./anchored-learning-material.tsx";
 import {
   CornellReferenceContent,

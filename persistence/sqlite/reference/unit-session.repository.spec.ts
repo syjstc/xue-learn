@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { UnitSessionStateRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { UnitSessionStateRepository } from "@xue-learn/core/domain";
 import { MikroOrmUnitSessionStateRepository } from "./unit-session.repository.ts";
 
 describe("unit session reference repository", () => {

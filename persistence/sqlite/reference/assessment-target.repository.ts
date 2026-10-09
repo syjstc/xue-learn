@@ -5,8 +5,8 @@ import type {
   AssessmentTargetRecord,
   AssessmentTargetRepository,
   CognitiveDimension,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { learningTargetWorkload } from "@xue-learn/core/source/libs/server/src/cognitive-model/workload.ts";
+} from "@xue-learn/core/domain";
+import { learningTargetWorkload } from "@xue-learn/core/server/cognitive-model/workload";
 
 type Row = Readonly<Record<string, unknown>>;
 

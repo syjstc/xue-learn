@@ -15,12 +15,12 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@xue-learn/core/source/src/components/ui/dialog.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { isAdvancedHtmlDiagramsEnabled } from "@xue-learn/core/source/src/shared/features.ts";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+} from "@xue-learn/core/ui/dialog";
+import { useT } from "@xue-learn/core/i18n";
+import { isAdvancedHtmlDiagramsEnabled } from "@xue-learn/core/features";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
+import { cn } from "@xue-learn/core/utils";
 
 const MIN_FRAME_HEIGHT = 240;
 const MAX_FRAME_HEIGHT = 960;

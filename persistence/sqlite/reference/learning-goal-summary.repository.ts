@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { BeginOwnedLearningGoalSummaryResult, LearningGoalSummaryApprovalResult, LearningGoalSummaryContext, LearningGoalSummaryMutationResult, LearningGoalSummaryRepository, PublishOwnedLearningGoalSummaryInput, UpdateOwnedLearningGoalSummaryInput, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { BeginOwnedLearningGoalSummaryResult, LearningGoalSummaryApprovalResult, LearningGoalSummaryContext, LearningGoalSummaryMutationResult, LearningGoalSummaryRepository, PublishOwnedLearningGoalSummaryInput, UpdateOwnedLearningGoalSummaryInput, } from "@xue-learn/core/domain";
 type ValueRow = Readonly<Record<string, unknown>>;
 function resultRows(result: unknown): readonly ValueRow[] {
     if (Array.isArray(result))

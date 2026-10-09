@@ -1,5 +1,5 @@
 import { mainlineEnabled } from "@/features/learning-mainline/enabled";
-import { isDev } from "@xue-learn/core/source/src/shared/dev.ts";
+import { isDev } from "@xue-learn/core/dev";
 import type { ReactNode } from "react";
 import { GoalWorkspaceSubview } from "@/components/layout/goal-workspace-subview";
 import { SettingsWorkspaceSubview } from "@/components/layout/settings-workspace-subview";

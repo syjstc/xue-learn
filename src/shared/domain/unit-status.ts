@@ -1,4 +1,4 @@
-import { isUnitLearningDone } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import { isUnitLearningDone } from "@xue-learn/core/domain";
 import type { UnitStatus } from "./types.ts";
 
 export { isUnitLearningDone };

@@ -22,21 +22,21 @@ import {
   textInputAnswerFromSubmitted,
 } from "@/shared/agent/tool-ui-submitted";
 import type { GoalMapPlan } from "@/shared/api";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import { CollectFormCard } from "./collect-form-card.tsx";
 import { ConfirmationCard } from "./confirmation-card.tsx";
 import { DiscoveryQuestionsCard } from "./discovery-questions-card.tsx";
 import { PlanEditorCard } from "./plan-editor-card.tsx";
-import type { KnowledgeActivity } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { KnowledgeActivity } from "@xue-learn/core/domain";
 import { KnowledgeActivityCard } from "./knowledge-activity-card.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import { useLearningSpaces } from "@/hooks/api/use-learning-spaces";
 import { useGoals } from "@/hooks/api/use-goals";
 import { MathSceneView } from "@/components/math/math-scene";
-import type { MathScene } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { MathScene } from "@xue-learn/core/domain";
 import { SvgDiagramBlock } from "@/components/wizard/interactive-material/blocks/svg-diagram";
 import { InteractiveHtmlBlock } from "@/components/wizard/interactive-material/blocks/interactive-html-block";
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
 
 type ToolQuestion = {
   id: string;

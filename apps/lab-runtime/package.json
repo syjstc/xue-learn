@@ -13,7 +13,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "three": "^0.185.1",
-    "@xue-learn/core": "file:../../vendor/xue-learn-core-0.2.0-4e5c5c89f202.tgz"
+    "@xue-learn/core": "file:../../vendor/xue-learn-core-0.2.1-0ad52d0d1d8a.tgz"
   },
   "license": "MIT"
 }

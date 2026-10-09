@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   type EmbeddingModelDownloadSource,
   type EmbeddingModelInstallStatus,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import { Download, LoaderCircle } from "lucide-react";
 import {
   Dialog,
@@ -10,8 +10,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@xue-learn/core/source/src/components/ui/dialog.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+} from "@xue-learn/core/ui/dialog";
+import { useT } from "@xue-learn/core/i18n";
 import { getDesktopBridge } from "./runtime.ts";
 
 export function BuiltinEmbeddingDownloadDialog({

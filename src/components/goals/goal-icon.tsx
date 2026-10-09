@@ -1,5 +1,5 @@
 import { BookOpen } from "lucide-react";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 type GoalIconProps = {
   title: string;

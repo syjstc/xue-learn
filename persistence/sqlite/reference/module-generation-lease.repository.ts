@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { ModuleGenerationLeaseClaimInput, ModuleGenerationLeaseClaimRecord, ModuleGenerationLeaseFailureInput, ModuleGenerationLeaseFailureRecord, ModuleGenerationLeaseReleaseInput, ModuleGenerationLeaseReleaseRecord, ModuleGenerationLeaseRepository, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { ModuleGenerationLeaseClaimInput, ModuleGenerationLeaseClaimRecord, ModuleGenerationLeaseFailureInput, ModuleGenerationLeaseFailureRecord, ModuleGenerationLeaseReleaseInput, ModuleGenerationLeaseReleaseRecord, ModuleGenerationLeaseRepository, } from "@xue-learn/core/domain";
 import { safeReferenceDateValue } from "./date-value.ts";
 type ValueRow = Readonly<Record<string, unknown>>;
 const MODULE_BUILD_LEASE_MS = 15 * 60 * 1000;

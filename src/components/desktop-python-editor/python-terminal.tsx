@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { pythonConsoleStreamClass } from "@/components/desktop-python-editor/python-console";
-import type { PythonConsoleLine } from "@xue-learn/core/source/src/components/desktop-python-editor/python-runtime.ts";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import type { PythonConsoleLine } from "@xue-learn/core/components/desktop-python-editor/python-runtime";
+import { cn } from "@xue-learn/core/utils";
 
 export function DesktopPythonTerminal({
   lines,

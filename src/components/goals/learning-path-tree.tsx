@@ -3,7 +3,7 @@
 import { Link } from "react-router-dom";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { UnitContentGenBadges } from "@/components/goals/unit-content-gen-badges";
 import { statusLabel } from "@/shared/domain/unit-status";
 import type { UnitTreeNode } from "@/shared/domain/unit-tree-build";
@@ -13,8 +13,8 @@ import {
   formatTreeIndex,
 } from "@/shared/domain/unit-tree-build";
 import type { UnitStatus } from "@/shared/domain/types";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 
 const OVERVIEW_BRANCH_DEPTH = 0;
 const MAX_VISUAL_INDENT_DEPTH = 4;

@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { CognitiveModelPublicationFinalizationRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { CognitiveModelPublicationFinalizationRepository } from "@xue-learn/core/domain";
 
 import { MikroOrmCognitiveModelPublicationFinalizationRepository } from "./cognitive-model-publication-finalization.repository.ts";
 

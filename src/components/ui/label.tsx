@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts"
+import { cn } from "@xue-learn/core/utils"
 
 function Label({ className, ...props }: React.ComponentProps<"label">) {
   return (

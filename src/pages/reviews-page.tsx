@@ -1,13 +1,13 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { CreditCard, RotateCcw } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { useDueReviews, usePracticeUnits } from "@/hooks/api";
 import { Card, CardTitle } from "@/components/ui/card";
 import { cognitivePercent } from "@/shared/domain/cognitive-model";
 import { FlashcardsPage } from "@/pages/flashcards-page";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { supportsFlashcards } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { cn } from "@xue-learn/core/utils";
+import { useT, type TranslationKey } from "@xue-learn/core/i18n";
+import { supportsFlashcards } from "@xue-learn/core/client-runtime";
 
 function evidenceLabelKey(value: number): TranslationKey {
   if (value <= 0) return "reviews.evidence.none";

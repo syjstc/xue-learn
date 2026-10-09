@@ -1,9 +1,9 @@
-import type { MaterialAnchor } from "@xue-learn/core/source/src/shared/domain/material-anchor.ts";
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { MaterialAnchor } from "@xue-learn/core/shared/domain/material-anchor";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
 import {
   scheduleReview,
   type FlashCardFsrsState,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 
 export type FsrsRating = 'Again' | 'Hard' | 'Good' | 'Easy';
 

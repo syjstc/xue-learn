@@ -1,7 +1,7 @@
 import type {
   InteractiveBlock,
   LearningMaterialContent,
-} from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+} from "@xue-learn/core/schemas";
 
 export type AssistantCourseFeedBlock = {
   block: InteractiveBlock;

@@ -1,5 +1,5 @@
 import type { UnitContentGenStatus } from "@/shared/domain/unit-content-status";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 function GenChip({
   label,

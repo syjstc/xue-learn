@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
-import { Button, buttonVariants } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button, buttonVariants } from "@xue-learn/core/ui/button";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { InlineGenStream } from "@/components/ai/inline-gen-stream";
@@ -20,18 +20,18 @@ import { isMicroGoal } from "@/shared/domain/goal-kind";
 import { personalizeLearnerText } from "@/shared/domain/learner-text";
 import { ForceSubdividePanel } from "@/components/map/force-subdivide-panel";
 import type { SseEvent } from "@/shared/llm/sse";
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
 import { GoalDocumentsPanel } from "@/components/goals/goal-documents-panel";
 import {
   FEATURE_MICRO_EXPAND,
   FEATURE_OVERVIEW_COURSE,
-} from "@xue-learn/core/source/src/shared/features.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+} from "@xue-learn/core/features";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 import {
   supportsGoalOverviewGeneration,
   supportsGoalWebResources,
-} from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+} from "@xue-learn/core/client-runtime";
 
 const OVERVIEW_OPERATION = "goal.overview";
 

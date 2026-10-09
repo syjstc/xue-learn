@@ -17,13 +17,13 @@ import type { GoalModule, LastLearnedUnit } from "@/shared/api";
 import { LastLearnedUnitCard } from "@/components/goals/last-learned-unit-card";
 import type { JourneyOrientationLesson } from "@/components/goals/journey-orientation";
 import type { MasterySummary } from "@/shared/domain/mastery";
-import { Button, buttonVariants } from "@xue-learn/core/source/src/components/ui/button.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { Button, buttonVariants } from "@xue-learn/core/ui/button";
+import { cn } from "@xue-learn/core/utils";
 import {
   useT,
   type TranslationKey,
   type TranslationParams,
-} from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+} from "@xue-learn/core/i18n";
 
 type JourneyTranslator = (
   key: TranslationKey,

@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { AnalyticsMaintenanceRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { AnalyticsMaintenanceRepository } from "@xue-learn/core/domain";
 type Row = Record<string, unknown>;
 const rows = (result: unknown): Row[] => Array.isArray(result) ? result as Row[] : result && typeof result === "object" && "rows" in result && Array.isArray((result as {
     rows?: unknown;

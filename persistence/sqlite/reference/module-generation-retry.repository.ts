@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { ModuleGenerationRetryInput, ModuleGenerationRetryRecord, ModuleGenerationRetryRepository, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { ModuleGenerationRetryInput, ModuleGenerationRetryRecord, ModuleGenerationRetryRepository, } from "@xue-learn/core/domain";
 import { safeReferenceDateValue, sqlTimestampParameter } from "./date-value.ts";
 type ValueRow = Readonly<Record<string, unknown>>;
 const COURSE_MODULE_GENERATE_EVENT = "course.module.generate";

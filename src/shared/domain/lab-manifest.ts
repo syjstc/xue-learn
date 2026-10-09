@@ -1,12 +1,12 @@
 import type {
   ChemistryLabDefinition,
   PhysicsLabDefinition,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import {
   chemistrySceneToManifestScene,
   createChemistryScene,
-} from "@xue-learn/core/source/libs/lab-engine/src/index.ts";
-import type { LabManifestV1 } from "@xue-learn/core/source/libs/lab-protocol/src/index.ts";
+} from "@xue-learn/core/lab-engine";
+import type { LabManifestV1 } from "@xue-learn/core/lab-protocol";
 
 function physicsFallbackScene(block: PhysicsLabDefinition): LabManifestV1["scene"] {
   const inclined = block.experimentId === "inclined_plane_friction";

@@ -1,4 +1,4 @@
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
 
 const UNIT_MATERIAL_COMMITTED_EVENT = "xuelearn:unit-material-committed";
 

@@ -1,12 +1,12 @@
 import { useMainline } from "@/features/learning-mainline/provider";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { LearningBranch, LearningVisit } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { LearningBranch, LearningVisit } from "@xue-learn/core/domain";
 import { BookOpen, CornerUpLeft, LoaderCircle } from "lucide-react";
 import { apiGet, apiPost } from "@/shared/api";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import { currentLearningPosition, learningSessionId } from "./navigation.ts";
 import {
   useLearningBranch,

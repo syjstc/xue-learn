@@ -1,17 +1,17 @@
-import { resolveLearningPositionInContext } from "@xue-learn/core/source/libs/server/src/learning-trajectory/resolve-position.ts";
-import type { MainlineResolvedPosition } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import { resolveLearningPositionInContext } from "@xue-learn/core/server/learning-trajectory/resolve-position";
+import type { MainlineResolvedPosition } from "@xue-learn/core/domain";
 import { referenceDateValue } from "./date-value.ts";
-import { DESKTOP_LOCAL_CAPABILITIES } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
-import { deriveLearningAccess } from "@xue-learn/core/source/libs/server/src/cognitive-model/learning-access.ts";
-import { MainlineConflict, MainlineUnavailable, } from "@xue-learn/core/source/libs/server/src/learning-mainline/errors.ts";
+import { DESKTOP_LOCAL_CAPABILITIES } from "@xue-learn/core/runtime-contracts";
+import { deriveLearningAccess } from "@xue-learn/core/server/cognitive-model/learning-access";
+import { MainlineConflict, MainlineUnavailable, } from "@xue-learn/core/server/learning-mainline/errors";
 import { createHash, randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import { MAINLINE_POLICY, MAINLINE_POLICY_VERSION, selectMainline, parsePrereqs, isUnitJourneyResolved, type LearningMainlineRepository, type LearningPosition, type MainlineActivity, type MainlineCandidate, type MainlineCommand, type MainlineDecisionRequest, type MainlineFocus, type MainlinePreference, type MainlineSnapshot, } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { ensurePersonalSyncCapture } from "@xue-learn/core/source/libs/server/src/personal-sync/capture.ts";
+import { MAINLINE_POLICY, MAINLINE_POLICY_VERSION, selectMainline, parsePrereqs, isUnitJourneyResolved, type LearningMainlineRepository, type LearningPosition, type MainlineActivity, type MainlineCandidate, type MainlineCommand, type MainlineDecisionRequest, type MainlineFocus, type MainlinePreference, type MainlineSnapshot, } from "@xue-learn/core/domain";
+import { ensurePersonalSyncCapture } from "@xue-learn/core/server/personal-sync/capture";
 import { MikroOrmLearningTrajectoryRepository } from "./learning-trajectory.repository.ts";
 type Row = Record<string, unknown>;
 const decode = <T>(row: Row): T => JSON.parse(String(row.payload));
-export { MainlineConflict, MainlineUnavailable, } from "@xue-learn/core/source/libs/server/src/learning-mainline/errors.ts";
+export { MainlineConflict, MainlineUnavailable, } from "@xue-learn/core/server/learning-mainline/errors";
 export class MikroOrmLearningMainlineRepository implements LearningMainlineRepository {
     constructor(private readonly em: EntityManager) { }
     private table(name: string) {

@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { BookOpen, PanelRightClose } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@xue-learn/core/source/src/components/ui/sheet.tsx";
+} from "@xue-learn/core/ui/sheet";
 import { LearningReferencePanel } from "../learning-reference-panel.tsx";
 import { ActiveRecallStep } from "./steps/active-recall-step.tsx";
 import { CompleteStep } from "./steps/complete-step.tsx";

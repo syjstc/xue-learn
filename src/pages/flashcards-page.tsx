@@ -14,7 +14,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
@@ -23,7 +23,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@xue-learn/core/source/src/components/ui/dialog.tsx";
+} from "@xue-learn/core/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FlashcardDeckPicker } from "@/components/flashcards/flashcard-deck-picker";
@@ -38,13 +38,13 @@ import {
   useUpdateFlashcardCard,
 } from "@/hooks/use-flashcards";
 import { useConfirm } from "@/hooks/use-confirm";
-import { useI18n, useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useI18n, useT, type TranslationKey } from "@xue-learn/core/i18n";
 import type {
   FlashCardDeckListItem,
   FlashCardDto,
   FlashcardReviewScope,
 } from "@/shared/domain/flashcards";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import { AiGeneratedNotice } from "@/components/ui/ai-generated-notice";
 
 function formatDate(

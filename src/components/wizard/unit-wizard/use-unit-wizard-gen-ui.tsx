@@ -2,7 +2,7 @@
 
 import type { ReactElement } from "react";
 import { InlineGenStream } from "@/components/ai/inline-gen-stream";
-import type { TranslationKey, TranslationParams } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import type { TranslationKey, TranslationParams } from "@xue-learn/core/i18n";
 import {
   formatGenerationProgress,
   formatSqGenerationStatus,

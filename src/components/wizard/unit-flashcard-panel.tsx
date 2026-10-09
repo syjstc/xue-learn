@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Card } from '@/components/ui/card';
 import { FlashcardStudySession } from '@/components/flashcards/flashcard-study-session';
 import {
@@ -7,7 +7,7 @@ import {
   useGenerateFlashcards,
 } from '@/hooks/use-flashcards';
 import { useConfirm } from '@/hooks/use-confirm';
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 type UnitFlashcardPanelProps = {
   unitId: string;

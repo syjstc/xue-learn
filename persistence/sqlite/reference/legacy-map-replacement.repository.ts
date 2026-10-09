@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { LegacyMapReplacementGoalRecord, LegacyMapReplacementRepository, LegacyMapReconciliationUnit, LegacyMapReplacementUnit, LegacyMapReplacementUnitRecord, PersistOwnedLegacyMapReplacementInput, PersistOwnedLegacyMapReplacementResult, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { LegacyMapReplacementGoalRecord, LegacyMapReplacementRepository, LegacyMapReconciliationUnit, LegacyMapReplacementUnit, LegacyMapReplacementUnitRecord, PersistOwnedLegacyMapReplacementInput, PersistOwnedLegacyMapReplacementResult, } from "@xue-learn/core/domain";
 type ValueRow = Readonly<Record<string, unknown>>;
 function resultRows(result: unknown): readonly ValueRow[] {
     if (Array.isArray(result))

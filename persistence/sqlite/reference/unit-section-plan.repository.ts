@@ -1,10 +1,10 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { UnitSectionPlanDraft, UnitSectionPlanRepository, UnitSectionPlanSource, UnitSectionPlanTargetRecord, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { UnitSectionPlanDraft, UnitSectionPlanRepository, UnitSectionPlanSource, UnitSectionPlanTargetRecord, } from "@xue-learn/core/domain";
 import { MikroOrmMaterialCheckCompletionRepository } from "./material-check-completion.repository.ts";
 import { MikroOrmVerifiedEvidenceAppendRepository } from "./verified-evidence-append.repository.ts";
-import { parseLearningMaterial } from "@xue-learn/core/source/libs/server/src/graph/unit-session.ts";
-import { publishedMaterialCheckDefinitions } from "@xue-learn/core/source/libs/server/src/assessment/activities.ts";
+import { parseLearningMaterial } from "@xue-learn/core/server/graph/unit-session";
+import { publishedMaterialCheckDefinitions } from "@xue-learn/core/server/assessment/activities";
 import { nullableReferenceDateValue, sqlTimestampParameter } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
 function rows(result: unknown): readonly Row[] {
@@ -313,7 +313,7 @@ export class MikroOrmUnitSectionPlanRepository implements UnitSectionPlanReposit
             contextSources: string;
             sourceItemsJson: string;
         };
-        materialCheckTasks: readonly import("@xue-learn/core/source/libs/domain/src/index.ts").MaterialCheckTaskDefinition[];
+        materialCheckTasks: readonly import("@xue-learn/core/domain").MaterialCheckTaskDefinition[];
     }) {
         return this.em.transactional(async (em) => {
             const now = new Date();
@@ -370,7 +370,7 @@ export class MikroOrmUnitSectionPlanRepository implements UnitSectionPlanReposit
         sectionId: string;
         token: string;
         blocks: string;
-        materialCheckTasks: readonly import("@xue-learn/core/source/libs/domain/src/index.ts").MaterialCheckTaskDefinition[];
+        materialCheckTasks: readonly import("@xue-learn/core/domain").MaterialCheckTaskDefinition[];
     }) { return this.em.transactional(async (em) => { const now = new Date(); const owned = rows(await this.execute(em, `SELECT "id" FROM ${table(em, "MainCourseSection")} WHERE "id"=? AND "testGenerationToken"=? LIMIT 1`, [input.sectionId, input.token])); if (owned.length !== 1)
         throw new Error("Mini-test generation lease was superseded"); await this.execute(em, `UPDATE ${table(em, "UnitSectionMaterial")} SET "blocks"=?,"updatedAt"=? WHERE "sectionId"=?`, [input.blocks, now, input.sectionId]); await new MikroOrmMaterialCheckCompletionRepository(em).publishTasks({ userId: input.userId, goalId: input.goalId, unitId: input.unitId, tasks: input.materialCheckTasks }); await this.execute(em, `UPDATE ${table(em, "LearningUnit")} SET "contentRevision"="contentRevision"+1 WHERE "id"=?`, [input.unitId]); const published = rows(await this.execute(em, `UPDATE ${table(em, "UnitSection")} SET "testGenerationStatus"='ready',"testGenerationError"='',"testGenerationStartedAt"=NULL,"testGenerationToken"=NULL,"contentRevision"="contentRevision"+1,"updatedAt"=? WHERE "id"=? AND "testGenerationToken"=? RETURNING "contentRevision"`, [now, input.sectionId, input.token])); if (published.length !== 1)
         throw new Error("Mini-test generation lease was superseded"); return { contentRevision: numberValue(published[0]!, "contentRevision") }; }); }

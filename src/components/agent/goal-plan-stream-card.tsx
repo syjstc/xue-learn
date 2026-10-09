@@ -6,8 +6,8 @@ import { LlmMarkdown } from "@/components/markdown/llm-markdown";
 import type { GoalMapPlan } from "@/shared/api";
 import { parseGoalPlanStreamPreview } from "@/shared/agent/goal-plan-stream-preview";
 import { LEARNING_MODE_LABELS } from "@/shared/goals/domain-labels";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useI18n } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useI18n } from "@xue-learn/core/i18n";
 
 function previewFromPlan(plan: GoalMapPlan) {
   return {

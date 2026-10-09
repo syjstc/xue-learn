@@ -1,4 +1,4 @@
-import type { PrerequisiteBridgeRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { PrerequisiteBridgeRepository } from "@xue-learn/core/domain";
 import type { ReferencePersistenceRuntime } from "./runtime.ts";
 
 export class MikroOrmPrerequisiteBridgeRuntimeAdapter implements PrerequisiteBridgeRepository {

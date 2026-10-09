@@ -1,5 +1,5 @@
 import { LocalAiModelsController } from "./local-ai-models.controller.ts";
-import { getUserSettingsForUser } from "@xue-learn/core/source/libs/server/src/user-settings.ts";
+import { getUserSettingsForUser } from "@xue-learn/core/server/user-settings";
 
 const refreshLlmRuntimeConfig = jest.fn();
 const saveLlmRuntimeConfig = jest.fn();
@@ -22,50 +22,50 @@ const globalSettings = {
   update: jest.fn(),
 };
 
-jest.mock("@xue-learn/core/source/libs/server/src/llm/runtime-config.ts", () => ({
+jest.mock("@xue-learn/core/server/llm/runtime-config", () => ({
   refreshLlmRuntimeConfig: (...args: unknown[]) =>
     refreshLlmRuntimeConfig(...args),
   saveLlmRuntimeConfig: (...args: unknown[]) => saveLlmRuntimeConfig(...args),
 }));
-jest.mock("@xue-learn/core/source/libs/server/src/images/runtime-config.ts", () => ({
+jest.mock("@xue-learn/core/server/images/runtime-config", () => ({
   invalidateImageRuntimeConfig: (...args: unknown[]) =>
     invalidateImageRuntimeConfig(...args),
 }));
-jest.mock("@xue-learn/core/source/libs/server/src/search/runtime-config.ts", () => ({
+jest.mock("@xue-learn/core/server/search/runtime-config", () => ({
   invalidateSearchRuntimeConfig: (...args: unknown[]) =>
     invalidateSearchRuntimeConfig(...args),
 }));
-jest.mock("@xue-learn/core/source/libs/server/src/llm/providers/index.ts", () => ({
+jest.mock("@xue-learn/core/server/llm/providers", () => ({
   getLlmProvider: (...args: unknown[]) => getLlmProvider(...args),
 }));
-jest.mock("@xue-learn/core/source/libs/server/src/llm/embeddings.ts", () => ({
+jest.mock("@xue-learn/core/server/llm/embeddings", () => ({
   createEmbeddings: (...args: unknown[]) => createEmbeddings(...args),
 }));
-jest.mock("@xue-learn/core/source/libs/server/src/providers/image/index.ts", () => ({
+jest.mock("@xue-learn/core/server/providers/image", () => ({
   getImageProvider: (...args: unknown[]) => getImageProvider(...args),
   hasImageProviderCredentials: (...args: unknown[]) =>
     hasImageProviderCredentials(...args),
 }));
-jest.mock("@xue-learn/core/source/libs/server/src/providers/audio/index.ts", () => ({
-  ...jest.requireActual("@xue-learn/core/source/libs/server/src/providers/audio/index.ts"),
+jest.mock("@xue-learn/core/server/providers/audio", () => ({
+  ...jest.requireActual("@xue-learn/core/server/providers/audio"),
   getAudioProvider: (...args: unknown[]) => getAudioProvider(...args),
   hasAudioProviderCredentials: (...args: unknown[]) =>
     hasAudioProviderCredentials(...args),
 }));
-jest.mock("@xue-learn/core/source/libs/server/src/search/tavily.ts", () => ({
+jest.mock("@xue-learn/core/server/search/tavily", () => ({
   searchLearningPathWithSources: (...args: unknown[]) =>
     searchLearningPathWithSources(...args),
 }));
-jest.mock("@xue-learn/core/source/libs/server/src/search/tavily-usage.ts", () => ({
+jest.mock("@xue-learn/core/server/search/tavily-usage", () => ({
   fetchTavilyUsage: (...args: unknown[]) => fetchTavilyUsage(...args),
 }));
-jest.mock("@xue-learn/core/source/libs/server/src/env.ts", () => ({
-  ...jest.requireActual("@xue-learn/core/source/libs/server/src/env.ts"),
+jest.mock("@xue-learn/core/server/env", () => ({
+  ...jest.requireActual("@xue-learn/core/server/env"),
   hasProviderCredentials: (...args: unknown[]) =>
     hasProviderCredentials(...args),
 }));
 jest.mock(
-  "@xue-learn/core/source/libs/server/src/generation/global-generation-settings-persistence.ts",
+  "@xue-learn/core/server/generation/global-generation-settings-persistence",
   () => ({
     requireGlobalGenerationSettingsPersistence: () => globalSettings,
   }),
@@ -76,7 +76,7 @@ jest.mock("@cognilearn/desktop-persistence/local-embedding-index", () => ({
   queueLocalEmbeddingReindex: (...args: unknown[]) =>
     queueLocalEmbeddingReindex(...args),
 }));
-jest.mock("@xue-learn/core/source/libs/server/src/user-settings.ts", () => ({
+jest.mock("@xue-learn/core/server/user-settings", () => ({
   getUserSettingsForUser: jest.fn().mockResolvedValue({
     customChatEndpointsJson: '{"activeProfileId":null,"profiles":[]}',
   }),

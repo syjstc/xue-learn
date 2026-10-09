@@ -10,7 +10,7 @@ import {
   Post,
   Put,
 } from "@nestjs/common";
-import { tBackend } from "@xue-learn/core/source/libs/common/src/index.ts";
+import { tBackend } from "@xue-learn/core/common";
 import {
   LOCAL_OWNER_ID,
   localChatConnectionTestRequestSchema,
@@ -29,16 +29,16 @@ import {
   customChatEndpointUpsertSchema,
   customChatEndpointsStateSchema,
   emptyCustomChatEndpointsState,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
-import { hasProviderCredentials } from "@xue-learn/core/source/libs/server/src/env.ts";
+} from "@xue-learn/core/runtime-contracts";
+import { hasProviderCredentials } from "@xue-learn/core/server/env";
 import {
   refreshLlmRuntimeConfig,
   saveLlmRuntimeConfig,
-} from "@xue-learn/core/source/libs/server/src/llm/runtime-config.ts";
-import { invalidateImageRuntimeConfig } from "@xue-learn/core/source/libs/server/src/images/runtime-config.ts";
-import { guidedImageModelFromPreferences, saveGuidedImageModelSettings } from "@xue-learn/core/source/libs/server/src/llm/guided-image-model-settings.ts";
-import { invalidateSearchRuntimeConfig } from "@xue-learn/core/source/libs/server/src/search/runtime-config.ts";
-import { parseChatAudioProvider } from "@xue-learn/core/source/libs/server/src/providers/audio/global-chat-audio-settings.ts";
+} from "@xue-learn/core/server/llm/runtime-config";
+import { invalidateImageRuntimeConfig } from "@xue-learn/core/server/images/runtime-config";
+import { guidedImageModelFromPreferences, saveGuidedImageModelSettings } from "@xue-learn/core/server/llm/guided-image-model-settings";
+import { invalidateSearchRuntimeConfig } from "@xue-learn/core/server/search/runtime-config";
+import { parseChatAudioProvider } from "@xue-learn/core/server/providers/audio/global-chat-audio-settings";
 import {
   hasAudioProviderCredentials,
   chatAudioModelFromPreferences,
@@ -46,12 +46,12 @@ import {
   resetAudioProviderCache,
   resolveAudioModelForProvider,
   CHAT_AUDIO_MODEL_PREF_KEY,
-} from "@xue-learn/core/source/libs/server/src/providers/audio/index.ts";
-import { requireGlobalGenerationSettingsPersistence } from "@xue-learn/core/source/libs/server/src/generation/global-generation-settings-persistence.ts";
-import { parseImageProvider } from "@xue-learn/core/source/libs/server/src/images/global-image-settings.ts";
-import { defaultImageModel } from "@xue-learn/core/source/libs/server/src/images/provider-options.ts";
-import { parseSearchProvider } from "@xue-learn/core/source/libs/server/src/search/global-search-settings.ts";
-import { upsertUserSettingsForUser, getUserSettingsForUser } from "@xue-learn/core/source/libs/server/src/user-settings.ts";
+} from "@xue-learn/core/server/providers/audio";
+import { requireGlobalGenerationSettingsPersistence } from "@xue-learn/core/server/generation/global-generation-settings-persistence";
+import { parseImageProvider } from "@xue-learn/core/server/images/global-image-settings";
+import { defaultImageModel } from "@xue-learn/core/server/images/provider-options";
+import { parseSearchProvider } from "@xue-learn/core/server/search/global-search-settings";
+import { upsertUserSettingsForUser, getUserSettingsForUser } from "@xue-learn/core/server/user-settings";
 import {
   testLocalCapabilityConnection,
   testLocalChatConnection,
@@ -60,13 +60,13 @@ import {
   getLocalEmbeddingIndexStatus,
   queueLocalEmbeddingReindex,
 } from "@cognilearn/desktop-persistence/local-embedding-index";
-import { fetchTavilyUsage } from "@xue-learn/core/source/libs/server/src/search/tavily-usage.ts";
+import { fetchTavilyUsage } from "@xue-learn/core/server/search/tavily-usage";
 import {
   CodexBackendError,
   fetchCodexModelCatalog,
   fetchCodexUsage,
   type CodexModelCatalogEntry,
-} from "@xue-learn/core/source/libs/server/src/providers/llm/vendors/codex/runtime.ts";
+} from "@xue-learn/core/server/providers/llm/vendors/codex/runtime";
 import {
   activateCustomChatEndpoint,
   deleteCustomChatEndpoint,

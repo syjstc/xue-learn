@@ -1,6 +1,6 @@
 import { isLearnableUnitKind } from "@/shared/domain/unit-tree";
 import { hasValidSqPreview } from "@/shared/domain/sq-preview";
-import { parseJson } from "@xue-learn/core/source/src/shared/utils.ts";
+import { parseJson } from "@xue-learn/core/utils";
 
 /** Whether structured lesson content (SQ survey + reading material) has been generated. */
 export type UnitContentGenStatus = {

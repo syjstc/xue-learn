@@ -1,4 +1,4 @@
-import type { ScenarioTheaterSessionRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { ScenarioTheaterSessionRepository } from "@xue-learn/core/domain";
 import type { ReferencePersistenceRuntime } from "./runtime.ts";
 export class MikroOrmScenarioTheaterSessionRuntimeAdapter implements ScenarioTheaterSessionRepository {
   constructor(private readonly runtime: ReferencePersistenceRuntime) {}

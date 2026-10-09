@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 export const ASSISTANT_TYPEWRITER_CHARS_PER_TICK = 3;
 export const ASSISTANT_TYPEWRITER_MS_PER_TICK = 66;

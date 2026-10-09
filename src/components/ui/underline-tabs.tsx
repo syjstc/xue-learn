@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 type UnderlineTabListProps = {
   children: ReactNode;

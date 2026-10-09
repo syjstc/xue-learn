@@ -3,7 +3,7 @@ import type {
   UserSettingsRecord,
   UserSettingsRepository,
   UpsertUserSettingsInput,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { UserSettingsEntity } from "./user-settings.entity.ts";
 import { UserEntity } from "./user.entity.ts";
 

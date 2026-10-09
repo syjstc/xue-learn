@@ -8,7 +8,7 @@ import {
   streamInstantMicroCreation,
 } from "@/shared/goals/instant-micro-creation";
 import type { SseEvent } from "@/shared/llm/sse";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 export function useInstantMicroCreation() {
   const t = useT();

@@ -9,7 +9,7 @@ import {
 } from "react";
 import { useLocation } from "react-router-dom";
 import { useAssistant } from "@/components/agent/assistant-provider";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 type UseImmersiveLearningOptions = {
   unitId: string;

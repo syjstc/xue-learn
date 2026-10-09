@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { TouchUnitActivityInput, TouchUnitActivityResult, UnitActivityRepository, } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { localDateKey } from "@xue-learn/core/source/libs/server/src/agenda/timezone.ts";
+import type { TouchUnitActivityInput, TouchUnitActivityResult, UnitActivityRepository, } from "@xue-learn/core/domain";
+import { localDateKey } from "@xue-learn/core/server/agenda/timezone";
 type ValueRow = Readonly<Record<string, unknown>>;
 type UnitLearningTimeState = {
     totalActiveSeconds: number;

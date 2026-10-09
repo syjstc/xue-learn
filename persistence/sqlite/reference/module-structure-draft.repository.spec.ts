@@ -2,7 +2,7 @@ import { moduleStructureAuditGeneration } from "./module-structure-draft.reposit
 import { MikroOrmModuleStructureDraftRepository } from "./module-structure-draft.repository.ts";
 import type { EntityManager } from "@mikro-orm/core";
 import { DatabaseSync } from "node:sqlite";
-import { formatModuleStructureAuditInventory } from "@xue-learn/core/source/libs/server/src/goal-creation/module-structure-audit.ts";
+import { formatModuleStructureAuditInventory } from "@xue-learn/core/server/goal-creation/module-structure-audit";
 
 class SqlitePlatform {}
 

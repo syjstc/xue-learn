@@ -14,13 +14,13 @@ import {
 } from "lucide-react";
 import { useAssistant } from "@/components/agent/assistant-provider";
 import { useGlobalBriefing } from "@/hooks/use-agent-thread";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import type {
   AgentPageContext,
   AssistantConversationContext,
 } from "@/shared/agent/types";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { supportsFlashcards } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { supportsFlashcards } from "@xue-learn/core/client-runtime";
 
 type Suggestion = {
   id: string;

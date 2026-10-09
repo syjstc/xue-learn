@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { XCircle } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import type { GoalMapPlan } from "@/shared/api";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import { GoalPlanStreamCard } from "./goal-plan-stream-card.tsx";
 
 export function PlanEditorCard({

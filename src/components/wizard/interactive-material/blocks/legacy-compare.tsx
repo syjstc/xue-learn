@@ -1,13 +1,13 @@
 "use client";
 
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import { compareBlockSides } from "@xue-learn/core/source/src/shared/domain/compare-block.ts";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
+import { compareBlockSides } from "@xue-learn/core/shared/domain/compare-block";
 import {
   legacyCompareDisplay,
   type MaterialFigureCaption,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
-import type { TextHighlightSpan } from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+} from "@xue-learn/core/domain";
+import type { TextHighlightSpan } from "@xue-learn/core/shared/domain/material-highlight";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import type { MaterialFollowUpHandlers } from "@/hooks/use-material-text-selection";
 import { Selectable } from "../selectable.tsx";
 import { ComposedStageBlock } from "./composed-stage.tsx";

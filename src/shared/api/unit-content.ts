@@ -2,13 +2,13 @@ import { apiGet } from "@/shared/api";
 import { getAuthToken } from "@/shared/auth";
 import { unitContentCache } from "@/shared/storage/unit-content-cache";
 import type { ScenarioTheaterContent } from "@/shared/domain/scenario-theater";
-import type { UnitLabContent } from "@xue-learn/core/source/src/shared/domain/unit-lab.ts";
-import type { DerivationDocumentV1 } from "@xue-learn/core/source/libs/formal-derivation/src/index.ts";
+import type { UnitLabContent } from "@xue-learn/core/shared/domain/unit-lab";
+import type { DerivationDocumentV1 } from "@xue-learn/core/formal-derivation";
 import type {
   TeachingDerivationDerivedV1,
   TeachingDerivationDocumentV1,
-} from "@xue-learn/core/source/libs/teaching-derivation/src/index.ts";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+} from "@xue-learn/core/teaching-derivation";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 
 export type UnitStableContent = {
   unitId: string;

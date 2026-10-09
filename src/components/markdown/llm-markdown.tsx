@@ -3,7 +3,7 @@
 import {
   ProseMarkdown,
   type ProseMarkdownVariant,
-} from "@xue-learn/core/source/src/components/markdown/prose-markdown.tsx";
+} from "@xue-learn/core/components/markdown/prose-markdown";
 
 /** GFM markdown for LLM-generated user-facing strings (summaries, outlines, plan text). */
 export function LlmMarkdown({

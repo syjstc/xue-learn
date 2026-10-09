@@ -1,4 +1,4 @@
-import type { MainlineCommand, MainlineSnapshot } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { MainlineCommand, MainlineSnapshot } from "@xue-learn/core/domain";
 
 /** Only abandon a stale save when fresh server state confirms its activity is gone. */
 export async function recoverDeletedActivity(

@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useMainline } from "./provider.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { useT } from "@xue-learn/core/i18n";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@xue-learn/core/source/src/components/ui/sheet.tsx";
+} from "@xue-learn/core/ui/sheet";
 export function MainlineFootprints() {
   const mainline = useMainline(),
     t = useT(),

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AlertTriangle, ArrowRight, FolderInput, Sparkles } from "lucide-react";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@xue-learn/core/source/src/components/ui/dialog.tsx";
+} from "@xue-learn/core/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -24,8 +24,8 @@ import type {
   LearningSpaceItem,
   LearningSpaceRelation,
 } from "@/hooks/api";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 
 const UNORGANIZED_SPACE_VALUE = "__unorganized__";
 

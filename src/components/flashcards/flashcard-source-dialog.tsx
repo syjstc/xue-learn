@@ -5,15 +5,15 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@xue-learn/core/source/src/components/ui/dialog.tsx";
+} from "@xue-learn/core/ui/dialog";
 import { InteractiveMaterialBody } from "@/components/wizard/interactive-material-body";
 import { LlmMarkdown } from "@/components/markdown/llm-markdown";
 import { useFlashcardSource } from "@/hooks/use-flashcards";
 import {
   buildSourceExcerptHighlights,
   contentKeyForAnchor,
-} from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+} from "@xue-learn/core/shared/domain/material-highlight";
+import { useT } from "@xue-learn/core/i18n";
 
 type FlashcardSourceDialogProps = {
   cardId: string | null;

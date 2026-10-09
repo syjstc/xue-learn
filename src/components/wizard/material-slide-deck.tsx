@@ -2,7 +2,7 @@
 
 import { HighlightableTextRegion } from "@/components/markdown/highlightable-text-region";
 import { LlmMarkdownInline } from "@/components/markdown/llm-markdown";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { useMaterialPresentation } from "@/hooks/use-material-presentation";
 import { useMaterialTextSelection } from "@/hooks/use-material-text-selection";
 import { scrollFollowUpAnchorIntoView } from "@/shared/dom/follow-up-anchor-rect";
@@ -11,7 +11,7 @@ import {
   anchorId,
   resolveBlockIndex,
   type MaterialAnchor,
-} from "@xue-learn/core/source/src/shared/domain/material-anchor.ts";
+} from "@xue-learn/core/shared/domain/material-anchor";
 import type { MaterialPresentationState } from "@/shared/domain/material-presentation";
 import {
   buildMaterialSlideToc,
@@ -21,9 +21,9 @@ import {
   type MaterialSlide,
   type MaterialSlideTocEntry,
 } from "@/shared/domain/material-slides";
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
+import { cn } from "@xue-learn/core/utils";
 import {
   ChevronLeft,
   ChevronRight,

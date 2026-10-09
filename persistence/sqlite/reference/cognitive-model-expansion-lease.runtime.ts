@@ -2,7 +2,7 @@ import type {
   ClaimCognitiveModelExpansionInput,
   ClaimCognitiveModelExpansionResult,
   CognitiveModelExpansionLeaseRepository,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import type { ReferencePersistenceRuntime } from "./runtime.ts";
 
 /** Transaction-owning composition adapter for the unit expansion lease. */

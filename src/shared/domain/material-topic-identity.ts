@@ -1,4 +1,4 @@
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
 
 function topicHeadingId(block: InteractiveBlock): string {
   return block.type === "heading" &&

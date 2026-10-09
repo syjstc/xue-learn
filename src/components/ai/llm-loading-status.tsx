@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { LoaderCircle } from "lucide-react";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 export function LlmLoadingStatus({
   children,

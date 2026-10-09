@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
 import {
   captureReadingPosition,
   pendingLearningReturn,

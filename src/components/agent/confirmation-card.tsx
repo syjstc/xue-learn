@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { LlmMarkdown } from "@/components/markdown/llm-markdown";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import { useTeachingPersonas } from "@/hooks/api/use-teaching-personas";
 import {
   isPlanningMode,
   learnerFacingGoalInstructions,
   type PlanningMode,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { useI18n } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+} from "@xue-learn/core/domain";
+import { useI18n } from "@xue-learn/core/i18n";
 import { localizeTeachingPersonaName } from "@/shared/teaching-persona-i18n";
 
 function textValue(value: unknown, fallback = "") {

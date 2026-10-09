@@ -3,15 +3,15 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Footprints, Settings2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { apiGet, apiPost } from "@/shared/api";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 import type {
   LearningGuidancePreferences,
   LearningTrajectoryEvent,
   LearningTrajectorySnapshot,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { LearningBranchCard } from "./branch-card.tsx";
 import { useLearningTrajectory } from "./use-learning-trajectory.ts";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";

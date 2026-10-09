@@ -3,7 +3,7 @@ import type {
   CreateLearningSpaceItemRelationInput,
   LearningSpaceItemRelationRecord,
   LearningSpaceItemRelationRepository,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { LearningSpaceEntity } from "./learning-space.entity.ts";
 import { LearningSpaceItemEntity } from "./learning-space-item.entity.ts";
 import { LearningSpaceItemRelationEntity } from "./learning-space-item-relation.entity.ts";

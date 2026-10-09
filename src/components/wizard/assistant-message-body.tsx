@@ -1,16 +1,16 @@
 "use client";
 
 import { CitationMarkdownContent } from "@/components/citations/citation-markdown-content";
-import type { ProseMarkdownVariant } from "@xue-learn/core/source/src/components/markdown/prose-markdown.tsx";
+import type { ProseMarkdownVariant } from "@xue-learn/core/components/markdown/prose-markdown";
 import {
   TypingCaret,
   typingCaretHostClassName,
 } from "@/components/ui/typing-caret";
 import { useLearnerDisplayName } from "@/hooks/api/use-learner-profile";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import { personalizeLearnerText } from "@/shared/domain/learner-text";
 import { parseAssistantMessageContent } from "@/shared/llm/parse-assistant-content";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import { ThinkingBlock } from "./thinking-block.tsx";
 
 function AssistantMarkdown({

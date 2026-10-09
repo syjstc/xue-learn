@@ -13,8 +13,8 @@ import {
   layoutUnitConceptMap,
   unitConceptMapRelations,
 } from "@/shared/domain/unit-concept-map";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT, type TranslationKey } from "@xue-learn/core/i18n";
 
 const KIND_KEYS: Record<string, TranslationKey> = {
   atom: "wizard.reference.map.kind.atom", concept: "wizard.reference.map.kind.concept", skill: "wizard.reference.map.kind.skill", competency: "wizard.reference.map.kind.competency",

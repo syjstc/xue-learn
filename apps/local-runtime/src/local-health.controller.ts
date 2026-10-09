@@ -2,8 +2,8 @@ import { Controller, Get, Inject } from "@nestjs/common";
 import {
   LOCAL_OWNER_ID,
   type RuntimeDescriptor,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
-import { LearningSpaceOrmProvider } from "@xue-learn/core/source/libs/server/src/learning-spaces/learning-space-orm.provider.ts";
+} from "@xue-learn/core/runtime-contracts";
+import { LearningSpaceOrmProvider } from "@xue-learn/core/server/learning-spaces/learning-space-orm.provider";
 
 export type LocalHealthContext = Readonly<{
   instanceId: string;

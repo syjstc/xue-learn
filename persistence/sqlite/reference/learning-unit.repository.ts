@@ -6,7 +6,7 @@ import type {
   LearningUnitRecord,
   LearningUnitRepository,
   UnitModulePromptContext,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { nullableReferenceDateValue } from "./date-value.ts";
 
 type ValueRow = Readonly<Record<string, unknown>>;

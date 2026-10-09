@@ -5,7 +5,7 @@ import type {
   LearningGoalRepository,
   LastLearnedUnitRecord,
   UpdateLearningGoalInput,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { LearningGoalEntity } from "./learning-goal.entity.ts";
 import { UserEntity } from "./user.entity.ts";
 import { referenceDateValue } from "./date-value.ts";

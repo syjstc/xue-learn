@@ -1,6 +1,6 @@
 "use client";
 
-import { normalizeEscapedMarkdownNewlines } from "@xue-learn/core/source/libs/common/src/normalize-html-line-breaks.ts";
+import { normalizeEscapedMarkdownNewlines } from "@xue-learn/core/common/normalize-html-line-breaks";
 import type { ReactNode } from "react";
 import {
   BookOpen,
@@ -8,7 +8,7 @@ import {
   Lightbulb,
   ListTree,
 } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   LlmMarkdown,
   LlmMarkdownInline,
@@ -18,9 +18,9 @@ import {
   sqQuestionTexts,
 } from "@/shared/domain/learning-targets";
 import type { UnitLearningTarget } from "@/shared/domain/learning-targets";
-import type { SqPreview } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import type { SqPreview } from "@xue-learn/core/schemas";
+import { cn } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 import {
   ConversationTurn,
   ConversationTypingIndicator,

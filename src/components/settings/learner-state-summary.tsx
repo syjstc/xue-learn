@@ -6,7 +6,7 @@ import type {
   LearningStateSummary,
 } from "@/shared/domain/learning-state-memory";
 import { useLearningState } from "@/hooks/api/use-learning-state";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 const STATUS_ORDER: LearnerStateStatus[] = [
   "forming",

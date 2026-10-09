@@ -22,7 +22,7 @@ import {
 import {
   readLocalAppearancePreferences,
   writeLocalAppearancePreferences,
-} from "@xue-learn/core/source/src/shared/runtime/local-preferences.ts";
+} from "@xue-learn/core/shared/runtime/local-preferences";
 
 type ThemeContextValue = {
   theme: Theme;

@@ -38,7 +38,7 @@ import {
   type LocalProviderId,
   type LocalVectorReindexStatus,
   type TavilyUsage,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import { getDesktopBridge } from "./runtime.ts";
 import {
   chatThinkingFromSettings,
@@ -50,8 +50,8 @@ import {
   type LocalChatThinkingControl,
 } from "./local-provider-catalog.ts";
 import { Switch } from "@/components/ui/switch";
-import { useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { useT, type TranslationKey } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 import { BuiltinEmbeddingDownloadDialog } from "./builtin-embedding-download-dialog.tsx";
 import {
   CustomChatEndpointsPanel,
@@ -60,7 +60,7 @@ import {
 } from "./custom-chat-endpoints-panel.tsx";
 import { queryClient, queryKeys } from "@/shared/api";
 import type { LearningViewSettingsResponse } from "@/hooks/api/use-settings";
-import { emptyCustomChatEndpointsState } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+import { emptyCustomChatEndpointsState } from "@xue-learn/core/runtime-contracts";
 import { GuidedImageModelSettingsPanel } from "./guided-image-model-settings.tsx";
 
 const providerLabels: Partial<Record<LocalProviderId, string>> = {

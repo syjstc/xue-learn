@@ -5,15 +5,15 @@ import {
   Get,
   Patch,
 } from "@nestjs/common";
-import { CurrentUserId, tBackend } from "@xue-learn/core/source/libs/common/src/index.ts";
-import { getEnv } from "@xue-learn/core/source/libs/server/src/env.ts";
+import { CurrentUserId, tBackend } from "@xue-learn/core/common";
+import { getEnv } from "@xue-learn/core/server/env";
 import {
   LOCAL_RAG_MAX_CHUNKS_MAX,
   LOCAL_RAG_MAX_CHUNKS_MIN,
   localRuntimeSettingsSchema,
   readLocalRuntimeSettings,
   saveLocalRuntimeSettings,
-} from "@xue-learn/core/source/libs/server/src/rag/local-runtime-settings.ts";
+} from "@xue-learn/core/server/rag/local-runtime-settings";
 
 @Controller("api/local/resource-settings")
 export class LocalResourceSettingsController {

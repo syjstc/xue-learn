@@ -2,8 +2,8 @@ import { ExternalLink, Globe2, LoaderCircle, Search } from "lucide-react";
 import {
   dedupeContentSources,
   type KnowledgeActivity,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+} from "@xue-learn/core/domain";
+import { useT } from "@xue-learn/core/i18n";
 
 export function KnowledgeActivityCard({
   activity,

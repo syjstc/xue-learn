@@ -2,8 +2,8 @@
 
 import { createContext, useContext, type ReactNode } from "react";
 import { LoaderCircle } from "lucide-react";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 
 type ConversationPersona = {
   name: string;

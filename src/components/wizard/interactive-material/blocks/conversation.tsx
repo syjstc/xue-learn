@@ -1,12 +1,12 @@
 "use client";
 
 import { MessageCircle } from "lucide-react";
-import type { TextHighlightSpan } from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { TextHighlightSpan } from "@xue-learn/core/shared/domain/material-highlight";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import type { MaterialFollowUpHandlers } from "@/hooks/use-material-text-selection";
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
 import { Selectable } from "../selectable.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 export function ConversationBlock({
   block,

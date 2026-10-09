@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { ModuleSliceReconciliationRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { ModuleSliceReconciliationRepository } from "@xue-learn/core/domain";
 import { MikroOrmModuleSliceReconciliationRepository } from "./module-slice-reconciliation.repository.ts";
 
 type Call = { sql: string; params: readonly unknown[] };

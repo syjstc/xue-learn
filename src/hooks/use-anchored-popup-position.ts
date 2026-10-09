@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {
   rectToAnchorPosition,
   type PopupAnchorPosition,
-} from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
+} from "@xue-learn/core/shared/domain/material-highlight";
 
 /** Recompute viewport anchor position on scroll/resize so fixed popups track content. */
 export function useAnchoredPopupPosition(

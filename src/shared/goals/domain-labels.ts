@@ -1,4 +1,4 @@
-import type { LearningMode } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { LearningMode } from "@xue-learn/core/schemas";
 
 export const LEARNING_MODE_LABELS: Record<LearningMode, string> = {
   skill_practice: "技能实践（学会做/用）",

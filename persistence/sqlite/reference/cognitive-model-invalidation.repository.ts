@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { CognitiveModelInvalidationRepository, InvalidateCognitiveModelInput, InvalidateCognitiveModelResult, } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { computeCognitiveModelInputHash } from "@xue-learn/core/source/libs/server/src/cognitive-model/pure.ts";
+import type { CognitiveModelInvalidationRepository, InvalidateCognitiveModelInput, InvalidateCognitiveModelResult, } from "@xue-learn/core/domain";
+import { computeCognitiveModelInputHash } from "@xue-learn/core/server/cognitive-model/pure";
 import { sqlTimestampParameter } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
 const COGNITIVE_MODEL_SKELETON_EVENT = "cognitive.model.skeleton";

@@ -1,4 +1,4 @@
-import type { PersonalSyncLeaseTarget } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+import type { PersonalSyncLeaseTarget } from "@xue-learn/core/runtime-contracts";
 import { getLocalPersonalSyncRuntime } from "./runtime.ts";
 import { personalSyncTimestampIso } from "./timestamp.ts";
 

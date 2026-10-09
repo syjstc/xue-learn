@@ -1,4 +1,4 @@
-import type { LearningTarget as SqLearningTarget } from "@xue-learn/core/source/src/shared/api/generated/sq-preview.ts";
+import type { LearningTarget as SqLearningTarget } from "@xue-learn/core/api/sq-preview";
 
 /** Browser-safe helpers for the unit-local LearningTarget aliases in SQ. */
 export type UnitLearningTarget = SqLearningTarget;

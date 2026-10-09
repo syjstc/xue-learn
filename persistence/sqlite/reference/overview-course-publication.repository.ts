@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { OverviewCoursePublicationRepository, BeginOwnedOverviewCourseResult, CompleteOwnedOverviewUnitInput, CompleteOwnedOverviewUnitResult, EnsureOwnedOverviewCourseShellInput, EnsureOwnedOverviewCourseShellResult, PublishOwnedOverviewCourseInput, PublishOwnedOverviewCourseResult, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { OverviewCoursePublicationRepository, BeginOwnedOverviewCourseResult, CompleteOwnedOverviewUnitInput, CompleteOwnedOverviewUnitResult, EnsureOwnedOverviewCourseShellInput, EnsureOwnedOverviewCourseShellResult, PublishOwnedOverviewCourseInput, PublishOwnedOverviewCourseResult, } from "@xue-learn/core/domain";
 import { sqlTimestampParameter } from "./date-value.ts";
 type ValueRow = Readonly<Record<string, unknown>>;
 function resultRows(result: unknown): readonly ValueRow[] {

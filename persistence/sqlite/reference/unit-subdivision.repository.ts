@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { UnitSubdivisionMapping, UnitSubdivisionMutationResult, UnitSubdivisionRepository, UnitSubdivisionStatusRecord, UnitSubdivisionStep } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { UnitSubdivisionMapping, UnitSubdivisionMutationResult, UnitSubdivisionRepository, UnitSubdivisionStatusRecord, UnitSubdivisionStep } from "@xue-learn/core/domain";
 type Row = Readonly<Record<string, unknown>>;
 const rows = (v: unknown): readonly Row[] => Array.isArray(v) ? v as Row[] : v && typeof v === "object" && "rows" in v && Array.isArray((v as { rows?: unknown }).rows) ? (v as { rows: Row[] }).rows : [];
 const bool = (v: unknown) => v === true || v === 1 || v === "1" || v === "true";

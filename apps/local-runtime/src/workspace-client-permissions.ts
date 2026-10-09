@@ -1,7 +1,7 @@
 import {constants} from "node:fs";
 import {open} from "node:fs/promises";
 import {z} from "zod";
-import {workspaceServiceCapabilitySchema,type WorkspaceServiceCapability,type WorkspaceServiceSessionRequest} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+import {workspaceServiceCapabilitySchema,type WorkspaceServiceCapability,type WorkspaceServiceSessionRequest} from "@xue-learn/core/runtime-contracts";
 const reads:WorkspaceServiceCapability[]=["course.catalog.read","course.content.read","course.assets.read"];
 const policySchema=z.object({version:z.literal(1),grants:z.array(z.object({workspaceId:z.string().min(1),clientId:z.string().min(1),capabilities:z.array(workspaceServiceCapabilitySchema)}).strict())}).strict();
 /** Only an independently configured owner file can add scopes to read defaults. */

@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Check, ChevronDown, Plus, Save, Search, X } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -36,8 +36,8 @@ import {
   SKILL_GROUPS,
   type SkillOption,
 } from "@/shared/domain/learner-profile-options";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useI18n, useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useI18n, useT, type TranslationKey } from "@xue-learn/core/i18n";
 import { localizeProfileOption } from "@/shared/i18n/profile-options";
 
 const AGE_OPTIONS: { value: LearnerAgeRange; label: string }[] = [

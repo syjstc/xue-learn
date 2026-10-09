@@ -1,4 +1,4 @@
-import { RagController } from "@xue-learn/core/source/libs/server/src/learning-host/rag/rag.controller.ts";
+import { RagController } from "@xue-learn/core/server/learning-host/rag/rag.controller";
 
 describe("desktop-local RAG upload progress", () => {
   it("streams processing updates before the final result", async () => {

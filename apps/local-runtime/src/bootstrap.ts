@@ -18,21 +18,21 @@ import {
   runtimeDescriptorSchema,
   validLocalProviderBaseUrl,
   type LocalCredentialSnapshot,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import {
   bindPersonalSyncCaptureToConnection,
   configurePersonalSyncCapture,
   installPersonalSyncCaptureTriggers,
   registerPersonalSyncSqliteFunctions,
 } from "@cognilearn/desktop-persistence/personal-sync/capture";
-import { runWithPersonalSyncApply } from "@xue-learn/core/source/libs/server/src/personal-sync/index.ts";
-import { resetEnvCache } from "@xue-learn/core/source/libs/server/src/env.ts";
+import { runWithPersonalSyncApply } from "@xue-learn/core/server/personal-sync";
+import { resetEnvCache } from "@xue-learn/core/server/env";
 import {
   AllExceptionsFilter,
   configureLocaleContext,
   configureRequestContext,
   configureUserContext,
-} from "@xue-learn/core/source/libs/common/src/index.ts";
+} from "@xue-learn/core/common";
 import { openReferencePersistenceRuntime } from "@cognilearn/desktop-persistence/reference/runtime";
 import {
   resolvePersistenceMigrationsGlob,
@@ -40,7 +40,7 @@ import {
 } from "@cognilearn/desktop-persistence/migration-paths";
 import { migratePersistenceOrm } from "@cognilearn/desktop-persistence/schema-safety";
 import { provideBootstrappedPersistenceRuntime } from "@cognilearn/desktop-persistence/learning-space-orm.provider";
-import { recoverInterruptedGenerationRuns } from "@xue-learn/core/source/libs/server/src/generation/run-recovery.ts";
+import { recoverInterruptedGenerationRuns } from "@xue-learn/core/server/generation/run-recovery";
 import { createLocalIngressMiddleware } from "./local-ingress.ts";
 import type { LocalSidecarStartMessage } from "./runtime-types.ts";
 import { DesktopLocalModule } from "./desktop-local.module.ts";
@@ -53,7 +53,7 @@ import { compactOversizedLocalApiRequestLog } from "./local-api-log-compaction.t
 import { WorkspaceServiceOwner } from "./workspace-service-owner.ts";
 import { WorkspaceServiceSessions } from "./workspace-service-sessions.ts";
 import { CourseSourceRepository } from "@cognilearn/desktop-persistence/course-source.repository";
-import { readRawUnitImage } from "@xue-learn/core/source/libs/server/src/images/storage.ts";
+import { readRawUnitImage } from "@xue-learn/core/server/images/storage";
 
 /** Bridge the Electron vault contract into the shared provider environment. */
 function configureLocalProviderCredentials(

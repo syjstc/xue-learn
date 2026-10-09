@@ -9,7 +9,7 @@ import {
   Target,
 } from "lucide-react";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   EmptyRoadmapIllustration,
   SPACE_ACCENT_STYLE,
@@ -20,8 +20,8 @@ import {
   useGoals,
   useLearningSpaces,
 } from "@/hooks/api";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 
 function SpaceCardSkeleton() {
   return (

@@ -1,7 +1,7 @@
 import { Controller, Get, Inject, NotFoundException, Param, Query, Res } from "@nestjs/common";
 import type { Response } from "express";
-import { CurrentUserId } from "@xue-learn/core/source/libs/common/src/index.ts";
-import type { CourseSourceReadPort } from "@xue-learn/core/source/libs/domain/src/persistence/course-source-port.ts";
+import { CurrentUserId } from "@xue-learn/core/common";
+import type { CourseSourceReadPort } from "@xue-learn/core/domain/persistence/course-source-port";
 export const LOCAL_COURSE_SOURCE_CONTEXT = Symbol("LOCAL_COURSE_SOURCE_CONTEXT");
 export type LocalCourseSourceContext = { workspaceId: string; repository: CourseSourceReadPort };
 @Controller("api/course-sources")

@@ -2,7 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, realpathSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { createServer, type Server } from "node:net";
 import { resolve } from "node:path";
-import { workspaceServiceDiscoverySchema, type WorkspaceServiceDiscovery } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+import { workspaceServiceDiscoverySchema, type WorkspaceServiceDiscovery } from "@xue-learn/core/runtime-contracts";
 
 /** An OS-exclusive guard avoids PID reuse and stale-file cleanup races. */
 export function workspaceServiceGuardPort(dataPath: string): number {

@@ -38,17 +38,17 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import { ProseMarkdown } from "@xue-learn/core/source/src/components/markdown/prose-markdown.tsx";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
-import { GraphBlock } from "@xue-learn/core/source/src/components/wizard/graph-block.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
+import { ProseMarkdown } from "@xue-learn/core/components/markdown/prose-markdown";
+import { Button } from "@xue-learn/core/ui/button";
+import { GraphBlock } from "@xue-learn/core/components/wizard/graph-block";
+import { cn } from "@xue-learn/core/utils";
 import { MathSceneView } from "@/components/math/math-scene";
 import { MechanicsSandboxBlock } from "@/components/lab/mechanics-sandbox";
 import { CircuitSandboxBlock } from "@/components/lab/circuit-sandbox";
 import { ChemistryLabBlock } from "@/components/lab/chemistry-lab";
-import { MaterialVisualFrame } from "@xue-learn/core/source/src/components/wizard/interactive-material/material-visual-frame.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { MaterialVisualFrame } from "@xue-learn/core/components/wizard/interactive-material/material-visual-frame";
+import { useT } from "@xue-learn/core/i18n";
 
 const colors = [
   "var(--chart-1)",
@@ -396,7 +396,7 @@ export function NewCourseInteractionBlock({
     case "math_scene":
       return (
         <MathSceneView
-          scene={block as unknown as import("@xue-learn/core/source/libs/domain/src/index.ts").MathScene}
+          scene={block as unknown as import("@xue-learn/core/domain").MathScene}
           compact={compact}
         />
       );
@@ -404,7 +404,7 @@ export function NewCourseInteractionBlock({
       return (
         <MechanicsSandboxBlock
           block={
-            block as unknown as import("@xue-learn/core/source/libs/domain/src/index.ts").MechanicsSandbox
+            block as unknown as import("@xue-learn/core/domain").MechanicsSandbox
           }
           compact={compact}
         />
@@ -413,7 +413,7 @@ export function NewCourseInteractionBlock({
       return (
         <CircuitSandboxBlock
           block={
-            block as unknown as import("@xue-learn/core/source/libs/domain/src/index.ts").CircuitSandbox
+            block as unknown as import("@xue-learn/core/domain").CircuitSandbox
           }
           compact={compact}
         />
@@ -422,7 +422,7 @@ export function NewCourseInteractionBlock({
       return (
         <ChemistryLabBlock
           block={
-            block as unknown as import("@xue-learn/core/source/libs/domain/src/index.ts").ChemistryLabDefinition
+            block as unknown as import("@xue-learn/core/domain").ChemistryLabDefinition
           }
           compact={compact}
         />

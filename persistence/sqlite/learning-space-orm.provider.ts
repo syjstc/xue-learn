@@ -1,62 +1,62 @@
-import { LearningSpaceOrmProvider } from "@xue-learn/core/source/libs/server/src/learning-spaces/learning-space-orm.provider.ts";
-import { configureLearningMainlinePersistence } from "@xue-learn/core/source/libs/server/src/learning-mainline/persistence.ts";
-import { configureCourseDisplayPolicyPersistence } from "@xue-learn/core/source/libs/server/src/learning-spaces/course-display-policy.ts";
-import { configureLearningTrajectoryPersistence } from "@xue-learn/core/source/libs/server/src/learning-trajectory/persistence.ts";
-import { stopLearningSupplementJobs } from "@xue-learn/core/source/libs/server/src/learning-trajectory/generation.ts";
+import { LearningSpaceOrmProvider } from "@xue-learn/core/server/learning-spaces/learning-space-orm.provider";
+import { configureLearningMainlinePersistence } from "@xue-learn/core/server/learning-mainline/persistence";
+import { configureCourseDisplayPolicyPersistence } from "@xue-learn/core/server/learning-spaces/course-display-policy";
+import { configureLearningTrajectoryPersistence } from "@xue-learn/core/server/learning-trajectory/persistence";
+import { stopLearningSupplementJobs } from "@xue-learn/core/server/learning-trajectory/generation";
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
-import type { LearningGoalRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { createLearningSpaceOrganizationPersistence } from "@xue-learn/core/source/libs/server/src/learning-spaces/orm-runtime-adapter.ts";
-import { MikroOrmLearningSpaceApplicationService } from "@xue-learn/core/source/libs/server/src/learning-spaces/orm-application-service.ts";
+import type { LearningGoalRepository } from "@xue-learn/core/domain";
+import { createLearningSpaceOrganizationPersistence } from "@xue-learn/core/server/learning-spaces/orm-runtime-adapter";
+import { MikroOrmLearningSpaceApplicationService } from "@xue-learn/core/server/learning-spaces/orm-application-service";
 import type { ReferencePersistenceRuntime } from "@cognilearn/desktop-persistence/reference/runtime";
 import { resolvePersistenceMigrationsGlob, resolvePersistenceMigrationsPath } from "@cognilearn/desktop-persistence/migration-paths";
-import { configureDefaultLearningSpaceApplication } from "@xue-learn/core/source/libs/server/src/learning-systems/default-runtime.ts";
-import { configureLearnerStateMemoryRead } from "@xue-learn/core/source/libs/server/src/learner-state-memory/index.ts";
-import { configureLearnerStateProjectionRead } from "@xue-learn/core/source/libs/server/src/cognition/context.ts";
-import { configureLearnerStateProjectionRead as configureLearnerGapProjectionRead } from "@xue-learn/core/source/libs/server/src/cognition/gap-persistence.ts";
-import { configureGoalIconPersistence } from "@xue-learn/core/source/libs/server/src/goals/goal-icon-persistence.ts";
-import { configureMicroUnitPersistence } from "@xue-learn/core/source/libs/server/src/goals/micro-unit-persistence.ts";
-import { configureMaterialFollowUpPersistence } from "@xue-learn/core/source/libs/server/src/graph/material-follow-up-persistence.ts";
-import { configureAgendaPlanningSettingsPersistence } from "@xue-learn/core/source/libs/server/src/agenda/settings.ts";
-import { configureAgendaProgressPersistence } from "@xue-learn/core/source/libs/server/src/agenda/queries.ts";
-import { configureAgendaProjectionReadPersistence } from "@xue-learn/core/source/libs/server/src/agenda/queries.ts";
-import { configureAgendaPublicationPersistence } from "@xue-learn/core/source/libs/server/src/agenda/publish.ts";
-import { configureAgendaRefreshReadPersistence } from "@xue-learn/core/source/libs/server/src/agenda/refresh.ts";
-import { configureUnitSectionPlanPersistence, SECTION_GENERATION_INTERRUPTED_ERROR } from "@xue-learn/core/source/libs/server/src/sections/index.ts";
-import { configureChatNarrationPersistence } from "@xue-learn/core/source/libs/server/src/audio/chat-narration.ts";
-import { configureUnitGenerationContextPersistence } from "@xue-learn/core/source/libs/server/src/graph/unit-session.ts";
-import { configureLlmRequestLogPersistence } from "@xue-learn/core/source/libs/server/src/llm/log-persistence.ts";
-import { configureCognitiveModelPersistence } from "@xue-learn/core/source/libs/server/src/cognitive-model/persistence.ts";
-import { configureRagPersistence } from "@xue-learn/core/source/libs/server/src/rag/persistence.ts";
-import { configureAgentCheckpointPersistence } from "@xue-learn/core/source/libs/server/src/agents/core/checkpoint.ts";
-import { configureAgentGoalCreationPersistence } from "@xue-learn/core/source/libs/server/src/agents/goal-creation/persistence.ts";
-import { configureModuleStructureDraftPersistence } from "@xue-learn/core/source/libs/server/src/goal-creation/module-structure-draft-persistence.ts";
-import { configureGeneralMemoryPersistence } from "@xue-learn/core/source/libs/server/src/learning-systems/capabilities/general-memory/persistence.ts";
-import { configureFormalDerivationPersistence } from "@xue-learn/core/source/libs/server/src/learning-systems/capabilities/formal-derivation/persistence.ts";
-import { configureTeachingDerivationPersistence } from "@xue-learn/core/source/libs/server/src/learning-systems/capabilities/teaching-derivation/persistence.ts";
-import { configureTeachingSkillRuntimePersistence } from "@xue-learn/core/source/libs/server/src/teaching-skills/persistence.ts";
-import { configureModulePromptContextPersistence } from "@xue-learn/core/source/libs/server/src/goals/module-prompt-context.ts";
-import { configureLearnerLanguagePersistence } from "@xue-learn/core/source/libs/server/src/persona/learner-language.ts";
-import { configureLearnerProfilePersistence } from "@xue-learn/core/source/libs/server/src/persona/learner-profile.ts";
-import { configureAssistantQueryPersistence } from "@xue-learn/core/source/libs/server/src/assistant/queries.ts";
-import { configureTeachingSkillsCapabilityPersistence } from "@xue-learn/core/source/libs/server/src/learning-systems/capabilities/teaching-skills.ts";
-import { configureRuntimeReviewPersistence } from "@xue-learn/core/source/libs/server/src/learning-systems/capabilities/support/runtime.ts";
-import { configureUserSettingsPersistence } from "@xue-learn/core/source/libs/server/src/user-settings.ts";
-import { configureGoalTextbookPersistence } from "@xue-learn/core/source/libs/server/src/export/goal-textbook-persistence.ts";
-import { configureRequestMetricsPersistence } from "@xue-learn/core/source/libs/server/src/observability/request-metrics-persistence.ts";
-import { configureObservabilityPersistence } from "@xue-learn/core/source/libs/server/src/observability/observability-persistence.ts";
-import { configureWebKnowledgePersistence } from "@xue-learn/core/source/libs/server/src/search/web-knowledge-persistence.ts";
-import { configureTeachingPersonaResolutionPersistence } from "@xue-learn/core/source/libs/server/src/teaching-personas/index.ts";
-import { configureUnitMapContextPersistence } from "@xue-learn/core/source/libs/server/src/domain/unit-map-context-persistence.ts";
-import { configureUnitSessionPersistence } from "@xue-learn/core/source/libs/server/src/graph/unit-session-persistence.ts";
-import { configureModuleEntryReadinessRead } from "@xue-learn/core/source/libs/server/src/assessment/readiness.ts";
-import { configureContentRevisionPersistence } from "@xue-learn/core/source/libs/server/src/graph/content-revision-persistence.ts";
-import { configureGenerationRunPersistence } from "@xue-learn/core/source/libs/server/src/generation/run-persistence.ts";
-import { configureGlobalGenerationSettingsPersistence } from "@xue-learn/core/source/libs/server/src/generation/global-generation-settings-persistence.ts";
-import { configureLlmRoutingPersistence } from "@xue-learn/core/source/libs/server/src/providers/llm/routing-persistence.ts";
+import { configureDefaultLearningSpaceApplication } from "@xue-learn/core/server/learning-systems/default-runtime";
+import { configureLearnerStateMemoryRead } from "@xue-learn/core/server/learner-state-memory";
+import { configureLearnerStateProjectionRead } from "@xue-learn/core/server/cognition/context";
+import { configureLearnerStateProjectionRead as configureLearnerGapProjectionRead } from "@xue-learn/core/server/cognition/gap-persistence";
+import { configureGoalIconPersistence } from "@xue-learn/core/server/goals/goal-icon-persistence";
+import { configureMicroUnitPersistence } from "@xue-learn/core/server/goals/micro-unit-persistence";
+import { configureMaterialFollowUpPersistence } from "@xue-learn/core/server/graph/material-follow-up-persistence";
+import { configureAgendaPlanningSettingsPersistence } from "@xue-learn/core/server/agenda/settings";
+import { configureAgendaProgressPersistence } from "@xue-learn/core/server/agenda/queries";
+import { configureAgendaProjectionReadPersistence } from "@xue-learn/core/server/agenda/queries";
+import { configureAgendaPublicationPersistence } from "@xue-learn/core/server/agenda/publish";
+import { configureAgendaRefreshReadPersistence } from "@xue-learn/core/server/agenda/refresh";
+import { configureUnitSectionPlanPersistence, SECTION_GENERATION_INTERRUPTED_ERROR } from "@xue-learn/core/server/sections";
+import { configureChatNarrationPersistence } from "@xue-learn/core/server/audio/chat-narration";
+import { configureUnitGenerationContextPersistence } from "@xue-learn/core/server/graph/unit-session";
+import { configureLlmRequestLogPersistence } from "@xue-learn/core/server/llm/log-persistence";
+import { configureCognitiveModelPersistence } from "@xue-learn/core/server/cognitive-model/persistence";
+import { configureRagPersistence } from "@xue-learn/core/server/rag/persistence";
+import { configureAgentCheckpointPersistence } from "@xue-learn/core/server/agents/core/checkpoint";
+import { configureAgentGoalCreationPersistence } from "@xue-learn/core/server/agents/goal-creation/persistence";
+import { configureModuleStructureDraftPersistence } from "@xue-learn/core/server/goal-creation/module-structure-draft-persistence";
+import { configureGeneralMemoryPersistence } from "@xue-learn/core/server/learning-systems/capabilities/general-memory/persistence";
+import { configureFormalDerivationPersistence } from "@xue-learn/core/server/learning-systems/capabilities/formal-derivation/persistence";
+import { configureTeachingDerivationPersistence } from "@xue-learn/core/server/learning-systems/capabilities/teaching-derivation/persistence";
+import { configureTeachingSkillRuntimePersistence } from "@xue-learn/core/server/teaching-skills/persistence";
+import { configureModulePromptContextPersistence } from "@xue-learn/core/server/goals/module-prompt-context";
+import { configureLearnerLanguagePersistence } from "@xue-learn/core/server/persona/learner-language";
+import { configureLearnerProfilePersistence } from "@xue-learn/core/server/persona/learner-profile";
+import { configureAssistantQueryPersistence } from "@xue-learn/core/server/assistant/queries";
+import { configureTeachingSkillsCapabilityPersistence } from "@xue-learn/core/server/learning-systems/capabilities/teaching-skills";
+import { configureRuntimeReviewPersistence } from "@xue-learn/core/server/learning-systems/capabilities/support/runtime";
+import { configureUserSettingsPersistence } from "@xue-learn/core/server/user-settings";
+import { configureGoalTextbookPersistence } from "@xue-learn/core/server/export/goal-textbook-persistence";
+import { configureRequestMetricsPersistence } from "@xue-learn/core/server/observability/request-metrics-persistence";
+import { configureObservabilityPersistence } from "@xue-learn/core/server/observability/observability-persistence";
+import { configureWebKnowledgePersistence } from "@xue-learn/core/server/search/web-knowledge-persistence";
+import { configureTeachingPersonaResolutionPersistence } from "@xue-learn/core/server/teaching-personas";
+import { configureUnitMapContextPersistence } from "@xue-learn/core/server/domain/unit-map-context-persistence";
+import { configureUnitSessionPersistence } from "@xue-learn/core/server/graph/unit-session-persistence";
+import { configureModuleEntryReadinessRead } from "@xue-learn/core/server/assessment/readiness";
+import { configureContentRevisionPersistence } from "@xue-learn/core/server/graph/content-revision-persistence";
+import { configureGenerationRunPersistence } from "@xue-learn/core/server/generation/run-persistence";
+import { configureGlobalGenerationSettingsPersistence } from "@xue-learn/core/server/generation/global-generation-settings-persistence";
+import { configureLlmRoutingPersistence } from "@xue-learn/core/server/providers/llm/routing-persistence";
 import { createLearningSystemPersistenceClient } from "@cognilearn/desktop-persistence/reference/learning-system-persistence-client";
-import type { LearningGoalMutationPort, UnitSessionStateRepository, UnitStructuredCleanupRepository, UnitActivityRepository, UnitSectionProgressRepository, ModuleTestOutRepository, ModuleGenerationRetryRepository, ExplorationCurriculumReadyRepository, ModuleStructureQueueRepository, ModuleStructureDraftRepository, ModuleGenerationLeaseRepository, LearningGoalSettingsRepository, LearningGoalSummaryRepository, LearningGoalPlanRepository, SequentialCurriculumApprovalRepository, LockedModuleReplanningRepository, UnitCompletionRepository, ReviewExperienceRepository, FlashcardExperienceRepository, RagDocumentRepository, RagVectorRepository, AgentConversationRepository, DomainEventDispatchRepository, EventOutboxDeliveryRepository, EventOutboxRepository, UnitCompletionReadRepository, CompletedUnitKnowledgeReadRepository, LearningGoalTreeDeletionRepository, FoundationMasteryTransitionRepository, PreparedModulePublicationRepository, ExplorationModulePublicationRepository, ModuleSliceReconciliationRepository, CognitiveModelExpansionLeaseRepository, CognitiveModelExpansionContextRepository, CognitiveModelEventRepository, CognitiveModelInvalidationRepository, CognitiveModelGenerationRunRepository, CognitiveModelPublicationRepository, CognitiveModelPublicationFinalizationRepository, TaskAttemptRepository, VerifiedEvidenceAppendRepository, VerifiedAssessmentCompletionRepository, MaterialCheckCompletionRepository, UnitLearningProgressResetRepository, UnitDiagnosticCompletionRepository, ModuleDiagnosticCompletionRepository, MaterialReplacementRepository, MaterialEnrichmentRepository, SectionMaterialReplacementRepository, ProjectBlueprintRepository, ProjectExperienceRepository, AdaptiveAssessmentEvidenceRepository, AdaptiveAssessmentTaskRepository, AssessmentTargetRepository, UnitDiagnosticReadRepository, ModuleDiagnosticReadRepository, ModuleEntryReadinessReadRepository, PrerequisiteBridgeRepository, CognitiveModelPresentationReadRepository, LearnerStateProjectionReadRepository, LearnerStateMemoryReadRepository, LearnerStateMemoryInvalidationRepository, CognitiveEntityEvidenceReadRepository, FeynmanEvidenceRepository, SocraticEvidenceRepository, QuizSubmissionRepository, QuizSessionRepository, DiagnosticRemediationRepository, GoalIconRepository, LegacyMapUnitMutationRepository, LegacyMapReplacementRepository, OverviewCoursePublicationRepository, MicroUnitPublicationRepository, UnitSubdivisionRepository, LlmLogQueryRepository, UnitDeliveryReadRepository, UnitSessionArtifactRepository, ScenarioTheaterSessionRepository, ScenarioTheaterGenerationRepository, UnitLabRepository, MaterialRegenerationRepository, MaterialFollowUpRepository, GlobalGenerationSettingsRepository, LlmRoutingRepository, BatchContentGenerationRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { LearningGoalMutationPort, UnitSessionStateRepository, UnitStructuredCleanupRepository, UnitActivityRepository, UnitSectionProgressRepository, ModuleTestOutRepository, ModuleGenerationRetryRepository, ExplorationCurriculumReadyRepository, ModuleStructureQueueRepository, ModuleStructureDraftRepository, ModuleGenerationLeaseRepository, LearningGoalSettingsRepository, LearningGoalSummaryRepository, LearningGoalPlanRepository, SequentialCurriculumApprovalRepository, LockedModuleReplanningRepository, UnitCompletionRepository, ReviewExperienceRepository, FlashcardExperienceRepository, RagDocumentRepository, RagVectorRepository, AgentConversationRepository, DomainEventDispatchRepository, EventOutboxDeliveryRepository, EventOutboxRepository, UnitCompletionReadRepository, CompletedUnitKnowledgeReadRepository, LearningGoalTreeDeletionRepository, FoundationMasteryTransitionRepository, PreparedModulePublicationRepository, ExplorationModulePublicationRepository, ModuleSliceReconciliationRepository, CognitiveModelExpansionLeaseRepository, CognitiveModelExpansionContextRepository, CognitiveModelEventRepository, CognitiveModelInvalidationRepository, CognitiveModelGenerationRunRepository, CognitiveModelPublicationRepository, CognitiveModelPublicationFinalizationRepository, TaskAttemptRepository, VerifiedEvidenceAppendRepository, VerifiedAssessmentCompletionRepository, MaterialCheckCompletionRepository, UnitLearningProgressResetRepository, UnitDiagnosticCompletionRepository, ModuleDiagnosticCompletionRepository, MaterialReplacementRepository, MaterialEnrichmentRepository, SectionMaterialReplacementRepository, ProjectBlueprintRepository, ProjectExperienceRepository, AdaptiveAssessmentEvidenceRepository, AdaptiveAssessmentTaskRepository, AssessmentTargetRepository, UnitDiagnosticReadRepository, ModuleDiagnosticReadRepository, ModuleEntryReadinessReadRepository, PrerequisiteBridgeRepository, CognitiveModelPresentationReadRepository, LearnerStateProjectionReadRepository, LearnerStateMemoryReadRepository, LearnerStateMemoryInvalidationRepository, CognitiveEntityEvidenceReadRepository, FeynmanEvidenceRepository, SocraticEvidenceRepository, QuizSubmissionRepository, QuizSessionRepository, DiagnosticRemediationRepository, GoalIconRepository, LegacyMapUnitMutationRepository, LegacyMapReplacementRepository, OverviewCoursePublicationRepository, MicroUnitPublicationRepository, UnitSubdivisionRepository, LlmLogQueryRepository, UnitDeliveryReadRepository, UnitSessionArtifactRepository, ScenarioTheaterSessionRepository, ScenarioTheaterGenerationRepository, UnitLabRepository, MaterialRegenerationRepository, MaterialFollowUpRepository, GlobalGenerationSettingsRepository, LlmRoutingRepository, BatchContentGenerationRepository } from "@xue-learn/core/domain";
 type ReferencePersistenceModule = typeof import("@cognilearn/desktop-persistence/reference");
 let bootstrappedPersistenceRuntime: ReferencePersistenceRuntime | null = null;
 const sqliteStartupRecoveryByRuntime = new WeakMap<ReferencePersistenceRuntime, Promise<unknown>>();
@@ -110,13 +110,13 @@ async function loadReferencePersistence(): Promise<ReferencePersistenceModule> {
         const jiti = createJiti(projectRoot, {
             moduleCache: false,
             alias: {
-                "@cognilearn/common": resolve(projectRoot, "libs/common/src/index.ts"),
-                "@cognilearn/contracts": resolve(projectRoot, "libs/contracts/src/index.ts"),
-                "@cognilearn/domain": resolve(projectRoot, "libs/domain/src/index.ts"),
-                "@cognilearn/memory": resolve(projectRoot, "libs/memory/src/index.ts"),
+                "@xue-learn/core/common": resolve(projectRoot, "libs/common/src/index.ts"),
+                "@xue-learn/core/contracts": resolve(projectRoot, "libs/contracts/src/index.ts"),
+                "@xue-learn/core/domain": resolve(projectRoot, "libs/domain/src/index.ts"),
+                "@xue-learn/core/memory": resolve(projectRoot, "libs/memory/src/index.ts"),
                 "@cognilearn/mobile-core": resolve(projectRoot, "libs/mobile-core/src/index.ts"),
-                "@cognilearn/runtime-contracts": resolve(projectRoot, "libs/runtime-contracts/src/index.ts"),
-                "@cognilearn/server": resolve(projectRoot, "libs/server/src"),
+                "@xue-learn/core/runtime-contracts": resolve(projectRoot, "libs/runtime-contracts/src/index.ts"),
+                "@xue-learn/core/server": resolve(projectRoot, "libs/server/src"),
                 "@cognilearn/desktop-persistence": resolve(projectRoot, "persistence/sqlite"),
             },
         });

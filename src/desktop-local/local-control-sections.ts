@@ -8,8 +8,8 @@ import {
   Wrench,
   Cloud,
 } from "lucide-react";
-import type { TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { isDev } from "@xue-learn/core/source/src/shared/dev.ts";
+import type { TranslationKey } from "@xue-learn/core/i18n";
+import { isDev } from "@xue-learn/core/dev";
 
 export const LOCAL_CONTROL_SECTIONS = [
   {

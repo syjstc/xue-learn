@@ -3,15 +3,15 @@
 import { useMutation } from "@tanstack/react-query";
 import { ChevronDown, Download, Monitor, Smartphone } from "lucide-react";
 import { apiFetch } from "@/shared/api-client";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { supportsGoalTextbookExport } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { cn } from "@xue-learn/core/utils";
+import { supportsGoalTextbookExport } from "@xue-learn/core/client-runtime";
 
 type PdfExportLayout = "desktop" | "mobile";
 

@@ -2,7 +2,7 @@ import type {
   ProjectBlueprintRepository,
   PublishProjectBlueprintInput,
   PublishProjectBlueprintResult,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import type { ReferencePersistenceRuntime } from "./runtime.ts";
 
 /** Transaction-owning runtime adapter for capstone blueprint publication. */

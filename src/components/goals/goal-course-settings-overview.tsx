@@ -9,21 +9,21 @@ import {
   LlmMarkdown,
   LlmMarkdownInline,
 } from "@/components/markdown/llm-markdown";
-import type { GoalMapPlan } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { GoalMapPlan } from "@xue-learn/core/schemas";
 import {
   DOMAIN_TAG_LABELS,
   LEARNING_MODE_LABELS,
 } from "@/shared/goals/domain-labels";
 import { Link } from "react-router-dom";
-import { buttonVariants } from "@xue-learn/core/source/src/components/ui/button.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { buttonVariants } from "@xue-learn/core/ui/button";
+import { useT } from "@xue-learn/core/i18n";
 import { KacomDetachDevPanel } from "@/components/goals/kacom-detach-dev-panel";
 import { EnableMasteryModePanel } from "@/components/goals/enable-mastery-mode-panel";
 import { GoalContentLanguageSettings } from "@/components/goals/goal-content-language-settings";
 import {
   supportsGoalKacomDetach,
   supportsGoalMasteryTransition,
-} from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+} from "@xue-learn/core/client-runtime";
 
 function Section({
   icon,

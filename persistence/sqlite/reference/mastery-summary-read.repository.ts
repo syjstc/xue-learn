@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { MasterySummaryReadRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { MasterySummaryReadRepository } from "@xue-learn/core/domain";
 import { nullableReferenceDateValue } from "./date-value.ts";
 
 type Row = Record<string, any>;

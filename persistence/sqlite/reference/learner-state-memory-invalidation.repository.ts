@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { LearnerStateMemoryInvalidationRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { LearnerStateMemoryInvalidationRepository } from "@xue-learn/core/domain";
 
 function qualifiedTable(em: EntityManager, table: string): string {
   const schema = em.schema ?? em.config?.getSchema();

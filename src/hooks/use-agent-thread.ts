@@ -18,7 +18,7 @@ import { shouldRetainSubmittedToolUi } from "@/shared/agent/tool-ui-submitted";
 import { consumeSsePost } from "@/shared/client/consume-sse";
 import type { AgentSseEvent } from "@/shared/agent/sse";
 import type { GoalCreationSessionResponse } from "@/shared/agent/goal-creation-session";
-import type { KnowledgeActivity } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { KnowledgeActivity } from "@xue-learn/core/domain";
 import type {
   AssistantConversationContext,
   AgentMessageRecord,

@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { FoundationMasteryTransitionRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { FoundationMasteryTransitionRepository } from "@xue-learn/core/domain";
 import { MikroOrmFoundationMasteryTransitionRepository } from "./foundation-mastery-transition.repository.ts";
 
 type Call = { sql: string; params: readonly unknown[] };

@@ -8,12 +8,12 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { CornerUpLeft, Pause, MessageCircle } from "lucide-react";
-import type { LearningPosition, LearningVisit } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { LearningPosition, LearningVisit } from "@xue-learn/core/domain";
 import { AnchoredLearningMaterial } from "@/components/wizard/anchored-learning-material";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 import { apiPost } from "@/shared/api";
 import { useAssistant } from "@/components/agent/assistant-provider";
 import {

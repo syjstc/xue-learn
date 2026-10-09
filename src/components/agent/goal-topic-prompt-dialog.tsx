@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type DragEvent } from "react";
 import { FileUp, Sparkles, XIcon } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -10,7 +10,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@xue-learn/core/source/src/components/ui/dialog.tsx";
+} from "@xue-learn/core/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ImeSafeForm } from "@/components/ui/ime-safe-form";
@@ -19,9 +19,9 @@ import {
   DOCUMENT_UPLOAD_ACCEPT,
   DOCUMENT_UPLOAD_LABEL,
 } from "@/shared/domain/document-formats";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { supportsGoalInstantMicroGeneration } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
+import { supportsGoalInstantMicroGeneration } from "@xue-learn/core/client-runtime";
 
 export type MicroCreationMode = "guided" | "instant";
 

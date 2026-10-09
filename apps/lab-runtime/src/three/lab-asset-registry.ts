@@ -1,4 +1,4 @@
-import type { LabVector3 } from "@xue-learn/core/source/libs/lab-engine/src/index.ts";
+import type { LabVector3 } from "@xue-learn/core/lab-engine";
 
 export type LabAssetLicense = "CC0-1.0" | "CC-BY-4.0";
 

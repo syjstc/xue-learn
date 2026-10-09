@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { MaterialRegenerationRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { MaterialRegenerationRepository } from "@xue-learn/core/domain";
 import { MikroOrmMaterialCheckCompletionRepository } from "./material-check-completion.repository.ts";
 
 type Row = Readonly<Record<string, unknown>>;
@@ -149,7 +149,7 @@ export class MikroOrmMaterialRegenerationRepository
     expectedContentRevision: number;
     blocksJson: string;
     nextGraphStateJson: string;
-    tasks: readonly import("@xue-learn/core/source/libs/domain/src/index.ts").MaterialCheckTaskDefinition[];
+    tasks: readonly import("@xue-learn/core/domain").MaterialCheckTaskDefinition[];
   }) {
     if (!(await this.owns(input.userId, input.unitId))) {
       return { applied: false, contentRevision: input.expectedContentRevision };

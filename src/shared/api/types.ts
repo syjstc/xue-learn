@@ -1,7 +1,7 @@
-import type { GoalMapPlan } from "@xue-learn/core/source/src/shared/api/generated/index.ts";
-import type { components } from "@xue-learn/core/source/src/shared/api/generated/api.ts";
+import type { GoalMapPlan } from "@xue-learn/core/api";
+import type { components } from "@xue-learn/core/api/types";
 import type { UnitContentGenStatus } from "@/shared/domain/unit-content-status";
-import type { LearningMaterialContent, SqPreview } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { LearningMaterialContent, SqPreview } from "@xue-learn/core/schemas";
 
 export type GoalMapSummary = {
   refinedTitle?: string;

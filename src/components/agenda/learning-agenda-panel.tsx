@@ -8,7 +8,7 @@ import {
   PauseCircle,
   RefreshCw,
 } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   useAgenda,
@@ -23,7 +23,7 @@ import {
   useT,
   type TranslationKey,
   type TranslationParams,
-} from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+} from "@xue-learn/core/i18n";
 
 type AgendaTranslate = (
   key: TranslationKey,

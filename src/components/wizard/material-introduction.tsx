@@ -2,8 +2,8 @@
 
 import { Sparkles } from "lucide-react";
 import type { ReactNode } from "react";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 
 export function materialIntroductionShellClass(
   compact?: boolean,

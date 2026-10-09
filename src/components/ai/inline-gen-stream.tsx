@@ -3,8 +3,8 @@
 import type { ReactNode } from "react";
 import { AiGenStopButton } from "./ai-gen-stop-button.tsx";
 import { LlmLoadingStatus } from "./llm-loading-status.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import type { KnowledgeActivity } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import { cn } from "@xue-learn/core/utils";
+import type { KnowledgeActivity } from "@xue-learn/core/domain";
 import { KnowledgeActivityCard } from "@/components/agent/knowledge-activity-card";
 
 export function InlineGenStream({

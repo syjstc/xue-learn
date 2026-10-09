@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { CognitiveModelPublicationFinalizationRepository, CognitiveModelPublicationFinalizationResult, FinalizeCognitiveModelPublicationInput, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { CognitiveModelPublicationFinalizationRepository, CognitiveModelPublicationFinalizationResult, FinalizeCognitiveModelPublicationInput, } from "@xue-learn/core/domain";
 import { MikroOrmCognitiveModelPublicationRepository } from "./cognitive-model-publication.repository.ts";
 type Row = Readonly<Record<string, unknown>>;
 const COGNITIVE_MODEL_SCHEMA_VERSION = 1;

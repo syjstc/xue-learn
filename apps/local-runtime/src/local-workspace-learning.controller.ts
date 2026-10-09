@@ -1,7 +1,7 @@
 import {Body,Controller,Get,HttpException,Inject,Param,Post} from "@nestjs/common";
-import {CurrentUserId} from "@xue-learn/core/source/libs/common/src/index.ts";
+import {CurrentUserId} from "@xue-learn/core/common";
 import {z} from "zod";
-import type {WorkspaceLearningPort} from "@xue-learn/core/source/libs/domain/src/persistence/workspace-learning-port.ts";
+import type {WorkspaceLearningPort} from "@xue-learn/core/domain/persistence/workspace-learning-port";
 export const LOCAL_WORKSPACE_LEARNING_CONTEXT=Symbol("LOCAL_WORKSPACE_LEARNING_CONTEXT");
 export const workspaceLearningCommandSchema=z.object({expectedContentRevision:z.number().int().nonnegative(),expectedSectionRevision:z.number().int().nonnegative(),
  answers:z.record(z.string().min(1),z.union([z.number().int(),z.array(z.number().int()),z.boolean()])).optional()}).strict();

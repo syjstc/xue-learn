@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ChevronDown, List } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   Popover,
   PopoverContent,
@@ -14,10 +14,10 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@xue-learn/core/source/src/components/ui/sheet.tsx";
+} from "@xue-learn/core/ui/sheet";
 import { QuizSetList } from "./quiz-set-list.tsx";
 import type { QuizSetSummary } from "@/shared/domain/quiz-sets";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 const MOBILE_MAX_WIDTH = 1023;
 

@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { CognitiveModelExpansionLeaseRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { CognitiveModelExpansionLeaseRepository } from "@xue-learn/core/domain";
 import { MikroOrmCognitiveModelExpansionLeaseRepository } from "./cognitive-model-expansion-lease.repository.ts";
 
 type Call = { sql: string; params: readonly unknown[] };

@@ -1,5 +1,5 @@
 import type { AgentPageContext, AgentPageKind } from "@/shared/agent/types";
-import type { TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import type { TranslationKey } from "@xue-learn/core/i18n";
 
 export function isPublicCoursePath(pathname: string): boolean {
   return pathname === "/explore" || /^\/courses\/[^/]+/.test(pathname);

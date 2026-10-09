@@ -15,7 +15,7 @@ import {
   SettingsSection,
 } from "./settings-controls.tsx";
 import { Label } from "@/components/ui/label";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 export function LlmSettingsForm({
   compact = false,

@@ -15,23 +15,23 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
 import { AssistantCompanionShell } from "@/components/agent/assistant-companion-shell";
 import { GoalCreationFlow } from "@/components/agent/goal-creation-flow";
-import { useDesktopDocumentPreview } from "@xue-learn/core/source/src/components/goals/desktop-document-preview.tsx";
+import { useDesktopDocumentPreview } from "@xue-learn/core/components/goals/desktop-document-preview";
 import {
   PYTHON_EDITOR_FOLLOW_UP_OWNER,
   parsePythonAskAiMessage,
 } from "@/components/desktop-python-editor/ask-ai";
-import { useDesktopPythonEditor } from "@xue-learn/core/source/src/components/desktop-python-editor/python-editor-provider.tsx";
+import { useDesktopPythonEditor } from "@xue-learn/core/components/desktop-python-editor/python-editor-provider";
 import {
   GoalTopicPromptDialog,
   type GoalTopicPromptSubmit,
 } from "@/components/agent/goal-topic-prompt-dialog";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
-} from "@xue-learn/core/source/src/components/ui/dialog.tsx";
+} from "@xue-learn/core/ui/dialog";
 import { useInstantMicroCreation } from "@/hooks/use-instant-micro-creation";
 import { getAgentPageContext } from "@/shared/routing/routes";
 import type { AgentPageContext } from "@/shared/agent/types";
@@ -47,14 +47,14 @@ import {
   closeOwnedAssistantFollowUp,
   type ActiveAssistantFollowUp,
 } from "@/shared/domain/assistant-follow-up-owner";
-import type { MaterialAnchor } from "@xue-learn/core/source/src/shared/domain/material-anchor.ts";
-import { useI18n } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import type { MaterialAnchor } from "@xue-learn/core/shared/domain/material-anchor";
+import { useI18n } from "@xue-learn/core/i18n";
 import {
   supportsGlobalAssistant,
   supportsGoalInstantMicroGeneration,
   supportsMaterialFollowUps,
   canUseBrowserPersistentStorage,
-} from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+} from "@xue-learn/core/client-runtime";
 import {
   readLocalClientPreference,
   writeLocalClientPreference,
@@ -89,7 +89,7 @@ export type GoalCreationAdapter = {
 };
 
 export type PendingMaterialFollowUp = {
-  learningPosition?: import("@xue-learn/core/source/libs/domain/src/index.ts").LearningPosition;
+  learningPosition?: import("@xue-learn/core/domain").LearningPosition;
   activeVisitId?: string;
   goalId: string;
   unitId: string;

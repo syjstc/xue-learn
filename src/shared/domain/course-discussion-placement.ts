@@ -3,8 +3,8 @@ import {
   computeBlockKey,
   resolveBlockIndex,
   type MaterialAnchor,
-} from "@xue-learn/core/source/src/shared/domain/material-anchor.ts";
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+} from "@xue-learn/core/shared/domain/material-anchor";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
 
 /** Resolve against the whole feed so unseen discussions never migrate to an earlier paragraph. */
 export function courseDiscussionTurn(

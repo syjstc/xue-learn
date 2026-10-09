@@ -1,4 +1,4 @@
-import { GuidedImageDisplay } from "@xue-learn/core/source/src/components/course-display/guided-image-display.tsx";
+import { GuidedImageDisplay } from "@xue-learn/core/display/guided-image-display";
 import {
   CourseChatBoard,
   supportsCourseChatBoard,
@@ -6,13 +6,13 @@ import {
 } from "@/components/course-display/course-chat-board";
 ("use client");
 
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import type { TextHighlightSpan } from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
+import type { TextHighlightSpan } from "@xue-learn/core/shared/domain/material-highlight";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import type { MaterialFollowUpHandlers } from "@/hooks/use-material-text-selection";
-import type { MaterialFigureCaption } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { MaterialFigureCaption } from "@xue-learn/core/domain";
 import { NewCourseInteractionBlock } from "../course-interaction-blocks.tsx";
-import { CodeBlockShell } from "@xue-learn/core/source/src/components/markdown/code-block-shell.tsx";
+import { CodeBlockShell } from "@xue-learn/core/components/markdown/code-block-shell";
 import { Selectable } from "./selectable.tsx";
 import type {
   IllustrationRegenHandlers,

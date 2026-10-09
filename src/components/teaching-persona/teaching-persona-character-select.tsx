@@ -8,13 +8,13 @@ import {
   SlidersHorizontal,
   Trash2,
 } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import type { TeachingPersona } from "@/hooks/api/use-teaching-personas";
 import {
   groupTeachingPersonas,
   preferredPersonaForGroup,
 } from "@/shared/domain/teaching-persona-selection";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import {
   teachingPersonaAvatarSrc,
   teachingPersonaStandingSrc,
@@ -23,7 +23,7 @@ import {
   localizeTeachingPersonaContent,
   localizeTeachingPersonaName,
 } from "@/shared/teaching-persona-i18n";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 type Props = {
   personas: TeachingPersona[];

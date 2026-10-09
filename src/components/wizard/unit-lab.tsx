@@ -3,17 +3,17 @@
 import { FlaskConical, LoaderCircle, RefreshCw, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { MaterialBlockRenderer } from "@/components/wizard/interactive-material/material-block-renderer";
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
-import type { UnitLabContent } from "@xue-learn/core/source/src/shared/domain/unit-lab.ts";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
+import { useT } from "@xue-learn/core/i18n";
+import { Button } from "@xue-learn/core/ui/button";
+import type { UnitLabContent } from "@xue-learn/core/shared/domain/unit-lab";
 import { PhysicsLabBlock } from "@/components/lab/physics-lab";
 import { ChemistryLabBlock } from "@/components/lab/chemistry-lab";
 import { LabFrameHost } from "@/components/lab/lab-frame-host";
 import { labManifestFromLegacyBlock } from "@/shared/domain/lab-manifest";
-import type { LabEvent } from "@xue-learn/core/source/libs/lab-protocol/src/index.ts";
+import type { LabEvent } from "@xue-learn/core/lab-protocol";
 
-export type { UnitLabContent } from "@xue-learn/core/source/src/shared/domain/unit-lab.ts";
+export type { UnitLabContent } from "@xue-learn/core/shared/domain/unit-lab";
 
 export function UnitLabCard({
   content,
@@ -175,13 +175,13 @@ function UnitLabItemCard({
         ) : item.componentType === "physics_lab" && item.block ? (
           <PhysicsLabBlock
             block={
-              item.block as unknown as import("@xue-learn/core/source/libs/domain/src/index.ts").PhysicsLabDefinition
+              item.block as unknown as import("@xue-learn/core/domain").PhysicsLabDefinition
             }
           />
         ) : item.componentType === "chemistry_lab" && item.block ? (
           <ChemistryLabBlock
             block={
-              item.block as unknown as import("@xue-learn/core/source/libs/domain/src/index.ts").ChemistryLabDefinition
+              item.block as unknown as import("@xue-learn/core/domain").ChemistryLabDefinition
             }
           />
         ) : item.block ? (
@@ -215,7 +215,7 @@ function EmbeddedLabItem({
   manifest,
   onFinish,
 }: {
-  manifest: import("@xue-learn/core/source/libs/lab-protocol/src/index.ts").LabManifestV1;
+  manifest: import("@xue-learn/core/lab-protocol").LabManifestV1;
   onFinish?: () => void;
 }) {
   function handleEvent(event: LabEvent) {

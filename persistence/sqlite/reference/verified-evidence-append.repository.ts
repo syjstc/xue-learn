@@ -1,15 +1,15 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { AppendVerifiedEvidenceInput, VerifiedEvidenceAppendRepository, VerifiedEvidenceAppendResult, VerifiedEvidenceClaimRecord, VerifiedEvidenceJsonObject, VerifiedEvidenceLearnerDimensionStateRecord, VerifiedEvidenceLearnerStateRecord, VerifiedEvidenceLearnerStateRevisionRecord, VerifiedObservationRecord, } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import type { AttemptDeclarationRecord, RequirementRecord, } from "@xue-learn/core/source/libs/server/src/cognition/persistence/types.ts";
-import { validateObservationAgainstDeclaration } from "@xue-learn/core/source/libs/server/src/cognition/persistence/observations.ts";
-import { claimToDomain, type ClaimForInference, } from "@xue-learn/core/source/libs/server/src/cognition/persistence/state.ts";
-import { buildLearnerEntityProjection } from "@xue-learn/core/source/libs/server/src/cognition/persistence/projection.ts";
-import { evidenceClaimIsActive } from "@xue-learn/core/source/libs/server/src/cognition/persistence/lifecycle.ts";
-import { taskPolicyFromContext, transferDistanceValue, } from "@xue-learn/core/source/libs/server/src/cognition/persistence/shared.ts";
-import { deriveDeterministicMisconceptionPattern } from "@xue-learn/core/source/libs/server/src/cognition/misconceptions.ts";
-import { type CognitiveDimension, type CognitiveEntityKind, type EvidenceStrength, } from "@xue-learn/core/source/libs/server/src/cognition/types.ts";
-import { CognitionPersistenceError, COGNITION_INFERENCE_VERSION, } from "@xue-learn/core/source/libs/server/src/cognition/persistence/error.ts";
+import type { AppendVerifiedEvidenceInput, VerifiedEvidenceAppendRepository, VerifiedEvidenceAppendResult, VerifiedEvidenceClaimRecord, VerifiedEvidenceJsonObject, VerifiedEvidenceLearnerDimensionStateRecord, VerifiedEvidenceLearnerStateRecord, VerifiedEvidenceLearnerStateRevisionRecord, VerifiedObservationRecord, } from "@xue-learn/core/domain";
+import type { AttemptDeclarationRecord, RequirementRecord, } from "@xue-learn/core/server/cognition/persistence/types";
+import { validateObservationAgainstDeclaration } from "@xue-learn/core/server/cognition/persistence/observations";
+import { claimToDomain, type ClaimForInference, } from "@xue-learn/core/server/cognition/persistence/state";
+import { buildLearnerEntityProjection } from "@xue-learn/core/server/cognition/persistence/projection";
+import { evidenceClaimIsActive } from "@xue-learn/core/server/cognition/persistence/lifecycle";
+import { taskPolicyFromContext, transferDistanceValue, } from "@xue-learn/core/server/cognition/persistence/shared";
+import { deriveDeterministicMisconceptionPattern } from "@xue-learn/core/server/cognition/misconceptions";
+import { type CognitiveDimension, type CognitiveEntityKind, type EvidenceStrength, } from "@xue-learn/core/server/cognition/types";
+import { CognitionPersistenceError, COGNITION_INFERENCE_VERSION, } from "@xue-learn/core/server/cognition/persistence/error";
 import { nullableReferenceDateValue, referenceDateValue } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
 type ClaimWithObservation = Readonly<{

@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { canUseBrowserPersistentStorage } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { canUseBrowserPersistentStorage } from "@xue-learn/core/client-runtime";
 
 const RETURN_LOCATION_KEY = "xue-learn:settings-return-location";
 let localReturnLocation: string | null = null;

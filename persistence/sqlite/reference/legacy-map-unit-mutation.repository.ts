@@ -1,6 +1,6 @@
 import type { EntityManager } from "@mikro-orm/core";
 import { randomUUID } from "node:crypto";
-import type { CreateOwnedLegacyMapUnitInput, CreateOwnedLegacyMapUnitResult, DeleteOwnedLegacyMapUnitInput, DeleteOwnedLegacyMapUnitResult, LegacyMapUnitMutationRepository, LegacyMapUnitMutationFailure, LegacyMapUnitRecord, ReorderOwnedLegacyMapUnitsInput, ReorderOwnedLegacyMapUnitsResult, RefineOwnedLegacyMapUnitsInput, RefineOwnedLegacyMapUnitsResult, UpdateOwnedLegacyMapUnitInput, UpdateOwnedLegacyMapUnitResult, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { CreateOwnedLegacyMapUnitInput, CreateOwnedLegacyMapUnitResult, DeleteOwnedLegacyMapUnitInput, DeleteOwnedLegacyMapUnitResult, LegacyMapUnitMutationRepository, LegacyMapUnitMutationFailure, LegacyMapUnitRecord, ReorderOwnedLegacyMapUnitsInput, ReorderOwnedLegacyMapUnitsResult, RefineOwnedLegacyMapUnitsInput, RefineOwnedLegacyMapUnitsResult, UpdateOwnedLegacyMapUnitInput, UpdateOwnedLegacyMapUnitResult, } from "@xue-learn/core/domain";
 import { nullableReferenceDateValue } from "./date-value.ts";
 type ValueRow = Readonly<Record<string, unknown>>;
 function resultRows(result: unknown): readonly ValueRow[] {

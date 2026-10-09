@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { UnitContentRevisionRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { UnitContentRevisionRepository } from "@xue-learn/core/domain";
 
 type Row = Readonly<Record<string, unknown>>;
 function rows(result: unknown): readonly Row[] {

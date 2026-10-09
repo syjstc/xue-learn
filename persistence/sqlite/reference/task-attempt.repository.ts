@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { AdaptiveAssessmentSubmissionTask, StartTaskAttemptPersistenceInput, StartTaskAttemptPersistenceResult, TaskAttemptPersistenceRecord, TaskAttemptRepository, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { AdaptiveAssessmentSubmissionTask, StartTaskAttemptPersistenceInput, StartTaskAttemptPersistenceResult, TaskAttemptPersistenceRecord, TaskAttemptRepository, } from "@xue-learn/core/domain";
 import { nullableReferenceDateValue, referenceDateValue } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
 function resultRows(result: unknown): readonly Row[] {

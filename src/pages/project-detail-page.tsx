@@ -21,9 +21,9 @@ import {
   ProjectMilestoneWorkbench,
 } from "@/components/projects/project-milestone-workbench";
 import { useProjectDetail } from "@/hooks/api";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import { isNotFound } from "@/shared/api";
-import { useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT, type TranslationKey } from "@xue-learn/core/i18n";
 
 const DIFFICULTY_KEYS: Record<string, TranslationKey> = {
   easy: "projectDetail.difficulty.easy", medium: "projectDetail.difficulty.medium", hard: "projectDetail.difficulty.hard",

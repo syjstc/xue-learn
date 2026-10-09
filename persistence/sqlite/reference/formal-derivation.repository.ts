@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { AppendFormalDerivationStepInput, CreateFormalDerivationRunInput, FormalDerivationCheckpointRecord, FormalDerivationEventRecord, FormalDerivationRepository, FormalDerivationRunRecord, FormalDerivationRunStatus, FormalDerivationStepRecord, ReplaceFormalDerivationStepsInput, UpdateFormalDerivationRunInput, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { AppendFormalDerivationStepInput, CreateFormalDerivationRunInput, FormalDerivationCheckpointRecord, FormalDerivationEventRecord, FormalDerivationRepository, FormalDerivationRunRecord, FormalDerivationRunStatus, FormalDerivationStepRecord, ReplaceFormalDerivationStepsInput, UpdateFormalDerivationRunInput, } from "@xue-learn/core/domain";
 import { nullableReferenceDateValue, referenceDateValue, sqlTimestampParameter, } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
 function rows(result: unknown): readonly Row[] {

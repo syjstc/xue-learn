@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { apiGet, apiPost } from '@/shared/api';
-import { compileTeachingDerivation, type TeachingDerivationDocumentV1 } from "@xue-learn/core/source/libs/teaching-derivation/src/index.ts";
-import { TeachingDerivationBoard } from "@xue-learn/core/source/src/features/teaching-derivation/teaching-derivation-board.tsx";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { compileTeachingDerivation, type TeachingDerivationDocumentV1 } from "@xue-learn/core/teaching-derivation";
+import { TeachingDerivationBoard } from "@xue-learn/core/features/teaching-derivation/board";
+import { Button } from "@xue-learn/core/ui/button";
+import { useT } from "@xue-learn/core/i18n";
 type Pending = { revision: number; hash: string; document: TeachingDerivationDocumentV1; issues: { code: string; message: string }[] };
 export function PendingTeachingPresentation(props: { unitId: string; sectionId: string; onAccepted: () => void; errorKey: string }) {
  const t=useT();

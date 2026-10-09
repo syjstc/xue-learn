@@ -1,5 +1,5 @@
 import type { CSSProperties, PointerEventHandler } from "react";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 type ResizablePanelHandleProps = {
   panelSide: "left" | "right";

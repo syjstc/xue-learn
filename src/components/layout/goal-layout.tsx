@@ -27,21 +27,21 @@ import {
   resolveMicroLessonUnit,
   microGoalNavigatePath,
 } from "@/shared/domain/goal-kind";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@xue-learn/core/source/src/components/ui/sheet.tsx";
+} from "@xue-learn/core/ui/sheet";
 import { LlmMarkdownInline } from "@/components/markdown/llm-markdown";
 import type { UnitTreeNode } from "@/shared/domain/unit-tree-build";
 import type { GoalModule } from "@/shared/api";
 import { useGoalCreationSessionByGoal } from "@/hooks/use-goal-creation-session";
 import { GoalCreationStatusCard } from "@/components/agent/goal-creation-status-card";
 import { DesktopTitlebarPortal } from "@/components/layout/desktop-titlebar";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import {
   Popover,
   PopoverContent,

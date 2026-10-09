@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { ModuleGenerationLeaseRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { ModuleGenerationLeaseRepository } from "@xue-learn/core/domain";
 import { MikroOrmModuleGenerationLeaseRepository } from "./module-generation-lease.repository.ts";
 
 type Call = { sql: string; params: readonly unknown[] };

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { z } from "zod";
-import { encryptedSyncEnvelopeSchema } from "@xue-learn/core/source/libs/server/src/personal-sync/index.ts";
+import { encryptedSyncEnvelopeSchema } from "@xue-learn/core/server/personal-sync";
 import { PersonalSyncService } from "@cognilearn/desktop-persistence/personal-sync/personal-sync.service";
 
 const acknowledgementSchema = z.object({

@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { LearningSystemPersistenceClient } from "@xue-learn/core/source/libs/server/src/learning-systems/persistence-client.ts";
+import type { LearningSystemPersistenceClient } from "@xue-learn/core/server/learning-systems/persistence-client";
 import { referenceDateValue } from "./date-value.ts";
 
 type Row=Record<string,any>;

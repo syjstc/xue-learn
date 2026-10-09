@@ -1,9 +1,9 @@
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 
 export type Theme = "light" | "dark" | "system";
 export type ResolvedTheme = "light" | "dark";
 
-export { designTokens } from "@xue-learn/core/source/src/shared/design-tokens.ts";
+export { designTokens } from "@xue-learn/core/shared/design-tokens";
 
 export const THEME_STORAGE_KEY = "xue-learn-theme";
 export const DEFAULT_THEME: Theme = "system";

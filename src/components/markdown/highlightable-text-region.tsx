@@ -1,9 +1,9 @@
 "use client";
 
-import type { TextHighlightSpan } from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { TextHighlightSpan } from "@xue-learn/core/shared/domain/material-highlight";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import { RichText } from "@/components/markdown/rich-text";
-import type { ProseMarkdownVariant } from "@xue-learn/core/source/src/components/markdown/prose-markdown.tsx";
+import type { ProseMarkdownVariant } from "@xue-learn/core/components/markdown/prose-markdown";
 
 /**
  * Selectable course text with follow-up highlights.

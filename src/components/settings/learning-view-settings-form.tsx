@@ -7,8 +7,8 @@ import {
   type LearningViewMode,
 } from "@/hooks/api/use-settings";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT, type TranslationKey } from "@xue-learn/core/i18n";
 
 const OPTIONS: Array<{
   value: LearningViewMode;

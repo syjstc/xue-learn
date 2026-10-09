@@ -1,4 +1,4 @@
-import type { PostQuizStep } from "@xue-learn/core/source/src/shared/features.ts";
+import type { PostQuizStep } from "@xue-learn/core/features";
 
 export type QuizSetTypeCounts = {
   mcq: number;

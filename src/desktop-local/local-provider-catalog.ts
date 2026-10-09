@@ -4,7 +4,7 @@ import {
   type CustomThinkingProtocol,
   type LocalChatThinkingSettings,
   type LocalProviderId,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import { minimaxThinkingConfigurable } from "@/shared/llm/minimax-thinking";
 import { doubaoThinkingConfigurable } from "@/shared/llm/doubao-thinking";
 

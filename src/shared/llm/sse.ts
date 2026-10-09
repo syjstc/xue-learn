@@ -1,6 +1,6 @@
 /** Frontend SSE event types (mirror @cognilearn/contracts). */
 import type { LearningAccess } from "@/shared/domain/learning-access";
-import type { KnowledgeActivity } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { KnowledgeActivity } from "@xue-learn/core/domain";
 
 export type SseEvent =
   | { type: "run"; runId: string }
@@ -140,7 +140,7 @@ export type SseEvent =
     }
   | {
       type: "material_delta";
-      delta: import("@xue-learn/core/source/libs/contracts/src/index.ts").MaterialDelta;
+      delta: import("@xue-learn/core/contracts").MaterialDelta;
       reset?: boolean;
       completeBlockCount: number;
       placeholderBlockCount?: number;

@@ -1,5 +1,5 @@
-import type { RuntimeDescriptor } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
-import type { LearningSpaceOrmProvider } from "@xue-learn/core/source/libs/server/src/learning-spaces/learning-space-orm.provider.ts";
+import type { RuntimeDescriptor } from "@xue-learn/core/runtime-contracts";
+import type { LearningSpaceOrmProvider } from "@xue-learn/core/server/learning-spaces/learning-space-orm.provider";
 import { LocalHealthController } from "./local-health.controller.ts";
 
 describe("desktop-local health v2", () => {

@@ -1,11 +1,11 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiGet } from "@/shared/api";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 import type {
   LearningBranch,
   LearningTrajectorySnapshot,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+} from "@xue-learn/core/domain";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
 export const trajectoryKey = ["learning-trajectory"] as const;
 export function useLearningTrajectory(unitId?: string) {
   return useQuery({

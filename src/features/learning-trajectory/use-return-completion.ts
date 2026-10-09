@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiGet, apiPost } from "@/shared/api";
-import type { LearningVisit } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { LearningVisit } from "@xue-learn/core/domain";
 import { useRefreshLearningTrajectory } from "./use-learning-trajectory.ts";
 /** Replay only user-authored return actions, resolving stale position-save revisions. */
 export function useReturnCompletion(unitId: string) {

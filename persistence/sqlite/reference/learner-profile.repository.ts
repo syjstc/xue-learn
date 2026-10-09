@@ -3,7 +3,7 @@ import type {
   LearnerProfileRecord,
   LearnerProfileRepository,
   UpsertLearnerProfileInput,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { LearnerProfileEntity } from "./learner-profile.entity.ts";
 
 function toRecord(entity: LearnerProfileEntity): LearnerProfileRecord {

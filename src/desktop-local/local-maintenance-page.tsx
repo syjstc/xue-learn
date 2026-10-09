@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { RotateCcw } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { useConfirm } from "@/hooks/use-confirm";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import { unitContentCache } from "@/shared/storage/unit-content-cache";
 import { getDesktopBridge } from "./runtime.ts";
 

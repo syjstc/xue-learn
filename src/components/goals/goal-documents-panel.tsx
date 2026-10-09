@@ -16,14 +16,14 @@ import {
 } from "@/hooks/api";
 import { useConfirm } from "@/hooks/use-confirm";
 import type { UploadedGoalDocument } from "@/shared/api";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import { DOCUMENT_UPLOAD_ACCEPT } from "@/shared/domain/document-formats";
-import { useI18n, useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { supportsGoalDocumentUrls } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
-import { useDesktopDocumentPreview } from "@xue-learn/core/source/src/components/goals/desktop-document-preview.tsx";
+import { useI18n, useT } from "@xue-learn/core/i18n";
+import { supportsGoalDocumentUrls } from "@xue-learn/core/client-runtime";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
+import { useDesktopDocumentPreview } from "@xue-learn/core/components/goals/desktop-document-preview";
 import { GoalWebKnowledgePanel } from "./goal-web-knowledge-panel.tsx";
 
 const WEB_SEARCH_REFERENCE_FILENAME = "网页搜索参考.md";

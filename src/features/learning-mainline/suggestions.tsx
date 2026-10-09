@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { MainlineDecision } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { MainlineDecision } from "@xue-learn/core/domain";
 import { apiGet } from "@/shared/api";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { Button } from "@xue-learn/core/ui/button";
+import { useT } from "@xue-learn/core/i18n";
 import { useMainline } from "./provider.tsx";
 import { mainlineEnabled } from "./enabled.ts";
 import { currentLearningPosition } from "@/features/learning-trajectory/navigation";

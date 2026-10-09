@@ -1,5 +1,5 @@
-import type { RuntimeDescriptor } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
-import { canUseBrowserPersistentStorage } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import type { RuntimeDescriptor } from "@xue-learn/core/runtime-contracts";
+import { canUseBrowserPersistentStorage } from "@xue-learn/core/client-runtime";
 import {
   readLocalClientPreference,
   writeLocalClientPreference,

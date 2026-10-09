@@ -1,9 +1,9 @@
 import {MikroOrmMaterialCheckCompletionRuntimeAdapter} from "./reference/material-check-completion.runtime.ts";
 import type { EntityManager } from "@mikro-orm/core";
-import type { WorkspaceLearningPort } from "@xue-learn/core/source/libs/domain/src/persistence/workspace-learning-port.ts";
+import type { WorkspaceLearningPort } from "@xue-learn/core/domain/persistence/workspace-learning-port";
 import type { ReferencePersistenceRuntime } from "./reference/runtime.ts";
-import { getUnitSectionContent, getUnitSectionManifest, getAggregatedUnitMaterial, completeUnitSection } from "@xue-learn/core/source/libs/server/src/sections/index.ts";
-import { publishedMaterialCheckDefinitions, submitSectionMiniTestAnswers } from "@xue-learn/core/source/libs/server/src/assessment/index.ts";
+import { getUnitSectionContent, getUnitSectionManifest, getAggregatedUnitMaterial, completeUnitSection } from "@xue-learn/core/server/sections";
+import { publishedMaterialCheckDefinitions, submitSectionMiniTestAnswers } from "@xue-learn/core/server/assessment";
 async function query(em: EntityManager, sql: string, params: unknown[] = []) {
   return await em.getConnection().execute(sql, params, undefined, em.getTransactionContext()) as Record<string, unknown>[];
 }

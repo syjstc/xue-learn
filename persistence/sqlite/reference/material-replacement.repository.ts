@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import { MaterialReplacementStaleRevisionError, type MaterialReplacementInput, type MaterialReplacementRepository, type MaterialReplacementResult, } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { CognitionPersistenceError } from "@xue-learn/core/source/libs/server/src/cognition/persistence/error.ts";
+import { MaterialReplacementStaleRevisionError, type MaterialReplacementInput, type MaterialReplacementRepository, type MaterialReplacementResult, } from "@xue-learn/core/domain";
+import { CognitionPersistenceError } from "@xue-learn/core/server/cognition/persistence/error";
 import { MikroOrmMaterialCheckCompletionRepository } from "./material-check-completion.repository.ts";
 import { MikroOrmUnitLearningProgressResetRepository } from "./unit-learning-progress-reset.repository.ts";
 type Row = Readonly<Record<string, unknown>>;

@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { LearningBranch, LearningBranchDraft, LearningTrajectoryContext, LearningTrajectoryEvent, LearningTrajectoryRepository, LearningVisit, } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { ensurePersonalSyncCapture } from "@xue-learn/core/source/libs/server/src/personal-sync/capture.ts";
+import type { LearningBranch, LearningBranchDraft, LearningTrajectoryContext, LearningTrajectoryEvent, LearningTrajectoryRepository, LearningVisit, } from "@xue-learn/core/domain";
+import { ensurePersonalSyncCapture } from "@xue-learn/core/server/personal-sync/capture";
 type Row = Record<string, unknown>;
 const rows = (v: unknown): Row[] => Array.isArray(v) ? v : ((v as {
     rows?: Row[];

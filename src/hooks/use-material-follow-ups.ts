@@ -17,8 +17,8 @@ import {
   type FollowUpMessage,
   type MaterialAnchor,
   type MaterialFollowUpRecord,
-} from "@xue-learn/core/source/src/shared/domain/material-anchor.ts";
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+} from "@xue-learn/core/shared/domain/material-anchor";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
 import {
   createFollowUpPanelState,
   createFollowUpRequestLifecycle,
@@ -26,8 +26,8 @@ import {
 } from "@/shared/domain/follow-up-panel-state";
 
 import type { PendingToolUi } from "@/shared/agent/types";
-import type { KnowledgeActivity } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import type { KnowledgeActivity } from "@xue-learn/core/domain";
+import { useT } from "@xue-learn/core/i18n";
 
 export type FollowUpStreamState = {
   messages: FollowUpMessage[];
@@ -102,7 +102,7 @@ export function useMaterialFollowUps(
       threadId?: string | null,
       context?: {
         quotedText?: string;
-        learningPosition?: import("@xue-learn/core/source/libs/domain/src/index.ts").LearningPosition;
+        learningPosition?: import("@xue-learn/core/domain").LearningPosition;
         activeVisitId?: string;
       },
     ): Promise<boolean> => {
@@ -262,7 +262,7 @@ export function useMaterialFollowUps(
       threadId?: string | null,
       context?: {
         quotedText?: string;
-        learningPosition?: import("@xue-learn/core/source/libs/domain/src/index.ts").LearningPosition;
+        learningPosition?: import("@xue-learn/core/domain").LearningPosition;
         activeVisitId?: string;
       },
     ) => {

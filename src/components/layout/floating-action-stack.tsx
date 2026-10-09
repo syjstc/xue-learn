@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { isPublicCoursePath } from "@/shared/routing/routes";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 export function FloatingActionStack({
   children,

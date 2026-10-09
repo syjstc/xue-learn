@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import type { PhysicsLabDefinition } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { PhysicsLabDefinition } from "@xue-learn/core/domain";
 import { LabFrameHost } from "./lab-frame-host.tsx";
 import { physicsLabManifest } from "@/shared/domain/lab-manifest";
 

@@ -13,7 +13,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
 } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { DesktopTitlebarPortal } from "@/components/layout/desktop-titlebar";
 import {
   Sheet,
@@ -21,14 +21,14 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@xue-learn/core/source/src/components/ui/sheet.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+} from "@xue-learn/core/ui/sheet";
+import { cn } from "@xue-learn/core/utils";
 import type {
   UnitJourneyActivity,
   UnitJourneyNode,
   UnitJourneyReference,
 } from "./unit-journey.ts";
-import { useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT, type TranslationKey } from "@xue-learn/core/i18n";
 
 function StatusIcon({ node }: { node: UnitJourneyNode }) {
   if (node.status === "completed") return <Check aria-hidden />;

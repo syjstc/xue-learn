@@ -6,10 +6,10 @@ import {
   expandCompactLogPayload,
   formatLogJson,
 } from "@/components/dev/llm-log-display";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
-import { copyTextToClipboard } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { Button } from "@xue-learn/core/ui/button";
+import { cn } from "@xue-learn/core/utils";
+import { copyTextToClipboard } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 
 const LONG_STRING_CHARS = 240;
 const DEFAULT_EXPAND_DEPTH = 1;

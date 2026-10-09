@@ -17,10 +17,10 @@ import {
   type CircuitSolution,
   type CircuitSolvedPart,
   type SchematicSymbol,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { LabShell } from "./lab-shell.tsx";
 import { Slider } from "@/components/ui/slider";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 export function CircuitSandboxBlock({
   block,

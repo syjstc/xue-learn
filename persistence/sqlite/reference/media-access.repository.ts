@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { MediaAccessRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { MediaAccessRepository } from "@xue-learn/core/domain";
 
 function rows(result: unknown): readonly unknown[] {
   if (Array.isArray(result)) return result;

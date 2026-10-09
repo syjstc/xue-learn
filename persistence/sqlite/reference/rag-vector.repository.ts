@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { LocalEmbeddingIndexRecord, RagVectorFilter, RagVectorRepository, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { LocalEmbeddingIndexRecord, RagVectorFilter, RagVectorRepository, } from "@xue-learn/core/domain";
 import { randomUUID } from "node:crypto";
 import { referenceDateValue } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;

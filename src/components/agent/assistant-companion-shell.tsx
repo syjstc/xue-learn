@@ -14,9 +14,9 @@ import { GoalCreationRetryButton } from "@/components/agent/goal-creation-retry-
 import {
   DesktopDocumentPreviewView,
   useDesktopDocumentPreview,
-} from "@xue-learn/core/source/src/components/goals/desktop-document-preview.tsx";
+} from "@xue-learn/core/components/goals/desktop-document-preview";
 import { QuickSettingsPanel } from "@/components/settings/quick-settings-panel";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { ResizablePanelHandle } from "@/components/ui/resizable-panel-handle";
 import type {
   PendingMaterialFollowUp,
@@ -42,12 +42,12 @@ import {
 } from "@/shared/agent/assistant-companion-state";
 import { resolveCompanionPresentation } from "@/shared/agent/companion-presentation";
 import { DesktopPythonEditorView } from "@/components/desktop-python-editor/editor-pane";
-import { useDesktopPythonEditor } from "@xue-learn/core/source/src/components/desktop-python-editor/python-editor-provider.tsx";
-import { supportsScopedAssistantTextThreads } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useDesktopPythonEditor } from "@xue-learn/core/components/desktop-python-editor/python-editor-provider";
+import { supportsScopedAssistantTextThreads } from "@xue-learn/core/client-runtime";
 import { resolveAssistantThreadBinding } from "@/shared/agent/assistant-scope";
 import { agentDoneDestination } from "@/shared/agent/done-event";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useI18n } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useI18n } from "@xue-learn/core/i18n";
 
 type AssistantCompanionShellProps = {
   mode: AssistantCompanionMode;

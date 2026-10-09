@@ -1,6 +1,6 @@
 import type {WorkspaceServiceLifecycle} from "./workspace-service-lifecycle.ts";
-import { runWithPresentationCapabilities } from "@xue-learn/core/source/libs/server/src/llm/display-capabilities.ts";
-import { presentationCapabilitiesSchema } from "@xue-learn/core/source/libs/domain/src/presentation-capabilities.ts";
+import { runWithPresentationCapabilities } from "@xue-learn/core/server/llm/display-capabilities";
+import { presentationCapabilitiesSchema } from "@xue-learn/core/domain/presentation-capabilities";
 import { createHash, timingSafeEqual } from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
 import {
@@ -8,9 +8,9 @@ import {
   classifyPersonalSyncLeaseRequest,
   localRoutePolicy,
   type PersonalSyncLeaseTarget,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import type { WorkspaceServiceSessions } from "./workspace-service-sessions.ts";
-import { runWithPersonalSyncCapture } from "@xue-learn/core/source/libs/server/src/personal-sync/index.ts";
+import { runWithPersonalSyncCapture } from "@xue-learn/core/server/personal-sync";
 
 const FORGED_IDENTITY_HEADERS = [
   "x-user-id",

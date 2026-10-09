@@ -1,4 +1,4 @@
-import type { UnitSubdivisionRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { UnitSubdivisionRepository } from "@xue-learn/core/domain";
 import type { ReferencePersistenceRuntime } from "./runtime.ts";
 export class MikroOrmUnitSubdivisionRuntimeAdapter implements UnitSubdivisionRepository {
   constructor(private readonly runtime: ReferencePersistenceRuntime) {}

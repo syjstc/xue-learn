@@ -9,7 +9,7 @@ import type {
   FindCognitiveModelRunInput,
   ReadCognitiveModelRunEventInput,
   StartCognitiveModelRunInput,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 
 type Row = Readonly<Record<string, unknown>>;
 

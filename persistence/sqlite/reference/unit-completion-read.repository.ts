@@ -2,7 +2,7 @@ import type { EntityManager } from "@mikro-orm/core";
 import type {
   UnitCompletionContext,
   UnitCompletionReadRepository,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { nullableReferenceDateValue } from "./date-value.ts";
 
 type Row = Readonly<Record<string, unknown>>;

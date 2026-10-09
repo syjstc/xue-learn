@@ -1,10 +1,10 @@
 "use client";
 
 import type { Dispatch, MutableRefObject, SetStateAction } from "react";
-import { applyMaterialDelta } from "@xue-learn/core/source/libs/contracts/src/index.ts";
+import { applyMaterialDelta } from "@xue-learn/core/contracts";
 import type { SseEvent } from "@/shared/llm/sse";
 import { apiGet, type UnitSectionManifest } from "@/shared/api";
-import type { LearningMaterialContent, SqPreview } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { LearningMaterialContent, SqPreview } from "@xue-learn/core/schemas";
 import { clearUnitInstantMicro } from "@/shared/goals/instant-micro-creation";
 import {
   learningAccessFromEvent,

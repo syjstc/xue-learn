@@ -13,7 +13,7 @@ import {
   CONTENT_LANGUAGES,
   getContentLanguageLabel,
 } from "@/shared/i18n/content-language";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 const OPTIONS = CONTENT_LANGUAGES.map((code) => ({
   value: code,

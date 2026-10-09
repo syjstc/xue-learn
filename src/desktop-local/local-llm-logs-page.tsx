@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ScrollText } from "lucide-react";
 import { LlmLogsViewer } from "@/components/dev/llm-logs-viewer";
 import { apiGet } from "@/shared/api";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 const API_BASE = "/api/local/logs/llm";
 

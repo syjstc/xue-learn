@@ -108,8 +108,8 @@ importers:
         specifier: 20.1.7
         version: 20.1.7
       '@xue-learn/core':
-        specifier: file:vendor/xue-learn-core-0.2.0-4e5c5c89f202.tgz
-        version: file:vendor/xue-learn-core-0.2.0-4e5c5c89f202.tgz(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(encoding@0.1.13)(immer@11.1.21)(openai@6.49.0(ws@8.22.0)(zod@4.4.3))(ws@8.22.0)
+        specifier: file:vendor/xue-learn-core-0.2.1-0ad52d0d1d8a.tgz
+        version: file:vendor/xue-learn-core-0.2.1-0ad52d0d1d8a.tgz(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(encoding@0.1.13)(immer@11.1.21)(openai@6.49.0(ws@8.22.0)(zod@4.4.3))(ws@8.22.0)
       '@xyflow/react':
         specifier: 12.11.0
         version: 12.11.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(immer@11.1.21)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -379,8 +379,8 @@ importers:
         specifier: ^9.7.0
         version: 9.7.0(@types/react@19.2.17)(immer@11.1.21)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(three@0.185.1)
       '@xue-learn/core':
-        specifier: file:../../vendor/xue-learn-core-0.2.0-4e5c5c89f202.tgz
-        version: file:vendor/xue-learn-core-0.2.0-4e5c5c89f202.tgz(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(encoding@0.1.13)(immer@11.1.21)(openai@6.49.0(ws@8.22.0)(zod@4.4.3))(ws@8.22.0)
+        specifier: file:../../vendor/xue-learn-core-0.2.1-0ad52d0d1d8a.tgz
+        version: file:vendor/xue-learn-core-0.2.1-0ad52d0d1d8a.tgz(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(encoding@0.1.13)(immer@11.1.21)(openai@6.49.0(ws@8.22.0)(zod@4.4.3))(ws@8.22.0)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -2763,9 +2763,9 @@ packages:
   '@xtuc/long@4.2.2':
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
 
-  '@xue-learn/core@file:vendor/xue-learn-core-0.2.0-4e5c5c89f202.tgz':
-    resolution: {integrity: sha512-pczpiIA09NSTzrAl/tDNiqKEOzL6io3fxj6YKR3SxayGT3QtdUWuzc+1UiD3S5GtpWFAQx2F010g8dNdWpbNNQ==, tarball: file:vendor/xue-learn-core-0.2.0-4e5c5c89f202.tgz}
-    version: 0.2.0
+  '@xue-learn/core@file:vendor/xue-learn-core-0.2.1-0ad52d0d1d8a.tgz':
+    resolution: {integrity: sha512-fv3RcTPKT/d3CLJCmdIiE5jzESCl9Hdn6D9WzPxGuCcKwxd8dfd+1RKhB5Cbm8/8H8ui6cLM8sH1MaxsFgu85A==, tarball: file:vendor/xue-learn-core-0.2.1-0ad52d0d1d8a.tgz}
+    version: 0.2.1
 
   '@xyflow/react@12.11.0':
     resolution: {integrity: sha512-na4IO33FSs2OS72hASgZDmTYwFAkef7Z74uBUVrong3ARmQQHfnRUVaCFn1kTt5LbS6pK03TbYjCPGLjLFfziA==}
@@ -9649,7 +9649,7 @@ snapshots:
 
   '@xtuc/long@4.2.2': {}
 
-  '@xue-learn/core@file:vendor/xue-learn-core-0.2.0-4e5c5c89f202.tgz(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(encoding@0.1.13)(immer@11.1.21)(openai@6.49.0(ws@8.22.0)(zod@4.4.3))(ws@8.22.0)':
+  '@xue-learn/core@file:vendor/xue-learn-core-0.2.1-0ad52d0d1d8a.tgz(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(encoding@0.1.13)(immer@11.1.21)(openai@6.49.0(ws@8.22.0)(zod@4.4.3))(ws@8.22.0)':
     dependencies:
       '@astral-sh/ruff-wasm-nodejs': 0.16.0
       '@base-ui/react': 1.5.0(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)

@@ -1,4 +1,4 @@
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 /**
  * Blinking caret for plain-text typewriter / empty streaming states.

@@ -4,7 +4,7 @@ import { LocalResourceSettingsController } from "./local-resource-settings.contr
 const readLocalRuntimeSettings = jest.fn();
 const saveLocalRuntimeSettings = jest.fn();
 
-jest.mock("@xue-learn/core/source/libs/server/src/rag/local-runtime-settings.ts", () => ({
+jest.mock("@xue-learn/core/server/rag/local-runtime-settings", () => ({
   LOCAL_RAG_MAX_CHUNKS_MIN: 1,
   LOCAL_RAG_MAX_CHUNKS_MAX: 10_000,
   localRuntimeSettingsSchema: jest

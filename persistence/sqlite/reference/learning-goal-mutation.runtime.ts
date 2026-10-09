@@ -4,7 +4,7 @@ import type {
   LearningGoalMutationPort,
   UpdateOwnedLearningGoalSemanticInput,
   UpdateOwnedLearningGoalSemanticResult,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import type { ReferencePersistenceRuntime } from "./runtime.ts";
 import { LearningGoalMutationService } from "./learning-goal-mutation.service.ts";
 

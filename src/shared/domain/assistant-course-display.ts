@@ -1,9 +1,9 @@
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import { resolveParagraphCue } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
+import { resolveParagraphCue } from "@xue-learn/core/domain";
 import {
   supportsCourseDetailBuild,
   courseBuildHistoryTargets,
-} from "@xue-learn/core/source/src/shared/domain/course-card-build.ts";
+} from "@xue-learn/core/shared/domain/course-card-build";
 import type {
   AssistantCourseFeedBlock,
   AssistantCourseFeedTurn,

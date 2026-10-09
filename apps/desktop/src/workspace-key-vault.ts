@@ -1,6 +1,6 @@
 import { chmod, mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
-import { workspaceIdSchema } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+import { workspaceIdSchema } from "@xue-learn/core/runtime-contracts";
 import { z } from "zod";
 import type { SafeStoragePort } from "./credential-vault.ts";
 

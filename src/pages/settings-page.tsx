@@ -25,10 +25,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { isDev } from "@xue-learn/core/source/src/shared/dev.ts";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { isDev } from "@xue-learn/core/dev";
+import { cn } from "@xue-learn/core/utils";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 
 function SettingsCard({
   title,

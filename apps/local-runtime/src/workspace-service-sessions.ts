@@ -1,6 +1,6 @@
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { workspaceServiceSessionRequestSchema, type WorkspaceServiceCapability, type WorkspaceServiceSessionRequest,
-  type WorkspaceServiceSession } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+  type WorkspaceServiceSession } from "@xue-learn/core/runtime-contracts";
 const digest = (token: string) => createHash("sha256").update(token).digest("hex");
 const READ_CAPABILITIES: readonly WorkspaceServiceCapability[] = ["course.catalog.read", "course.content.read", "course.assets.read"];
 export class WorkspaceServiceSessions {

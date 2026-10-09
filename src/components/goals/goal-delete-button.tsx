@@ -1,10 +1,10 @@
 import { Trash2 } from "lucide-react";
 import { useDeleteGoal } from "@/hooks/api";
 import { useConfirm } from "@/hooks/use-confirm";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { apiGet, type FoundationGoalsResponse } from "@/shared/api";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 function deleteGoalWarning(
   goalTitle: string,

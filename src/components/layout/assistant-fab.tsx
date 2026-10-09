@@ -1,13 +1,13 @@
 import { useLocation } from "react-router-dom";
 import { useAssistant } from "@/components/agent/assistant-provider";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { useTeachingPersonas } from "@/hooks/api/use-teaching-personas";
 import { useGlobalBriefing } from "@/hooks/use-agent-thread";
 import { getGoalIdFromPath } from "@/shared/routing/routes";
 import { teachingPersonaAvatarSrc } from "@/shared/teaching-persona-avatar";
 import { localizeTeachingPersonaName } from "@/shared/teaching-persona-i18n";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 
 export function AssistantFab() {
   const t = useT();

@@ -25,7 +25,7 @@ import {
   useRetryModuleGeneration,
 } from "@/hooks/api";
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button, buttonVariants } from "@xue-learn/core/ui/button";
 import { Card } from "@/components/ui/card";
 import { LlmMarkdownInline } from "@/components/markdown/llm-markdown";
 import { statusLabel } from "@/shared/domain/unit-status";
@@ -35,7 +35,7 @@ import {
   cognitivePercent,
   learnerConfidenceLabel,
 } from "@/shared/domain/cognitive-model";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import {
   formatMasteryDimensions,
   type MasterySummary,
@@ -43,7 +43,7 @@ import {
 } from "@/shared/domain/mastery";
 import type { GoalModuleDetail } from "@/shared/api/types";
 import { getUserFacingApiErrorMessage } from "@/shared/api";
-import { useT, type TranslationKey, type TranslationParams } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT, type TranslationKey, type TranslationParams } from "@xue-learn/core/i18n";
 import { resolveModuleProgressAction } from "@/shared/domain/module-progress-action";
 import { LastLearnedUnitCard } from "@/components/goals/last-learned-unit-card";
 import { resolveModuleLastLearnedUnit } from "@/shared/domain/last-learned-unit";

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Copy, RefreshCw, TriangleAlert, X } from "lucide-react";
 import { apiGet } from "@/shared/api";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 type ErrorSource = "api" | "worker" | "internal";
 type StatusFilter = "5xx" | "409" | "422" | "429" | "";

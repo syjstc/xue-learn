@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { ExplorationModulePublicationRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { ExplorationModulePublicationRepository } from "@xue-learn/core/domain";
 import { MikroOrmExplorationModulePublicationRepository } from "./exploration-module-publication.repository.ts";
 
 type Call = { sql: string; params: readonly unknown[] };

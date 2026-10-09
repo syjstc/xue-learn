@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { QuizSubmissionItem, QuizSubmissionJsonObject, QuizSubmissionTask, QuizSubmissionTaskRequirement, RecordQuizSubmissionInput, RecordQuizSubmissionResult, QuizSubmissionRepository, } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { CognitionPersistenceError } from "@xue-learn/core/source/libs/server/src/cognition/persistence/error.ts";
+import type { QuizSubmissionItem, QuizSubmissionJsonObject, QuizSubmissionTask, QuizSubmissionTaskRequirement, RecordQuizSubmissionInput, RecordQuizSubmissionResult, QuizSubmissionRepository, } from "@xue-learn/core/domain";
+import { CognitionPersistenceError } from "@xue-learn/core/server/cognition/persistence/error";
 import { MikroOrmTaskAttemptRepository } from "./task-attempt.repository.ts";
 import { MikroOrmVerifiedEvidenceAppendRepository } from "./verified-evidence-append.repository.ts";
 type Row = Readonly<Record<string, unknown>>;

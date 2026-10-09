@@ -1,10 +1,10 @@
 import { RotateCcw } from "lucide-react";
 import { useIsMutating } from "@tanstack/react-query";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useGoalCreationSessionActions } from "@/hooks/use-goal-creation-session";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 
 export function GoalCreationRetryButton({
   sessionId,

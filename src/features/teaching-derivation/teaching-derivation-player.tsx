@@ -8,14 +8,14 @@ import {
   resolveTeachingDerivationDerived,
   type TeachingDerivationDerivedV1,
   type TeachingDerivationDocumentV1,
-} from "@xue-learn/core/source/libs/teaching-derivation/src/index.ts";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+} from "@xue-learn/core/teaching-derivation";
+import { Button } from "@xue-learn/core/ui/button";
 import { AssistantChatMessage } from "@/components/wizard/conversation/assistant-chat-message";
 import { MaterialBlockRenderer } from "@/components/wizard/interactive-material/material-block-renderer";
-import { TeachingDerivationBoard } from "@xue-learn/core/source/src/features/teaching-derivation/teaching-derivation-board.tsx";
+import { TeachingDerivationBoard } from "@xue-learn/core/features/teaching-derivation/board";
 import { FormulaTreeDebug } from "@/features/teaching-derivation/formula-tree-debug";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
+import { useT } from "@xue-learn/core/i18n";
 import { EMPTY_HIGHLIGHTS } from "@/features/teaching-derivation/empty-highlights";
 
 export function TeachingDerivationPlayer({

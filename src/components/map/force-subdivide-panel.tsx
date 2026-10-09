@@ -3,7 +3,7 @@
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Layers, MessageSquare, RefreshCw, Sparkles } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { useAssistant } from "@/components/agent/assistant-provider";
 import { InlineGenStream } from "@/components/ai/inline-gen-stream";
 import { LlmMarkdownInline } from "@/components/markdown/llm-markdown";
@@ -14,8 +14,8 @@ import { useConfirm } from "@/hooks/use-confirm";
 import {
   FEATURE_MICRO_EXPAND,
   FEATURE_SUBDIVIDE_UNIT,
-} from "@xue-learn/core/source/src/shared/features.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+} from "@xue-learn/core/features";
+import { useT } from "@xue-learn/core/i18n";
 
 export function ForceSubdividePanel({
   goalId,

@@ -3,9 +3,31 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
+import { ignorePackagedAppPath } from "./packager-ignore";
 
 const execFileAsync = promisify(execFile);
 const auditScript = join(__dirname, "../scripts/audit-packaged-resources.mjs");
+
+describe("host package boundary", () => {
+  it("keeps all executable host bundles and their parent directory", () => {
+    for (const path of [
+      "", "/", "/package.json", "/dist", "/dist/main.js",
+      "/dist/preload.js", "/dist/cloudkit-bridge-preload.js",
+    ]) {
+      expect(ignorePackagedAppPath(path)).toBe(false);
+    }
+  });
+
+  it("excludes signing credentials, learner data, sources and debug files", () => {
+    for (const path of [
+      "/.env.packaging", "/data", "/data/workspaces/learner.sqlite",
+      "/src/main.ts", "/node_modules", "/.forge-resources",
+      "/dist/main.js.map", "/.git", "\\data\\credentials.v1.enc.json",
+    ]) {
+      expect(ignorePackagedAppPath(path)).toBe(true);
+    }
+  });
+});
 const nativePlatform =
   process.platform === "win32" ? "windows" : process.platform;
 const sharpPlatform = process.platform === "win32" ? "win32" : process.platform;

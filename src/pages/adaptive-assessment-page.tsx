@@ -3,11 +3,11 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft, BrainCircuit, Clock3 } from "lucide-react";
 import { apiGet } from "@/shared/api/http";
 import { consumeSsePost } from "@/shared/client/consume-sse";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { useQueryClient } from "@tanstack/react-query";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { canUseBrowserPersistentStorage } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { canUseBrowserPersistentStorage } from "@xue-learn/core/client-runtime";
 import {
   readLocalClientPreference,
   writeLocalClientPreference,

@@ -12,10 +12,10 @@ import {
   formatPythonConsoleText,
 } from "@/components/desktop-python-editor/ask-ai";
 import { pythonEditorTheme } from "@/components/desktop-python-editor/python-highlight";
-import { useDesktopPythonEditor } from "@xue-learn/core/source/src/components/desktop-python-editor/python-editor-provider.tsx";
+import { useDesktopPythonEditor } from "@xue-learn/core/components/desktop-python-editor/python-editor-provider";
 import { DesktopPythonTerminal } from "@/components/desktop-python-editor/python-terminal";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { Button } from "@xue-learn/core/ui/button";
+import { useT } from "@xue-learn/core/i18n";
 
 export function DesktopPythonEditorView({
   onAskAi,

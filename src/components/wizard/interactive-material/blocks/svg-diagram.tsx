@@ -1,4 +1,4 @@
-import { StageStaticSvg } from "@xue-learn/core/source/src/components/course-display/course-board-media.tsx";
+import { StageStaticSvg } from "@xue-learn/core/display/course-board-media";
 ("use client");
 
 import {
@@ -12,20 +12,20 @@ import { Hand, ImageIcon, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import {
   fitCourseSvgViewBox,
   normalizeCourseSvgTextPaint,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { isDev } from "@xue-learn/core/source/src/shared/dev.ts";
-import { isImageGenerationFeatureEnabled } from "@xue-learn/core/source/src/shared/features.ts";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+} from "@xue-learn/core/domain";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
+import { useT } from "@xue-learn/core/i18n";
+import { isDev } from "@xue-learn/core/dev";
+import { isImageGenerationFeatureEnabled } from "@xue-learn/core/features";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 import { consumeSsePost } from "@/shared/client/consume-sse";
 import { useImageSettings } from "@/hooks/api";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import {
   MaterialVisualFrame,
   MaterialVisualToolbar,
   MaterialVisualToolbarButton,
-} from "@xue-learn/core/source/src/components/wizard/interactive-material/material-visual-frame.tsx";
+} from "@xue-learn/core/components/wizard/interactive-material/material-visual-frame";
 import type { IllustrationRegenHandlers } from "../types.ts";
 
 const MIN_SCALE = 0.75;

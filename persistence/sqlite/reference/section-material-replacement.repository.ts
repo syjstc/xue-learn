@@ -1,6 +1,6 @@
 import type { EntityManager } from "@mikro-orm/core";
-import { MaterialReplacementStaleRevisionError, type SectionMaterialReplacementInput, type SectionMaterialReplacementRepository, type MaterialReplacementResult, } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { CognitionPersistenceError } from "@xue-learn/core/source/libs/server/src/cognition/persistence/error.ts";
+import { MaterialReplacementStaleRevisionError, type SectionMaterialReplacementInput, type SectionMaterialReplacementRepository, type MaterialReplacementResult, } from "@xue-learn/core/domain";
+import { CognitionPersistenceError } from "@xue-learn/core/server/cognition/persistence/error";
 import { graphStateForReplacement, MikroOrmMaterialReplacementRepository, } from "./material-replacement.repository.ts";
 type Row = Readonly<Record<string, unknown>>;
 function resultRows(result: unknown): readonly Row[] {

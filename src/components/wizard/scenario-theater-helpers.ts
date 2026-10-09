@@ -1,6 +1,6 @@
 "use client";
 
-import { teachingPersonaVisualAvatarCode } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import { teachingPersonaVisualAvatarCode } from "@xue-learn/core/domain";
 import { SCENARIO_AVATARS, SCENARIO_STANDINGS, COACH_STANDING_CODES } from "./scenario-theater-assets.ts";
 
 /** Derive the avatar image path for a story character. */

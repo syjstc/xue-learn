@@ -23,7 +23,7 @@ import { AgentChatWorkspace } from "@/components/agent/agent-chat-workspace";
 import type { GoalCreationLiveProgress } from "@/components/agent/agent-chat";
 import type { PendingGoalStart } from "@/components/agent/assistant-provider";
 import { GoalCreationRetryButton } from "@/components/agent/goal-creation-retry-button";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { useConfirm } from "@/hooks/use-confirm";
 import {
   useActiveGoalCreationSession,
@@ -54,8 +54,8 @@ import {
 } from "@/shared/agent/goal-creation-event-text";
 import type { AgentPageContext } from "@/shared/agent/types";
 import { agentDoneDestination } from "@/shared/agent/done-event";
-import { useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { useT, type TranslationKey } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 
 type Translate = (
   key: TranslationKey,

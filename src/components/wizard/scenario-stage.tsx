@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChevronRight, LoaderCircle, MessageCircle } from "lucide-react";
 import type { ScenarioTheaterDefinitionV1, ScenarioTheaterPlayState } from "@/shared/domain/scenario-theater";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 import { AiGeneratedNotice } from "@/components/ui/ai-generated-notice";
 import { scenarioAvatarSrc, scenarioStandingSrc, type ScenarioResultTransition } from "./scenario-theater-helpers.ts";
 import { ScenarioDialogue, ScenarioTheaterMarkdown } from "./scenario-dialogue.tsx";

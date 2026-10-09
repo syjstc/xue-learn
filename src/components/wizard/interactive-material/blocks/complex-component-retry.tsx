@@ -3,11 +3,11 @@
 import { Loader2, RefreshCw } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { consumeSsePost } from "@/shared/client/consume-sse";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { supportsMaterialComponentRegeneration } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import { Button } from "@xue-learn/core/ui/button";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
+import { supportsMaterialComponentRegeneration } from "@xue-learn/core/client-runtime";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
 import type { IllustrationRegenHandlers } from "../types.ts";
 
 export function ComplexComponentRetry({

@@ -9,9 +9,9 @@ export type {
   GoalMapPlan,
   CornellNotes,
   Quiz,
-} from "@xue-learn/core/source/src/shared/api/generated/index.ts";
+} from "@xue-learn/core/api";
 
-export type { components, paths } from "@xue-learn/core/source/src/shared/api/generated/api.ts";
+export type { components, paths } from "@xue-learn/core/api/types";
 
 /** Alias used across wizard components */
-export type { LearningMaterial as LearningMaterialContent } from "@xue-learn/core/source/src/shared/api/generated/index.ts";
+export type { LearningMaterial as LearningMaterialContent } from "@xue-learn/core/api";

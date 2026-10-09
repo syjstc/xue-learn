@@ -27,7 +27,7 @@ export {
   patchGoalUnitContentGen,
 } from "./patch-goal-cache.ts";
 export type { GoalUnitCachePatch } from "./patch-goal-cache.ts";
-export type { GoalMapPlan } from "@xue-learn/core/source/src/shared/api/generated/index.ts";
+export type { GoalMapPlan } from "@xue-learn/core/api";
 export type {
   GoalDetail,
   GoalListItem,

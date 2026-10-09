@@ -1,11 +1,11 @@
 import { renderToStaticMarkup } from "react-dom/server";
-import { CourseBoardContent } from "@xue-learn/core/source/src/components/course-display/course-board-content.tsx";
-import { I18nProvider } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import type {CourseDisplayBlock} from "@xue-learn/core/source/libs/domain/src/course-display.ts";
+import { CourseBoardContent } from "@xue-learn/core/display/course-board-content";
+import { I18nProvider } from "@xue-learn/core/i18n";
+import type {CourseDisplayBlock} from "@xue-learn/core/domain/course-display";
 import samples from "@/shared/dev/music-teaching.json";
-import legacy from "@xue-learn/core/source/scripts/fixtures/music-integration/topic.json";
+import legacy from "@xue-learn/core/fixtures/music-integration/topic.json";
 
-jest.mock("@xue-learn/core/source/src/components/markdown/prose-markdown.tsx", () => ({
+jest.mock("@xue-learn/core/components/markdown/prose-markdown", () => ({
   ProseMarkdown: ({ content }: { content: string }) => <span>{content}</span>,
 }));
 

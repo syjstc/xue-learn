@@ -2,7 +2,7 @@ import type { EntityManager } from "@mikro-orm/core";
 import type {
   AdaptiveAssessmentEvidenceRecord,
   AdaptiveAssessmentEvidenceRepository,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { referenceDateValue } from "./date-value.ts";
 
 type Row = Readonly<Record<string, unknown>>;

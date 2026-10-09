@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { applyMaterialDelta } from "@xue-learn/core/source/libs/contracts/src/index.ts";
+import { applyMaterialDelta } from "@xue-learn/core/contracts";
 import {
   CheckCircle2,
   ChevronLeft,
@@ -15,7 +15,7 @@ import {
   Sparkles,
   Square,
 } from "lucide-react";
-import { Button, buttonVariants } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button, buttonVariants } from "@xue-learn/core/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,15 +28,15 @@ import type {
   VerifiedMaterialAnswerHandler,
 } from "@/components/wizard/interactive-material/types";
 import { apiGet, apiPost, type UnitSectionManifest } from "@/shared/api";
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
+import { cn } from "@xue-learn/core/utils";
 import { loadUnitSectionStableContent } from "@/shared/api/unit-content";
 import { consumeSsePost } from "@/shared/client/consume-sse";
 import { getAuthUser } from "@/shared/auth";
 import { useTeachingPersonas } from "@/hooks/api/use-teaching-personas";
 import { teachingPersonaAvatarSrc } from "@/shared/teaching-persona-avatar";
 import { localizeTeachingPersonaName } from "@/shared/teaching-persona-i18n";
-import { isChatAudioFeatureEnabled } from "@xue-learn/core/source/src/shared/features.ts";
+import { isChatAudioFeatureEnabled } from "@xue-learn/core/features";
 import { AssistantSectionMaterial } from "./assistant-section-material.tsx";
 import { TopicRegenButton } from "./topic-regen-button.tsx";
 import { FormalDerivationSection } from "./formal-derivation-section.tsx";
@@ -45,21 +45,21 @@ import { TeachingDerivationPlayer } from "@/features/teaching-derivation/teachin
 import {
   parseDerivationDocument,
   type DerivationDocumentV1,
-} from "@xue-learn/core/source/libs/formal-derivation/src/index.ts";
+} from "@xue-learn/core/formal-derivation";
 import {
   parseTeachingDerivationDocument,
   type TeachingDerivationDerivedV1,
   type TeachingDerivationDocumentV1,
-} from "@xue-learn/core/source/libs/teaching-derivation/src/index.ts";
+} from "@xue-learn/core/teaching-derivation";
 import { ConversationTypingIndicator } from "../conversation/learning-conversation-surface.tsx";
 import { LlmMarkdownInline } from "@/components/markdown/llm-markdown";
 import type { ChatNarrationAsset } from "@/shared/audio/chat-narration";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import { useConfirm } from "@/hooks/use-confirm";
 import {
   isDesktopLocalRuntime,
   supportsChatAudioGeneration,
-} from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+} from "@xue-learn/core/client-runtime";
 import {
   resolveSectionMaterialForRender,
   shouldKeepVisibleSectionMaterial,

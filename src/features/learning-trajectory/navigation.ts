@@ -2,9 +2,9 @@ import {
   learningContentIdentity,
   resolveLearningBlock,
   type LearningPosition,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import type { MaterialAnchor } from "@xue-learn/core/source/src/shared/domain/material-anchor.ts";
+} from "@xue-learn/core/domain";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
+import type { MaterialAnchor } from "@xue-learn/core/shared/domain/material-anchor";
 
 let current: LearningPosition | undefined;
 let capture: (() => LearningPosition | undefined) | undefined;

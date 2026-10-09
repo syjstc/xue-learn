@@ -2,7 +2,7 @@ import type { EntityManager } from "@mikro-orm/core";
 import type {
   LearnerProfileRecord,
   LearnerProfileRepository,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { LearnerProfileSchema } from "./learner-profile.entity.ts";
 import { LearnerProfileEntity } from "./learner-profile.entity.ts";
 import { MikroOrmLearnerProfileRepository } from "./learner-profile.repository.ts";

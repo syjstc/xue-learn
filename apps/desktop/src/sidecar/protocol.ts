@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
   operatingSystemSchema,
   workspaceIdSchema,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 
 export const sidecarReadyMessageSchema = z.object({
   type: z.literal("xuelearn.local.ready"),

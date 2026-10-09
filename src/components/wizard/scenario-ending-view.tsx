@@ -1,9 +1,9 @@
 "use client";
 
 import { ArrowRight, Award, History, Lightbulb, MessageCircle, RotateCcw } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
+import { Button } from "@xue-learn/core/ui/button";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 import { coachAvatarSrc } from "./scenario-theater-helpers.ts";
 import type { ScenarioTheaterEnding, ScenarioTheaterRun } from "@/shared/domain/scenario-theater";
 import type { ScenarioTheaterDefinition } from "@/shared/domain/scenario-theater";

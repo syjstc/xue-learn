@@ -2,12 +2,12 @@ import type { EntityManager } from "@mikro-orm/core";
 import type {
   CognitiveEntityEvidenceReadRecord,
   CognitiveEntityEvidenceReadRepository,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import {
   claimToDto,
   type ClaimForDto,
-} from "@xue-learn/core/source/libs/server/src/cognition/persistence/state.ts";
-import { CognitionPersistenceError } from "@xue-learn/core/source/libs/server/src/cognition/persistence/error.ts";
+} from "@xue-learn/core/server/cognition/persistence/state";
+import { CognitionPersistenceError } from "@xue-learn/core/server/cognition/persistence/error";
 import { referenceDateValue } from "./date-value.ts";
 
 type Row = Readonly<Record<string, unknown>>;

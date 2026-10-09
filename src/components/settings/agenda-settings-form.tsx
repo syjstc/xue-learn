@@ -7,8 +7,8 @@ import {
   useAgendaSettings,
   usePatchAgendaSettings,
 } from "@/hooks/api/use-agenda";
-import { supportsAgendaReminderDelivery } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { supportsAgendaReminderDelivery } from "@xue-learn/core/client-runtime";
+import { useT } from "@xue-learn/core/i18n";
 
 export function AgendaSettingsForm() {
   const t = useT();

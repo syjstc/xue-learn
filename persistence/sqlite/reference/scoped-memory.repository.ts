@@ -3,7 +3,7 @@ import type {
   DeleteOwnedGoalScopedMemoryInput,
   GoalScopedMemoryCleanupResult,
   ScopedMemoryPort,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 
 type QueryResult = Readonly<{
   affectedRows?: unknown;

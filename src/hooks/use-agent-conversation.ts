@@ -1,5 +1,5 @@
 import { currentLearningPosition, activeLearningVisitId } from "@/features/learning-trajectory/navigation";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";

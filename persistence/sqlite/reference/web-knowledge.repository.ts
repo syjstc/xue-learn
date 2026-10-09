@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { WebKnowledgeRepository, WebKnowledgeRevisionRecord, WebKnowledgeSourceProjection, WebKnowledgeSourceRecord } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { WebKnowledgeRepository, WebKnowledgeRevisionRecord, WebKnowledgeSourceProjection, WebKnowledgeSourceRecord } from "@xue-learn/core/domain";
 import { referenceDateValue } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
 const rows = (v: unknown): readonly Row[] => Array.isArray(v) ? v as Row[] : v && typeof v === "object" && "rows" in v && Array.isArray((v as { rows?: unknown }).rows) ? (v as { rows: Row[] }).rows : [];

@@ -6,7 +6,7 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { GoalCourseSettingsOverview } from "@/components/goals/goal-course-settings-overview";
 import { GoalMapPlanReview } from "@/components/goals/goal-map-plan-review";
@@ -21,9 +21,9 @@ import type { SseEvent } from "@/shared/llm/sse";
 import { useAiGeneration } from "@/hooks/use-ai-generation";
 import { useGoal, useGoalPlan, useInvalidateGoal } from "@/hooks/api";
 import { selectActiveMapPreviewUnits } from "@/shared/llm/map-partial-preview";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import { KnowledgeActivityCard } from "@/components/agent/knowledge-activity-card";
-import type { KnowledgeActivity } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { KnowledgeActivity } from "@xue-learn/core/domain";
 import { DeepPlanningProgress } from "@/components/agent/deep-planning-progress";
 import {
   reducePlanningProgressEvent,
@@ -35,7 +35,7 @@ import { AiGeneratedNotice } from "@/components/ui/ai-generated-notice";
 import {
   supportsGoalPlanLegacyGeneration,
   supportsGoalWebResources,
-} from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+} from "@xue-learn/core/client-runtime";
 import { goalPlanApprovalAction } from "@/shared/domain/goal-plan-approval";
 
 export function GoalPlanPage() {

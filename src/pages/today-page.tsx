@@ -1,6 +1,6 @@
 import { CalendarDays } from "lucide-react";
 import { LearningAgendaPanel } from "@/components/agenda/learning-agenda-panel";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 export function TodayPage() {
   const t = useT();

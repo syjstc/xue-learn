@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Quote, X, XCircle } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Input } from "@/components/ui/input";
 import { ImeSafeForm } from "@/components/ui/ime-safe-form";
 import { useImeComposition } from "@/hooks/use-ime-composition";
@@ -17,8 +17,8 @@ import type {
 import { parsePythonAskAiMessage } from "@/components/desktop-python-editor/ask-ai";
 import { PythonAskAiUserMessage } from "@/components/desktop-python-editor/python-ask-ai-message";
 import { AssistantMessageBody } from "@/components/wizard/assistant-message-body";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT, type TranslationKey } from "@xue-learn/core/i18n";
 import { LlmLoadingStatus } from "@/components/ai/llm-loading-status";
 import { AssistantWaitingPlaceholder } from "./assistant-waiting-placeholder.tsx";
 import {

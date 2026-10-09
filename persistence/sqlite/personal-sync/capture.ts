@@ -6,7 +6,7 @@ import {
   isPortablePersonalSyncColumn,
   getPersonalSyncCaptureContext,
   runWithPersonalSyncCapture,
-} from "@xue-learn/core/source/libs/server/src/personal-sync/index.ts";
+} from "@xue-learn/core/server/personal-sync";
 
 let captureEnabled = false;
 let rejectUnscopedCapture = false;

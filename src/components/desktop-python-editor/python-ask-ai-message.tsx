@@ -6,8 +6,8 @@ import {
   formatPythonAskAiPreview,
   type PythonAskAiPayload,
 } from "@/components/desktop-python-editor/ask-ai";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 
 export function PythonAskAiUserMessage({
   payload,

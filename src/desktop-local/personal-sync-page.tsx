@@ -19,8 +19,8 @@ import type {
   PersonalSyncProgress,
   WorkspaceSummary,
   SyncWorkspaceDirectory,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+} from "@xue-learn/core/runtime-contracts";
+import { Button } from "@xue-learn/core/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { apiGet } from "@/shared/api";

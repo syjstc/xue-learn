@@ -15,7 +15,7 @@ export default defineConfig([
         {
           patterns: [
             {
-              group: ["@cognilearn/server", "@cognilearn/server/*"],
+              group: ["@xue-learn/core/server", "@xue-learn/core/server/*", "@cognilearn/server", "@cognilearn/server/*"],
               message:
                 "Frontend must not import server code. Use @/shared/api/generated or @/shared/i18n.",
             },

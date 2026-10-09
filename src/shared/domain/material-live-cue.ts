@@ -2,8 +2,8 @@ import {
   precedingDisplayIndex,
   comboDisplayCueTargetIds,
   resolveParagraphCue,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+} from "@xue-learn/core/domain";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
 
 export function paragraphCueTargetIds(
   blocks: readonly InteractiveBlock[],

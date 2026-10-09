@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { LabInteractionEvent, LabSceneDefinition } from "@xue-learn/core/source/libs/lab-engine/src/index.ts";
+import type { LabInteractionEvent, LabSceneDefinition } from "@xue-learn/core/lab-engine";
 import { LabThreeCanvas } from "./three/lab-three-canvas.tsx";
 
 type RuntimeHandle = { advance: (deltaSeconds: number) => number };

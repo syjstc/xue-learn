@@ -1,10 +1,10 @@
 "use client";
 
 import { BookOpen, ExternalLink, FileText, Globe } from "lucide-react";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import { citationSourceElementId } from "@/shared/citations/inline-citations";
-import { FEATURE_REFERENCE_SOURCES } from "@xue-learn/core/source/src/shared/features.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { FEATURE_REFERENCE_SOURCES } from "@xue-learn/core/features";
+import { useT } from "@xue-learn/core/i18n";
 
 export function ContentSourcesPanel({
   sources,

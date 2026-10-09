@@ -14,7 +14,7 @@ import type {
   MainlineResolvedPosition,
   MainlineCommand,
   MainlineSnapshot,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { apiGet, apiPost } from "@/shared/api";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";
 import {
@@ -23,7 +23,7 @@ import {
   learningReturnPath,
   queueLearningReturn,
 } from "@/features/learning-trajectory/navigation";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import { mainlineEnabled } from "./enabled.ts";
 import { recoverDeletedActivity } from "./recover-deleted-activity.ts";
 

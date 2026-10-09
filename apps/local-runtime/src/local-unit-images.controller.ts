@@ -7,12 +7,12 @@ import {
   Res,
 } from "@nestjs/common";
 import type { Response } from "express";
-import { CurrentUserId, tBackend } from "@xue-learn/core/source/libs/common/src/index.ts";
-import { LearningSpaceOrmProvider } from "@xue-learn/core/source/libs/server/src/learning-spaces/learning-space-orm.provider.ts";
+import { CurrentUserId, tBackend } from "@xue-learn/core/common";
+import { LearningSpaceOrmProvider } from "@xue-learn/core/server/learning-spaces/learning-space-orm.provider";
 import {
   isValidUnitImageId,
   readUnitImage,
-} from "@xue-learn/core/source/libs/server/src/images/storage.ts";
+} from "@xue-learn/core/server/images/storage";
 
 /** Serve persisted unit illustrations without mounting hosted MediaModule/PDF. */
 @Controller("api/units/:unitId/images")

@@ -1,4 +1,4 @@
-import type { components } from "@xue-learn/core/source/src/shared/api/generated/api.ts";
+import type { components } from "@xue-learn/core/api/types";
 
 export type LearnerStateStatus =
   components["schemas"]["LearnerStateStatus"];

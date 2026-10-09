@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import { scheduleUnitReview, type DueReviewCardRecord, type DueReviewEntityCandidate, type ReviewExperienceRepository, type ReviewPracticeUnitRecord, type SubmitUnitReviewResult, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import { scheduleUnitReview, type DueReviewCardRecord, type DueReviewEntityCandidate, type ReviewExperienceRepository, type ReviewPracticeUnitRecord, type SubmitUnitReviewResult, } from "@xue-learn/core/domain";
 import { referenceDateValue } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
 function rows(result: unknown): readonly Row[] {

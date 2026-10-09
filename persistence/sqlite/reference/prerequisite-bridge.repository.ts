@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { PrerequisiteBridgeRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { PrerequisiteBridgeRepository } from "@xue-learn/core/domain";
 import { MikroOrmCognitiveModelPublicationRepository } from "./cognitive-model-publication.repository.ts";
 type Row = Readonly<Record<string, unknown>>;
 function rows(result: unknown): readonly Row[] {

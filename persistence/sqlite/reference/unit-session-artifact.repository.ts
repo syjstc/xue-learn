@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { UnitSessionArtifactRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { UnitSessionArtifactRepository } from "@xue-learn/core/domain";
 
 type Row = Readonly<Record<string, unknown>>;
 const rows = (value: unknown): readonly Row[] => Array.isArray(value) ? value as Row[] : value && typeof value === "object" && "rows" in value && Array.isArray((value as { rows?: unknown }).rows) ? (value as { rows: Row[] }).rows : [];

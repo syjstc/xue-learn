@@ -6,8 +6,8 @@ import {
   goalCreationShortStatus,
   type GoalCreationSession,
 } from "@/shared/agent/goal-creation-session";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useI18n } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useI18n } from "@xue-learn/core/i18n";
 
 export function GoalCreationStatusCard({
   session,

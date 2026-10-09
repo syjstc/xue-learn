@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { AgendaProgressRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { AgendaProgressRepository } from "@xue-learn/core/domain";
 
 function table(em: EntityManager, name: string): string {
   const schema = em.schema ?? em.config?.getSchema();

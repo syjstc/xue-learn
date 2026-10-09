@@ -2,7 +2,7 @@ import type { EntityManager } from "@mikro-orm/core";
 import type {
   UnitMapContextRecord,
   UnitMapContextRepository,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 
 type Row = Readonly<Record<string, unknown>>;
 function rows(result: unknown): readonly Row[] {

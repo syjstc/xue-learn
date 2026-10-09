@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { apiGet, isNotFound } from "@/shared/api";
 import { useGoal, useUnitLearningTargets, useUnitPage } from "@/hooks/api";
 import { UnitWizard } from "@/components/wizard/unit-wizard";
-import { Button, buttonVariants } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button, buttonVariants } from "@xue-learn/core/ui/button";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";
 import { ForceSubdividePanel } from "@/components/map/force-subdivide-panel";
 import { GoalDocumentsPanel } from "@/components/goals/goal-documents-panel";
@@ -39,15 +39,15 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 import { isMicroGoal } from "@/shared/domain/goal-kind";
 import {
   FEATURE_MICRO_EXPAND,
   FEATURE_SUBDIVIDE_UNIT,
-} from "@xue-learn/core/source/src/shared/features.ts";
+} from "@xue-learn/core/features";
 import { AiGeneratedNotice } from "@/components/ui/ai-generated-notice";
-import { supportsGoalWebResources } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { supportsGoalWebResources } from "@xue-learn/core/client-runtime";
 
 function assistantStepLabel(step: string | undefined, fallback: string) {
   return ALL_STEPS.find((item) => item.id === step)?.label ?? fallback;

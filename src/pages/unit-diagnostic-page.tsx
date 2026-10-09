@@ -2,11 +2,11 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Brain, CheckCircle2 } from "lucide-react";
 import { LlmMarkdownInline } from "@/components/markdown/llm-markdown";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { apiGet, apiPost } from "@/shared/api/http";
 import { consumeSsePost } from "@/shared/client/consume-sse";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import { useQueryClient } from "@tanstack/react-query";
 import type {
   CognitiveDimension,

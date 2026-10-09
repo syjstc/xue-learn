@@ -14,11 +14,11 @@ import {
 } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useSubmitProjectMilestoneAttempt } from "@/hooks/api";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import {
   COGNITIVE_LABELS,
   type CognitiveDimension,

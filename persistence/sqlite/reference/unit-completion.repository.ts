@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { CommitUnitCompletionInput, UnitCompletionRecord, UnitCompletionRepository, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { CommitUnitCompletionInput, UnitCompletionRecord, UnitCompletionRepository, } from "@xue-learn/core/domain";
 import { MikroOrmDomainEventOutboxRepository } from "./domain-event.repository.ts";
 import { safeReferenceDateValue } from "./date-value.ts";
 type ValueRow = Readonly<Record<string, unknown>>;

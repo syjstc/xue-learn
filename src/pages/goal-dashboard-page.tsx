@@ -5,7 +5,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { BookOpen, Play } from "lucide-react";
 import { isNotFound } from "@/shared/api";
 import { useGoal, useGoalMastery } from "@/hooks/api";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";
 import { Card, CardTitle } from "@/components/ui/card";
 import { deriveUnitContentGenStatus } from "@/shared/domain/unit-content-status";
@@ -16,15 +16,15 @@ import { LearningPathTree } from "@/components/goals/learning-path-tree";
 import { LastLearnedUnitCard } from "@/components/goals/last-learned-unit-card";
 import { resolveGoalLastLearnedUnit } from "@/shared/domain/last-learned-unit";
 import { isMicroGoal, resolveMicroLessonUnit } from "@/shared/domain/goal-kind";
-import { FEATURE_OVERVIEW_COURSE } from "@xue-learn/core/source/src/shared/features.ts";
+import { FEATURE_OVERVIEW_COURSE } from "@xue-learn/core/features";
 import { CoursePatternPanel } from "@/components/goals/course-pattern-panel";
 import { SequentialJourneyPath } from "@/components/goals/sequential-journey-path";
 import { resolveJourneyOrientationLesson } from "@/components/goals/journey-orientation";
 import { formatMasteryDimensions } from "@/shared/domain/mastery";
 import { GoalCreationStatusCard } from "@/components/agent/goal-creation-status-card";
 import { useGoalCreationSessionByGoal } from "@/hooks/use-goal-creation-session";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { supportsGoalWebResources } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { supportsGoalWebResources } from "@xue-learn/core/client-runtime";
 
 function overviewCourseStatusLabel(status?: string) {
   switch (status) {

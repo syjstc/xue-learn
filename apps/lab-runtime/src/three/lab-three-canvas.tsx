@@ -22,8 +22,8 @@ import type {
   LabTrailOverlay,
   LabVector3,
   LabVectorOverlay,
-} from "@xue-learn/core/source/libs/lab-engine/src/index.ts";
-import { LabComponentRegistry } from "@xue-learn/core/source/libs/lab-engine/src/index.ts";
+} from "@xue-learn/core/lab-engine";
+import { LabComponentRegistry } from "@xue-learn/core/lab-engine";
 import { getLabAsset } from "./lab-asset-registry.ts";
 
 type RuntimeHandle = { advance: (deltaSeconds: number) => number };

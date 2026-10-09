@@ -1,4 +1,4 @@
-import type { FollowUpMessage } from "@xue-learn/core/source/src/shared/domain/material-anchor.ts";
+import type { FollowUpMessage } from "@xue-learn/core/shared/domain/material-anchor";
 import { MarkdownContent } from "@/components/ui/markdown-content";
 import {
   Sheet,
@@ -7,8 +7,8 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@xue-learn/core/source/src/components/ui/sheet.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+} from "@xue-learn/core/ui/sheet";
+import { useT } from "@xue-learn/core/i18n";
 import { ArrowUp, Maximize2, Minimize2, Square, X } from "lucide-react";
 import {
   useEffect,

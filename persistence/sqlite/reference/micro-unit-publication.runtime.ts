@@ -9,8 +9,8 @@ import type {
   RestoreOwnedMicroGoalResult,
   UpgradeOwnedOverviewToLessonInput,
   UpgradeOwnedOverviewToLessonResult,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
-import type { OwnedMicroUnitCreationContext } from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
+import type { OwnedMicroUnitCreationContext } from "@xue-learn/core/domain";
 import type { ReferencePersistenceRuntime } from "./runtime.ts";
 
 /** Transaction-owning runtime adapter for micro-unit publication transitions. */

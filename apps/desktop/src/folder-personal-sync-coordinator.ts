@@ -22,7 +22,7 @@ import {
   type SyncLeaseScope,
   type SyncWorkspaceDirectory,
   type PersonalSyncProgress,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import type { CloudWorkspaceBootstrap } from "./personal-sync-keys.ts";
 import type { WorkspaceCatalog } from "./workspace-catalog.ts";
 

@@ -1,4 +1,4 @@
-import type { UiLocale } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import type { UiLocale } from "@xue-learn/core/i18n";
 
 const ENGLISH_PROFILE_OPTION_LABELS: Record<string, string> = {
   理学: "Science",

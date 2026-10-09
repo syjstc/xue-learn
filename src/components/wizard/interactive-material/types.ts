@@ -1,4 +1,4 @@
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
 
 export type IllustrationRegenHandlers = {
   unitId: string;

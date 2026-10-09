@@ -1,5 +1,5 @@
-import { FEATURE_FEYNMAN } from "@xue-learn/core/source/src/shared/features.ts";
-import type { TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { FEATURE_FEYNMAN } from "@xue-learn/core/features";
+import type { TranslationKey } from "@xue-learn/core/i18n";
 import type { GenStreamContext, Step } from "./types.ts";
 
 export const STREAM_ACTION_CONTEXT: Record<string, GenStreamContext> = {

@@ -2,14 +2,14 @@
 
 import { useEffect } from "react";
 import { useTypewriter } from "@/hooks/use-typewriter";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import { CitationMarkdownContent } from "@/components/citations/citation-markdown-content";
 import { stripTrailingPartialCitation } from "@/shared/citations/inline-citations";
-import type { TextHighlightSpan } from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
-import type { ProseMarkdownVariant } from "@xue-learn/core/source/src/components/markdown/prose-markdown.tsx";
-import { ProseMarkdown } from "@xue-learn/core/source/src/components/markdown/prose-markdown.tsx";
+import type { TextHighlightSpan } from "@xue-learn/core/shared/domain/material-highlight";
+import type { ProseMarkdownVariant } from "@xue-learn/core/components/markdown/prose-markdown";
+import { ProseMarkdown } from "@xue-learn/core/components/markdown/prose-markdown";
 import { typingCaretHostClassName } from "@/components/ui/typing-caret";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 export function TypewriterText({
   text,

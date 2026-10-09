@@ -44,7 +44,7 @@ import {
 } from "@/components/spaces/learning-space-dialogs";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button, buttonVariants } from "@xue-learn/core/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -68,21 +68,21 @@ import {
 } from "@/hooks/api";
 import { useAgenda } from "@/hooks/api/use-agenda";
 import { useTeachingPersonas } from "@/hooks/api/use-teaching-personas";
-import { useI18n, useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { supportsAssistantSpaceOrganization } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useI18n, useT } from "@xue-learn/core/i18n";
+import { supportsAssistantSpaceOrganization } from "@xue-learn/core/client-runtime";
 import {
   layoutGraph,
   type GraphLayout,
   type GraphLayoutEdge,
   type GraphModel,
-} from "@xue-learn/core/source/src/shared/domain/graph.ts";
+} from "@xue-learn/core/shared/domain/graph";
 import {
   findMostRecentGoalByLastLearned,
   resolveGoalListContinueTarget,
   type GoalListContinueTarget,
 } from "@/shared/domain/last-learned-unit";
 import { localizeTeachingPersonaName } from "@/shared/teaching-persona-i18n";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 type SpaceContinueBannerModel =
   | {

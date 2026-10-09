@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { FlashcardDeckRecord, FlashcardExperienceRepository, FlashcardMaterialRecord, FlashcardMutationResult, FlashcardRecord, FlashcardReviewScope, FsrsRating, } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { scheduleReview } from "@xue-learn/core/source/libs/server/src/domain/fsrs.ts";
+import type { FlashcardDeckRecord, FlashcardExperienceRepository, FlashcardMaterialRecord, FlashcardMutationResult, FlashcardRecord, FlashcardReviewScope, FsrsRating, } from "@xue-learn/core/domain";
+import { scheduleReview } from "@xue-learn/core/server/domain/fsrs";
 import { nullableReferenceDateValue, referenceDateValue } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
 function rows(result: unknown): readonly Row[] {

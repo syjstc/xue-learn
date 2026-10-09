@@ -1,6 +1,6 @@
 import { Sparkles } from "lucide-react";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 
 export type AiGeneratedNoticeKind = "content" | "assistant" | "partial";
 

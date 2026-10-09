@@ -7,11 +7,11 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import type { MainlineDecision } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { MainlineDecision } from "@xue-learn/core/domain";
 import { apiGet } from "@/shared/api";
 import { useGoal } from "@/hooks/api";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { useT } from "@xue-learn/core/i18n";
+import { Button } from "@xue-learn/core/ui/button";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";
 import { LlmMarkdown } from "@/components/markdown/llm-markdown";
 import { useMainline } from "./provider.tsx";

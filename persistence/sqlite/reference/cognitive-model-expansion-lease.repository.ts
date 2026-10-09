@@ -1,6 +1,6 @@
 import type { EntityManager } from "@mikro-orm/core";
 import { randomUUID } from "node:crypto";
-import type { ClaimCognitiveModelExpansionInput, ClaimCognitiveModelExpansionResult, CognitiveModelExpansionLeaseRepository, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { ClaimCognitiveModelExpansionInput, ClaimCognitiveModelExpansionResult, CognitiveModelExpansionLeaseRepository, } from "@xue-learn/core/domain";
 import { safeReferenceDateValue, sqlTimestampParameter } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
 function resultRows(result: unknown): readonly Row[] {

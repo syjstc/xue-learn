@@ -12,7 +12,7 @@ import {
   type LabEvent,
   type LabHostCommand,
   type LabManifestV1,
-} from "@xue-learn/core/source/libs/lab-protocol/src/index.ts";
+} from "@xue-learn/core/lab-protocol";
 
 export type LabFrameHostProps = {
   manifest: LabManifestV1;

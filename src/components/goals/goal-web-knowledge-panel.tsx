@@ -2,10 +2,10 @@ import { useMemo, useState } from "react";
 import { ChevronDown, ExternalLink, Globe2, Trash2 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiDelete, apiGet } from "@/shared/api";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { useConfirm } from "@/hooks/use-confirm";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 
 type WebKnowledgeSourceSummary = {
   id: string;

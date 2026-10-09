@@ -1,4 +1,4 @@
-import type { InteractiveBlock, LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { InteractiveBlock, LearningMaterialContent } from "@xue-learn/core/schemas";
 
 function normalizedKeyPointText(text: string): string {
   return text

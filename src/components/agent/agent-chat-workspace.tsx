@@ -31,11 +31,11 @@ import type {
   AgentThreadScope,
   PendingToolUi,
 } from "@/shared/agent/types";
-import { FEATURE_GOAL_CREATION } from "@xue-learn/core/source/src/shared/features.ts";
-import { useI18n } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { FEATURE_GOAL_CREATION } from "@xue-learn/core/features";
+import { useI18n } from "@xue-learn/core/i18n";
 import { teachingPersonaAvatarSrc } from "@/shared/teaching-persona-avatar";
 import { localizeTeachingPersonaName } from "@/shared/teaching-persona-i18n";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import {
   BookOpenText,
   Eraser,

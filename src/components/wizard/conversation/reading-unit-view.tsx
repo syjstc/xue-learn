@@ -3,15 +3,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FlaskConical, Theater } from "lucide-react";
-import { FEATURE_FEYNMAN } from "@xue-learn/core/source/src/shared/features.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { FEATURE_FEYNMAN } from "@xue-learn/core/features";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 import {
   isScenarioTheaterActivityAvailable,
   supportsScenarioTheaterGeneration,
-} from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
-import { isUnitLabActivityAvailable } from "@xue-learn/core/source/src/shared/domain/unit-lab.ts";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+} from "@xue-learn/core/client-runtime";
+import { isUnitLabActivityAvailable } from "@xue-learn/core/shared/domain/unit-lab";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -19,7 +19,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@xue-learn/core/source/src/components/ui/dialog.tsx";
+} from "@xue-learn/core/ui/dialog";
 import { UnitJourneyNavigation } from "./unit-journey-navigation.tsx";
 import {
   buildUnitJourney,
@@ -43,7 +43,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@xue-learn/core/source/src/components/ui/sheet.tsx";
+} from "@xue-learn/core/ui/sheet";
 import { useImmersiveLearning } from "./use-immersive-learning.ts";
 import {
   ImmersiveLearningPortal,

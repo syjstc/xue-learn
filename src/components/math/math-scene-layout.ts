@@ -1,4 +1,4 @@
-import type { MathScene } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { MathScene } from "@xue-learn/core/domain";
 
 export type MathScene2dScale = {
   x: number;

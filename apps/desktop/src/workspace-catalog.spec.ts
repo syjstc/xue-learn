@@ -1,7 +1,7 @@
 import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { DESKTOP_LOCAL_DATABASE_FILENAME } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+import { DESKTOP_LOCAL_DATABASE_FILENAME } from "@xue-learn/core/runtime-contracts";
 import { WorkspaceCatalog } from "./workspace-catalog.ts";
 
 describe("desktop workspace catalog", () => {

@@ -2,11 +2,11 @@ export type AgentThreadScope = "goal_creation" | "global" | "goal" | "unit";
 
 export type MaterialFollowUpThreadContext = {
   kind: "material_follow_up";
-  learningPosition?: import("@xue-learn/core/source/libs/domain/src/index.ts").LearningPosition;
+  learningPosition?: import("@xue-learn/core/domain").LearningPosition;
   activeVisitId?: string;
   goalId: string;
   unitId: string;
-  anchor: import("@xue-learn/core/source/src/shared/domain/material-anchor.ts").MaterialAnchor;
+  anchor: import("@xue-learn/core/shared/domain/material-anchor").MaterialAnchor;
   anchorSnippet: string;
   contentRevision?: number;
   unitTitle?: string;
@@ -33,7 +33,7 @@ export type AgentPageKind =
   | "unknown";
 
 export type AgentPageContext = {
-  learningPosition?: import("@xue-learn/core/source/libs/domain/src/index.ts").LearningPosition;
+  learningPosition?: import("@xue-learn/core/domain").LearningPosition;
   activeLearningVisitId?: string;
   pathname: string;
   search?: string;
@@ -111,6 +111,6 @@ export type ChatDisplayMessage = {
   toolUi?: PendingToolUi;
   streaming?: boolean;
   thinking?: boolean;
-  knowledgeActivity?: import("@xue-learn/core/source/libs/domain/src/index.ts").KnowledgeActivity;
+  knowledgeActivity?: import("@xue-learn/core/domain").KnowledgeActivity;
   contextSnapshot?: AgentMessageContextSnapshot;
 };

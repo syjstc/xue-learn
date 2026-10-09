@@ -1,4 +1,4 @@
-import type { components, operations } from "@xue-learn/core/source/src/shared/api/generated/api.ts";
+import type { components, operations } from "@xue-learn/core/api/types";
 
 export type ProjectSummary = components["schemas"]["ProjectSummary"];
 export type ProjectMilestoneSummary =

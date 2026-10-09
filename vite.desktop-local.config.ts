@@ -151,7 +151,23 @@ export default defineConfig({
     alias: {},
   },
   optimizeDeps: {
-    include: ["react", "react-dom", "react/jsx-runtime"],
+    // Core display sources are outside Vite's initial app dependency scan.
+    // Prebundle their CommonJS runtime packages, including deep imports.
+    include: [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "react-markdown",
+      "highlight.js/lib/core",
+      "highlight.js/lib/languages/*",
+      "elkjs/lib/elk.bundled.js",
+      "katex",
+      "katex/contrib/mhchem",
+      "mammoth",
+      "recharts",
+      "ts-fsrs",
+      "vexflow",
+    ],
     exclude: ["pyodide"],
   },
   worker: {

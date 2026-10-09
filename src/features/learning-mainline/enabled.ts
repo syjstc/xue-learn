@@ -1,4 +1,4 @@
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 /** Independent rollout controls preserve old routes for a reversible pilot. */
 export const MAINLINE_PHASES = {
   shell: true,

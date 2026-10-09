@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiGet, apiPatch, apiPost, queryKeys } from "@/shared/api";
 import { getAuthUser } from "@/shared/auth";
 import { resolveLearnerDisplayName } from "@/shared/domain/learner-text";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 import { learnerProfileCacheUserId } from "./learner-profile-cache.ts";
 
 export type LearnerAgeRange =

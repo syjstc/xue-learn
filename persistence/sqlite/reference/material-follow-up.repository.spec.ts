@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { MaterialFollowUpRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { MaterialFollowUpRepository } from "@xue-learn/core/domain";
 import { MikroOrmMaterialFollowUpRepository } from "./material-follow-up.repository.ts";
 
 describe("material follow-up reference repository", () => {

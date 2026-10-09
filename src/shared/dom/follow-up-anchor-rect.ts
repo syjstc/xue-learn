@@ -1,7 +1,7 @@
-import type { MaterialAnchor } from "@xue-learn/core/source/src/shared/domain/material-anchor.ts";
-import { contentKeyForAnchor } from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
-import { getHighlightTextRoot, rectForTextOffsets } from "@xue-learn/core/source/src/shared/dom/text-range-rect.ts";
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { MaterialAnchor } from "@xue-learn/core/shared/domain/material-anchor";
+import { contentKeyForAnchor } from "@xue-learn/core/shared/domain/material-highlight";
+import { getHighlightTextRoot, rectForTextOffsets } from "@xue-learn/core/shared/dom/text-range-rect";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
 
 function unionRectForHighlightAid(aid: string): DOMRect | null {
   const marks = document.querySelectorAll(

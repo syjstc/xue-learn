@@ -18,8 +18,8 @@ import {
   personalizeScenarioTheaterText,
 } from "@/shared/domain/scenario-theater";
 import { useScenarioPlayback } from "@/shared/domain/scenario-theater-player";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 import { useLearnerDisplayName } from "@/hooks/api/use-learner-profile";
 import {
   scenarioAvatarSrc,

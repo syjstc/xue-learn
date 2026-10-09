@@ -3,8 +3,8 @@
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "@/components/theme/theme-provider";
 import { Label } from "@/components/ui/label";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
-import { useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT, type TranslationKey } from "@xue-learn/core/i18n";
 import type { Theme } from "@/shared/theme";
 
 const OPTIONS: { value: Theme; labelKey: TranslationKey; icon: typeof Sun }[] = [

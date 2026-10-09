@@ -5,9 +5,9 @@ import {
   type EmbeddingModelDownloadSource,
   type EmbeddingModelInstallStatus,
   type LocalAiModelSettings,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import { Cloud, Database, Download, LoaderCircle, Server } from "lucide-react";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import { getDesktopBridge } from "./runtime.ts";
 
 type Choice = "qwen" | "ollama" | "online";

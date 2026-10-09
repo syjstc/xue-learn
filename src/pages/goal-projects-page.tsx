@@ -7,13 +7,13 @@ import {
 } from "lucide-react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { buttonVariants } from "@xue-learn/core/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { useGoal, useGoalProjects } from "@/hooks/api";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import { isNotFound } from "@/shared/api";
 import { projectAttemptStatusLabel } from "@/shared/domain/projects";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 export function GoalProjectsPage() {
   const t = useT();

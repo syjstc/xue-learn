@@ -1,8 +1,8 @@
-import type { PostQuizStep } from "@xue-learn/core/source/src/shared/features.ts";
+import type { PostQuizStep } from "@xue-learn/core/features";
 import type {
   LearningMaterialContent,
   SqPreview,
-} from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+} from "@xue-learn/core/schemas";
 import type { QuizGradeSummary } from "@/shared/domain/quiz-sets";
 import type { LearningAccess } from "@/shared/domain/learning-access";
 import type { UnitSectionManifest } from "@/shared/api";
@@ -43,7 +43,7 @@ export type ContextGenState = {
   materialContentReady: boolean;
   partialCount: number;
   placeholderBlockCount: number;
-  knowledgeActivity?: import("@xue-learn/core/source/libs/domain/src/index.ts").KnowledgeActivity;
+  knowledgeActivity?: import("@xue-learn/core/domain").KnowledgeActivity;
 };
 
 export interface QuizQ {

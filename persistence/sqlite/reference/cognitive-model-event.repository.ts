@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { CognitiveModelEventRepository, EnqueueCognitiveModelExpansionInput, EnqueueCognitiveModelExpansionResult, RecoverFailedCognitiveModelUnitInput, RecoverFailedCognitiveModelUnitResult, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { CognitiveModelEventRepository, EnqueueCognitiveModelExpansionInput, EnqueueCognitiveModelExpansionResult, RecoverFailedCognitiveModelUnitInput, RecoverFailedCognitiveModelUnitResult, } from "@xue-learn/core/domain";
 import { sqlTimestampParameter } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
 const COGNITIVE_MODEL_EXPAND_NEXT_EVENT = "cognitive.model.expand_next";

@@ -1,12 +1,12 @@
 "use client";
 
 import { CitationMarkdownContent } from "@/components/citations/citation-markdown-content";
-import type { TextHighlightSpan } from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { TextHighlightSpan } from "@xue-learn/core/shared/domain/material-highlight";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import { clampCitationMarkers } from "@/shared/citations/inline-citations";
-import { FEATURE_REFERENCE_SOURCES } from "@xue-learn/core/source/src/shared/features.ts";
+import { FEATURE_REFERENCE_SOURCES } from "@xue-learn/core/features";
 import { TypewriterText } from "@/components/wizard/typewriter-text";
-import { ProseMarkdown, type ProseMarkdownVariant } from "@xue-learn/core/source/src/components/markdown/prose-markdown.tsx";
+import { ProseMarkdown, type ProseMarkdownVariant } from "@xue-learn/core/components/markdown/prose-markdown";
 
 /**
  * Lesson / note text with optional citations, follow-up highlights, or typewriter.

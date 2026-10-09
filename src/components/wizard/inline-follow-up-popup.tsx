@@ -5,9 +5,9 @@ import { X } from "lucide-react";
 import {
   rectToAnchorPosition,
   type PopupAnchorPosition,
-} from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
+} from "@xue-learn/core/shared/domain/material-highlight";
 import { useAnchoredPopupPosition } from "@/hooks/use-anchored-popup-position";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 const TOOLBAR_WIDTH = 108;
 const TOOLBAR_HEIGHT = 36;

@@ -1,9 +1,9 @@
-jest.mock("@xue-learn/core/source/src/shared/i18n/index.tsx",()=>({getCurrentUiLocale:()=> 'en'}));
+jest.mock("@xue-learn/core/i18n",()=>({getCurrentUiLocale:()=> 'en'}));
 let connected=true;
-jest.mock("@xue-learn/core/source/src/shared/runtime/client-runtime.ts",()=>({isDesktopLocalRuntime:()=>connected}));
+jest.mock("@xue-learn/core/client-runtime",()=>({isDesktopLocalRuntime:()=>connected}));
 import {apiFetch,apiUrl} from "./learning-api-client.ts";
 import {getAuthUser,getAuthToken} from "./learning-identity.ts";
-import {LOCAL_OWNER_ID} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+import {LOCAL_OWNER_ID} from "@xue-learn/core/runtime-contracts";
 afterEach(()=>{connected=true;jest.restoreAllMocks();});
 it('preserves the exact desktop owner and never reads hosted token storage',()=>{expect(getAuthUser()?.id).toBe(LOCAL_OWNER_ID);expect(getAuthToken()).toBeNull();});
 it('preserves local same-origin headers/cache policy and makes one request',async()=>{

@@ -1,5 +1,5 @@
-import {getCurrentUiLocale} from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import {isDesktopLocalRuntime} from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import {getCurrentUiLocale} from "@xue-learn/core/i18n";
+import {isDesktopLocalRuntime} from "@xue-learn/core/client-runtime";
 /** The existing desktop request branch, separated from hosted refresh/billing.
  * Electron's trusted session layer supplies the workspace authorization token. */
 export function getApiBaseUrl(): string { return ''; }

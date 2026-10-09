@@ -2,10 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import { TypingCaret } from "@/components/ui/typing-caret";
-import { ProseMarkdown } from "@xue-learn/core/source/src/components/markdown/prose-markdown.tsx";
+import { ProseMarkdown } from "@xue-learn/core/components/markdown/prose-markdown";
 import { useTypewriter } from "@/hooks/use-typewriter";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 import type { CSSProperties } from "react";
 
 /**

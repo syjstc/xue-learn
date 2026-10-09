@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   useCompleteFlashcardSession,
@@ -17,7 +17,7 @@ import {
 } from "@/shared/domain/flashcards";
 import { FlashcardSourceDialog } from "./flashcard-source-dialog.tsx";
 import { FlashcardUnitChip } from "./flashcard-unit-chip.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 type FlashcardStudySessionProps = {
   mode: "unit" | "global";

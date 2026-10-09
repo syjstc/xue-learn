@@ -8,7 +8,7 @@ import {
   List,
   MessageCircle,
 } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   Popover,
   PopoverContent,
@@ -20,13 +20,13 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@xue-learn/core/source/src/components/ui/sheet.tsx";
+} from "@xue-learn/core/ui/sheet";
 import {
   socraticThreadPreview,
   type SocraticThread,
 } from "@/shared/graph/socratic-threads";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 
 const MOBILE_MAX_WIDTH = 1023;
 

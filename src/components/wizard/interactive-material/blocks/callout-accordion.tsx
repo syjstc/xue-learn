@@ -1,12 +1,12 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { CourseCallout } from "@xue-learn/core/source/src/components/course-display/course-callout.tsx";
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import type { TextHighlightSpan } from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import { CourseCallout } from "@xue-learn/core/display/course-callout";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
+import type { TextHighlightSpan } from "@xue-learn/core/shared/domain/material-highlight";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import type { MaterialFollowUpHandlers } from "@/hooks/use-material-text-selection";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import { Selectable } from "../selectable.tsx";
 
 export function CalloutBlock({

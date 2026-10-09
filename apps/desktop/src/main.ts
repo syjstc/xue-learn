@@ -8,7 +8,7 @@ import {
   workspaceServiceSessionSchema,
   type SidecarHealth,
   type SyncLeaseScope,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import {
   app,
   BrowserWindow,
@@ -20,7 +20,7 @@ import {
 import { CredentialVault } from "./credential-vault.ts";
 import { CodexAuthBroker } from "./codex-auth-broker.ts";
 import { registerDesktopIpc } from "./ipc.ts";
-import { createWorkspaceClientBroker } from "@xue-learn/core/source/core/src/workspace-client.ts";
+import { createWorkspaceClientBroker } from "@xue-learn/core/workspace-client";
 import { DESKTOP_IPC } from "./channels.ts";
 import { EmbeddingModelManager } from "./embedding-model-manager.ts";
 import { activateInstalledBuiltinEmbedding } from "./embedding-model-activation.ts";

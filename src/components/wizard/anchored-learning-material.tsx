@@ -22,24 +22,24 @@ import {
   anchorId,
   computeBlockKey,
   type MaterialAnchor,
-} from "@xue-learn/core/source/src/shared/domain/material-anchor.ts";
+} from "@xue-learn/core/shared/domain/material-anchor";
 import {
   buildTextHighlightMap,
   type OpenFollowUpMeta,
-} from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
+} from "@xue-learn/core/shared/domain/material-highlight";
 import { shouldCollapseActiveFollowUpHighlight } from "@/shared/domain/follow-up-panel-state";
 import type {
   InteractiveBlock,
   LearningMaterialContent,
-} from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+} from "@xue-learn/core/schemas";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import { scrollFollowUpAnchorIntoView } from "@/shared/dom/follow-up-anchor-rect";
 import { useAssistant } from "@/components/agent/assistant-provider";
 import { useTeachingPersonas } from "@/hooks/api/use-teaching-personas";
 import { teachingPersonaAvatarSrc } from "@/shared/teaching-persona-avatar";
 import { localizeTeachingPersonaName } from "@/shared/teaching-persona-i18n";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { supportsMaterialFollowUps } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { supportsMaterialFollowUps } from "@xue-learn/core/client-runtime";
 import { ContentSourcesPanel } from "./content-sources-panel.tsx";
 import { useMaterialFollowUps } from "@/hooks/use-material-follow-ups";
 import { subscribeToUnitMaterialCommitted } from "@/shared/dom/unit-material-committed";

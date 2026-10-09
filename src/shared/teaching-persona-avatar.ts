@@ -1,4 +1,4 @@
-import { teachingPersonaVisualAvatarCode } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import { teachingPersonaVisualAvatarCode } from "@xue-learn/core/domain";
 
 // Add or replace an entry only when the corresponding public asset changes.
 const avatarVersions: Readonly<Record<string, string>> = {

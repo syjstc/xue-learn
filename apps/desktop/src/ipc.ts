@@ -13,7 +13,7 @@ import {
   workspaceJoinInputSchema,
   type RuntimeDescriptor,
   type SidecarHealth,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import { dialog, ipcMain, shell, type WebContents } from "electron";
 import { z } from "zod";
 import { DESKTOP_IPC } from "./channels.ts";

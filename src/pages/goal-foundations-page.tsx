@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { ArrowRight, Check, Layers3, Sparkles } from "lucide-react";
-import { Button, buttonVariants } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button, buttonVariants } from "@xue-learn/core/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   useCreateFoundationGoal,
@@ -9,10 +9,10 @@ import {
   useGoal,
   useUpgradeFoundationToMastery,
 } from "@/hooks/api";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 import { isNotFound } from "@/shared/api";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { supportsGoalMasteryTransition } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { supportsGoalMasteryTransition } from "@xue-learn/core/client-runtime";
 
 export function GoalFoundationsPage() {
   const t = useT();

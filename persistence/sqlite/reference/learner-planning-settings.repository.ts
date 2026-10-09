@@ -3,7 +3,7 @@ import type {
   LearnerPlanningSettingsRecord,
   LearnerPlanningSettingsRepository,
   UpsertLearnerPlanningSettingsInput,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { LearnerPlanningSettingsEntity } from "./learner-planning-settings.entity.ts";
 import { UserEntity } from "./user.entity.ts";
 

@@ -12,7 +12,7 @@ import {
   type SyncLeaseAction,
   type WorkspaceJoinInput,
   type XueLearnDesktopBridge,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import { DESKTOP_IPC } from "./channels.ts";
 
 const bridge = {

@@ -1,12 +1,12 @@
 import { isLearningSceneControlTarget } from "@/shared/dom/learning-scene-interaction";
-import { resolveMusicCue } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import type { MusicPlaybackState, MusicPerformancePlan as TimelineMusicInput } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { MusicClipPlayer } from "@xue-learn/core/source/src/shared/music/clip-player.ts";
-import { claimMusicAudio, releaseMusicAudio } from "@xue-learn/core/source/src/shared/music/audio-ownership.ts";
-import { MusicTimelineContext } from "@xue-learn/core/source/src/components/course-display/music-teaching-display.tsx";
+import { resolveMusicCue } from "@xue-learn/core/domain";
+import type { MusicPlaybackState, MusicPerformancePlan as TimelineMusicInput } from "@xue-learn/core/domain";
+import { MusicClipPlayer } from "@xue-learn/core/shared/music/clip-player";
+import { claimMusicAudio, releaseMusicAudio } from "@xue-learn/core/shared/music/audio-ownership";
+import { MusicTimelineContext } from "@xue-learn/core/display/music-teaching-display";
 ("use client");
 
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { AnchoredLearningMaterial } from "@/components/wizard/anchored-learning-material";
 import type {
   MaterialCheckResult,
@@ -36,13 +36,13 @@ import {
 import { resolveAssistantCourseContinueScrollTop } from "@/shared/domain/assistant-course-scroll";
 import { personalizeLearnerContent } from "@/shared/domain/learner-text";
 import { headingTopicIdentity } from "@/shared/domain/material-topic-identity";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import { useT } from "@xue-learn/core/i18n";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
 import {
   canUseBrowserPersistentStorage,
   supportsChatAudioGeneration,
-} from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+} from "@xue-learn/core/client-runtime";
+import { cn } from "@xue-learn/core/utils";
 import {
   ChevronLeft,
   ChevronRight,

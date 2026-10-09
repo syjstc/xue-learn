@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { ScopedMemoryPort } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { ScopedMemoryPort } from "@xue-learn/core/domain";
 import { MikroOrmScopedMemoryRepository } from "./scoped-memory.repository.ts";
 
 type Call = {

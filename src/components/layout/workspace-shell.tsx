@@ -69,13 +69,13 @@ import {
   goalCreationShortStatus,
 } from "@/shared/agent/goal-creation-session";
 import { getAuthUser } from "@/shared/auth";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 import {
   canUseBrowserPersistentStorage,
   getClientRuntime,
   isDesktopLocalRuntime,
-} from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+} from "@xue-learn/core/client-runtime";
 import {
   formatSidebarShortcut,
   matchesSidebarShortcut,

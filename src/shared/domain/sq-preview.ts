@@ -1,4 +1,4 @@
-import { parseJson } from "@xue-learn/core/source/src/shared/utils.ts";
+import { parseJson } from "@xue-learn/core/utils";
 
 type SqStored = {
   survey?: { outline?: unknown; learningTargetLabels?: unknown };

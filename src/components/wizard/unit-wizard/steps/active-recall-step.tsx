@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { AiGenStopButton } from "@/components/ai/ai-gen-stop-button";
 import { LlmMarkdownInline } from "@/components/markdown/llm-markdown";
-import { ProseMarkdown } from "@xue-learn/core/source/src/components/markdown/prose-markdown.tsx";
+import { ProseMarkdown } from "@xue-learn/core/components/markdown/prose-markdown";
 import { resolveLearningTargetLabels } from "@/shared/domain/learning-targets";
-import { FEATURE_FEYNMAN } from "@xue-learn/core/source/src/shared/features.ts";
+import { FEATURE_FEYNMAN } from "@xue-learn/core/features";
 import { QuizSetDrawer } from "../../quiz-set-drawer.tsx";
 import {
   QuizChoiceGroup,
@@ -15,8 +15,8 @@ import { PracticeHub } from "../../practice-hub.tsx";
 import { UnitFlashcardPanel } from "../../unit-flashcard-panel.tsx";
 import { normalizeSelectedIndices } from "../utils.ts";
 import type { UnitWizardModel } from "../use-unit-wizard.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { supportsFlashcards } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { supportsFlashcards } from "@xue-learn/core/client-runtime";
 
 type Props = {
   model: UnitWizardModel;

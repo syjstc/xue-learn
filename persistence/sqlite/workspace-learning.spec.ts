@@ -1,9 +1,9 @@
 import type {ReferencePersistenceRuntime} from "./reference/runtime.ts";
-jest.mock("@xue-learn/core/source/libs/server/src/sections/index.ts",()=>({completeUnitSection:jest.fn(async()=>({status:"completed"})),getUnitSectionContent:jest.fn(async()=>({material:{blocks:[{checkId:"check"}]}})),getAggregatedUnitMaterial:jest.fn(async()=>({blocks:[{checkId:"check"}]})),getUnitSectionManifest:jest.fn(async()=>[])}));
-jest.mock("@xue-learn/core/source/libs/server/src/assessment/index.ts",()=>({publishedMaterialCheckDefinitions:jest.fn((material:{blocks:unknown[]})=>material.blocks),submitSectionMiniTestAnswers:jest.fn(async()=>({score:1}))}));
+jest.mock("@xue-learn/core/server/sections",()=>({completeUnitSection:jest.fn(async()=>({status:"completed"})),getUnitSectionContent:jest.fn(async()=>({material:{blocks:[{checkId:"check"}]}})),getAggregatedUnitMaterial:jest.fn(async()=>({blocks:[{checkId:"check"}]})),getUnitSectionManifest:jest.fn(async()=>[])}));
+jest.mock("@xue-learn/core/server/assessment",()=>({publishedMaterialCheckDefinitions:jest.fn((material:{blocks:unknown[]})=>material.blocks),submitSectionMiniTestAnswers:jest.fn(async()=>({score:1}))}));
 import {createWorkspaceLearningPort} from "./workspace-learning.ts";
-import {completeUnitSection} from "@xue-learn/core/source/libs/server/src/sections/index.ts";
-import {submitSectionMiniTestAnswers} from "@xue-learn/core/source/libs/server/src/assessment/index.ts";
+import {completeUnitSection} from "@xue-learn/core/server/sections";
+import {submitSectionMiniTestAnswers} from "@xue-learn/core/server/assessment";
 const {DatabaseSync}=require("node:sqlite");
 it("fences owner/unit/section versions before invoking ordinary Core learning commands",async()=>{
  const db=new DatabaseSync(":memory:");db.exec(`CREATE TABLE LearningGoal(id TEXT,userId TEXT);CREATE TABLE LearningUnit(id TEXT,goalId TEXT,contentRevision INTEGER,status TEXT,completedAt TEXT);CREATE TABLE MainCourseSection(id TEXT,unitId TEXT,contentRevision INTEGER);

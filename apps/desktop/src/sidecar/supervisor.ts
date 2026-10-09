@@ -1,5 +1,5 @@
 import { randomBytes, randomUUID } from "node:crypto";
-import type { SidecarHealth } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+import type { SidecarHealth } from "@xue-learn/core/runtime-contracts";
 import {
   type SidecarBootstrap,
   type SidecarProcess,

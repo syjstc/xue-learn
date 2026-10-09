@@ -4,7 +4,7 @@ import type {
   LearningSpaceRecord,
   LearningSpaceRepository,
   UpdateLearningSpaceInput,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { LearningSpaceEntity } from "./learning-space.entity.ts";
 import { UserEntity } from "./user.entity.ts";
 

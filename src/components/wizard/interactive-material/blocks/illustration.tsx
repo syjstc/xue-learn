@@ -1,24 +1,24 @@
-import { CourseBoardImage } from "@xue-learn/core/source/src/components/course-display/course-board-media.tsx";
+import { CourseBoardImage } from "@xue-learn/core/display/course-board-media";
 ("use client");
 
 import { ImageIcon, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import type { TextHighlightSpan } from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
+import type { TextHighlightSpan } from "@xue-learn/core/shared/domain/material-highlight";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import { apiGet } from "@/shared/api";
 import { consumeSsePost } from "@/shared/client/consume-sse";
-import { isImageGenerationFeatureEnabled } from "@xue-learn/core/source/src/shared/features.ts";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { isImageGenerationFeatureEnabled } from "@xue-learn/core/features";
+import { cn } from "@xue-learn/core/utils";
 import { useImageSettings } from "@/hooks/api";
 import type { MaterialFollowUpHandlers } from "@/hooks/use-material-text-selection";
 import { Selectable } from "../selectable.tsx";
 import type { IllustrationRegenHandlers } from "../types.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import {
   isDesktopLocalRuntime,
   supportsMaterialIllustrationRegeneration,
-} from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+} from "@xue-learn/core/client-runtime";
 
 export function IllustrationBlock({
   block,

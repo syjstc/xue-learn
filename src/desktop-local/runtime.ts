@@ -3,7 +3,7 @@ import {
   runtimeDescriptorSchema,
   type RuntimeDescriptor,
   type XueLearnDesktopBridge,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 
 declare global {
   interface Window {

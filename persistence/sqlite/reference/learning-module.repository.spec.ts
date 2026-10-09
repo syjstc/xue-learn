@@ -1,5 +1,5 @@
 import type { EntityManager } from "@mikro-orm/core";
-import type { LearningModuleRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { LearningModuleRepository } from "@xue-learn/core/domain";
 import { MikroOrmLearningModuleRepository } from "./learning-module.repository.ts";
 
 describe("learning module reference repository", () => {

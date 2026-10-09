@@ -15,7 +15,7 @@ import {
   type ChemistryLabSnapshot,
   type LabInteractionEvent,
   type LabSceneDefinition,
-} from "@xue-learn/core/source/libs/lab-engine/src/index.ts";
+} from "@xue-learn/core/lab-engine";
 import {
   LAB_HELLO_TYPE,
   LAB_PROTOCOL_NAME,
@@ -29,7 +29,7 @@ import {
   type LabEvent,
   type LabManifestV1,
   type LabState,
-} from "@xue-learn/core/source/libs/lab-protocol/src/index.ts";
+} from "@xue-learn/core/lab-protocol";
 import { LabCanvas } from "./lab-canvas.tsx";
 
 type RuntimeState = { simTime: number };

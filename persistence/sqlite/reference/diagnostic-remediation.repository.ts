@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { DiagnosticRemediationRepository, ResolveDiagnosticRemediationInput, UpsertDiagnosticRemediationInput, } from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { CognitionPersistenceError } from "@xue-learn/core/source/libs/server/src/cognition/persistence/error.ts";
+import type { DiagnosticRemediationRepository, ResolveDiagnosticRemediationInput, UpsertDiagnosticRemediationInput, } from "@xue-learn/core/domain";
+import { CognitionPersistenceError } from "@xue-learn/core/server/cognition/persistence/error";
 type Row = Readonly<Record<string, unknown>>;
 function resultRows(result: unknown): readonly Row[] {
     if (Array.isArray(result))

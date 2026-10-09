@@ -1,4 +1,4 @@
-import type { LearnerStateMemoryInvalidationRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { LearnerStateMemoryInvalidationRepository } from "@xue-learn/core/domain";
 import type { ReferencePersistenceRuntime } from "./runtime.ts";
 
 /** Runtime adapter for post-commit global learner-state cache invalidation. */

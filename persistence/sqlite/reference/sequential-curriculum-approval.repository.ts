@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { PersistOwnedSequentialCurriculumInput, PersistOwnedSequentialCurriculumResult, SequentialCurriculumApprovalRepository, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { PersistOwnedSequentialCurriculumInput, PersistOwnedSequentialCurriculumResult, SequentialCurriculumApprovalRepository, } from "@xue-learn/core/domain";
 type ValueRow = Readonly<Record<string, unknown>>;
 const COURSE_MODULE_GENERATE_EVENT = "course.module.generate";
 function resultRows(result: unknown): readonly ValueRow[] {

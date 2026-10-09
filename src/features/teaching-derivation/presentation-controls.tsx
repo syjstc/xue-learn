@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { consumeSsePost } from '@/shared/client/consume-sse';
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 
 export function TeachingPresentationControls(props: {
   unitId: string; sectionId: string; revision: number; canRestore: boolean;

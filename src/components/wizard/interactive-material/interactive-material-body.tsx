@@ -21,22 +21,22 @@ import {
   type AssistantCourseFeedBlock,
 } from "@/shared/domain/assistant-course-feed";
 import { personalizeLearnerContent } from "@/shared/domain/learner-text";
-import { anchorForBlock, anchorId } from "@xue-learn/core/source/src/shared/domain/material-anchor.ts";
-import type { TextHighlightSpan } from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
+import { anchorForBlock, anchorId } from "@xue-learn/core/shared/domain/material-anchor";
+import type { TextHighlightSpan } from "@xue-learn/core/shared/domain/material-highlight";
 import { comboCueTargetIds } from "@/shared/domain/material-live-cue";
 import { repairHeadingOnlySectionTakeaways } from "@/shared/domain/material-slides";
 import { headingTopicIdentity } from "@/shared/domain/material-topic-identity";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import type {
   InteractiveBlock,
   LearningMaterialContent,
-} from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+} from "@xue-learn/core/schemas";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
+import { cn } from "@xue-learn/core/utils";
 import {
   figureCaptionsForDisplay,
   type MaterialFigureCaption,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { BookOpenCheck, ListChecks } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { SelectionFollowUpToolbar } from "../inline-follow-up-popup.tsx";

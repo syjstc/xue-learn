@@ -1,28 +1,28 @@
 import {LocalWorkspaceLearningController,LOCAL_WORKSPACE_LEARNING_CONTEXT} from "./local-workspace-learning.controller.ts";
-import type {WorkspaceLearningPort} from "@xue-learn/core/source/libs/domain/src/persistence/workspace-learning-port.ts";
+import type {WorkspaceLearningPort} from "@xue-learn/core/domain/persistence/workspace-learning-port";
 import { SqliteLearningSpaceOrmProvider } from "@cognilearn/desktop-persistence/learning-space-orm.provider";
-import { LearningSpacePersistenceModule } from "@xue-learn/core/source/libs/server/src/learning-spaces/learning-space-persistence.module.ts";
+import { LearningSpacePersistenceModule } from "@xue-learn/core/server/learning-spaces/learning-space-persistence.module";
 import { LOCAL_COURSE_SOURCE_CONTEXT, LocalCourseSourceController, type LocalCourseSourceContext } from "./local-course-source.controller.ts";
 import { LOCAL_WORKSPACE_SERVICE_CONTEXT, LocalWorkspaceServiceController, type LocalWorkspaceServiceContext } from "./local-workspace-service.controller.ts";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { LoggerModule } from "nestjs-pino";
-import { AgentModule } from "@xue-learn/core/source/libs/server/src/learning-host/agent/agent.module.ts";
+import { AgentModule } from "@xue-learn/core/server/learning-host/agent/agent.module";
 import { LocalOutboxModule } from "./local-outbox.module.ts";
-import { AgendaModule } from "@xue-learn/core/source/libs/server/src/learning-host/agenda/agenda.module.ts";
-import { MemoriesModule } from "@xue-learn/core/source/libs/server/src/learning-host/memories/memories.module.ts";
-import { ProfileModule } from "@xue-learn/core/source/libs/server/src/learning-host/profile/profile.module.ts";
-import { SettingsModule } from "@xue-learn/core/source/libs/server/src/learning-host/settings/settings.module.ts";
-import { TeachingPersonasModule } from "@xue-learn/core/source/libs/server/src/learning-host/teaching-personas/teaching-personas.module.ts";
-import { TeachingSkillsModule } from "@xue-learn/core/source/libs/server/src/learning-host/teaching-skills/teaching-skills.module.ts";
-import { GenerationModule } from "@xue-learn/core/source/libs/server/src/learning-host/generation/generation.module.ts";
-import { GoalsModule } from "@xue-learn/core/source/libs/server/src/learning-host/goals/goals.module.ts";
-import { LearningModule } from "@xue-learn/core/source/libs/server/src/learning-host/learning/learning.module.ts";
-import { RagModule } from "@xue-learn/core/source/libs/server/src/learning-host/rag/rag.module.ts";
-import { FlashcardsModule } from "@xue-learn/core/source/libs/server/src/learning-host/flashcards/flashcards.module.ts";
-import { ReviewsModule } from "@xue-learn/core/source/libs/server/src/learning-host/reviews/reviews.module.ts";
-import { LlmLogsService } from "@xue-learn/core/source/libs/server/src/learning-host/llm-logs/llm-logs.service.ts";
-import { BackendErrorsService } from "@xue-learn/core/source/libs/server/src/learning-host/backend-errors/backend-errors.service.ts";
+import { AgendaModule } from "@xue-learn/core/server/learning-host/agenda/agenda.module";
+import { MemoriesModule } from "@xue-learn/core/server/learning-host/memories/memories.module";
+import { ProfileModule } from "@xue-learn/core/server/learning-host/profile/profile.module";
+import { SettingsModule } from "@xue-learn/core/server/learning-host/settings/settings.module";
+import { TeachingPersonasModule } from "@xue-learn/core/server/learning-host/teaching-personas/teaching-personas.module";
+import { TeachingSkillsModule } from "@xue-learn/core/server/learning-host/teaching-skills/teaching-skills.module";
+import { GenerationModule } from "@xue-learn/core/server/learning-host/generation/generation.module";
+import { GoalsModule } from "@xue-learn/core/server/learning-host/goals/goals.module";
+import { LearningModule } from "@xue-learn/core/server/learning-host/learning/learning.module";
+import { RagModule } from "@xue-learn/core/server/learning-host/rag/rag.module";
+import { FlashcardsModule } from "@xue-learn/core/server/learning-host/flashcards/flashcards.module";
+import { ReviewsModule } from "@xue-learn/core/server/learning-host/reviews/reviews.module";
+import { LlmLogsService } from "@xue-learn/core/server/learning-host/llm-logs/llm-logs.service";
+import { BackendErrorsService } from "@xue-learn/core/server/learning-host/backend-errors/backend-errors.service";
 import {
   LOCAL_HEALTH_CONTEXT,
   LocalHealthController,

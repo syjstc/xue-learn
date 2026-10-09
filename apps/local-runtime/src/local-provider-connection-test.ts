@@ -4,7 +4,7 @@ import {
   localProviderConnectionResultSchema,
   type LocalChatConnectionTestRequest,
   type LocalProviderConnectionTestRequest,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import {
   getEnv,
   hasAnySearchConfigured,
@@ -12,28 +12,28 @@ import {
   hasEmbeddingProviderCredentials,
   hasProviderCredentials,
   hasTavilyConfigured,
-} from "@xue-learn/core/source/libs/server/src/env.ts";
-import { createEmbeddings } from "@xue-learn/core/source/libs/server/src/llm/embeddings.ts";
-import { refreshLlmRuntimeConfig } from "@xue-learn/core/source/libs/server/src/llm/runtime-config.ts";
-import { getLlmProvider } from "@xue-learn/core/source/libs/server/src/llm/providers/index.ts";
-import { minimaxConnectionTestMaxTokens } from "@xue-learn/core/source/libs/server/src/providers/llm/vendors/minimax/options.ts";
+} from "@xue-learn/core/server/env";
+import { createEmbeddings } from "@xue-learn/core/server/llm/embeddings";
+import { refreshLlmRuntimeConfig } from "@xue-learn/core/server/llm/runtime-config";
+import { getLlmProvider } from "@xue-learn/core/server/llm/providers";
+import { minimaxConnectionTestMaxTokens } from "@xue-learn/core/server/providers/llm/vendors/minimax/options";
 import {
   defaultEmbeddingModel,
   defaultLlmChatModel,
-} from "@xue-learn/core/source/libs/server/src/providers/llm/defaults.ts";
+} from "@xue-learn/core/server/providers/llm/defaults";
 import {
   getImageProvider,
   hasImageProviderCredentials,
-} from "@xue-learn/core/source/libs/server/src/providers/image/index.ts";
+} from "@xue-learn/core/server/providers/image";
 import {
   getAudioProvider,
   hasAudioProviderCredentials,
-} from "@xue-learn/core/source/libs/server/src/providers/audio/index.ts";
-import { AUDIO_PROVIDER_OPTIONS } from "@xue-learn/core/source/libs/server/src/providers/audio/specs.ts";
-import { defaultImageModel } from "@xue-learn/core/source/libs/server/src/images/provider-options.ts";
-import { searchLearningPathWithSources } from "@xue-learn/core/source/libs/server/src/search/tavily.ts";
-import { searchLearningPathWithDoubaoSources } from "@xue-learn/core/source/libs/server/src/search/doubao.ts";
-import { searchLearningPathWithAnySearchSources } from "@xue-learn/core/source/libs/server/src/search/anysearch.ts";
+} from "@xue-learn/core/server/providers/audio";
+import { AUDIO_PROVIDER_OPTIONS } from "@xue-learn/core/server/providers/audio/specs";
+import { defaultImageModel } from "@xue-learn/core/server/images/provider-options";
+import { searchLearningPathWithSources } from "@xue-learn/core/server/search/tavily";
+import { searchLearningPathWithDoubaoSources } from "@xue-learn/core/server/search/doubao";
+import { searchLearningPathWithAnySearchSources } from "@xue-learn/core/server/search/anysearch";
 
 type ConnectionTestCode =
   | "ok"

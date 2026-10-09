@@ -7,7 +7,7 @@ import {
   BUILTIN_EMBEDDING_MODEL_FILE,
   BUILTIN_EMBEDDING_MODEL_ID,
   BUILTIN_EMBEDDING_MODEL_REVISION,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import { validateLocalEmbeddingModel } from "./local-embedding-model.ts";
 
 describe("downloaded local embedding model validation", () => {

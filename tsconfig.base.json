@@ -95,9 +95,6 @@
       ],
       "@cognilearn/desktop-persistence/*": [
         "./persistence/sqlite/*"
-      ],
-      "@xue-learn/core/source/*": [
-        "./node_modules/@xue-learn/core/sources/*"
       ]
     },
     "strict": true,

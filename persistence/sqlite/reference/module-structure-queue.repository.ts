@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { ModuleStructureQueueInput, ModuleStructureQueueRecord, ModuleStructureQueueRepository, } from "@xue-learn/core/source/libs/domain/src/persistence/module-structure-queue-port.ts";
+import type { ModuleStructureQueueInput, ModuleStructureQueueRecord, ModuleStructureQueueRepository, } from "@xue-learn/core/domain/persistence/module-structure-queue-port";
 type ValueRow = Readonly<Record<string, unknown>>;
 const COURSE_MODULE_GENERATE_EVENT = "course.module.generate";
 const COGNITIVE_MODEL_SKELETON_EVENT = "cognitive.model.skeleton";

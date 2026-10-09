@@ -1,4 +1,4 @@
-import { runWithPersonalSyncApply, runWithPersonalSyncCapture } from "@xue-learn/core/source/libs/server/src/personal-sync/index.ts";
+import { runWithPersonalSyncApply, runWithPersonalSyncCapture } from "@xue-learn/core/server/personal-sync";
 import Database from "better-sqlite3";
 import type { EntityManager } from "@mikro-orm/core";
 import {

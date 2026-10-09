@@ -1,4 +1,4 @@
-import type { MaterialEnrichmentRepository } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { MaterialEnrichmentRepository } from "@xue-learn/core/domain";
 import type { ReferencePersistenceRuntime } from "./runtime.ts";
 
 export class MikroOrmMaterialEnrichmentRuntimeAdapter implements MaterialEnrichmentRepository {

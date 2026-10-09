@@ -7,12 +7,12 @@ import type {
   LearningSpaceItemRepository,
   LearningSpacePlannedGoalItemRecord,
   UpdateLearningSpacePlannedGoalItemInput,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { LearningGoalEntity } from "./learning-goal.entity.ts";
 import { LearningSpaceEntity } from "./learning-space.entity.ts";
 import { LearningSpaceItemEntity } from "./learning-space-item.entity.ts";
 import { UserEntity } from "./user.entity.ts";
-import { parsePlannedGoalBrief } from "@xue-learn/core/source/libs/server/src/learning-spaces/planned-goal-brief.ts";
+import { parsePlannedGoalBrief } from "@xue-learn/core/server/learning-spaces/planned-goal-brief";
 
 type EntityReference = { readonly id: string } | string | null | undefined;
 

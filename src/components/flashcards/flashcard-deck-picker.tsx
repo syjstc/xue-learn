@@ -7,8 +7,8 @@ import {
   FLASHCARD_SCOPE_STORAGE_KEY,
   parseScopeFromQuery,
 } from "@/shared/domain/flashcards";
-import { useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { canUseBrowserPersistentStorage } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT, type TranslationKey } from "@xue-learn/core/i18n";
+import { canUseBrowserPersistentStorage } from "@xue-learn/core/client-runtime";
 
 type FlashcardDeckPickerProps = {
   decks: FlashCardDeckListItem[];

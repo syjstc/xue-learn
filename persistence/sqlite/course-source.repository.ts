@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { CourseSourceReadPort } from "@xue-learn/core/source/libs/domain/src/persistence/course-source-port.ts";
-import { courseSourceSnapshotSchema, type CourseSourceAssetV1, type CourseSourceSnapshotV1 } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+import type { CourseSourceReadPort } from "@xue-learn/core/domain/persistence/course-source-port";
+import { courseSourceSnapshotSchema, type CourseSourceAssetV1, type CourseSourceSnapshotV1 } from "@xue-learn/core/runtime-contracts";
 
 type Row = Record<string, unknown>;
 type AssetReader = (unitId: string, imageId: string) => Promise<{ data: Uint8Array; mimeType: string } | null>;

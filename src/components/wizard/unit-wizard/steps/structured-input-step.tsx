@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import { ChevronRight } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { CollapsiblePanel } from "../../collapsible-panel.tsx";
 import { AnchoredLearningMaterial } from "../../anchored-learning-material.tsx";
 import {
@@ -13,7 +13,7 @@ import {
 } from "../../learning-reference-sections.tsx";
 import { useScrollStructuredTabPanel } from "@/hooks/use-scroll-structured-tab-panel";
 import type { UnitWizardModel } from "../use-unit-wizard.tsx";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useT } from "@xue-learn/core/i18n";
 import { UnitConceptMapPanel } from "../../unit-concept-map-panel.tsx";
 import { SectionLearningPanel } from "../../unit-sections/section-learning-panel.tsx";
 import { AssistantSectionMaterial } from "../../unit-sections/assistant-section-material.tsx";

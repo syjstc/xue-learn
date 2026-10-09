@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   walkFormulaNodes,
   type FormulaAnalysis,
-} from "@xue-learn/core/source/libs/formula-analysis/src/index.ts";
+} from "@xue-learn/core/formula-analysis";
 
 export function FormulaTreeDebug({
   analysis,

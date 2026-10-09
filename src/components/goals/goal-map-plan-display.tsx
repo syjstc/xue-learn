@@ -7,9 +7,9 @@ import {
   DOMAIN_TAG_LABELS,
   LEARNING_MODE_LABELS,
 } from "@/shared/goals/domain-labels";
-import type { GoalMapPlan } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import type { GoalMapPlan } from "@xue-learn/core/schemas";
+import { cn } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 
 export function GoalMapPlanDisplay({
   topicOverview,

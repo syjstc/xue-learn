@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { ClaimModuleStructureDraftInput, ModuleStructureDraftProgress, ModuleStructureDraftRecord, ModuleStructureDraftRepository, ModuleStructureDraftStage, PatchModuleStructureDraftInput, UpsertModuleStructureDraftInput, } from "@xue-learn/core/source/libs/domain/src/persistence/module-structure-draft-port.ts";
-import { MODULE_STRUCTURE_DRAFT_STAGES } from "@xue-learn/core/source/libs/domain/src/persistence/module-structure-draft-port.ts";
+import type { ClaimModuleStructureDraftInput, ModuleStructureDraftProgress, ModuleStructureDraftRecord, ModuleStructureDraftRepository, ModuleStructureDraftStage, PatchModuleStructureDraftInput, UpsertModuleStructureDraftInput, } from "@xue-learn/core/domain/persistence/module-structure-draft-port";
+import { MODULE_STRUCTURE_DRAFT_STAGES } from "@xue-learn/core/domain/persistence/module-structure-draft-port";
 export const GOAL_MODULE_STRUCTURE_DRAFT_PREPARE_EVENT = "goal.module_structure.draft.prepare";
 export const GOAL_MODULE_STRUCTURE_AUDIT_EVENT = "goal.module_structure.audit";
 export const GOAL_CREATION_COORDINATE_EVENT = "goal.creation.coordinate";

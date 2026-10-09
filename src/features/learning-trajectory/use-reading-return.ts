@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import type { LearningMaterialContent } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import type { LearningMaterialContent } from "@xue-learn/core/schemas";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 import {
   clearLearningReturn,
   pendingLearningReturn,

@@ -9,8 +9,8 @@ import {
   Search,
 } from "lucide-react";
 import type { PlanningProgress } from "@/hooks/use-agent-thread";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 
 export function DeepPlanningProgress({
   progress,

@@ -1,11 +1,11 @@
 import { RefreshCw, TriangleAlert, WifiOff } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import {
   resolveUserFacingApiError,
   type ApiErrorKind,
 } from "@/shared/api/user-facing-error";
-import { useT, type TranslationKey } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
+import { useT, type TranslationKey } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 
 const KIND_TITLE_KEYS: Record<ApiErrorKind, TranslationKey> = {
   network: "errors.networkTitle",

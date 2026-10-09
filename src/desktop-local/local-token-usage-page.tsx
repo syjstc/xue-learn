@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Coins, Save } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Input } from "@/components/ui/input";
 import { apiGet } from "@/shared/api";
-import { useI18n } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useI18n } from "@xue-learn/core/i18n";
 
 type UsageRow = {
   provider: string;

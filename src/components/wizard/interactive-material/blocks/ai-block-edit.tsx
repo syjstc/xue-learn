@@ -2,13 +2,13 @@
 
 import { useState, type ReactNode } from "react";
 import { PencilLine, Sparkles, Trash2 } from "lucide-react";
-import type { InteractiveBlock } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { InteractiveBlock } from "@xue-learn/core/schemas";
 import { apiDelete } from "@/shared/api";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { isDev } from "@xue-learn/core/source/src/shared/dev.ts";
-import { isDesktopLocalRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { isDev } from "@xue-learn/core/dev";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 import { consumeSsePost } from "@/shared/client/consume-sse";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { cn } from "@xue-learn/core/utils";
 
 /**
  * Block types the desktop-dev per-block AI edit may target. Must stay in

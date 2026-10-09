@@ -1,4 +1,4 @@
-import { canUseBrowserPersistentStorage } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { canUseBrowserPersistentStorage } from "@xue-learn/core/client-runtime";
 
 const DB_NAME = "xue-learn-unit-content";
 const STORE = "content";

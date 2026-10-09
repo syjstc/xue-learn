@@ -2,8 +2,8 @@
 
 import { AlertTriangle, Info } from "lucide-react";
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
+import { Button } from "@xue-learn/core/ui/button";
+import { cn } from "@xue-learn/core/utils";
 
 export type ConfirmDialogVariant = "default" | "destructive" | "alert";
 

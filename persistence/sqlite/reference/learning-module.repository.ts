@@ -2,7 +2,7 @@ import type { EntityManager } from "@mikro-orm/core";
 import type {
   LearningModuleRecord,
   LearningModuleRepository,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { referenceDateValue } from "./date-value.ts";
 
 type ValueRow = Readonly<Record<string, unknown>>;

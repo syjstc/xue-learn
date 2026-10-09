@@ -1,6 +1,6 @@
 import type {WorkspaceServiceLifecycle} from "./workspace-service-lifecycle.ts";
 import { Body, Controller, Delete, Get, Inject, Param, Post } from "@nestjs/common";
-import { workspaceServiceSessionRequestSchema } from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+import { workspaceServiceSessionRequestSchema } from "@xue-learn/core/runtime-contracts";
 import {configuredWorkspaceClientCapabilities} from "./workspace-client-permissions.ts";
 import type { WorkspaceServiceSessions } from "./workspace-service-sessions.ts";
 export const LOCAL_WORKSPACE_SERVICE_CONTEXT = Symbol("LOCAL_WORKSPACE_SERVICE_CONTEXT");

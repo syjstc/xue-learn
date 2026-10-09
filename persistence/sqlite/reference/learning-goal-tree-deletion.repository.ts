@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { DeleteOwnedLearningGoalTreeInput, DeleteOwnedLearningGoalTreeResult, LearningGoalTreeDeletionRepository, } from "@xue-learn/core/source/libs/domain/src/index.ts";
+import type { DeleteOwnedLearningGoalTreeInput, DeleteOwnedLearningGoalTreeResult, LearningGoalTreeDeletionRepository, } from "@xue-learn/core/domain";
 const KACOM_DESTRUCTIVE_CASCADE_SETTING = "xuelearn.kacom_destructive_cascade";
 const RAG_SCOPE_CLEANUP_EVENT = "rag.scope.cleanup";
 type Row = Readonly<Record<string, unknown>>;

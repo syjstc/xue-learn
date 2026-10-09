@@ -2,8 +2,8 @@ import { NavLink } from "react-router-dom";
 import { WorkspaceSidebarBackButton } from "@/components/layout/workspace-sidebar-back-button";
 import type { WorkspaceSidebarViewRegistration } from "@/components/layout/workspace-sidebar-view-registry";
 import { LOCAL_CONTROL_SECTIONS } from "@/desktop-local/local-control-sections";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
 
 export function LocalControlWorkspaceSubview() {
   const t = useT();

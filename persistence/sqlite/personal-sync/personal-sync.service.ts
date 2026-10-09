@@ -1,4 +1,4 @@
-import { portablePersonalSyncRow } from "@xue-learn/core/source/libs/server/src/personal-sync/index.ts";
+import { portablePersonalSyncRow } from "@xue-learn/core/server/personal-sync";
 import { capturePersonalSyncInitialState, isValidatedLegacySyncTable } from "./capture.ts";
 import { createHash, randomUUID } from "node:crypto";
 import { Injectable } from "@nestjs/common";
@@ -8,7 +8,7 @@ import {
   LOCAL_OWNER_ID,
   personalSyncStatusSchema,
   type PersonalSyncStatus,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import {
   decryptSyncPayload,
   encryptSyncPayload,
@@ -17,7 +17,7 @@ import {
   runWithPersonalSyncApply,
   type EncryptedSyncEnvelope,
   type SyncMergePolicy,
-} from "@xue-learn/core/source/libs/server/src/personal-sync/index.ts";
+} from "@xue-learn/core/server/personal-sync";
 import {
   disableLocalPersonalSyncRuntime,
   getLocalPersonalSyncRuntime,

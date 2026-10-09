@@ -13,7 +13,7 @@ import {
   type MathPoint3,
   type MathScene,
   type MathSceneObject,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import {
   Focus,
   Hand,
@@ -33,14 +33,14 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from "react";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
-import { ProseMarkdown } from "@xue-learn/core/source/src/components/markdown/prose-markdown.tsx";
+import { useT } from "@xue-learn/core/i18n";
+import { cn } from "@xue-learn/core/utils";
+import { ProseMarkdown } from "@xue-learn/core/components/markdown/prose-markdown";
 import {
   MaterialVisualFrame,
   MaterialVisualToolbar,
   MaterialVisualToolbarButton,
-} from "@xue-learn/core/source/src/components/wizard/interactive-material/material-visual-frame.tsx";
+} from "@xue-learn/core/components/wizard/interactive-material/material-visual-frame";
 import { resolveMathScene2dScale } from "./math-scene-layout.ts";
 
 const WIDTH = 760;

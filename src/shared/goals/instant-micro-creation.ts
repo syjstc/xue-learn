@@ -1,7 +1,7 @@
 import { apiFetch } from "@/shared/api-client";
 import { consumeSseResponse } from "@/shared/client/consume-sse";
 import type { SseEvent } from "@/shared/llm/sse";
-import { canUseBrowserPersistentStorage } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { canUseBrowserPersistentStorage } from "@xue-learn/core/client-runtime";
 import {
   readLocalClientPreference,
   writeLocalClientPreference,

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
-import { getClientRuntime } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { useT } from "@xue-learn/core/i18n";
+import { getClientRuntime } from "@xue-learn/core/client-runtime";
 import {
   formatSidebarShortcut,
   readSidebarShortcut,

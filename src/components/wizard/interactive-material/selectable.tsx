@@ -1,7 +1,7 @@
 "use client";
 
-import type { TextHighlightSpan } from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { TextHighlightSpan } from "@xue-learn/core/shared/domain/material-highlight";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import { HighlightableTextRegion } from "@/components/markdown/highlightable-text-region";
 import type { MaterialFollowUpHandlers } from "@/hooks/use-material-text-selection";
 

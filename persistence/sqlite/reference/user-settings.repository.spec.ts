@@ -2,7 +2,7 @@ import type { EntityManager } from "@mikro-orm/core";
 import type {
   UserSettingsRepository,
   UserSettingsRecord,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
+} from "@xue-learn/core/domain";
 import { UserSettingsSchema, UserSettingsEntity } from "./user-settings.entity.ts";
 import { MikroOrmUserSettingsRepository } from "./user-settings.repository.ts";
 

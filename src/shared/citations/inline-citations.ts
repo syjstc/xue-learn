@@ -1,9 +1,9 @@
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import type {
   LearningMaterialContent,
   InteractiveBlock,
-} from "@xue-learn/core/source/src/shared/llm/schemas.ts";
-import { compareBlockSides } from "@xue-learn/core/source/src/shared/domain/compare-block.ts";
+} from "@xue-learn/core/schemas";
+import { compareBlockSides } from "@xue-learn/core/shared/domain/compare-block";
 
 /** Inline marker in generated text; maps to 1-based index in ContentSource[]. */
 export const CITATION_MARKER_RE = /\[\^(\d+)\]/g;

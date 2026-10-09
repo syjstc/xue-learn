@@ -1,19 +1,19 @@
 "use client";
 
 import { useMemo } from "react";
-import type { ContentSource } from "@xue-learn/core/source/src/shared/types/content-sources.ts";
+import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import {
   clampCitationMarkers,
   parseCitationSegments,
 } from "@/shared/citations/inline-citations";
-import { FEATURE_REFERENCE_SOURCES } from "@xue-learn/core/source/src/shared/features.ts";
-import type { TextHighlightSpan } from "@xue-learn/core/source/src/shared/domain/material-highlight.ts";
+import { FEATURE_REFERENCE_SOURCES } from "@xue-learn/core/features";
+import type { TextHighlightSpan } from "@xue-learn/core/shared/domain/material-highlight";
 import {
   ProseMarkdown,
   proseMarkdownClassName,
   type ProseMarkdownVariant,
-} from "@xue-learn/core/source/src/components/markdown/prose-markdown.tsx";
-import { cn } from "@xue-learn/core/source/src/shared/utils.ts";
+} from "@xue-learn/core/components/markdown/prose-markdown";
+import { cn } from "@xue-learn/core/utils";
 import { CitationBadge } from "./citation-badge.tsx";
 
 /**

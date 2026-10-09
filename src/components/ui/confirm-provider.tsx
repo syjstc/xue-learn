@@ -13,7 +13,7 @@ import {
   type AlertOptions,
   type ConfirmOptions,
 } from "@/hooks/use-confirm";
-import { useI18n } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { useI18n } from "@xue-learn/core/i18n";
 
 type DialogState = {
   open: boolean;

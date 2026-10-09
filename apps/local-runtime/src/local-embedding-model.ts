@@ -10,7 +10,7 @@ import { relative, resolve, sep } from "node:path";
 import {
   localEmbeddingModelManifestSchema,
   type LocalEmbeddingModelManifest,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 
 function requireContainedPath(root: string, target: string, label: string) {
   const resolvedRoot = realpathSync(resolve(root));

@@ -6,9 +6,9 @@ import type {
   LearningUnitRecord,
   LearningUnitRepository,
   ScopedMemoryPort,
-} from "@xue-learn/core/source/libs/domain/src/index.ts";
-import { COGNITIVE_MODEL_SKELETON_EVENT } from "@xue-learn/core/source/libs/server/src/cognitive-model/event-types.ts";
-import { computeCognitiveModelInputHash } from "@xue-learn/core/source/libs/server/src/cognitive-model/pure.ts";
+} from "@xue-learn/core/domain";
+import { COGNITIVE_MODEL_SKELETON_EVENT } from "@xue-learn/core/server/cognitive-model/event-types";
+import { computeCognitiveModelInputHash } from "@xue-learn/core/server/cognitive-model/pure";
 import {
   LearningGoalMutationService,
   type LearningGoalMutationRepositories,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,8 +13,8 @@ import {
 } from "@/hooks/api";
 import { useConfirm } from "@/hooks/use-confirm";
 import { extractGoalCoursePattern } from "@/shared/domain/goal-course-pattern";
-import { FEATURE_COURSE_PATTERN } from "@xue-learn/core/source/src/shared/features.ts";
-import { supportsGoalMapAuthoring } from "@xue-learn/core/source/src/shared/runtime/client-runtime.ts";
+import { FEATURE_COURSE_PATTERN } from "@xue-learn/core/features";
+import { supportsGoalMapAuthoring } from "@xue-learn/core/client-runtime";
 
 export function CoursePatternPanel({ goalId }: { goalId: string }) {
   // Course-pattern editing is part of the hosted legacy map-authoring

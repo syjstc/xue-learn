@@ -2,14 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRight, LoaderCircle, Sparkles, Theater } from "lucide-react";
-import { Button } from "@xue-learn/core/source/src/components/ui/button.tsx";
+import { Button } from "@xue-learn/core/ui/button";
 import type {
   ScenarioTheaterContent,
   ScenarioTheaterPlayState,
 } from "@/shared/domain/scenario-theater";
 import { personalizeScenarioTheaterText } from "@/shared/domain/scenario-theater";
-import { cn } from "@xue-learn/core/source/src/lib/utils.ts";
-import { useT } from "@xue-learn/core/source/src/shared/i18n/index.tsx";
+import { cn } from "@xue-learn/core/utils";
+import { useT } from "@xue-learn/core/i18n";
 import {useLearnerDisplayName} from "@/hooks/api/use-learner-profile";
 import { ScenarioTheaterStage } from "./scenario-stage.tsx";
 import { VisualNovelScenarioTheaterStage } from "./scenario-visual-novel-stage.tsx";

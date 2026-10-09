@@ -18,7 +18,7 @@ import {
   type PublicSharedCourseListItem,
   type FoundationGoalsResponse,
 } from "@/shared/api";
-import type { GoalMapPlan } from "@xue-learn/core/source/src/shared/llm/schemas.ts";
+import type { GoalMapPlan } from "@xue-learn/core/schemas";
 import { consumeSsePost } from "@/shared/client/consume-sse";
 import type { SseEvent } from "@/shared/llm/sse";
 import { apiFetch } from "@/shared/api-client";

@@ -7,12 +7,12 @@ import {
   rewrapWorkspaceKey,
   unwrapWorkspaceKey,
   wrappedWorkspaceKeySchema,
-} from "@xue-learn/core/source/libs/server/src/personal-sync/crypto.ts";
+} from "@xue-learn/core/server/personal-sync/crypto";
 import type {
   PersonalSyncConnectInput,
   PersonalSyncPassphraseChange,
   PersonalSyncUnlockInput,
-} from "@xue-learn/core/source/libs/runtime-contracts/src/index.ts";
+} from "@xue-learn/core/runtime-contracts";
 import type { WorkspaceCatalog } from "./workspace-catalog.ts";
 import type { WorkspaceKeyVault } from "./workspace-key-vault.ts";
 
