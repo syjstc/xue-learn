@@ -1,4 +1,5 @@
 import { protocol, type Session } from "electron";
+import { pluginViewScheme } from './plugins/view-protocol';
 import {
   INTERACTIVE_HTML_SCHEME,
   InteractiveHtmlPlayground,
@@ -21,6 +22,7 @@ export const INTERACTIVE_HTML_DOCUMENT_CSP =
 /** Must run before `app.whenReady()`. */
 export function registerInteractiveHtmlScheme(): void {
   protocol.registerSchemesAsPrivileged([
+    pluginViewScheme,
     {
       scheme: INTERACTIVE_HTML_SCHEME,
       privileges: {

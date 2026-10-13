@@ -168,7 +168,9 @@ export default defineConfig({
       "ts-fsrs",
       "vexflow",
     ],
-    exclude: ["pyodide"],
+    // Core's prebuilt chunks import the PDF worker as a URL. Let Vite's asset
+    // pipeline handle it; esbuild otherwise tries to read a literal `?url` file.
+    exclude: ["pyodide", "pdfjs-dist/build/pdf.worker.min.mjs?url"],
   },
   worker: {
     format: "es",

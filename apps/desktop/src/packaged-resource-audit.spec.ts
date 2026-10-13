@@ -13,6 +13,7 @@ describe("host package boundary", () => {
     for (const path of [
       "", "/", "/package.json", "/dist", "/dist/main.js",
       "/dist/preload.js", "/dist/cloudkit-bridge-preload.js",
+      "/dist/plugins", "/dist/plugins/worker.js",
     ]) {
       expect(ignorePackagedAppPath(path)).toBe(false);
     }

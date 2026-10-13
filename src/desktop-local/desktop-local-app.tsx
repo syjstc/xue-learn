@@ -19,6 +19,11 @@ import { LocalApiKeysPage } from "./local-api-keys-page.tsx";
 import { LocalLlmLogsPage } from "./local-llm-logs-page.tsx";
 import { LocalErrorLogsPage } from "./local-error-logs-page.tsx";
 import { LocalTeachingSkillsPage } from "./local-teaching-skills-page.tsx";
+import {LocalDisplayPluginsPage} from "./local-display-plugins-page.tsx";
+import { LocalPluginsPage } from "./local-plugins-page.tsx";
+import { LocalPluginViewPage } from "@/features/plugins/plugin-view";
+import {DisplayWorkspaceProvider} from "@xue-learn/core/display/workspace";
+import {displayWorkspaceClient} from "@/features/display/workspace";
 import { LocalTokenUsagePage } from "./local-token-usage-page.tsx";
 import { LocalMaintenancePage } from "./local-maintenance-page.tsx";
 import { LocalResourceSettingsPage } from "./local-resource-settings-page.tsx";
@@ -92,6 +97,9 @@ function Shell() {
                   element={<LocalResourceSettingsPage />}
                 />
                 <Route path="sync" element={<PersonalSyncPage />} />
+                <Route path="plugins" element={<LocalPluginsPage />} />
+                <Route path="plugins/:pluginId/views/:viewId" element={<LocalPluginViewPage />} />
+                <Route path="display-plugins" element={<LocalDisplayPluginsPage />} />
                 <Route
                   path="teaching-skills"
                   element={<LocalTeachingSkillsPage />}
@@ -128,7 +136,7 @@ export function DesktopLocalApp() {
               <TooltipProvider>
                 <DesktopDocumentPreviewProvider>
                   <DesktopPythonEditorProvider>
-                    <AssistantProvider>
+                    <DisplayWorkspaceProvider client={displayWorkspaceClient}><AssistantProvider>
                       <div className="desktop-local-window min-h-screen min-w-0 bg-background antialiased">
                         <div className="desktop-local-content min-h-0 min-w-0">
                           <Shell />
@@ -137,7 +145,7 @@ export function DesktopLocalApp() {
                           <AssistantFab />
                         </FloatingActionStack>
                       </div>
-                    </AssistantProvider>
+                    </AssistantProvider></DisplayWorkspaceProvider>
                   </DesktopPythonEditorProvider>
                 </DesktopDocumentPreviewProvider>
               </TooltipProvider>

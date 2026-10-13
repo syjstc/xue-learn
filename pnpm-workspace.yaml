@@ -1,3 +1,4 @@
 packages:
   - 'apps/desktop'
   - 'apps/lab-runtime'
+  - 'packages/plugin-sdk'

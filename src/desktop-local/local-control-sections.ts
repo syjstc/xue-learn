@@ -7,11 +7,24 @@ import {
   TriangleAlert,
   Wrench,
   Cloud,
+  Shapes,
+  Puzzle,
 } from "lucide-react";
 import type { TranslationKey } from "@xue-learn/core/i18n";
 import { isDev } from "@xue-learn/core/dev";
+import { pluginMessages } from "@/features/plugins/messages";
 
 export const LOCAL_CONTROL_SECTIONS = [
+  {
+    to: "/local/plugins",
+    label: (locale: string) => pluginMessages(locale).title,
+    icon: Puzzle,
+  },
+  {
+    to: "/local/display-plugins",
+    label: (locale: string) => pluginMessages(locale).displayTitle,
+    icon: Shapes,
+  },
   {
     to: "/local/sync",
     labelKey: "desktop.deviceSettings.personalSync",
@@ -60,8 +73,7 @@ export const LOCAL_CONTROL_SECTIONS = [
         },
       ]
     : []),
-] as const satisfies readonly {
+] as const satisfies readonly ({
   to: string;
-  labelKey: TranslationKey;
   icon: typeof BookOpen;
-}[];
+} & ({ labelKey: TranslationKey } | { label: (locale: string) => string }))[];

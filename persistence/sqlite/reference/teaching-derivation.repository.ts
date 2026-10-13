@@ -2,6 +2,14 @@ import type { EntityManager } from "@mikro-orm/core";
 import type { AppendTeachingDerivationStepInput, CreateTeachingDerivationRunInput, TeachingDerivationEventRecord, TeachingDerivationRepository, TeachingDerivationRunRecord, TeachingDerivationRunStatus, TeachingDerivationStepRecord, UpdateTeachingDerivationRunInput, } from "@xue-learn/core/domain";
 import { nullableReferenceDateValue, referenceDateValue, sqlTimestampParameter, } from "./date-value.ts";
 type Row = Readonly<Record<string, unknown>>;
+type GenerationFence = {expectedGenerationToken?: string | null};
+
+function generationFence(input: GenerationFence, params: unknown[]): string {
+  if (input.expectedGenerationToken === undefined) return "";
+  if (input.expectedGenerationToken === null) return ' AND "generationToken" IS NULL';
+  params.push(input.expectedGenerationToken);
+  return ' AND "generationToken" = ?';
+}
 function rows(result: unknown): readonly Row[] {
     if (Array.isArray(result))
         return result as Row[];
@@ -145,7 +153,7 @@ export class MikroOrmTeachingDerivationRepository implements TeachingDerivationR
         return rows(await this.execute(this.em, `SELECT * FROM ${table(this.em, "TeachingDerivationRun")}
           WHERE "sectionId" = ? ORDER BY "updatedAt" DESC LIMIT ?`, [sectionId, limit])).map(runRecord);
     }
-    async updateRun(input: UpdateTeachingDerivationRunInput): Promise<boolean> {
+    async updateRun(input: UpdateTeachingDerivationRunInput & GenerationFence): Promise<boolean> {
         const assignments: string[] = [`"updatedAt" = ?`];
         const params: unknown[] = [timestamp(this.em, input.now)];
         const set = (column: string, value: unknown) => {
@@ -178,46 +186,36 @@ export class MikroOrmTeachingDerivationRepository implements TeachingDerivationR
             set("completedAt", input.completedAt ? timestamp(this.em, input.completedAt) : null);
         }
         params.push(input.id);
-        const result = await this.execute(this.em, `UPDATE ${table(this.em, "TeachingDerivationRun")} SET ${assignments.join(", ")} WHERE "id" = ?`, params);
-        const affected = typeof result === "object" && result && "affectedRows" in result
-            ? Number((result as {
-                affectedRows?: unknown;
-            }).affectedRows)
-            : 1;
-        return affected > 0;
+        const fence = generationFence(input, params);
+        const result = await this.execute(
+          this.em,
+          `UPDATE ${table(this.em, "TeachingDerivationRun")} SET ${assignments.join(", ")} WHERE "id" = ?${fence} RETURNING "id"`,
+          params,
+        );
+        return rows(result).length > 0;
     }
-    async appendStep(input: AppendTeachingDerivationStepInput): Promise<boolean> {
+
+    async appendStep(input: AppendTeachingDerivationStepInput & GenerationFence): Promise<boolean> {
         return this.em.transactional(async (em) => {
-            const runTable = table(em, "TeachingDerivationRun");
-            const owned = rows(await this.execute(em, `SELECT "revision" FROM ${runTable} WHERE "id" = ? LIMIT 1`, [input.runId]))[0];
-            if (!owned || Number(value(owned, "revision")) !== input.expectedRevision) {
-                return false;
-            }
-            const now = timestamp(em, input.now);
-            await this.execute(em, `INSERT INTO ${table(em, "TeachingDerivationStep")}
-          ("id", "runId", "ordinal", "stepJson", "derivedJson", "createdAt")
-         VALUES (?, ?, ?, ?, ?, ?)`, [
-                input.step.id,
-                input.runId,
-                input.step.ordinal,
-                input.step.stepJson,
-                input.step.derivedJson,
-                now,
-            ]);
-            await this.execute(em, `UPDATE ${runTable}
+          const now = timestamp(em, input.now);
+          const params: unknown[] = [input.documentJson, input.derivedJson, input.revision,
+            input.repairAttempts, now, input.runId, input.expectedRevision];
+          const fence = generationFence(input, params);
+          // Claim this exact revision and generation before adding the step. A failed
+          // insertion rolls the claim back in the same transaction.
+          const claimed = rows(await this.execute(em, `UPDATE ${table(em, "TeachingDerivationRun")}
             SET "documentJson" = ?, "derivedJson" = ?, "revision" = ?,
                 "repairAttempts" = ?, "updatedAt" = ?
-          WHERE "id" = ?`, [
-                input.documentJson,
-                input.derivedJson,
-                input.revision,
-                input.repairAttempts,
-                now,
-                input.runId,
-            ]);
-            return true;
+            WHERE "id" = ? AND "revision" = ?${fence} RETURNING "id"`, params));
+          if (!claimed.length) return false;
+          await this.execute(em, `INSERT INTO ${table(em, "TeachingDerivationStep")}
+            ("id", "runId", "ordinal", "stepJson", "derivedJson", "createdAt")
+            VALUES (?, ?, ?, ?, ?, ?)`, [input.step.id, input.runId, input.step.ordinal,
+              input.step.stepJson, input.step.derivedJson, now]);
+          return true;
         });
     }
+
     async getStepByOrdinal(runId: string, ordinal: number): Promise<TeachingDerivationStepRecord | null> {
         const row = rows(await this.execute(this.em, `SELECT * FROM ${table(this.em, "TeachingDerivationStep")}
           WHERE "runId" = ? AND "ordinal" = ? LIMIT 1`, [runId, ordinal]))[0];

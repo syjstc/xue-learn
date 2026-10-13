@@ -12,7 +12,9 @@ import {
 import { Button } from "@xue-learn/core/ui/button";
 import { AssistantChatMessage } from "@/components/wizard/conversation/assistant-chat-message";
 import { MaterialBlockRenderer } from "@/components/wizard/interactive-material/material-block-renderer";
-import { TeachingDerivationBoard } from "@xue-learn/core/features/teaching-derivation/board";
+import {derivationDisplayDocument} from "@xue-learn/core/display/catalog";
+import {createDisplayClock} from "@xue-learn/core/display/runtime";
+import {DisplayDocumentHost} from "@/features/display/display-block-host";
 import { FormulaTreeDebug } from "@/features/teaching-derivation/formula-tree-debug";
 import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 import { useT } from "@xue-learn/core/i18n";
@@ -50,6 +52,7 @@ export function TeachingDerivationPlayer({
   );
   const [cueIndex, setCueIndex] = useState(0);
   const [focused, setFocused] = useState(true);
+  const documentIdRef = useRef(document.id);
   const activeStep = document.steps[ordinal - 1];
   const activeCue = activeStep?.cues?.[cueIndex];
   const trigger = activeStep?.cues?.findIndex(cue => cue.startTransform) ?? -1;
@@ -57,23 +60,25 @@ export function TeachingDerivationPlayer({
   const motion = useDerivationMotion(ordinal, phase);
   const animating = motion.progress < 1 && phase !== "before";
   const derived = useMemo(
-    () => resolveTeachingDerivationDerived(document, storedDerived),
+    () => {try {return resolveTeachingDerivationDerived(document, storedDerived);} catch {return undefined;}},
     [document, storedDerived],
   );
   const onCursorChangeRef = useRef(onCursorChange);
   onCursorChangeRef.current = onCursorChange;
   useEffect(() => {
-    if (!generating) return;
-    setOrdinal((current) => {
-      if (current === 1 && maxOrdinal >= 1) return 1;
-      return current;
-    });
-  }, [generating, maxOrdinal]);
+    const replaced = documentIdRef.current !== document.id;
+    documentIdRef.current = document.id;
+    setOrdinal(current => Math.max(1, Math.min(maxOrdinal || 1, replaced ? persistedCursor ?? 1 : current)));
+    if (replaced) setCueIndex(0);
+  }, [document.id, maxOrdinal, persistedCursor]);
+  useEffect(() => {
+    setCueIndex(current => Math.max(0, Math.min(Math.max(0, (activeStep?.cues?.length ?? 1) - 1), current)));
+  }, [activeStep?.cues?.length]);
   useEffect(() => {
     onCursorChangeRef.current?.(ordinal);
   }, [ordinal]);
   const step = document.steps[ordinal - 1];
-  const stepDerived = derived.steps[ordinal - 1];
+  const stepDerived = derived?.steps[ordinal - 1];
   const go = (next: number, segment = 0) => {
     const clamped = Math.max(1, Math.min(maxOrdinal || 1, next));
     setCueIndex(segment);
@@ -127,14 +132,10 @@ export function TeachingDerivationPlayer({
         </nav>
       </header>
       {step.presentationFallback ? <p className="text-sm text-amber-800">{t("teachingDerivation.fallback")}</p> : null}
-      <TeachingDerivationBoard
-        document={document}
-        derived={derived}
-        ordinal={ordinal}
-        cueId={activeCue?.id}
-        fromOrdinal={motion.from}
-        progress={motion.progress}
-        focused={focused}
+      <DisplayDocumentHost
+        document={derivationDisplayDocument({document, derived, focused, toStep: ordinal, fromStep: motion.from,
+          cueId: activeCue?.id, progress: motion.progress})}
+        clock={createDisplayClock(motion.progress * 60, 60)} controls={false}
       />
       <div className="space-y-2 text-sm">
         <AssistantChatMessage
@@ -197,7 +198,7 @@ export function TeachingDerivationPlayer({
           <Button
             type="button"
             size="sm"
-            disabled={busy || animating}
+            disabled={busy || animating || generating}
             onClick={onContinue}
           >
             {t("learningScene.completeSection")}

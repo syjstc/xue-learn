@@ -5,6 +5,7 @@ import {
   type UtilityProcess,
 } from "electron";
 import type { SidecarBootstrap, SidecarProcess } from "./protocol.ts";
+import { writeDiagnostic } from "../diagnostic-output.ts";
 import {
   shouldLogSidecarOutput,
   sidecarUtilityProcessForkOptions,
@@ -29,12 +30,12 @@ export class ElectronSidecarProcess implements SidecarProcess {
     // diagnostics so native crashes are visible in the orchestrator log.
     if (shouldLogSidecarOutput()) {
       const forward = (label: string, chunk: Buffer | string) => {
-        process.stderr.write(`[${label}] ${redactSidecarLog(chunk)}`);
+        writeDiagnostic(`[${label}] ${redactSidecarLog(chunk)}`);
       };
       this.child.stdout?.on("data", (chunk) => forward("sidecar", chunk));
       this.child.stderr?.on("data", (chunk) => forward("sidecar-error", chunk));
       this.child.on("error", (type, location) => {
-        process.stderr.write(
+        writeDiagnostic(
           `[sidecar-error] ${type} at ${redactSidecarLog(location)}\n`,
         );
       });

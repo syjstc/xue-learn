@@ -9,6 +9,12 @@ import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { terminateDevChildren } from "./desktop-dev-processes.mjs";
+import {
+  focusRunningDesktop,
+  prepareDesktopDevelopment,
+} from "./desktop-dev-preflight.mjs";
+import { ensureElectronRuntime } from "../apps/desktop/scripts/ensure-electron-runtime.mjs";
 import {
   DESKTOP_DEV_RENDERER_ORIGIN,
   DESKTOP_DEV_SIDECAR_ORIGIN,
@@ -16,8 +22,33 @@ import {
 } from "./desktop-dev-defaults.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+const labEnabled = process.env.XUELEARN_DESKTOP_ENABLE_LAB === "1";
 const children = [];
 let shuttingDown = false;
+
+try {
+  const executable = await ensureElectronRuntime();
+  const shouldStart = await prepareDesktopDevelopment({
+    labEnabled,
+    focusExisting: () =>
+      focusRunningDesktop(
+        executable,
+        join(root, "scripts/desktop-dev-focus.cjs"),
+        { cwd: root },
+      ),
+  });
+  if (!shouldStart) {
+    process.stdout.write(
+      "XueLearn is already running; requested focus on the existing window. To stop the old development instance, clear generated output and reload Electron main/preload changes, run pnpm desktop:restart (or pnpm desktop:clean to stop without relaunching).\n",
+    );
+    process.exit(0);
+  }
+} catch (error) {
+  process.stderr.write(
+    `[startup] ${error instanceof Error ? error.message : String(error)}\n`,
+  );
+  process.exit(1);
+}
 
 process.env.VITE_ENABLE_DEV_TOOLS = "true";
 process.env.XUELEARN_DESKTOP_DEV = "1";
@@ -53,6 +84,11 @@ function spawnLogged(command, args, prefix) {
   };
   forward("stdout", process.stdout);
   forward("stderr", process.stderr);
+  child.on("error", (error) => {
+    if (shuttingDown) return;
+    process.stderr.write(`[${prefix}] could not start: ${error.message}\n`);
+    shutdown(1);
+  });
   child.on("exit", (code, signal) => {
     if (shuttingDown || signal) return;
     if (code !== 0 && code !== null) {
@@ -89,18 +125,7 @@ function waitForOutput(child, pattern, label) {
 function shutdown(code = 0) {
   if (shuttingDown) return;
   shuttingDown = true;
-  for (const child of children) {
-    if (child.killed) continue;
-    try {
-      if (process.platform !== "win32" && child.pid) {
-        process.kill(-child.pid, "SIGTERM");
-      } else {
-        child.kill("SIGTERM");
-      }
-    } catch (error) {
-      if (error?.code !== "ESRCH") throw error;
-    }
-  }
+  terminateDevChildren(children);
   setTimeout(() => process.exit(code), 200).unref();
 }
 
@@ -112,11 +137,13 @@ const renderer = spawnLogged(
   ["exec", "vite", "--config", "vite.desktop-local.config.ts"],
   "renderer",
 );
-const lab = spawnLogged(
-  "pnpm",
-  ["exec", "vite", "--config", "apps/lab-runtime/vite.config.ts"],
-  "lab",
-);
+const lab = labEnabled
+  ? spawnLogged(
+      "pnpm",
+      ["exec", "vite", "--config", "apps/lab-runtime/vite.config.ts"],
+      "lab",
+    )
+  : null;
 const sidecar = spawnLogged(
   "node",
   ["scripts/build-service.mjs", "local-runtime", "--watch"],
@@ -130,23 +157,34 @@ try {
       /Local:\s+http:\/\/127\.0\.0\.1:5174|ready in/i,
       "renderer dev server",
     ),
-    waitForOutput(
-      lab,
-      /Local:\s+http:\/\/127\.0\.0\.1:5177|ready in/i,
-      "lab-runtime dev server",
-    ),
+    ...(lab
+      ? [
+          waitForOutput(
+            lab,
+            /Local:\s+http:\/\/127\.0\.0\.1:5177|ready in/i,
+            "lab-runtime dev server",
+          ),
+        ]
+      : []),
     waitForOutput(sidecar, /built local-runtime ->/, "sidecar watch"),
   ]);
 } catch (error) {
-  process.stderr.write(
-    `${error instanceof Error ? error.message : String(error)}\n`,
-  );
-  shutdown(1);
+  // A sibling killed during shutdown is a consequence of the first failure.
+  // Keep the original diagnostic instead of reporting a sidecar failure too.
+  if (!shuttingDown) {
+    process.stderr.write(
+      `${error instanceof Error ? error.message : String(error)}\n`,
+    );
+    shutdown(1);
+  }
   process.exit(1);
 }
 
+const labStatus = labEnabled
+  ? "lab-runtime proxy to http://127.0.0.1:5177"
+  : "lab-runtime disabled (set XUELEARN_DESKTOP_ENABLE_LAB=1 to enable)";
 process.stdout.write(
-  `Desktop hotload is active: Vite HMR at ${DESKTOP_DEV_RENDERER_ORIGIN}, lab-runtime proxy to http://127.0.0.1:5177, API proxy to ${DESKTOP_DEV_SIDECAR_ORIGIN}. The normal XueLearn local profile is preserved and reused. Sidecar JS still restarts the local service. Electron main/preload still need a process restart.\n`,
+  `Desktop hotload is active: Vite HMR at ${DESKTOP_DEV_RENDERER_ORIGIN}, ${labStatus}, API proxy to ${DESKTOP_DEV_SIDECAR_ORIGIN}. The normal XueLearn local profile is preserved and reused. Sidecar JS still restarts the local service. Electron main/preload still need a process restart.\n`,
 );
 
 const electron = spawnLogged(

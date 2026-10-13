@@ -1006,7 +1006,7 @@ export function SectionLearningPanel({
   };
 
   const retryGeneration = () => {
-    if (!active) return;
+    if (!active || sectionLoadRef.current?.sectionId === active.id) return;
     const retrySection: UnitSectionManifest = {
       ...active,
       generationStatus: "pending",

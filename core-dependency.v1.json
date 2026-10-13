@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "package": "@xue-learn/core",
-  "version": "0.2.1",
-  "artifact": "vendor/xue-learn-core-0.2.1-0ad52d0d1d8a.tgz",
-  "sha256": "0ad52d0d1d8a263d4551d2d61cbc8a8fe470b44ec9e821238825f26f9b15ec18",
-  "releaseManifestSha256": "2e51af68bbc0f92458a17deae7249ceda77e644bc3f8b4e2c21ac60e1cce962b",
-  "packageJsonSha256": "4af985e9478485ffa95190969efdecf7270bba99d45003789084af85749fcd06"
+  "version": "0.3.12",
+  "artifact": "vendor/xue-learn-core-0.3.12-6022ad6e32bb.tgz",
+  "sha256": "6022ad6e32bb8015cacce7cf9ffd2eeda0a9692346941e2905939b8da1fdc47a",
+  "releaseManifestSha256": "8d5e5ca558983a0fbdcb510f5eda2bdcbbc0d6a755061498f9156eefe246361c",
+  "packageJsonSha256": "66d2f91d8431c7c36a39f852d1ae633ae3a0048a380d9279da6ba6740dfbb7cb"
 }

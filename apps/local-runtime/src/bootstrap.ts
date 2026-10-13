@@ -6,6 +6,7 @@ import {workspaceBackgroundTaskCount} from "@cognilearn/desktop-persistence/work
 import {createWorkspaceLearningPort} from "@cognilearn/desktop-persistence/workspace-learning";
 import "reflect-metadata";
 import { NestFactory } from "@nestjs/core";
+import {DisplayWorkspaceService} from "@xue-learn/core/server/display-workspace";
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import type { Request, Response } from "express";
 import { resolve } from "node:path";
@@ -53,6 +54,9 @@ import { compactOversizedLocalApiRequestLog } from "./local-api-log-compaction.t
 import { WorkspaceServiceOwner } from "./workspace-service-owner.ts";
 import { WorkspaceServiceSessions } from "./workspace-service-sessions.ts";
 import { CourseSourceRepository } from "@cognilearn/desktop-persistence/course-source.repository";
+import {courseTeachingBodyParser} from './course-teaching-ingress.ts';
+import {CourseTeachingContentService} from '@xue-learn/core/server/course-teaching';
+import {ensureUnitSectionPlan, generateUnitSectionMaterial} from '@xue-learn/core/server/sections';
 import { readRawUnitImage } from "@xue-learn/core/server/images/storage";
 
 /** Bridge the Electron vault contract into the shared provider environment. */
@@ -308,21 +312,29 @@ async function startOwnedLocalRuntime(message: LocalSidecarStartMessage, ownersh
   provideBootstrappedPersistenceRuntime(migrationRuntime);
   chmodSync(databasePath, 0o600);
   const sessions = new WorkspaceServiceSessions(message.workspaceId, LOCAL_OWNER_ID, message.instanceId, ownership.epoch);
-  const courseSourceContext = { workspaceId: message.workspaceId,
-    repository: new CourseSourceRepository(migrationRuntime.orm.em, readRawUnitImage, undefined, undefined, work =>
-      migrationRuntime.runInTransaction(() => work(migrationRuntime.orm.em.getContext(false)))) };
+  const courseSourceRepository = new CourseSourceRepository(migrationRuntime.orm.em, readRawUnitImage, undefined, undefined, work =>
+    migrationRuntime.runInTransaction(() => work(migrationRuntime.orm.em.getContext(false))));
+  const courseSourceContext = {workspaceId: message.workspaceId, repository: courseSourceRepository,
+    teaching: new CourseTeachingContentService({
+      readDraft: (ownerId, unitId) => courseSourceRepository.readTeachingDraft({workspaceId: message.workspaceId, ownerId, unitId}),
+      readReady: (ownerId, unitId) => courseSourceRepository.readUnit({workspaceId: message.workspaceId, ownerId, unitId}),
+      ensurePlan: ensureUnitSectionPlan,
+      generateSection: generateUnitSectionMaterial,
+      adopt: (ownerId, unitId, reuse) => courseSourceRepository.adoptTeachingMaterial({workspaceId: message.workspaceId, ownerId, unitId}, reuse),
+    })};
   const lifecycle = new WorkspaceServiceLifecycle();
-  const backgroundTaskCount = () => migrationRuntime.runInTransaction(() => workspaceBackgroundTaskCount(migrationRuntime.orm.em.getContext(false)));
+  const displayWorkspace = new DisplayWorkspaceService({directory: message.dataPath, ownerUserId: LOCAL_OWNER_ID});
+  const backgroundTaskCount = async () => await migrationRuntime.runInTransaction(() => workspaceBackgroundTaskCount(migrationRuntime.orm.em.getContext(false))) + await displayWorkspace.backgroundTaskCount();
   const workspaceServiceContext = {sessions, lifecycle, storageOwnership: {canResetData: extensionPreservation.retainedExtensionTables === 0, hasLegacyExtensions: extensionPreservation.retainedExtensionTables > 0, retainedExtensionTables: extensionPreservation.retainedExtensionTables}, clientPermissionsPath:message.clientPermissionsPath, backgroundTaskCount,
     drain: () => migrationRuntime.runInTransaction(async () => lifecycle.commitDrain({clientSessions:sessions.activeCount,
-      backgroundTasks:await workspaceBackgroundTaskCount(migrationRuntime.orm.em.getContext(false))}))};
+      backgroundTasks:await workspaceBackgroundTaskCount(migrationRuntime.orm.em.getContext(false)) + await displayWorkspace.backgroundTaskCount()}))};
   const app = await runStartupPhase("Nest application creation", () =>
     NestFactory.create<NestExpressApplication>(
       DesktopLocalModule.register({
         instanceId: message.instanceId,
         startedAt,
         descriptor,
-      }, courseSourceContext, workspaceServiceContext, createWorkspaceLearningPort(migrationRuntime)),
+      }, courseSourceContext, workspaceServiceContext, createWorkspaceLearningPort(migrationRuntime), displayWorkspace),
       { bufferLogs: true },
     ),
   );
@@ -338,6 +350,7 @@ async function startOwnedLocalRuntime(message: LocalSidecarStartMessage, ownersh
       lifecycle,
     ),
   );
+  app.use(courseTeachingBodyParser());
   app.use((request: Request, response: Response, next: () => void) => {
     if (request.path.startsWith("/api")) {
       response.setHeader(

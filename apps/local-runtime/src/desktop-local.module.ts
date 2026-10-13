@@ -30,8 +30,11 @@ import {
 } from "./local-health.controller.ts";
 import { LocalObservabilityController } from "./local-observability.controller.ts";
 import { LocalTeachingSkillsController } from "./local-teaching-skills.controller.ts";
+import {LocalDisplayWorkspaceController, LOCAL_DISPLAY_WORKSPACE} from "./local-display-workspace.controller.ts";
+import type {DisplayWorkspaceService} from "@xue-learn/core/server/display-workspace";
 import { LocalAiModelsController } from "./local-ai-models.controller.ts";
 import { LocalResourceSettingsController } from "./local-resource-settings.controller.ts";
+import { LocalGenerationSettingsController } from "./local-generation-settings.controller.ts";
 import { LocalUnitImagesController } from "./local-unit-images.controller.ts";
 import { PersonalSyncController } from "./personal-sync/personal-sync.controller.ts";
 import { PersonalSyncService } from "@cognilearn/desktop-persistence/personal-sync/personal-sync.service";
@@ -47,7 +50,7 @@ import { PersonalSyncService } from "@cognilearn/desktop-persistence/personal-sy
  */
 @Module({})
 export class DesktopLocalModule {
-  static register(healthContext: LocalHealthContext, courseSourceContext?: LocalCourseSourceContext, workspaceServiceContext?: LocalWorkspaceServiceContext, workspaceLearningContext?: WorkspaceLearningPort) {
+  static register(healthContext: LocalHealthContext, courseSourceContext?: LocalCourseSourceContext, workspaceServiceContext?: LocalWorkspaceServiceContext, workspaceLearningContext?: WorkspaceLearningPort, displayWorkspace?: DisplayWorkspaceService) {
     return {
       module: DesktopLocalModule,
       imports: [
@@ -87,6 +90,7 @@ export class DesktopLocalModule {
       controllers: [
         LocalAiModelsController,
         LocalResourceSettingsController,
+        LocalGenerationSettingsController,
         LocalUnitImagesController,
         LocalHealthController,
         ...(courseSourceContext ? [LocalCourseSourceController] : []),
@@ -94,10 +98,12 @@ export class DesktopLocalModule {
         ...(workspaceLearningContext ? [LocalWorkspaceLearningController] : []),
         LocalObservabilityController,
         LocalTeachingSkillsController,
+        ...(displayWorkspace ? [LocalDisplayWorkspaceController] : []),
         PersonalSyncController,
       ],
       providers: [
         { provide: LOCAL_HEALTH_CONTEXT, useValue: healthContext },
+        ...(displayWorkspace ? [{provide: LOCAL_DISPLAY_WORKSPACE, useValue: displayWorkspace}] : []),
         ...(courseSourceContext ? [{ provide: LOCAL_COURSE_SOURCE_CONTEXT, useValue: courseSourceContext }] : []),
         ...(workspaceServiceContext ? [{ provide: LOCAL_WORKSPACE_SERVICE_CONTEXT, useValue: workspaceServiceContext }] : []),
         ...(workspaceLearningContext ? [{provide:LOCAL_WORKSPACE_LEARNING_CONTEXT,useValue:workspaceLearningContext}] : []),

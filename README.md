@@ -16,9 +16,34 @@ pnpm run check:core
 pnpm dev
 ```
 
-`pnpm dev` starts the renderer, lab runtime, local service and Electron. Core is installed from the release archive retained in this repository; no sibling Core checkout, npm publication of Core or separately deployed Core server is needed. Dependency installation must allow the native modules to build or install their platform binaries.
+`pnpm dev` starts the renderer, local service and Electron. The lab runtime is disabled by default and does not open port 5177. To include the lab runtime for a development session, run `XUELEARN_DESKTOP_ENABLE_LAB=1 pnpm dev`.
+
+Running `pnpm dev` again focuses the existing XueLearn window and exits successfully before starting any watchers. To apply Electron main/preload changes or recover from a stuck development process, run:
+
+```sh
+pnpm desktop:restart
+```
+
+`pnpm desktop:clean` stops this checkout's Electron instance, renderer/lab watchers, sidecar watcher and their children, then removes generated renderer, sidecar and Electron bundles and Vite caches. It sends SIGTERM, waits up to three seconds, then sends SIGKILL to processes that remain. This interrupts running development generation/export tasks; saved learner workspaces, the user profile, credentials, installed plugins and exports are preserved. `pnpm desktop:restart` runs cleanup and starts a fresh development session only if cleanup succeeds. A packaged application outside this checkout must be quit separately if it holds the same profile.
+
+Use `pnpm desktop:stop` to stop processes while keeping generated output, or `pnpm desktop:clean --dry-run` to preview the exact process IDs and paths. These commands support macOS and Linux and require `ps` and `lsof`. Cleanup checks process ownership and start times, and refuses to stop an unrelated application merely because it occupies a development port. If a required port remains occupied, it reports the conflict and leaves generated files intact.
+
+Core is installed from the release archive retained in this repository; no sibling Core checkout, npm publication of Core or separately deployed Core server is needed. Dependency installation must allow the native modules to build or install their platform binaries.
 
 The host is in `apps/desktop`, its service in `apps/local-runtime`, and its owned SQLite adapter in `persistence/sqlite`. Live learner workspaces are not relocated by the source split.
+
+## Desktop plugins
+
+Open **Device settings → Desktop plugins** to install and manage local extensions.
+The Cordis host runs each executable plugin in its own process; plugins add tools
+and independent windows through versioned capabilities. Video Studio is the first
+packaged extension, including its own rendering dependencies. See the
+[plugin guide](docs/desktop-plugins.md) for installation, SDK usage, lifecycle and
+the planned display compatibility adapter.
+
+Build the standalone SDK with `pnpm build:plugin-sdk`; run plugin checks with
+`pnpm test:plugins`. After building Desktop, `pnpm verify:plugins -- /path/to/video-plugin`
+exercises the real Electron host and optional Video package in disposable profiles.
 
 ## Build an installer
 

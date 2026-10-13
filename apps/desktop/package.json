@@ -4,8 +4,8 @@
   "private": true,
   "main": "dist/main.js",
   "scripts": {
-    "build": "esbuild src/main.ts src/preload.ts src/cloudkit-bridge-preload.ts --bundle --platform=node --target=node22 --outdir=dist --external:electron --sourcemap --alias:@cognilearn/runtime-contracts=../../node_modules/@xue-learn/core/sources/libs/runtime-contracts/src/index.ts",
-    "build:release": "esbuild src/main.ts src/preload.ts src/cloudkit-bridge-preload.ts --bundle --platform=node --target=node22 --outdir=dist --external:electron --minify --legal-comments=none --alias:@cognilearn/runtime-contracts=../../node_modules/@xue-learn/core/sources/libs/runtime-contracts/src/index.ts && rm -f dist/main.js.map dist/preload.js.map dist/cloudkit-bridge-preload.js.map",
+    "build": "esbuild src/main.ts src/preload.ts src/cloudkit-bridge-preload.ts src/plugins/worker.ts --bundle --platform=node --target=node22 --outdir=dist --external:electron --sourcemap --alias:@cognilearn/runtime-contracts=../../node_modules/@xue-learn/core/sources/libs/runtime-contracts/src/index.ts",
+    "build:release": "esbuild src/main.ts src/preload.ts src/cloudkit-bridge-preload.ts src/plugins/worker.ts --bundle --platform=node --target=node22 --outdir=dist --external:electron --minify --legal-comments=none --alias:@cognilearn/runtime-contracts=../../node_modules/@xue-learn/core/sources/libs/runtime-contracts/src/index.ts && rm -f dist/main.js.map dist/preload.js.map dist/cloudkit-bridge-preload.js.map dist/plugins/worker.js.map",
     "start": "node scripts/ensure-electron-runtime.mjs && pnpm build && node scripts/run-electron-forge.mjs start",
     "package": "pnpm build:release && node scripts/run-electron-forge.mjs package",
     "make": "pnpm build:release && node scripts/run-electron-forge.mjs make",

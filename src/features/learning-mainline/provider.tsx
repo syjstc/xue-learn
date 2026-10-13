@@ -288,6 +288,9 @@ export function MainlineProvider({ children }: { children: ReactNode }) {
         "a[href]",
       );
       if (!anchor || anchor.target || anchor.hasAttribute("download")) return;
+      // Embedded views own their internal links (for example a MemoryRouter).
+      // Only the plugin SDK's explicit host.navigate should leave that view.
+      if (anchor.closest("[data-desktop-plugin-content]")) return;
       const url = new URL(anchor.href);
       if (
         url.origin !== window.location.origin ||

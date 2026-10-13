@@ -12,13 +12,13 @@ export const DESKTOP_CSP = [
   "object-src 'none'",
   `frame-src 'self' ${INTERACTIVE_HTML_SCHEME}:`,
   "form-action 'self'",
-  "script-src 'self' 'wasm-unsafe-eval'",
+  "script-src 'self' 'wasm-unsafe-eval' xuelearn-plugin:",
   "worker-src 'self' blob:",
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
-  "font-src 'self' data:",
-  "media-src 'self' blob:",
-  "connect-src 'self'",
+  "style-src 'self' 'unsafe-inline' xuelearn-plugin:",
+  "img-src 'self' data: blob: xuelearn-plugin:",
+  "font-src 'self' data: xuelearn-plugin:",
+  "media-src 'self' blob: xuelearn-plugin:",
+  "connect-src 'self' xuelearn-plugin:",
 ].join("; ");
 
 export function isExactLoopbackOrigin(candidate: string, baseUrl: string): boolean {

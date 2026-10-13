@@ -1,9 +1,5 @@
-import { GuidedImageDisplay } from "@xue-learn/core/display/guided-image-display";
-import {
-  CourseChatBoard,
-  supportsCourseChatBoard,
-  type CourseBoardPlayback,
-} from "@/components/course-display/course-chat-board";
+import {DisplayBlockHost} from "@/features/display/display-block-host";
+import type {CourseBoardPlayback} from "@/components/course-display/course-chat-board";
 ("use client");
 
 import type { InteractiveBlock } from "@xue-learn/core/schemas";
@@ -12,21 +8,14 @@ import type { ContentSource } from "@xue-learn/core/shared/types/content-sources
 import type { MaterialFollowUpHandlers } from "@/hooks/use-material-text-selection";
 import type { MaterialFigureCaption } from "@xue-learn/core/domain";
 import { NewCourseInteractionBlock } from "../course-interaction-blocks.tsx";
-import { CodeBlockShell } from "@xue-learn/core/components/markdown/code-block-shell";
 import { Selectable } from "./selectable.tsx";
 import type {
   IllustrationRegenHandlers,
   MaterialCheckResult,
   VerifiedMaterialAnswerHandler,
 } from "./types.ts";
-import { AccordionBlock, CalloutBlock } from "./blocks/callout-accordion.tsx";
 import { CheckBlock } from "./blocks/check.tsx";
-import { LegacyCompareBlock } from "./blocks/legacy-compare.tsx";
-import { ComposedStageBlock } from "./blocks/composed-stage.tsx";
-import { ConversationBlock } from "./blocks/conversation.tsx";
-import { IllustrationBlock } from "./blocks/illustration.tsx";
 import { MaterialPlaceholderBlock } from "./blocks/placeholder.tsx";
-import { SvgDiagramBlock } from "./blocks/svg-diagram.tsx";
 import { InteractiveHtmlBlock } from "./blocks/interactive-html-block.tsx";
 import { ComplexComponentRetry } from "./blocks/complex-component-retry.tsx";
 import { AiBlockEditShell } from "./blocks/ai-block-edit.tsx";
@@ -103,54 +92,8 @@ function MaterialBlockView({
     onTextAnimationComplete,
   };
 
-  if ((guided || block.type === "visual" || block.type === "music" || block.type === "teaching") && supportsCourseChatBoard(block)) {
-    return (
-      <CourseChatBoard
-        block={block}
-        activeTargetIds={activeTargetIds}
-        playback={boardPlayback}
-        renderCode={(figure) => (
-          <CodeBlockShell
-            presentation="chat"
-            className="course-chat-code-board"
-            code={String(figure.code ?? "")}
-            language={String(figure.language ?? "")}
-            contentKey={blockKey}
-            spans={highlights.get(blockKey) ?? []}
-            onSpanClick={followUp?.onHighlightClick}
-            parts={
-              figure.parts as Extract<
-                InteractiveBlock,
-                { type: "code" }
-              >["parts"]
-            }
-            activeTargetIds={activeTargetIds}
-            figureId={typeof figure.id === "string" ? figure.id : undefined}
-          />
-        )}
-        renderMedia={(figure) => (
-          <MaterialBlockView
-            block={figure as unknown as InteractiveBlock}
-            blockIndex={blockIndex}
-            compact={compact}
-            highlights={highlights}
-            sources={sources}
-            followUp={followUp}
-            illustrationRegen={
-              illustrationRegen && block.type === "stage"
-                ? {
-                    ...illustrationRegen,
-                    parentBlockIndex: blockIndex,
-                    figureIndex: block.figures.findIndex(
-                      (item) => item === figure,
-                    ),
-                  }
-                : illustrationRegen
-            }
-          />
-        )}
-      />
-    );
+  if (["display", "visual", "music", "teaching", "stage", "code", "compare", "callout", "accordion", "illustration", "svg", "conversation"].includes(block.type)) {
+    return <DisplayBlockHost block={block} id={"id" in block && typeof block.id === "string" ? block.id : blockKey} activeTargetIds={activeTargetIds} playback={boardPlayback}/>;
   }
 
   switch (block.type) {
@@ -206,7 +149,7 @@ function MaterialBlockView({
     }
     case "paragraph":
       if (looksLikeStandaloneCode(block.text)) {
-        return <CodeBlockShell code={block.text} contentKey={blockKey} />;
+        return <DisplayBlockHost block={{type: "code", code: block.text, language: "text"}} id={blockKey}/>;
       }
       return (
         <div className="text-[var(--course-content)]">
@@ -219,54 +162,6 @@ function MaterialBlockView({
             {...textProps}
           />
         </div>
-      );
-    case "code":
-      return (
-        <CodeBlockShell
-          code={block.code}
-          language={block.language}
-          contentKey={blockKey}
-          spans={highlights.get(blockKey) ?? []}
-          onSpanClick={followUp?.onHighlightClick}
-          parts={block.parts}
-          activeTargetIds={activeTargetIds}
-          figureId={block.id}
-        />
-      );
-    case "conversation":
-      return (
-        <ConversationBlock
-          block={block}
-          blockKey={blockKey}
-          compact={compact}
-          highlights={highlights}
-          sources={sources}
-          followUp={followUp}
-          {...textProps}
-        />
-      );
-    case "callout":
-      return (
-        <CalloutBlock
-          block={block}
-          blockKey={blockKey}
-          compact={compact}
-          highlights={highlights}
-          sources={sources}
-          followUp={followUp}
-          {...textProps}
-        />
-      );
-    case "accordion":
-      return (
-        <AccordionBlock
-          block={block}
-          blockKey={blockKey}
-          compact={compact}
-          highlights={highlights}
-          sources={sources}
-          followUp={followUp}
-        />
       );
     case "check":
       return (
@@ -287,19 +182,6 @@ function MaterialBlockView({
           onAnsweredChange={onCheckAnswered}
           onVerifiedAnswer={onVerifiedAnswer}
           materialCheckResult={materialCheckResult}
-        />
-      );
-    case "compare":
-      return (
-        <LegacyCompareBlock
-          block={block}
-          blockKey={blockKey}
-          highlights={highlights}
-          sources={sources}
-          followUp={followUp}
-          compact={compact}
-          activeTargetIds={activeTargetIds}
-          figureCaptions={figureCaptions}
         />
       );
     case "step_sort":
@@ -325,66 +207,6 @@ function MaterialBlockView({
         >
           <InteractiveHtmlBlock block={block} compact={compact} />
         </ComplexComponentRetry>
-      );
-    case "illustration":
-      if (block.guidedImage) return <GuidedImageDisplay display={block.guidedImage} activeTargetIds={activeTargetIds} />;
-      return (
-        <IllustrationBlock
-          block={block}
-          blockIndex={blockIndex}
-          blockKey={blockKey}
-          compact={compact}
-          highlights={highlights}
-          sources={sources}
-          followUp={followUp}
-          illustrationRegen={illustrationRegen}
-        />
-      );
-    case "svg":
-      return (
-        <ComplexComponentRetry
-          blockIndex={blockIndex}
-          regeneration={illustrationRegen}
-        >
-          <SvgDiagramBlock
-            block={block}
-            blockIndex={blockIndex}
-            compact={compact}
-            illustrationRegen={illustrationRegen}
-          />
-        </ComplexComponentRetry>
-      );
-    case "stage":
-      return (
-        <ComposedStageBlock
-          block={block}
-          activeTargetIds={activeTargetIds}
-          guided={guided}
-          figureCaptions={figureCaptions}
-          renderFigure={(figure, index, captions) => (
-            <MaterialBlockView
-              block={figure}
-              blockIndex={blockIndex * 1000 + index}
-              compact={compact}
-              revealAnswers={revealAnswers}
-              deferredSubmit={deferredSubmit}
-              followUp={followUp}
-              highlights={highlights}
-              sources={sources}
-              illustrationRegen={
-                illustrationRegen
-                  ? {
-                      ...illustrationRegen,
-                      parentBlockIndex: blockIndex,
-                      figureIndex: index,
-                    }
-                  : undefined
-              }
-              activeTargetIds={guided ? activeTargetIds : []}
-              figureCaptions={captions}
-            />
-          )}
-        />
       );
     case "placeholder":
       return (

@@ -18,8 +18,21 @@ import {
   shell,
 } from "electron";
 import { CredentialVault } from "./credential-vault.ts";
+import { writeDiagnostic } from "./diagnostic-output.ts";
 import { CodexAuthBroker } from "./codex-auth-broker.ts";
 import { registerDesktopIpc } from "./ipc.ts";
+import { DesktopPluginManager } from "./plugins/manager";
+import { DesktopPluginPackageStore } from "./plugins/package-store";
+import { createHostPluginProcess } from './plugins/host-process';
+import {createPluginNativeServices,DesktopPluginSurfaces,validateNativePluginAbi} from './plugins/native-services';
+import {pluginProviderEnvironment} from './plugins/provider-environment';
+import { createElectronPluginProcess } from "./plugins/electron-process";
+import { DesktopHostCapabilities } from "./plugins/host-capabilities";
+import { registerPluginIpc } from "./plugins/ipc";
+import { PLUGIN_IPC } from "./plugins/channels";
+import { DesktopPluginViews } from './plugins/views';
+import { installPluginViewProtocol } from './plugins/view-protocol';
+import { registerCorePluginCapabilities } from './plugins/core-capabilities';
 import { createWorkspaceClientBroker } from "@xue-learn/core/workspace-client";
 import { DESKTOP_IPC } from "./channels.ts";
 import { EmbeddingModelManager } from "./embedding-model-manager.ts";
@@ -52,6 +65,7 @@ import {
 
 let mainWindow: BrowserWindow | null = null;
 let removeIpcHandlers: (() => void) | null = null;
+let removePluginIpcHandlers: (() => void) | null = null;
 let removeDevelopmentHotload: (() => void) | null = null;
 let scheduledHandoffBaseUrl: string | null = null;
 let personalSyncCoordinator: FolderPersonalSyncCoordinator | null = null;
@@ -204,7 +218,7 @@ async function bootstrap(): Promise<void> {
         const safe = health.lastError
           .replace(/Bearer\s+[A-Za-z0-9._~-]+/gi, "Bearer [redacted]")
           .replace(/[A-Fa-f0-9]{48,}/g, "[redacted]");
-        process.stderr.write(`[sidecar-health] ${health.status}: ${safe}\n`);
+        writeDiagnostic(`[sidecar-health] ${health.status}: ${safe}\n`);
       }
       if (health.status === "ready" && health.baseUrl) {
         scheduleRendererHandoff(health.baseUrl);
@@ -259,6 +273,10 @@ async function bootstrap(): Promise<void> {
   };
   supervisor = createWorkspaceSupervisor();
   let broker: Awaited<ReturnType<typeof createWorkspaceClientBroker>> | undefined;
+  let pluginManager: DesktopPluginManager | undefined;
+  let pluginViews: DesktopPluginViews | undefined;
+  const pluginCapabilities = new DesktopHostCapabilities();
+  const pluginSurfaces = new DesktopPluginSurfaces();
   let checkingQuit = false;
   let idleQuitTimer: ReturnType<typeof setTimeout> | undefined;
   const prepareQuitWhenIdle = async () => {
@@ -266,6 +284,18 @@ async function bootstrap(): Promise<void> {
     checkingQuit = true;
     try {
       quitAdmissionPaused=true;
+      try {
+        await pluginManager?.shutdown();
+      } catch {
+        // An extension can keep an export alive. Retry normal shutdown after it drains.
+        quitAdmissionPaused=false;
+        mainWindow?.hide();
+        if (!idleQuitTimer) idleQuitTimer=setTimeout(() => {
+          idleQuitTimer=undefined;
+          void prepareQuitWhenIdle();
+        },15_000);
+        return;
+      }
       await broker?.suspend();
       const instances=[...supervisors.values()];
       const retained = await Promise.all(instances.map(instance => instance.prepareStop()));
@@ -282,6 +312,7 @@ async function bootstrap(): Promise<void> {
       }
       await broker?.close();
       broker=undefined;
+      await pluginCapabilities.dispose();
       for (const instance of instances) instance.stop();
       quitPrepared = true;
       app.quit();
@@ -316,6 +347,61 @@ async function bootstrap(): Promise<void> {
       return Boolean(grant && request.capabilities.every(capability=>["course.catalog.read","course.content.read","course.assets.read"].includes(capability) || grant.capabilities.includes(capability)));
     }catch(error){if((error as NodeJS.ErrnoException).code==="ENOENT")return false;throw error;}
   }});
+
+  await pluginCapabilities.register('workspace.connection', 1, {
+    get: async (_args, context) => {
+      if (!workspaceCatalog.list().some(workspace => workspace.workspaceId === context.workspaceId)) throw Error('Unknown plugin workspace');
+      await startBackgroundWorkspace!(context.workspaceId);
+      return { workspaceId: context.workspaceId, brokerPath: join(userDataPath, 'client-connections') };
+    },
+  });
+  await registerCorePluginCapabilities(pluginCapabilities, {
+    getSession: async (workspaceId, signal) => {
+      signal.throwIfAborted();
+      if (!workspaceCatalog.list().some(workspace => workspace.workspaceId === workspaceId)) throw Error('Unknown plugin workspace');
+      await startBackgroundWorkspace!(workspaceId);
+      signal.throwIfAborted();
+      const host = supervisors.get(workspaceId)?.getSession();
+      if (!host) throw Error('Selected workspace service is unavailable');
+      return host;
+    },
+  });
+  pluginManager = new DesktopPluginManager({
+    store: new DesktopPluginPackageStore(join(userDataPath, 'plugins')),
+    capabilities: pluginCapabilities,
+    processFactory: async config => {
+      if(config.manifest.runtime?.mode !== 'host')return createElectronPluginProcess(join(__dirname, 'plugins', 'worker.js'), config);
+      await validateNativePluginAbi(config,process.versions.electron!);
+      const native=createPluginNativeServices({configuration:config,capabilities:pluginCapabilities,surfaces:pluginSurfaces,
+        hasWorkspace:id=>workspaceCatalog.list().some(workspace=>workspace.workspaceId===id),
+        getAIEnvironment:async()=>({...pluginProviderEnvironment(await vault.readForSidecar()),XUELEARN_SVG_FONT_DIR:join(resourceRoot,'local-sidecar','fonts')}),
+        codexToken:input=>codexAuth.getAccessToken(input)});
+      return createHostPluginProcess(config,native.services,native.dispose);
+    },
+    onChange: () => {
+      pluginViews?.reconcile();
+      if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send(PLUGIN_IPC.changed);
+    },
+  });
+  pluginViews = new DesktopPluginViews(pluginManager, () => workspaceCatalog.activeWorkspaceId);
+  installPluginViewProtocol(session.defaultSession, pluginViews, pluginSurfaces);
+  removePluginIpcHandlers = registerPluginIpc({
+    manager: pluginManager,
+    views: pluginViews,
+    getWorkspaceId: () => workspaceCatalog.activeWorkspaceId,
+    isQuitting: () => quitAdmissionPaused || quitRequested,
+    isTrustedSender: event => Boolean(mainWindow && !mainWindow.isDestroyed()
+      && event.sender === mainWindow.webContents
+      && event.senderFrame === mainWindow.webContents.mainFrame
+      && [supervisor.getHealth().baseUrl, developmentRendererOrigin].some(origin => {
+        try { return origin && new URL(event.senderFrame!.url).origin === new URL(origin).origin; }
+        catch { return false; }
+      })),
+  });
+  // A broken extension or registry must not prevent the learning application from starting.
+  await pluginManager.restoreEnabled().catch(() => {
+    if (shouldLogSidecarOutput()) writeDiagnostic('[plugins] Installed plugins need attention; open the plugin manager.\n');
+  });
 
 
   const restartActiveWorkspace = async () => {
@@ -413,6 +499,8 @@ async function bootstrap(): Promise<void> {
     },
     workspaceCatalog,
     afterWorkspaceSwitch: async () => {
+      pluginViews?.closeAll();
+      if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send(PLUGIN_IPC.changed);
       personalSyncCoordinator?.workspaceChanged();
       const previous = supervisor;
       const previousIdle=await previous.prepareStop();
@@ -468,6 +556,10 @@ async function bootstrap(): Promise<void> {
     (url) => shell.openExternal(url),
   );
   mainWindow.once("ready-to-show", () => mainWindow?.show());
+  mainWindow.webContents.on('did-start-navigation', (_event, _url, isInPlace, isMainFrame) => {
+    if (isMainFrame && !isInPlace) pluginViews?.closeAll();
+  });
+  mainWindow.webContents.on('render-process-gone', () => pluginViews?.closeAll());
   mainWindow.on("focus", () => personalSyncCoordinator?.setActive(true));
   mainWindow.on("blur", () => personalSyncCoordinator?.setActive(false));
   mainWindow.on("close", event => {
@@ -479,6 +571,7 @@ async function bootstrap(): Promise<void> {
     void prepareQuitWhenIdle();
   });
   mainWindow.on("closed", () => {
+    pluginViews?.closeAll();
     mainWindow = null;
   });
   await mainWindow.loadURL(developmentRendererOrigin ?? health.baseUrl);
@@ -507,7 +600,7 @@ if (!hasSingleInstanceLock) {
   // A non-zero development exit also stops desktop-dev's renderer and sidecar
   // watchers, instead of leaving a misleading hotload session running.
   if (!app.isPackaged) {
-    process.stderr.write(
+    writeDiagnostic(
       "XueLearn is already running. Quit the other window, including a packaged 好会学 app, then retry pnpm desktop:dev.\n",
     );
   }
@@ -543,7 +636,7 @@ if (!hasSingleInstanceLock) {
     ) {
       return;
     }
-    process.stderr.write(
+    writeDiagnostic(
       `[sidecar-health] child-process-gone reason=${details.reason} code=${details.exitCode} name=${details.name}\n`,
     );
   });
@@ -580,4 +673,6 @@ app.on("will-quit", () => {
   removeDevelopmentHotload = null;
   removeIpcHandlers?.();
   removeIpcHandlers = null;
+  removePluginIpcHandlers?.();
+  removePluginIpcHandlers = null;
 });

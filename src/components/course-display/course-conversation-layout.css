@@ -255,7 +255,7 @@
     grid-template-columns: minmax(0, 0fr) minmax(0, 5fr);
   }
   .course-conversation-panes[data-has-display="true"] {
-    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
   .course-conversation-panes[data-has-display="true"]
     .course-conversation-display {
@@ -624,6 +624,10 @@
 }
 .course-conversation-message[data-active="true"] {
   background: var(--course-content-surface-muted);
+}
+.course-conversation-message:focus-visible {
+  outline: 2px solid var(--course-content-link);
+  outline-offset: -2px;
 }
 .course-conversation-message[data-active="true"] article [data-highlight-surface] > div {
   font-size: 18px;

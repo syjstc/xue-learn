@@ -22,6 +22,7 @@ export function resolveAssistantCourseDisplay(
     [];
   let current: (typeof displays)[number] | undefined;
   let targets: readonly string[] = [];
+  let timelineCueId: string | undefined;
   const assignments = new Map<number, string>();
   let textStart = start;
   let currentKey = `text:${start}`;
@@ -36,6 +37,7 @@ export function resolveAssistantCourseDisplay(
       textStart = index;
     }
     targets = [];
+    timelineCueId = undefined;
     if (turn.kind === "display") {
       current = { entry: turn.display, turnIndex: index };
       displays.push(current);
@@ -74,6 +76,7 @@ export function resolveAssistantCourseDisplay(
         if (matches.length) {
           current = matches[0]!.display;
           targets = matches[0]!.resolved.targetIds;
+          timelineCueId = cue?.timelineCueId;
         } else {
           current = displays.at(-1);
         }
@@ -120,6 +123,7 @@ export function resolveAssistantCourseDisplay(
       ),
     })),
     activeTargetIds: targets,
+    timelineCueId,
     revealedTargetIdsByBlock: Object.fromEntries(
       [...revealed].map(([index, ids]) => [index, [...ids]]),
     ),

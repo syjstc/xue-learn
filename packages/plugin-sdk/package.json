@@ -1,0 +1,21 @@
+{
+  "name": "@xue-learn/desktop-plugin-sdk",
+  "version": "0.2.0",
+  "type": "module",
+  "sideEffects": false,
+  "license": "MIT",
+  "description": "Versioned browser-safe Desktop plugin manifest and worker protocol",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "README.md", "HARNESS.md"],
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "default": "./dist/index.js" },
+    "./cordis": { "types": "./dist/cordis.d.ts", "import": "./dist/cordis.js", "default": "./dist/cordis.js" },
+    "./harness": { "types": "./dist/harness.d.ts", "import": "./dist/harness.js", "default": "./dist/harness.js" },
+    "./renderer": { "types": "./dist/renderer.d.ts", "import": "./dist/renderer.js", "default": "./dist/renderer.js" },
+    "./package.json": "./package.json"
+  },
+  "scripts": { "build": "node ../../scripts/build-plugin-sdk.mjs" },
+  "peerDependencies": { "cordis": "4.0.0-rc.10", "react": ">=19", "@xue-learn/core": ">=0.3.0 <1" },
+  "peerDependenciesMeta": { "cordis": { "optional": true }, "react": { "optional": true }, "@xue-learn/core": { "optional": true } }
+}

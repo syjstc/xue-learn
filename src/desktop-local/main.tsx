@@ -13,6 +13,9 @@ import { DesktopLocalApp } from "./desktop-local-app.tsx";
 import { bootstrapDesktopRuntime } from "./runtime.ts";
 import "../fonts.css";
 import "../globals.css";
+import "@xue-learn/core/display/runtime.css";
+import "@xue-learn/core/display/plugins.css";
+import "@xue-learn/core/display/workspace.css";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Desktop renderer root is missing");

@@ -12,7 +12,7 @@ function fixture() {
     derivationFormat: "teaching_v1", materialId: "m1", introduction: "{{learnerName}}，保留原文。", blocks: JSON.stringify([{type: "paragraph", text: "完整原文", cues},
       {type: "image", src: "/api/units/unit/images/ill-0-abc.png?aigc=v1"}]), keyTakeaways: '["原始结论"]', documentJson: null,
     teachingDocumentJson: JSON.stringify({status: "complete", presentationVersion: "teaching.v1", steps: cues}), derivedJson: '{"kept":true}', parserVersion: "p1", analyzerVersion: "a1", matcherVersion: "m1", compilerVersion: "c1"}];
-  const execute = jest.fn(async (sql: string) => sql.includes('FROM "LearningUnit"') ? [header] : sql.includes('FROM "MainCourseSection"') ? sections : [{id: "target", title: "学习目标", assessmentCriteria: '["标准"]'}]);
+  const execute = jest.fn(async (sql: string, _params: unknown[] = []) => sql.includes('FROM "LearningUnit"') ? [header] : sql.includes('FROM "MainCourseSection"') ? sections : [{id: "target", title: "学习目标", assessmentCriteria: '["标准"]'}]);
   const em = {schema: undefined, config: {getSchema: () => undefined}, getConnection: () => ({execute}), getTransactionContext: () => "transaction"} as unknown as EntityManager;
   const transactional = jest.fn(async fn => fn(em));
   const root = {fork: () => ({transactional})} as unknown as EntityManager;

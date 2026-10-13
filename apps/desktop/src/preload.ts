@@ -14,6 +14,7 @@ import {
   type XueLearnDesktopBridge,
 } from "@xue-learn/core/runtime-contracts";
 import { DESKTOP_IPC } from "./channels.ts";
+import { PLUGIN_IPC } from "./plugins/channels";
 
 const bridge = {
   version: DESKTOP_BRIDGE_VERSION,
@@ -99,3 +100,22 @@ contextBridge.exposeInMainWorld(
   "xueLearnDesktop",
   Object.freeze(bridge) as XueLearnDesktopBridge,
 );
+
+// Independently versioned extension surface; the shared Core learning bridge stays portable.
+contextBridge.exposeInMainWorld('xueLearnPlugins', Object.freeze({
+  list: () => ipcRenderer.invoke(PLUGIN_IPC.list),
+  install: () => ipcRenderer.invoke(PLUGIN_IPC.install),
+  enable: (id: string) => ipcRenderer.invoke(PLUGIN_IPC.enable, id),
+  disable: (id: string) => ipcRenderer.invoke(PLUGIN_IPC.disable, id),
+  remove: (id: string) => ipcRenderer.invoke(PLUGIN_IPC.remove, id),
+  execute: (id: string, command: string, args?: unknown) => ipcRenderer.invoke(PLUGIN_IPC.execute, id, command, args),
+  openView: (id: string, viewId: string) => ipcRenderer.invoke(PLUGIN_IPC.openView, id, viewId),
+  callView: (session: string, capability: string, method: string, args?: unknown) => ipcRenderer.invoke(PLUGIN_IPC.callView, session, capability, method, args),
+  executeView: (session: string, command: string, args?: unknown) => ipcRenderer.invoke(PLUGIN_IPC.executeView, session, command, args),
+  closeView: (session: string) => ipcRenderer.invoke(PLUGIN_IPC.closeView, session),
+  onChanged: (listener: () => void) => {
+    const onChanged = () => listener();
+    ipcRenderer.on(PLUGIN_IPC.changed, onChanged);
+    return () => { ipcRenderer.removeListener(PLUGIN_IPC.changed, onChanged); };
+  },
+}));

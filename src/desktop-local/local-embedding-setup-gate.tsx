@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   BUILTIN_EMBEDDING_MODEL_ID,
   type CredentialStatus,
@@ -6,8 +7,9 @@ import {
   type EmbeddingModelInstallStatus,
   type LocalAiModelSettings,
 } from "@xue-learn/core/runtime-contracts";
-import { Cloud, Database, Download, LoaderCircle, Server } from "lucide-react";
-import { useT } from "@xue-learn/core/i18n";
+import { Cloud, Database, Download, LoaderCircle, Puzzle, Server, Shapes } from "lucide-react";
+import { useI18n } from "@xue-learn/core/i18n";
+import { pluginMessages } from "@/features/plugins/messages";
 import { getDesktopBridge } from "./runtime.ts";
 
 type Choice = "qwen" | "ollama" | "online";
@@ -56,7 +58,15 @@ async function loadSettings(): Promise<LocalAiModelSettings> {
 }
 
 export function LocalEmbeddingSetupGate({ children }: { children: ReactNode }) {
-  const t = useT();
+  const { pathname } = useLocation();
+  // Plugin management and local display previews do not require semantic search.
+  // Learning routes still require a configured embedding provider.
+  if (pathname === "/local/plugins" || pathname === "/local/display-plugins" || /^\/local\/plugins\/[^/]+\/views\/[^/]+$/.test(pathname)) return children;
+  return <RequiredEmbeddingSetupGate>{children}</RequiredEmbeddingSetupGate>;
+}
+
+function RequiredEmbeddingSetupGate({ children }: { children: ReactNode }) {
+  const { t, locale } = useI18n();
   const bridge = useMemo(() => getDesktopBridge(), []);
   const [loading, setLoading] = useState(true);
   const [complete, setComplete] = useState(false);
@@ -192,6 +202,13 @@ export function LocalEmbeddingSetupGate({ children }: { children: ReactNode }) {
           <p className="mt-3 leading-7 text-muted-foreground">
             {t("desktop.embeddingSetup.description")}
           </p>
+          <div className="mt-4 flex flex-wrap gap-2"><Link
+            to="/local/plugins"
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium hover:bg-muted/50"
+          >
+            <Puzzle className="size-4" aria-hidden />
+            {pluginMessages(locale).manage}
+          </Link><Link to="/local/display-plugins" className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium hover:bg-muted/50"><Shapes className="size-4" aria-hidden/>{pluginMessages(locale).displayLink}</Link></div>
         </div>
 
         <div className="mt-7 grid gap-3 md:grid-cols-3">

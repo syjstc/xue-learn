@@ -409,6 +409,7 @@ export function InteractiveMaterialBody({
       targetIds: focusedPresentation.activeTargetIds,
     };
     const boardPlayback = {
+      cueId: focusedPresentation.timelineCueId,
       key: replay ? `replay:${replay.nonce}` : `turn:${visibleTurnCount}`,
       animate: Boolean(
         replay ||
@@ -921,8 +922,13 @@ export function InteractiveMaterialBody({
                 {assistantTurns[turnIndex].kind !== "display" ? (
                   <div
                     className="course-conversation-message"
+                    tabIndex={0}
                     data-active={focusedTurnIndex === turnIndex || undefined}
                     aria-current={focusedTurnIndex === turnIndex ? "step" : undefined}
+                    onFocus={(event) => {
+                      if (event.target === event.currentTarget && focusedTurnIndex !== turnIndex)
+                        replayMessage(turnIndex);
+                    }}
                     onClick={(event) => {
                       if (
                         (event.target as Element).closest(
