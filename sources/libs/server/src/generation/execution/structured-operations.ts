@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { randomUUID } from "node:crypto";
 import {
   verifyAndRepairLearningMaterial,
   verifyAndRepairSurvey,
@@ -197,6 +198,9 @@ export async function executeLearningMaterialAuthoring(
   input: LearningMaterialOperationInput,
   context: OperationExecutionContext,
 ): Promise<LearningMaterialContent> {
+  // One recovery budget per explicit operation. Artifact verification/authoring
+  // retries inside this operation all resume the same guided-image budget.
+  const imageRepairRetryKey = randomUUID();
   const prepared = prepareSectionMaterialAuthoring({
     prompt: input.prompt,
     policy: input.generationPolicy,
@@ -229,6 +233,7 @@ export async function executeLearningMaterialAuthoring(
             ? ({ prompt, resultSchema, onToken, onPartial, signal }) =>
                 runSectionMaterialAuthoringAgent({
                   ...input.authoringAgent!,
+                  imageRepairRetryKey,
                   prompt,
                   resultSchema,
                   onToken,

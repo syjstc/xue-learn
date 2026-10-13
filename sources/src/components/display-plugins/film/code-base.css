@@ -1,0 +1,471 @@
+.lp-code-board {
+  /* Type size is the board font-size so line em never double-resolves. */
+  --lp-code-leading: 1.62;
+  /* JS replaces this with the rendered code-row height after layout. */
+  --lp-code-row-height: calc(var(--lp-code-leading) * 1em);
+  --lp-code-min-width: 32em;
+  display: grid;
+  grid-template-rows: auto auto;
+  align-self: center;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: auto;
+  max-height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-top: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 1.1em;
+  background: #11111b;
+  color: #e6edf7;
+  font-size: 1.48em;
+  box-shadow:
+    0 24px 64px -12px rgba(0, 0, 0, 0.6),
+    0 4px 20px rgba(0, 0, 0, 0.35);
+  opacity: 1 !important;
+  filter: none !important;
+}
+.lp-code-board.is-compact {
+  font-size: 1.2em;
+}
+.lp-code-board.is-text-board {
+  --lp-code-leading: 1.78;
+  position: relative;
+  grid-template-rows: auto;
+  border: 0.16em solid rgba(109, 83, 57, 0.86);
+  border-radius: 0.62em;
+  background:
+    radial-gradient(
+      circle at 18% 18%,
+      rgba(255, 255, 255, 0.045),
+      transparent 27%
+    ),
+    radial-gradient(circle at 82% 76%, rgba(0, 0, 0, 0.12), transparent 32%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.018) 0,
+      rgba(255, 255, 255, 0.018) 1px,
+      transparent 1px,
+      transparent 0.34em
+    ),
+    linear-gradient(135deg, #23443e 0%, #18332f 52%, #142a28 100%);
+  color: #f5e9c6;
+  box-shadow:
+    inset 0 0 0 0.18em rgba(19, 25, 23, 0.42),
+    inset 0 0.15em 0.6em rgba(255, 255, 255, 0.08),
+    inset 0 -0.28em 0.7em rgba(0, 0, 0, 0.26),
+    0 20px 48px -14px rgba(23, 29, 25, 0.62),
+    0 4px 12px rgba(0, 0, 0, 0.24);
+}
+.lp-code-board.is-text-board .lp-code-viewport {
+  height: var(
+    --lp-code-viewport-height,
+    calc((var(--lp-code-row-height) * 13) + 3.4em)
+  );
+}
+.lp-text-board-label {
+  position: absolute;
+  z-index: 1;
+  top: 0.72em;
+  right: 1.15em;
+  padding-bottom: 0.12em;
+  border-bottom: 0.08em solid rgba(245, 233, 198, 0.5);
+  color: rgba(245, 233, 198, 0.72);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.58em;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.lp-code-board.is-text-board .lp-code-source {
+  padding: 2.05em 1.5em 1.3em;
+  font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  color: #f5e9c6;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+}
+.lp-text-board-parts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.78em;
+  width: 100%;
+  min-width: 0;
+}
+.lp-text-board-part {
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0.22em 0.42em;
+  border-radius: 0.18em;
+  color: #f5e9c6;
+  transition:
+    opacity 0.35s ease,
+    background 0.35s ease,
+    box-shadow 0.35s ease;
+}
+.lp-text-board-part.is-cued {
+  color: #fff3c9;
+  /* Paint the part box, not an inline ink span: KaTeX displaystyle
+   * fractions overflow the font line-height, so clone backgrounds
+   * only cover a mid-line strip and can clip a wrapped remainder. */
+  background: rgba(232, 182, 68, 0.3);
+}
+.lp-text-board-ink {
+  display: inline-block;
+  max-width: 100%;
+}
+.lp-text-board-part.is-dimmed {
+  opacity: 0.62;
+}
+.lp-code-board.is-text-board .lp-text-board-markdown {
+  width: fit-content;
+  max-width: 100%;
+  color: inherit !important;
+  font-size: 0.92em !important;
+  line-height: 1.9 !important;
+  white-space: normal;
+}
+.lp-code-board.is-text-board .lp-text-board-paragraph {
+  /* Authored board rows are intentional even within one Markdown paragraph. */
+  white-space: pre-line;
+  line-height: inherit;
+}
+.lp-code-board.is-text-board .lp-text-board-markdown > :first-child,
+.lp-code-board.is-text-board .lp-text-board-markdown > :last-child {
+  margin-block: 0;
+}
+.lp-code-board.is-text-board .lp-text-board-markdown > :not(:first-child) {
+  margin-top: 0.42em;
+}
+.lp-code-board.is-text-board
+  .lp-text-board-markdown
+  :is(p, h1, h2, h3, li, strong, em, blockquote, th, td) {
+  color: inherit;
+}
+.lp-code-board.is-text-board .lp-text-board-markdown .katex-inline,
+.lp-code-board.is-text-board .lp-text-board-markdown .katex,
+.lp-code-board.is-text-board .lp-text-board-markdown .katex-display,
+.lp-code-board.is-text-board .lp-text-board-markdown .text-foreground {
+  display: inline-block;
+  max-width: 100%;
+  color: inherit;
+  white-space: normal;
+  vertical-align: middle;
+}
+.lp-code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8em;
+  padding: 0.48em 0.85em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+.lp-code-header-left,
+.lp-code-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  font-size: 0.52em;
+}
+.lp-code-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+}
+.lp-code-dot {
+  width: 0.72em;
+  height: 0.72em;
+  border-radius: 50%;
+  display: inline-block;
+}
+.lp-code-dot--red {
+  background: #ff5f56;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.35),
+    0 1px 2px rgba(0, 0, 0, 0.25);
+}
+.lp-code-dot--yellow {
+  background: #ffbd2e;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.35),
+    0 1px 2px rgba(0, 0, 0, 0.25);
+}
+.lp-code-dot--green {
+  background: #27c93f;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.35),
+    0 1px 2px rgba(0, 0, 0, 0.25);
+}
+.lp-code-lang-badge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.92em;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.16em 0.6em;
+  border-radius: 0.4em;
+}
+.lp-code-range-pill {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.88em;
+  font-weight: 500;
+  color: rgba(241, 245, 249, 0.72);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.16em 0.7em;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+.lp-code-viewport {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  width: 100%;
+  /* JS replaces this with the measured pane height. The fallback keeps the
+   * first paint usable before layout measurement, including source padding. */
+  height: var(
+    --lp-code-viewport-height,
+    calc((var(--lp-code-row-height) * 16) + 0.9em)
+  );
+  max-height: 100%;
+  overflow: hidden;
+}
+.lp-code-viewport[data-mask-top="true"][data-mask-bottom="true"] {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 1.1em,
+    black calc(100% - 1.1em),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 1.1em,
+    black calc(100% - 1.1em),
+    transparent 100%
+  );
+}
+.lp-code-viewport[data-mask-top="true"]:not([data-mask-bottom="true"]) {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 1.1em,
+    black 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 1.1em,
+    black 100%
+  );
+}
+.lp-code-viewport[data-mask-bottom="true"]:not([data-mask-top="true"]) {
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black calc(100% - 1.1em),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black calc(100% - 1.1em),
+    transparent 100%
+  );
+}
+.lp-code-scroll {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  will-change: transform;
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lp-stage.is-clocked .lp-code-scroll {
+  transition: none !important;
+}
+.lp-code-source {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0.45em 0;
+  overflow: visible;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 1em;
+  line-height: var(--lp-code-leading);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: #e6edf7;
+  box-sizing: border-box;
+  tab-size: 2;
+}
+.lp-code-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  min-width: 0;
+  min-height: var(--lp-code-row-height);
+}
+.lp-code-row.has-gutter {
+  /* Keep the gutter width stable while 1-digit and 2-digit line numbers mix. */
+  grid-template-columns: 3.2em minmax(0, 1fr);
+}
+.lp-code-gutter-line {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+  min-height: var(--lp-code-row-height);
+  height: auto;
+  padding: 0 0.7em 0 0.8em;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.28);
+  color: #94a3b8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+  box-sizing: border-box;
+  transition: color 0.35s ease;
+}
+.lp-code-gutter-line > span {
+  font-size: 0.66em;
+  line-height: 1;
+}
+.lp-code-gutter-line.is-cued {
+  color: #c7d2fe;
+  font-weight: 600;
+}
+.lp-code-hljs {
+  display: block;
+  width: 100%;
+  font: inherit;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+.lp-code-minimap {
+  position: absolute;
+  right: 0.45em;
+  top: 0.55em;
+  bottom: 0.55em;
+  width: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 2;
+}
+.lp-code-minimap-thumb {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: #818cf8;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(129, 140, 248, 0.7);
+  transition: top 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lp-stage.is-clocked .lp-code-minimap-thumb {
+  transition: none !important;
+}
+.lp-code-line {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: var(--lp-code-row-height);
+  padding: 0 0.9em;
+  margin: 0;
+  border-left: 3px solid transparent;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  overflow: visible;
+  font-size: 1em;
+  line-height: var(--lp-code-leading);
+  color: #e6edf7;
+  transition:
+    opacity 0.35s ease,
+    background 0.35s ease,
+    border-color 0.35s ease;
+}
+.lp-code-tokens {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  font: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  /* Keep the measured row height intact while making dense code one step calmer. */
+  font-size: 0.7em;
+  line-height: inherit;
+  background: transparent;
+  color: inherit;
+}
+.lp-code-board[data-has-cued="true"] .lp-code-line.is-dimmed {
+  opacity: 0.82;
+}
+.lp-code-line.is-cued {
+  border-left-color: #818cf8 !important;
+  background: linear-gradient(
+    90deg,
+    rgba(99, 102, 241, 0.32) 0%,
+    rgba(99, 102, 241, 0.1) 60%,
+    transparent 100%
+  ) !important;
+  box-shadow: inset 0.18em 0 0 #818cf8 !important;
+  opacity: 1 !important;
+}
+.lp-code-board .hljs-comment,
+.lp-code-board .hljs-quote {
+  color: #a6adc8;
+  font-style: normal;
+  font-size: inherit;
+}
+.lp-code-board .hljs-keyword,
+.lp-code-board .hljs-selector-tag,
+.lp-code-board .hljs-built_in,
+.lp-code-board .hljs-doctag {
+  color: #cba6f7;
+}
+.lp-code-board .hljs-string,
+.lp-code-board .hljs-attr,
+.lp-code-board .hljs-addition,
+.lp-code-board .hljs-template-tag {
+  color: #a6e3a1;
+}
+.lp-code-board .hljs-number,
+.lp-code-board .hljs-literal,
+.lp-code-board .hljs-symbol,
+.lp-code-board .hljs-bullet {
+  color: #fab387;
+}
+.lp-code-board .hljs-title,
+.lp-code-board .hljs-section,
+.lp-code-board .hljs-name,
+.lp-code-board .hljs-selector-id,
+.lp-code-board .hljs-selector-class {
+  color: #89b4fa;
+}
+.lp-code-board .hljs-variable,
+.lp-code-board .hljs-template-variable,
+.lp-code-board .hljs-attribute {
+  color: #f9e2af;
+}
+.lp-code-board .hljs-type,
+.lp-code-board .hljs-class .hljs-title {
+  color: #89dceb;
+}
+.lp-code-board .hljs-meta,
+.lp-code-board .hljs-regexp,
+.lp-code-board .hljs-link {
+  color: #9399b2;
+}

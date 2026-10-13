@@ -31,7 +31,7 @@ export const compactSurveySectionPlanBindingSchema = z.object({
       title: z.string(),
       scope: z.string(),
       outlineIndexes: z.array(z.number().int()),
-      contentKind: z.enum(["standard", "formal_derivation"]).optional(),
+      contentKind: z.literal("standard").optional(),
     }),
   ),
 });
@@ -139,6 +139,8 @@ export function prepareSectionPlanAuthoring(
     operation: SECTION_PLAN_OPERATION,
     prompt: buildSectionPlanJsonPrompt(contextInvocation),
     contextInvocation,
-    resultSchema: surveySectionPlanForOutlineSchema(input.outline.length),
+    resultSchema: surveySectionPlanForOutlineSchema(input.outline.length).transform(plan => ({
+      ...plan, sections: plan.sections.map(section => ({...section, contentKind: "standard" as const})),
+    })),
   };
 }

@@ -12,7 +12,6 @@ import {
   useGuidedImageTransition,
 } from "./use-guided-image-transition.js";
 import { useGuidedImageCamera } from "./use-guided-image-camera.js";
-import { GuidedImageFocusOutline } from "./guided-image-focus-outline.js";
 import { useT } from "../../shared/i18n/index.js";
 
 /** One masked image keeps overlapping subject/label selections seamless and
@@ -175,13 +174,6 @@ export function GuidedImageDisplay({
             height={height}
             mask={focused ? `url(#${uid}-focus)` : undefined}
           />
-          {focused && (
-            <GuidedImageFocusOutline
-              frame={frame}
-              width={width}
-              height={height}
-            />
-          )}
           {showRegions &&
             regions.flatMap((region) =>
               region.polygons.map((polygon, i) => (
@@ -207,9 +199,10 @@ export function GuidedImageDisplay({
               ? active.map((r) => r.label).join(" · ")
               : display.intent.title}
           </span>
-          {animateCamera && (canFocus || overview || camera.zoom > 1.05) && (
-            <CameraToggle overview={overview} onClick={toggleOverview} />
-          )}
+          {animateCamera &&
+            (focused || canFocus || overview || camera.zoom > 1.05) && (
+              <CameraToggle overview={overview} onClick={toggleOverview} />
+            )}
         </figcaption>
       )}
     </figure>

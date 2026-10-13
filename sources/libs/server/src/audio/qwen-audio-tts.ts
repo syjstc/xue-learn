@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import { randomUUID } from "node:crypto";
 import { getEnv } from "../env.js";
 import { logLlmRequest } from "../llm/logger.js";
@@ -125,7 +126,7 @@ export function isQwenAigcTtsModel(model: string): boolean {
 function qwenAudioTtsUrl(model?: string): string {
   const env = getEnv();
   const configured =
-    process.env.DASHSCOPE_AUDIO_BASE_URL?.trim() || env.DASHSCOPE_BASE_URL;
+    getRuntimeEnvironment().DASHSCOPE_AUDIO_BASE_URL?.trim() || env.DASHSCOPE_BASE_URL;
   let base: URL;
   try {
     base = new URL(configured);

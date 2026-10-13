@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../../env.js";
 import type { Embeddings } from "@langchain/core/embeddings";
 import type {
   Env,
@@ -16,7 +17,7 @@ export function resolveEmbeddingProviderId(
   _chatProvider: LlmProviderId,
   override?: EmbeddingProviderId,
 ): EmbeddingProviderId {
-  if (process.env.XUELEARN_DESKTOP_LOCAL === "1" && override) return override;
+  if (getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1" && override) return override;
   return defaultEmbeddingProvider();
 }
 
@@ -28,14 +29,14 @@ export function createSharedEmbeddings(
   const model = embeddingModel ?? defaultEmbeddingModel(embeddingProvider);
   switch (embeddingProvider) {
     case "builtin":
-      if (process.env.XUELEARN_DESKTOP_LOCAL !== "1") {
+      if (getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL !== "1") {
         throw new Error(
           "Built-in embeddings are available only in desktop-local",
         );
       }
       return createBuiltinEmbeddings(env);
     case "custom_embedding":
-      if (process.env.XUELEARN_DESKTOP_LOCAL !== "1") {
+      if (getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL !== "1") {
         throw new Error(
           "Custom embeddings are available only in desktop-local",
         );

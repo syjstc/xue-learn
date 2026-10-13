@@ -80,7 +80,7 @@ export function musicBlock(content: MusicSceneContent): MaterialMusicTeaching {
       {
         id: "staff",
         kind: "staff",
-        label: "谱面位置与琴键共享同一组音符",
+        label: "观察谱面位置与对应琴键",
         notes: notes.map((n) => n.id),
         clef: "treble",
       },
@@ -124,7 +124,8 @@ export function MusicScene({
   performance,
   activeTargetIds,
   narration,
-}: SceneProps & { content: MaterialMusicTeaching; timelineMusic?: MusicPlaybackState; timelineDriven?: boolean; performance?: TimelineMusicInput | null; activeTargetIds?: readonly string[]; narration?: {progress: number; previousTargetIds: readonly string[]} }) {
+  interactive = false,
+}: SceneProps & { content: MaterialMusicTeaching; interactive?: boolean; timelineMusic?: MusicPlaybackState; timelineDriven?: boolean; performance?: TimelineMusicInput | null; activeTargetIds?: readonly string[]; narration?: {progress: number; previousTargetIds: readonly string[]} }) {
   const inheritedTimeline = useContext(MusicTimelineContext);
   const plan = useMemo(
     () => performance === undefined ? compileMusicTeachingClip(content, "phrase") : performance,
@@ -161,13 +162,12 @@ export function MusicScene({
         value={{
           ...inheritedTimeline,
           narration: narration ?? inheritedTimeline.narration,
-          clocked: true,
+          clocked: !interactive,
           music,
         }}
       >
-        <MusicTeachingDisplay block={content} activeTargetIds={activeTargetIds} interactive={false} reportRemotionStatus={timelineDriven} />
+        <MusicTeachingDisplay block={content} activeTargetIds={activeTargetIds} interactive={interactive} reportRemotionStatus={timelineDriven && !interactive} />
       </MusicTimelineContext.Provider>
-      <p className="rt-music-caption">谱面 · 音高 · 琴键，共用同一份音乐数据</p>
     </div>
   );
 }

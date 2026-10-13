@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import { randomUUID } from "node:crypto";
 import { requireLlmRequestLogPersistence } from "./log-persistence.js";
 import {
@@ -282,7 +283,7 @@ function printConsole(record: Record<string, unknown>) {
   } else {
     console.info(prefix);
   }
-  if (process.env.LLM_LOG_VERBOSE === "true") {
+  if (getRuntimeEnvironment().LLM_LOG_VERBOSE === "true") {
     console.info(JSON.stringify(record, null, 2));
   }
 }

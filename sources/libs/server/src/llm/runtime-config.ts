@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import {
   type EmbeddingProviderId,
   type LlmProviderId,
@@ -172,7 +173,7 @@ function codexReasoningEffortFromPreferences(
 }
 
 function isDesktopLocalRuntime(): boolean {
-  return process.env.XUELEARN_DESKTOP_LOCAL === "1";
+  return getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1";
 }
 
 function storedDoubaoThinkingMode(

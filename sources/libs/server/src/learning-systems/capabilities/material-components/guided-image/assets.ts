@@ -1,5 +1,6 @@
 import sharp from "sharp";
 import { createHash } from "node:crypto";
+import { IMAGE_DESIGN_TOKENS } from "../../../../images/design-style.js";
 import {
   imagePolygonPath,
   type GuidedImageAsset,
@@ -8,6 +9,18 @@ import {
 
 export function imageSha256(data: Buffer) {
   return createHash("sha256").update(data).digest("hex");
+}
+
+export const GUIDED_IMAGE_OBSERVATION_VERSION = "classroom-light-matte-v1";
+
+/** Model input uses the same light matte as guided-image.css. The immutable
+ * source PNG, its alpha, dimensions and content hash remain authoritative. */
+export async function guidedImageObservationDataUrl(data: Buffer) {
+  const observed = await sharp(data, { limitInputPixels: 24_000_000 })
+    .flatten({ background: IMAGE_DESIGN_TOKENS.surfaceInset })
+    .png()
+    .toBuffer();
+  return `data:image/png;base64,${observed.toString("base64")}`;
 }
 
 export async function normalizeGuidedImage(data: Buffer) {

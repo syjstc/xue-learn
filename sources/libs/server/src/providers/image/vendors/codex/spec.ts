@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../../../../env.js";
 import type { ProviderSpec } from "../../../core/types.js";
 import type {
   ImageProvider,
@@ -22,7 +23,7 @@ export const codexImageSpec: ProviderSpec<
   // The subscription bridge is desktop-local only; hosted services must not
   // advertise or attempt to use the ChatGPT OAuth route.
   hasCredentials: () =>
-    process.env.XUELEARN_DESKTOP_LOCAL === "1" && hasCodexAccessTokenProvider(),
+    getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1" && hasCodexAccessTokenProvider(),
   defaultOptions: () => ({}),
   create: ({ env }, selection: ImageProviderSelection) =>
     createCodexImageProvider(env, selection.model ?? DEFAULT_CODEX_IMAGE_MODEL),

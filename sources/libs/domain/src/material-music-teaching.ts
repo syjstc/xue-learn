@@ -316,6 +316,26 @@ export function compileMusicTeachingClip(
   };
 }
 
+/** The display node owns the public figure identity; notes/clip IDs remain the
+ * accepted score's local identities. The source object is never mutated. */
+export function collectMaterialMusicFigures(display: unknown): Array<Record<string, unknown>> {
+  if (!display || typeof display !== "object") return [];
+  const board = display as Record<string, unknown>;
+  if (board.type === "stage") return (Array.isArray(board.figures) ? board.figures : []).flatMap(collectMaterialMusicFigures);
+  if (board.type !== "display") return [board];
+  const figures: Array<Record<string, unknown>> = [];
+  const visit = (value: unknown) => {
+    if (!value || typeof value !== "object") return;
+    const node = value as Record<string, unknown>, payload = node.payload as {block?: unknown} | undefined;
+    if ((node.kind === "music:score" || node.kind === "music:teaching") && payload?.block && typeof payload.block === "object")
+      figures.push({...payload.block as Record<string, unknown>, id: node.id});
+    if (Array.isArray(node.children)) node.children.forEach(visit);
+    if (node.slots && typeof node.slots === "object") Object.values(node.slots).forEach(children => {if (Array.isArray(children)) children.forEach(visit);});
+  };
+  visit((board.document as {root?: unknown} | undefined)?.root);
+  return figures;
+}
+
 /** Resolve against the actual board, never a label, future topic or external score. */
 export function resolveMusicCue(
   display: unknown,
@@ -330,11 +350,10 @@ export function resolveMusicCue(
     !validId(action.clipId)
   )
     throw Error("Music action needs figureId and clipId");
-  const board = display as { type?: string; figures?: unknown[] } | undefined;
-  const figures = board?.type === "stage" ? (board.figures ?? []) : [display];
-  const source = figures.find(
-    (f) => (f as { id?: string })?.id === action.figureId,
-  );
+  const figures = collectMaterialMusicFigures(display);
+  const matching = figures.filter(figure => figure.id === action.figureId);
+  if (matching.length > 1) throw Error(`Music figure identity is ambiguous: ${action.figureId}`);
+  const source = matching[0];
   // A recognized V2 figure must surface its actual validation failure. The
   // tolerant reader returns null for invalid scores and used to turn duration
   // conflicts into misleading "missing figure" errors on every playback cue.

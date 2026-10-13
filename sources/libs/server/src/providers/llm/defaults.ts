@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../../env.js";
 import {
   type EmbeddingProviderId,
   type Env,
@@ -28,7 +29,7 @@ export function defaultEmbeddingModel(
 export function defaultEmbeddingProvider(
   _chatProvider?: LlmProviderId,
 ): EmbeddingProviderId {
-  return process.env.XUELEARN_DESKTOP_LOCAL === "1"
+  return getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1"
     ? "builtin"
     : FIXED_EMBEDDING_PROVIDER;
 }

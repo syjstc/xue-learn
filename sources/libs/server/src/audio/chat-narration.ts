@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import { createHash } from "node:crypto";
 // @ts-nocheck -- unbound compatibility implementation; hosted callers use repositories.
 import type { PersistenceClient } from "../persistence/persistence-compat.js";
@@ -135,7 +136,7 @@ export async function chatNarrationEnabled(
   // The persisted preference can outlive a deployment-level feature rollout.
   // Keep the server-side synthesis path gated so hiding the client controls
   // cannot leave previously opted-in users generating audio.
-  if (!isChatAudioFeatureEnabled(process.env.XUELEARN_DESKTOP_LOCAL === "1")) {
+  if (!isChatAudioFeatureEnabled(getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1")) {
     return false;
   }
 

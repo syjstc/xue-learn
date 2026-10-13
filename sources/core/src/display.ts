@@ -1,4 +1,5 @@
 /** Ordinary browser teaching surfaces. Hosts supply navigation and audio time. */
+export * from "./display-extensions.js";
 export {TeachingDisplay} from "../../src/components/course-display/teaching-display.js";
 export {MusicDisplay} from "../../src/components/course-display/music-display.js";
 export {MusicTeachingDisplay, MusicTimelineContext} from "../../src/components/course-display/music-teaching-display.js";

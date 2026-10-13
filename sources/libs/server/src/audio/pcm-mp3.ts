@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import { spawn } from "node:child_process";
 import { accessSync, constants } from "node:fs";
 import { delimiter } from "node:path";
@@ -18,7 +19,7 @@ function canExecute(path: string): boolean {
 }
 
 function resolveFfmpegPath(): string {
-  const override = process.env.XUELEARN_FFMPEG?.trim();
+  const override = getRuntimeEnvironment().XUELEARN_FFMPEG?.trim();
   if (override) {
     if (!canExecute(override)) {
       throw new Error(
@@ -27,7 +28,7 @@ function resolveFfmpegPath(): string {
     }
     return override;
   }
-  for (const directory of (process.env.PATH ?? "").split(delimiter)) {
+  for (const directory of (getRuntimeEnvironment().PATH ?? "").split(delimiter)) {
     if (!directory) continue;
     const candidate = `${directory.replace(/[/\\]$/u, "")}/ffmpeg`;
     if (canExecute(candidate)) return candidate;

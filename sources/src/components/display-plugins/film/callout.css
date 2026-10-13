@@ -1,0 +1,288 @@
+/* Preserved accepted film artwork; all cue motion is sampled by the host. */
+.display-film-callout{position:absolute;inset:12px 20px 36px;overflow:hidden;font-size:30px;--course-content:var(--rm-ink);--course-content-muted:var(--rm-muted);--course-content-border:var(--rm-border);--course-content-surface:var(--rm-surface);--course-content-link:var(--rm-accent);--ds-info:var(--rm-accent);--ds-warning:#b17e22}
+.display-film-callout-canvas{position:absolute;top:0;left:0;width:100%;transform-origin:0 0}
+.display-film-callout,.display-film-callout *{animation:none!important;transition:none!important}
+.display-film-callout {
+/* One type scale and full-width copy; rules express purpose without a label column. */
+.course-callout {
+  --callout-ink: var(--course-content, #3e3632);
+  --callout-line: var(--course-content-border, #ddd5cb);
+  --callout-accent: var(--course-content-link, #a84843);
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 1.1em 1.25em;
+  border: 1px solid var(--callout-line);
+  border-radius: 0.45em;
+  background: var(--course-content-surface, #faf7f4);
+  color: var(--callout-ink);
+  line-height: 1.65;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+.course-callout-content,
+.course-callout-heading {
+  min-width: 0;
+}
+.course-callout-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45em;
+  margin-bottom: 0.65em;
+  font-size: 1.18em;
+  font-weight: 650;
+  line-height: 1.45;
+}
+.course-callout-body,
+.course-callout-body > *,
+.course-callout-body [data-highlight-surface] > *,
+.course-callout-body :is(p, ul, ol, li, blockquote, table) {
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+.course-callout-body :is(p, ul, ol, blockquote) {
+  margin-block: 0.65em;
+}
+.course-callout-body :is(ul, ol) {
+  padding-inline-start: 1.25em;
+}
+.course-callout-body li + li {
+  margin-top: 0.3em;
+}
+.course-callout-body :is(p, ul, ol, blockquote):first-child {
+  margin-top: 0;
+}
+.course-callout-body :is(p, ul, ol, blockquote):last-child {
+  margin-bottom: 0;
+}
+.course-callout-body strong {
+  color: var(--callout-accent);
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--callout-accent) 24%, transparent);
+  text-decoration-thickness: 0.18em;
+  text-underline-offset: 0.12em;
+}
+.course-callout[data-variant="definition"] {
+  border-top: 2px solid var(--callout-line);
+}
+.course-callout[data-variant="example"] {
+  border-inline-start: 3px solid var(--callout-accent);
+}
+.course-callout[data-variant="warning"] {
+  background: var(--course-content-callout-warning-bg, #fff2d9);
+  color: var(--course-content-callout-warning-text, #654710);
+}
+.course-callout-symbol {
+  flex: none;
+  align-self: center;
+  width: 1em;
+  height: 1em;
+}
+.course-callout[data-variant="tip"] {
+  padding-block: 0.85em;
+  border-style: dashed;
+}
+.course-callout[data-variant="tip"] .course-callout-symbol {
+  color: var(--callout-accent);
+}
+.course-callout[data-compact="true"] {
+  padding: 0.85em 1em;
+}
+
+.course-callout-detail {
+  display: grid;
+  grid-template-rows: var(--detail-rows);
+  opacity: var(--detail-reveal);
+  margin-block: calc(var(--detail-reveal) * 0.35em);
+}
+.course-callout-detail-clip {
+  min-height: 0;
+  overflow: hidden;
+}
+.course-callout-details[data-reserved-space] > .course-callout-detail {
+  grid-template-rows: 1fr;
+  margin-block: 0.35em;
+}
+.course-callout-detail-ink {
+  padding: 0.4em 0.55em;
+  border-radius: 0.25em;
+  background: color-mix(in srgb, var(--callout-accent) calc(var(--detail-emphasis) * 12%), transparent);
+  box-shadow: inset calc(var(--detail-emphasis) * 4px) 0 var(--callout-accent);
+  transform: translateY(calc((1 - var(--detail-reveal)) * 1em));
+}
+@media (prefers-reduced-motion: reduce) {
+  .course-callout-detail-ink { transform: none; }
+}
+
+/* Stable rows: the emphasis moves between facts without changing line breaks. */
+.course-callout-detail[data-pending="true"] {
+  visibility: hidden;
+}
+
+/* Keep the reserved rows, but do not present an empty paper panel before its
+ * first detail. The fixed outer canvas still owns all cue geometry. */
+.course-callout:has(.course-callout-details[data-reserved-space]):not(:has(.course-callout-detail:not([data-pending="true"]))) {
+  visibility: hidden;
+}
+
+.course-callout {
+  border-top: 3px solid var(--callout-accent);
+  background: var(--course-content-surface, #faf7f4);
+  box-shadow: 0 12px 36px color-mix(in srgb, var(--callout-ink) 8%, transparent);
+}
+.course-callout-title {
+  padding-bottom: 0.65em;
+  border-bottom: 1px solid var(--callout-line);
+  color: var(--callout-accent);
+}
+
+/* Film projection of the same accepted Markdown and detail IDs. The neutral
+ * stage stays open; a single moving paper light carries the spoken focus. */
+.course-callout-focus { display: none; }
+.course-callout[data-presentation="film"] {
+  --callout-film-accent: var(--ds-info);
+  --callout-film-ink: var(--course-content);
+  padding: 0.85em 1.15em 1em;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--callout-film-ink);
+}
+.course-callout[data-presentation="film"] .course-callout-title {
+  align-items: center;
+  gap: 0.6em;
+  margin-bottom: 0.95em;
+  padding-bottom: 0.75em;
+  border-bottom: 0;
+  background: linear-gradient(90deg, var(--callout-film-accent) 0 4.5em, color-mix(in srgb, var(--callout-film-accent) 30%, var(--course-content-border)) 4.5em, var(--course-content-border) 45%, transparent) left bottom / 100% 2px no-repeat;
+  font-size: 1.25em;
+  font-weight: 680;
+  line-height: 1.5;
+  color: var(--callout-film-ink);
+}
+.course-callout[data-presentation="film"] .course-callout-symbol {
+  box-sizing: content-box;
+  padding: 0.38em;
+  width: 0.7em;
+  height: 0.7em;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ds-warning) 12%, var(--course-content-surface));
+  box-shadow: 0 0 0 0.12em color-mix(in srgb, var(--ds-warning) 28%, transparent), 0 0.3em 0.8em -0.3em color-mix(in srgb, var(--ds-warning) 60%, transparent);
+  color: color-mix(in srgb, var(--ds-warning) 70%, var(--callout-film-ink));
+  stroke-width: 1.8;
+}
+.course-callout[data-presentation="film"] .course-callout-details {
+  position: relative;
+  isolation: isolate;
+  display: flow-root;
+}
+.course-callout[data-presentation="film"] .course-callout-detail {
+  position: relative;
+  margin-block: 0.28em;
+}
+/* A numbered badge per fact. It springs in with the row's sampled reveal and
+ * fills with the accent while that exact row is spoken. */
+.course-callout[data-presentation="film"] .course-callout-detail::before {
+  content: attr(data-detail-number);
+  position: absolute;
+  z-index: 1;
+  left: 2.2em;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35em;
+  height: 2.35em;
+  border-radius: 50%;
+  border: 0.13em solid color-mix(in srgb, var(--callout-film-accent) calc(35% + var(--detail-emphasis) * 65%), var(--course-content-border));
+  background: color-mix(in srgb, var(--callout-film-accent) calc(var(--detail-emphasis) * 100%), var(--course-content-surface));
+  box-shadow: 0 0 0 calc(var(--detail-emphasis) * 0.45em) color-mix(in srgb, var(--callout-film-accent) 16%, transparent),
+    0 0.35em 0.9em -0.35em color-mix(in srgb, var(--callout-film-accent) calc(var(--detail-emphasis) * 80%), transparent);
+  font-size: 0.6em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, #fff calc(var(--detail-emphasis) * 100%), var(--callout-film-accent));
+  opacity: min(1, calc(var(--detail-reveal) * 2));
+  transform: translate(-50%, -50%) scale(calc(0.35 + var(--detail-reveal) * 0.65 + var(--detail-emphasis) * 0.1 + sin(var(--detail-reveal) * 3.14159) * 0.18));
+}
+/* One continuous rail through every badge, growing as each row appears. */
+.course-callout[data-presentation="film"] .course-callout-detail::after {
+  content: "";
+  position: absolute;
+  left: 1.32em;
+  top: -0.3em;
+  bottom: -0.3em;
+  width: 0.1em;
+  border-radius: 0.1em;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--callout-film-accent) 55%, transparent), color-mix(in srgb, var(--callout-film-accent) 25%, var(--course-content-border)));
+  transform-origin: 50% 0;
+  transform: translateX(-50%) scaleY(var(--detail-reveal));
+  pointer-events: none;
+}
+.course-callout[data-presentation="film"] .course-callout-detail:first-child::after,
+.course-callout[data-presentation="film"] .course-callout-focus + .course-callout-detail::after { top: 50%; }
+.course-callout[data-presentation="film"] .course-callout-detail:last-child::after { bottom: 50%; }
+.course-callout[data-presentation="film"] .course-callout-detail-ink {
+  padding: 0.72em 1em 0.72em 3.2em;
+  min-height: 3.1em;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+}
+/* Soft-edged wipe: copy is uncovered left to right without moving glyphs between lines. */
+.course-callout[data-presentation="film"] .course-callout-detail-ink > * {
+  transform: translateX(calc((1 - var(--detail-reveal)) * 0.9em));
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--detail-reveal) * 150% - 50%), transparent calc(var(--detail-reveal) * 150%));
+  mask-image: linear-gradient(90deg, #000 calc(var(--detail-reveal) * 150% - 50%), transparent calc(var(--detail-reveal) * 150%));
+}
+.course-callout[data-presentation="film"] .course-callout-detail-ink :is(p, li) {
+  color: color-mix(in srgb, var(--callout-film-ink) calc(72% + var(--detail-emphasis) * 28%), var(--course-content-muted));
+}
+.course-callout[data-presentation="film"] .course-callout-detail-clip {
+  border-bottom: 1px solid color-mix(in srgb, var(--course-content-border) 50%, transparent);
+}
+.course-callout[data-presentation="film"] .course-callout-body strong {
+  color: inherit;
+  text-decoration: none;
+}
+.course-callout[data-presentation="film"] [data-focus-travel] > .course-callout-focus {
+  display: block;
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: -1;
+  border: 1px solid color-mix(in srgb, var(--callout-film-accent) 30%, var(--course-content-surface));
+  border-radius: 0.7em;
+  background:
+    radial-gradient(120% 140% at 0% 50%, color-mix(in srgb, var(--callout-film-accent) 16%, transparent), transparent 55%),
+    linear-gradient(100deg, color-mix(in srgb, var(--callout-film-accent) 7%, var(--course-content-surface)), var(--course-content-surface) 75%);
+  box-shadow:
+    0 0.6em 1.6em -0.7em color-mix(in srgb, var(--callout-film-accent) 45%, transparent),
+    0 0.2em 0.5em -0.3em color-mix(in srgb, var(--callout-film-ink) 18%, transparent);
+  pointer-events: none;
+}
+.course-callout[data-presentation="film"] .course-callout-focus i {
+  position: absolute;
+  left: -0.12em;
+  top: 18%;
+  bottom: 18%;
+  width: 0.24em;
+  border-radius: 0.24em;
+  background: linear-gradient(180deg, var(--callout-film-accent), color-mix(in srgb, var(--callout-film-accent) 55%, var(--ds-warning)));
+  box-shadow: 0 0 0.7em color-mix(in srgb, var(--callout-film-accent) 70%, transparent);
+}
+/* An explicit multi-target cue keeps separate lights on those exact rows. */
+.course-callout[data-presentation="film"] .course-callout-details:not([data-focus-travel]) .course-callout-detail-ink {
+  border-radius: 0.7em;
+  background: color-mix(in srgb, var(--callout-film-accent) calc(var(--detail-emphasis) * 10%), transparent);
+  box-shadow: 0 0.5em 1.3em -0.8em color-mix(in srgb, var(--callout-film-accent) calc(var(--detail-emphasis) * 60%), transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .course-callout[data-presentation="film"] .course-callout-detail-ink > * { transform: none; -webkit-mask-image: none; mask-image: none; }
+}
+
+}

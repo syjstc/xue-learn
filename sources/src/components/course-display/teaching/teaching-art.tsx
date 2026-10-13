@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {lazy,useMemo} from 'react';
 import {isVisualTeaching} from "../../../../libs/domain/src/index.js";
 import {VisualPrimitives} from "./visual-primitives.js";
 import type {MusicPlaybackState} from "../../../../libs/domain/src/index.js";
@@ -7,7 +7,7 @@ import type {MaterialTeachingItemMotion, MaterialTeachingSample} from "../../../
 import {QuestionScene, LayersScene, FlowScene, CompareScene, SummaryScene} from "./templates/general-scenes.js";
 import {GeometryAreaScene, FunctionChangeScene, AccumulationScene, ConditionalSetScene, ForceMotionScene, WaveSuperpositionScene, CircuitQuantityScene} from "./templates/math-physics.js";
 import {DisciplineScene} from "./templates/discipline-scenes.js";
-import {MusicScene} from "./templates/music-scenes.js";
+const MusicScene=lazy(async()=>({default:(await import('./templates/music-scenes.js')).MusicScene}));
 import {teachingTemplateReaction} from "./teaching-template-reaction.js";
 import {TeachingSortingArt} from "./teaching-sorting.js";
 import 'katex/dist/katex.min.css';

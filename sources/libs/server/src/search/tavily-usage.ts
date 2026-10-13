@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import {
   tavilyUsageSchema,
   type TavilyUsage,
@@ -67,7 +68,7 @@ function usageResult(
 
 export async function fetchTavilyUsage(): Promise<TavilyUsage> {
   if (!hasTavilyConfigured()) return usageResult("missing_credentials");
-  const apiKey = process.env.TAVILY_API_KEY?.trim();
+  const apiKey = getRuntimeEnvironment().TAVILY_API_KEY?.trim();
   if (!apiKey) return usageResult("missing_credentials");
 
   try {

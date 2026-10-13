@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import { isImageGenerationFeatureEnabled } from "../features.js";
 import { hasImageProviderCredentials } from "./credentials.js";
 import { isActiveImageProvider } from "./provider-ids.js";
@@ -5,7 +6,7 @@ import { getImageRuntimeConfig } from "./runtime-config.js";
 
 export function imageGenerationUnavailableReason(): string | null {
   if (
-    !isImageGenerationFeatureEnabled(process.env.XUELEARN_DESKTOP_LOCAL === "1")
+    !isImageGenerationFeatureEnabled(getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1")
   ) {
     return "Image generation is disabled for this deployment.";
   }

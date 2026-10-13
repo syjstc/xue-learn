@@ -1,6 +1,7 @@
 import {
   configureGenerationContextResolver,
   type GenerationContextContribution,
+  type GenerationContextResolver,
 } from "../generation/kernel.js";
 import { getLlmOperationDefinition } from "../providers/llm/operation-catalog.js";
 import {
@@ -105,7 +106,12 @@ export function installGenerationContextRuntime(
     configureGenerationContextResolver(undefined);
     return;
   }
-  configureGenerationContextResolver(async ({ operation, scope }) => {
+  configureGenerationContextResolver(createGenerationContextResolver(runtime));
+}
+
+/** Explicit composition for independent consumers, without changing the learner runtime. */
+export function createGenerationContextResolver(runtime: LearningSystemRuntime): GenerationContextResolver {
+  return async ({ operation, scope }) => {
     const definition = getLlmOperationDefinition(operation);
     if (!definition) {
       throw new Error(`Unregistered LLM operation "${operation}"`);
@@ -126,5 +132,5 @@ export function installGenerationContextRuntime(
         message,
       })),
     };
-  });
+  };
 }

@@ -143,10 +143,11 @@ export function resolveGenerationContextMode(
 export async function prepareGenerationInvocation(
   operation: string,
   prompt: string,
+  contextResolver?: GenerationContextResolver,
 ): Promise<PreparedGenerationInvocation> {
   const mode = resolveGenerationContextMode();
   const scope = contextScope.getStore() ?? { subject: {} };
-  if (!resolver) {
+  if (!contextResolver && !resolver) {
     try {
       if (!defaultRuntimeInitialization) {
         defaultRuntimeInitialization =
@@ -161,7 +162,8 @@ export async function prepareGenerationInvocation(
       defaultRuntimeInitialization = undefined;
     }
   }
-  if (!resolver) {
+  const activeResolver = contextResolver ?? resolver;
+  if (!activeResolver) {
     return {
       prompt,
       contextMeta: {
@@ -178,7 +180,7 @@ export async function prepareGenerationInvocation(
   }
 
   const resolutionStartedAt = Date.now();
-  const resolution = await resolver({ operation, scope });
+  const resolution = await activeResolver({ operation, scope });
   const resolutionMs = Date.now() - resolutionStartedAt;
   const formattedContributions = resolution.contributions.map(
     (contribution) => ({

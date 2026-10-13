@@ -47,6 +47,8 @@ export { legacyCompareDisplay } from "./legacy-compare-display.js";
 export * from "./guided-image-camera.js";
 
 export * from "./material-presentation.js";
+export * from "./material-display.js";
+export * from "./persistence/display-build-port.js";
 export * from "./material-visual.js";
 export * from "./material-teaching.js";
 export * from "./material-teaching-focus.js";

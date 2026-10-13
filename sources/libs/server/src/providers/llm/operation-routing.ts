@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../../env.js";
 import { listAvailableLlmModels } from "./model-availability.js";
 import { type LlmProviderId } from "../../env.js";
 import {
@@ -221,7 +222,7 @@ export async function resolveLlmOperationRoute(
   if (!definition && process.env.NODE_ENV !== "test") {
     console.warn(`[llm-routing] unregistered operation: ${operationKey}`);
   }
-  if (process.env.XUELEARN_DESKTOP_LOCAL === "1") {
+  if (getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1") {
     const reasoningMode = desktopLocalReasoningMode(config);
     return {
       operationKey,

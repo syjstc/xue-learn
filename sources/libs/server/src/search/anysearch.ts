@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import { isWebSearchAvailable } from "./runtime-config.js";
 import { beginSearchRequestLog } from "../llm/request-log.js";
 import {
@@ -43,7 +44,7 @@ type SearchRunOptions = {
 };
 
 function getApiKey(): string | null {
-  const apiKey = process.env.ANYSEARCH_API_KEY?.trim();
+  const apiKey = getRuntimeEnvironment().ANYSEARCH_API_KEY?.trim();
   return apiKey || null;
 }
 

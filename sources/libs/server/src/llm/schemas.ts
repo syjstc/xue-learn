@@ -1,4 +1,5 @@
 import type { PresentationCapabilities } from "../../../domain/src/presentation-capabilities.js";
+import { materialDisplayBlockSchema } from "../../../domain/src/material-display.js";
 import { materialMusicBindingSchema, musicCueActionSchema } from "./music-schema.js";
 import { learnerFacingContentIssues } from "../../../domain/src/learner-facing-content.js";
 import { materialMusicTreeIssues } from "../../../domain/src/material-music.js";
@@ -1409,6 +1410,7 @@ const materialCueTargetSchema = z
   .min(1)
   .regex(/^(whole|left|right|top|bottom|main|rail|side-\d+|item-\d+)$/);
 const materialCueBindingSchema = z.object({
+  timelineCueId: z.string().trim().min(1).optional(),
   music: musicCueActionSchema.optional(),
   target: materialCueTargetSchema,
   targetIds: z.array(z.string().trim().min(1)).min(1).max(16).optional(),
@@ -1521,6 +1523,7 @@ const authoredCompareBlockBindingSchema = z.object({
   sides: z.array(authoredCompareSideBindingSchema).min(2).optional(),
 });
 const authoredStageFigureBindingSchema = z.discriminatedUnion("type", [
+  materialDisplayBlockSchema,
   materialMusicBindingSchema,
   materialTeachingBindingSchema,
   materialVisualBindingSchema,
@@ -1550,6 +1553,7 @@ const authoredStageBlockBindingSchema = z.object({
 export const legacyCourseMaterialTopicDisplayBindingSchema = z.discriminatedUnion(
   "type",
   [
+    materialDisplayBlockSchema,
     materialMusicBindingSchema,
   materialTeachingBindingSchema,
     materialVisualBindingSchema,
@@ -1566,6 +1570,7 @@ export const legacyCourseMaterialTopicDisplayBindingSchema = z.discriminatedUnio
 
 /** New displays compose ordinary subviews; compare is read-only legacy data. */
 const currentStageFigureBindingSchema = z.union([
+  materialDisplayBlockSchema,
   materialMusicBindingSchema,
   materialTeachingAuthoringBindingSchema,
   ...authoredMaterialVisualBindingSchema.options,
@@ -1609,6 +1614,7 @@ export function courseMaterialTopicDisplaySchemaForCapabilities(capabilities?: P
 const legacyCourseMaterialAuthoredBlockBindingSchema = z.discriminatedUnion(
   "type",
   [
+    materialDisplayBlockSchema,
     materialMusicBindingSchema,
   materialTeachingBindingSchema,
     materialVisualBindingSchema,
@@ -1634,6 +1640,7 @@ const legacyCourseMaterialAuthoredBlockBindingSchema = z.discriminatedUnion(
 );
 
 export const courseMaterialAuthoredBlockBindingSchema = z.union([
+  materialDisplayBlockSchema,
   materialMusicBindingSchema,
   materialTeachingAuthoringBindingSchema,
   ...authoredMaterialVisualBindingSchema.options,
@@ -1683,6 +1690,7 @@ function effectiveMaterialCheckQuestionType(
 }
 
 const interactiveBlockBaseSchema = z.discriminatedUnion("type", [
+  materialDisplayBlockSchema,
   materialMusicBindingSchema,
   materialTeachingBindingSchema,
   materialVisualBindingSchema,
@@ -2357,7 +2365,10 @@ export const learningMaterialSchema = z.preprocess(
   normalizeLearningMaterial,
   z.object({
     introduction: z.string(),
-    blocks: z.array(interactiveBlockSchema).min(MIN_LEARNING_MATERIAL_BLOCKS),
+    blocks: z.array(interactiveBlockSchema).min(1).superRefine((blocks, ctx) => {
+      if (!blocks.some(block => block.type === "display") && blocks.length < MIN_LEARNING_MATERIAL_BLOCKS)
+        ctx.addIssue({code: "custom", message: `material requires at least ${MIN_LEARNING_MATERIAL_BLOCKS} legacy blocks`});
+    }),
     keyTakeaways: z.array(z.string()).max(MAX_KEY_TAKEAWAYS),
   }),
 );
@@ -2386,7 +2397,7 @@ export const strictLearningMaterialSchema = z
       ctx.addIssue({ code: "custom", ...issue });
     const contentUnits =
       (material.introduction.trim() ? 1 : 0) + material.blocks.length;
-    if (contentUnits < MIN_LEARNING_MATERIAL_BLOCKS) {
+    if (contentUnits < MIN_LEARNING_MATERIAL_BLOCKS && !material.blocks.some(block => block.type === "display")) {
       ctx.addIssue({
         code: "custom",
         message: `material requires at least ${MIN_LEARNING_MATERIAL_BLOCKS} content units (introduction + blocks)`,

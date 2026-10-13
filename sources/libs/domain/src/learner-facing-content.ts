@@ -49,6 +49,7 @@ const protocolFields = new Set([
   "from", "to", "source", "references", "symbols",
   "latex", "match", "prompt", "composition", "description", "observedDescription",
   "src", "imageUrl", "audioUrl", "layout", "direction", "preset",
+  "build", "requirement", "targets",
 ]);
 const identityFields = new Set([
   "id", "topicId", "sectionId", "figureId", "partId", "regionId", "beatId",

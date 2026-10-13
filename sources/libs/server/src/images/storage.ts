@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import fs from "fs/promises";
 import path from "path";
 import { createHash } from "crypto";
@@ -50,6 +51,27 @@ export async function saveGuidedUnitImage(unitId: string, input: Buffer) {
   return { imageId, sha256, src: unitImageApiPath(unitId, imageId, "png"), data };
 }
 
+/** Adopt accepted pixels without compression or relabeling: diagram regions
+ * and saved film frames are bound to these exact bytes. */
+export async function adoptUnitImage(unitId: string, input: {imageId: string; data: Buffer; mimeType: string; sha256: string}) {
+  if (!/^[A-Za-z0-9_-]+$/.test(unitId) || !isValidUnitImageId(input.imageId)
+    || !['image/png', 'image/jpeg', 'image/webp'].includes(input.mimeType)
+    || createHash('sha256').update(input.data).digest('hex') !== input.sha256) throw Error('Invalid accepted course image');
+  const previous = await readRawUnitImage(unitId, input.imageId);
+  if (previous) {
+    if (createHash('sha256').update(previous.data).digest('hex') !== input.sha256 || previous.mimeType !== input.mimeType)
+      throw Error('An immutable course image already has different bytes');
+    return;
+  }
+  const dir = unitImagesDir(unitId);
+  await fs.mkdir(dir, {recursive: true});
+  await fs.writeFile(path.join(dir, `${input.imageId}.${imageFileExtension(input.mimeType)}`), input.data, {flag: 'wx'}).catch(async error => {
+    if (error.code !== 'EEXIST') throw error;
+    const current = await readRawUnitImage(unitId, input.imageId);
+    if (!current || createHash('sha256').update(current.data).digest('hex') !== input.sha256) throw Error('Course image changed during adoption');
+  });
+}
+
 export function imageFileExtension(mimeType: string): string {
   if (mimeType.includes("jpeg") || mimeType.includes("jpg")) return "jpg";
   if (mimeType.includes("webp")) return "webp";
@@ -75,7 +97,7 @@ async function removeStaleImageVariants(
 }
 
 function storedUnitImageOptions(): CompressImageOptions {
-  return process.env.XUELEARN_DESKTOP_LOCAL === "1"
+  return getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1"
     ? STORED_2K_IMAGE_OPTIONS
     : STORED_IMAGE_OPTIONS;
 }

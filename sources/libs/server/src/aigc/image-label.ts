@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import sharp from "sharp";
 import { serializeAigcMetadata } from "./metadata.js";
 
@@ -7,7 +8,7 @@ export const DESKTOP_2K_AIGC_MAX_DIMENSION = 2848;
 
 export function resolveAigcMaxDimension(customMax?: number): number {
   if (customMax && customMax > 0) return customMax;
-  return process.env.XUELEARN_DESKTOP_LOCAL === "1"
+  return getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1"
     ? DESKTOP_2K_AIGC_MAX_DIMENSION
     : DEFAULT_AIGC_MAX_DIMENSION;
 }

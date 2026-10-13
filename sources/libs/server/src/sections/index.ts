@@ -1640,7 +1640,7 @@ function teachingDerivationContextBlocks(
   return blocks;
 }
 
-export async function getUnitSectionContent(
+async function getStoredUnitSectionContent(
   userId: string,
   unitId: string,
   sectionId: string,
@@ -1853,11 +1853,17 @@ export type AggregatedUnitMaterialContext = {
   contextSources: ContentSource[];
 };
 
+/** Resolve only references whose owner and immutable source revision still match. */
+export async function getUnitSectionContent(...params: Parameters<typeof getStoredUnitSectionContent>) {
+  const {resolveDisplayBuilds} = await import("../display-build/material.js");
+  return resolveDisplayBuilds(await getStoredUnitSectionContent(...params), params[0]);
+}
+
 /**
  * Build the same unit-level material view used by section renderers, together
  * with the sources stored beside each authored section.
  */
-export async function getAggregatedUnitMaterialContext(
+async function getStoredAggregatedUnitMaterialContext(
   unitId: string,
   client?: PersistenceClient,
   options: { requireAll?: boolean } = {},
@@ -1948,6 +1954,15 @@ export async function getAggregatedUnitMaterialContext(
         contextSources: parseMaterialContextSources(legacy),
       }
     : null;
+}
+
+export async function getAggregatedUnitMaterialContext(...params: Parameters<typeof getStoredAggregatedUnitMaterialContext>) {
+  const [{resolveDisplayBuilds}, {getCurrentUserId}] = await Promise.all([
+    import("../display-build/material.js"), import("../user-context.js"),
+  ]);
+  const material = await getStoredAggregatedUnitMaterialContext(...params);
+  const userId = getCurrentUserId();
+  return userId ? resolveDisplayBuilds(material, userId) : material;
 }
 
 export async function getAggregatedUnitMaterial(

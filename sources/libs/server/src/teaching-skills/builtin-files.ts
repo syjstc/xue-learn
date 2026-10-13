@@ -1,9 +1,10 @@
+import { getRuntimeEnvironment } from "../env.js";
 import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 
 export function builtinRoot(): string {
-  const configured = process.env.XUELEARN_TEACHING_SKILLS_BUILTIN_ROOT?.trim();
+  const configured = getRuntimeEnvironment().XUELEARN_TEACHING_SKILLS_BUILTIN_ROOT?.trim();
   const candidates = [
     configured,
     // Source/Jest execution, where __dirname is this package directory.

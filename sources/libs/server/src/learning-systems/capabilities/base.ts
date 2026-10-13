@@ -24,8 +24,8 @@ const GENERATION_POLICY_PROMPT = `Server generation policy (immutable):
 export { BASE_CAPABILITY_ID, BASE_CAPABILITY_VIEW_KEYS } from "../keys.js";
 
 export function createBaseGenerationCapability(options: {
-  persistence: LearningSystemPersistenceClient;
-}) {
+  persistence?: LearningSystemPersistenceClient;
+} = {}) {
   void options;
   return defineLearningSystemCapability({
     id: BASE_CAPABILITY_ID,

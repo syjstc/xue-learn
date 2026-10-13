@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import { tavily } from "@tavily/core";
 import { isWebSearchAvailable } from "./runtime-config.js";
 import { beginSearchRequestLog } from "../llm/request-log.js";
@@ -28,7 +29,7 @@ export type LearningPathSearchPurpose =
   keyof typeof LEARNING_PATH_SEARCH_PRESETS;
 
 function getClient() {
-  const apiKey = process.env.TAVILY_API_KEY?.trim();
+  const apiKey = getRuntimeEnvironment().TAVILY_API_KEY?.trim();
   if (!apiKey) return null;
   if (!client) client = tavily({ apiKey });
   return client;

@@ -7,6 +7,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  type Context,
   type ReactNode,
 } from "react";
 import { isDev } from "../dev.js";
@@ -85,7 +86,14 @@ type I18nContextValue = {
   t: (key: TranslationKey, params?: TranslationParams) => string;
 };
 
-const I18nContext = createContext<I18nContextValue | null>(null);
+// Public renderer bundles and compatibility source imports can coexist in one
+// host. Share the context identity across those module copies; locale values
+// still belong to each React provider and are never stored globally.
+const I18N_CONTEXT_KEY = Symbol.for("org.xuelearn.i18n.context.v1");
+const contextRegistry = globalThis as typeof globalThis & {
+  [I18N_CONTEXT_KEY]?: Context<I18nContextValue | null>;
+};
+const I18nContext = contextRegistry[I18N_CONTEXT_KEY] ??= createContext<I18nContextValue | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<UiLocale>(getDevLocale);

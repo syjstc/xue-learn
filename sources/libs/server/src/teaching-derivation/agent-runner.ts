@@ -1,3 +1,4 @@
+import { createGenerationContextResolver, type LearningSystemRuntime } from "../learning-systems/runtime.js";
 import {
   AIMessage,
   AIMessageChunk,
@@ -65,6 +66,8 @@ const DEFAULT_MAX_TOOL_ROUNDS = 80;
 
 export type RunTeachingDerivationAgentParams = {
   runId: string;
+  /** Supplied by hosts that own derivations but do not run the learning database. */
+  runtime?: LearningSystemRuntime;
   userId: string;
   title: string;
   locale: string;
@@ -212,9 +215,7 @@ export async function runTeachingDerivationAgent(
     });
   }
 
-  const { getDefaultLearningSystemRuntime } =
-    await import("../learning-systems/default-runtime.js");
-  const learningRuntime = getDefaultLearningSystemRuntime();
+  const learningRuntime = params.runtime ?? (await import("../learning-systems/default-runtime.js")).getDefaultLearningSystemRuntime();
   const workflowSet = learningRuntime.registry.getToolSet(toolSet);
   if (!workflowSet) {
     throw new Error(`Missing registered tool set "${toolSet}"`);
@@ -248,7 +249,7 @@ export async function runTeachingDerivationAgent(
       query: params.requirementText,
       invocation: promptInvocation,
     },
-    () => prepareGenerationInvocation(operation, ""),
+    () => prepareGenerationInvocation(operation, "", params.runtime ? createGenerationContextResolver(params.runtime) : undefined),
   );
   const llmMessages = buildTeachingDerivationInitialMessages(
     preparedGeneration.prompt,

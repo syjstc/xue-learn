@@ -1,0 +1,249 @@
+{
+  "apiVersion": 1,
+  "id": "example.acoustics",
+  "version": "1.0.0",
+  "title": "声学与和弦",
+  "description": "把音乐演奏与数学频率关系组合成一个可复用的教学组件。",
+  "domains": [
+    "music",
+    "math",
+    "physics"
+  ],
+  "execution": "declarative",
+  "dependencies": [
+    {
+      "id": "org.xuelearn.display.general",
+      "version": "1.0.0"
+    },
+    {
+      "id": "org.xuelearn.display.math",
+      "version": "1.0.0"
+    },
+    {
+      "id": "org.xuelearn.display.music",
+      "version": "1.0.0"
+    }
+  ],
+  "components": [
+    {
+      "kind": "acoustics:chord-ratio",
+      "version": 1,
+      "description": "同时展示可播放的乐谱和频率关系，可在课程或视频中使用。",
+      "payloadSchema": {
+        "type": "object",
+        "required": [
+          "equations",
+          "score"
+        ],
+        "properties": {
+          "equations": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "latex"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "latex": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "score": {
+            "type": "object",
+            "required": [
+              "type",
+              "version",
+              "parts"
+            ]
+          }
+        }
+      },
+      "examples": [
+        {
+          "equations": [
+            {
+              "id": "ratio",
+              "latex": "f_C:f_E:f_G=4:5:6",
+              "label": "纯律大三和弦的频率比"
+            }
+          ],
+          "score": {
+            "type": "music",
+            "version": 1,
+            "id": "triad",
+            "title": "三个音：依次响起与同时响起",
+            "key": "C",
+            "meter": "4/4",
+            "tempo": 90,
+            "keyboard": true,
+            "notation": "both",
+            "parts": [
+              {
+                "id": "melody",
+                "label": "钢琴",
+                "clef": "treble",
+                "instrument": "piano",
+                "bars": [
+                  {
+                    "notes": [
+                      {
+                        "pitches": [
+                          "C4"
+                        ],
+                        "beats": 1
+                      },
+                      {
+                        "pitches": [
+                          "E4"
+                        ],
+                        "beats": 1
+                      },
+                      {
+                        "pitches": [
+                          "G4"
+                        ],
+                        "beats": 1
+                      },
+                      {
+                        "pitches": [],
+                        "beats": 1
+                      }
+                    ]
+                  },
+                  {
+                    "notes": [
+                      {
+                        "pitches": [
+                          "C4",
+                          "E4",
+                          "G4"
+                        ],
+                        "beats": 3
+                      },
+                      {
+                        "pitches": [],
+                        "beats": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "steps": [
+              {
+                "id": "separate",
+                "label": "先听三个音",
+                "bars": [
+                  1,
+                  1
+                ],
+                "parts": [
+                  "melody"
+                ],
+                "focus": [
+                  "melody:1.1",
+                  "melody:1.2",
+                  "melody:1.3"
+                ]
+              },
+              {
+                "id": "together",
+                "label": "同时发声",
+                "bars": [
+                  2,
+                  2
+                ],
+                "parts": [
+                  "melody"
+                ],
+                "focus": [
+                  "melody:2.1"
+                ],
+                "compare": {
+                  "label": "依次发声",
+                  "bars": [
+                    1,
+                    1
+                  ],
+                  "parts": [
+                    "melody"
+                  ]
+                }
+              },
+              {
+                "id": "timbre",
+                "label": "换音色听",
+                "bars": [
+                  2,
+                  2
+                ],
+                "parts": [
+                  "melody"
+                ],
+                "compare": {
+                  "label": "管风琴",
+                  "bars": [
+                    2,
+                    2
+                  ],
+                  "parts": [
+                    "melody"
+                  ],
+                  "instruments": [
+                    {
+                      "part": "melody",
+                      "instrument": "organ"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "composition": {
+        "id": "layout",
+        "kind": "general:composition",
+        "version": 1,
+        "payload": {
+          "layout": "row"
+        },
+        "children": [
+          {
+            "id": "relationship",
+            "kind": "math:formula",
+            "version": 1,
+            "payload": {
+              "equations": {
+                "$display": "payload",
+                "path": "equations"
+              },
+              "notes": []
+            }
+          },
+          {
+            "id": "instrument",
+            "kind": "music:score",
+            "version": 1,
+            "payload": {
+              "block": {
+                "$display": "payload",
+                "path": "score"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

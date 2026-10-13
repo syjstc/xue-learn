@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import { getEnv } from "../env.js";
 import { getCurrentUserId } from "../user-context.js";
 import { getUserSettingsForUser } from "../user-settings.js";
@@ -143,7 +144,7 @@ export async function resolveGuidedImageModelRoute(
   const runtime = await ensureLlmRuntimeConfig();
   const runtimeSelection = llmRuntimeConfigToSelection(runtime);
   const userId = getCurrentUserId();
-  if (process.env.XUELEARN_DESKTOP_LOCAL === "1" && userId) {
+  if (getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1" && userId) {
     const row = await getUserSettingsForUser(userId);
     const settings = guidedImageModelFromPreferences(
       row?.clientPreferencesJson,

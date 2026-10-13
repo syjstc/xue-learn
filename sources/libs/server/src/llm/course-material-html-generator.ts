@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import { isAdvancedHtmlDiagramsEnabled } from "../../../common/src/index.js";
 import { wrapInteractiveHtmlDocument } from "./safe-interactive-html.js";
 import { runValidatedStructuredGeneration } from "./validated-structured-generation.js";
@@ -70,7 +71,7 @@ export async function generateCourseInteractiveHtml(params: {
   onPartial?: (block: InteractiveBlock) => void | Promise<void>;
 }): Promise<InteractiveBlock | null> {
   if (
-    !isAdvancedHtmlDiagramsEnabled(process.env.XUELEARN_DESKTOP_LOCAL === "1")
+    !isAdvancedHtmlDiagramsEnabled(getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1")
   ) {
     return null;
   }

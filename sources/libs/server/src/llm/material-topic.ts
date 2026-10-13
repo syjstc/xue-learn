@@ -1,4 +1,5 @@
 import { materialMusicTreeIssues } from "../../../domain/src/material-music.js";
+import { displayDocumentTargets } from "../../../domain/src/material-display.js";
 import { learnerFacingContentIssues } from "../../../domain/src/learner-facing-content.js";
 import { resolveMusicCue } from "../../../domain/src/material-music-teaching.js";
 import { musicCueActionSchema } from "./music-schema.js";
@@ -118,6 +119,7 @@ export const sectionTopicsAuthoringSchema = sectionTopicsCommitBindingSchema.sup
 export type SectionTopicsCommit = z.infer<typeof sectionTopicsCommitBindingSchema>;
 
 const topicCueBeatBindingSchema = z.object({
+  timelineCueId: z.string().trim().min(1).optional(),
   music: musicCueActionSchema.optional(),
   text: z.string().trim().min(1),
   figureId: z.string().trim().min(1).optional(),
@@ -134,6 +136,7 @@ export { assignTopicDisplayIds, defaultTopicCueFigureId };
 function displayBodyNonEmpty(display: unknown): boolean {
   const record = asRecord(display);
   if (!record) return false;
+  if (record.type === "display") return Boolean(record.document);
   if (record.type === "code") {
     return (
       (typeof record.code === "string" && record.code.trim().length > 0) ||
@@ -167,9 +170,9 @@ export function topicSemanticIssues(value: {
   const issues: ValidationIssue[] = [...materialVisualTreeIssues(value.display), ...materialMusicTreeIssues(value.display), ...materialTeachingTreeIssues(value.display, value.cues)].map((message) => ({ code: "invalid_visual", path: "display", message }));
   const figureIds = collectDisplayFigureIds(value.display);
   const objectIds = new Set(
-    collectMaterialCueObjectIds(
+    (asRecord(value.display)?.type === "display" ? displayDocumentTargets((value.display as import("../../../domain/src/material-display.js").MaterialDisplayBlock).document) : collectMaterialCueObjectIds(
       value.display as Parameters<typeof collectMaterialCueObjectIds>[0],
-    ),
+    )),
   );
   if (!displayBodyNonEmpty(value.display)) {
     issues.push({
@@ -262,7 +265,7 @@ const topicVisibleDisplaySchema = z.union([guidedImageIllustrationSchema, legacy
 const topicMaterialObjectSchema = z.object({
   topicId: z.string().trim().min(1),
   display: topicVisibleDisplaySchema,
-  cues: z.array(topicCueBeatBindingSchema).min(1),
+  cues: z.array(topicCueBeatBindingSchema),
 });
 
 /** Provider tool schema: visible displays only so DeepSeek strict FC can compile. */
@@ -280,8 +283,12 @@ function refineTopicMaterial(
   value: z.infer<typeof topicMaterialObjectSchema>,
   ctx: z.RefinementCtx,
 ) {
+  if (!value.cues.length) {
+    if (value.display.type === "display" && value.display.document.root.build) return;
+    ctx.addIssue({code: "custom", path: ["cues"], message: "A teaching display requires narration; only an asynchronous component owns its pending narration"});
+  }
   const figureIds = collectDisplayFigureIds(value.display);
-  const objectIds = collectMaterialCueObjectIds(
+  const objectIds = value.display.type === "display" ? displayDocumentTargets(value.display.document) : collectMaterialCueObjectIds(
     value.display as Parameters<typeof collectMaterialCueObjectIds>[0],
   );
   const objectIdList = objectIds.join(", ");
@@ -312,7 +319,7 @@ function refineTopicMaterial(
       });
     }
   });
-  for (const issue of topicSemanticIssues(value)) {
+  for (const issue of topicSemanticIssues({display: value.display, cues: value.cues})) {
     ctx.addIssue({
       code: "custom",
       path: issue.path.split("."),
@@ -324,9 +331,9 @@ function refineTopicMaterial(
 function splitTopicCues(cues: unknown[], display: unknown): unknown[] {
   const figureIds = collectDisplayFigureIds(display);
   const objectIds = new Set(
-    collectMaterialCueObjectIds(
+    (asRecord(display)?.type === "display" ? displayDocumentTargets((display as import("../../../domain/src/material-display.js").MaterialDisplayBlock).document) : collectMaterialCueObjectIds(
       display as Parameters<typeof collectMaterialCueObjectIds>[0],
-    ),
+    )),
   );
   const defaultFigureId = defaultTopicCueFigureId(display);
   const expanded: unknown[] = [];
@@ -542,6 +549,7 @@ export function flattenTopicToJitItems(
         type: "paragraph" as const,
         text: cue.text,
         cue: {
+          ...(cue.timelineCueId ? {timelineCueId: cue.timelineCueId} : {}),
           ...(cue.music ? { music: cue.music } : {}),
           target:
             cue.target && isMaterialLayoutCueTarget(cue.target)

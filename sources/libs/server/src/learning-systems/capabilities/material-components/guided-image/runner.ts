@@ -28,6 +28,7 @@ export type GuidedImageCheckpoint = {
   retryAfter?: string;
   image?: GuidedImageAsset;
   segmentation?: GuidedImageSegmentation;
+  observationVersion?: string;
   coarseSegmentation?: GuidedImageSegmentation;
   refinementVersion?: string;
   cutouts?: GuidedImageDisplay["cutouts"];
@@ -36,6 +37,7 @@ export type GuidedImageCheckpoint = {
     image: GuidedImageAsset;
     segmentation: GuidedImageSegmentation;
   }[];
+  imageRepairRetry?: { key: string; rejectedImagesOffset: number };
   error?: string;
 };
 export type GuidedImagePorts = {
@@ -97,6 +99,10 @@ export function runGuidedImageDisplay(input: {
   signal: AbortSignal;
   /** At most one automatic redraw by default. Originals remain in the checkpoint. */
   maxImageRepairs?: number;
+  /** Stable across a parent request's automatic retries; new on explicit retry. */
+  imageRepairRetryKey?: string;
+  /** Re-observe rejected legacy checkpoints when the model's image input changes. */
+  observationVersion?: string;
 }): Promise<GuidedImageDisplay> {
   const intent = guidedImageIntentSchema.parse(input.intent);
   const fingerprint = guidedImageFingerprint(intent, input.persona);
@@ -168,6 +174,19 @@ export function runGuidedImageDisplay(input: {
       }
     };
     try {
+      if (
+        input.imageRepairRetryKey &&
+        state.imageRepairRetry?.key !== input.imageRepairRetryKey
+      ) {
+        // Persist the new budget before any model call. Automatic parent retries
+        // and a stop/resume in this request must not replenish it again.
+        await save({
+          imageRepairRetry: {
+            key: input.imageRepairRetryKey,
+            rejectedImagesOffset: state.rejectedImages?.length ?? 0,
+          },
+        });
+      }
       for (;;) {
         if (!state.image) {
           await phase("image");
@@ -191,6 +210,27 @@ export function runGuidedImageDisplay(input: {
         }
         input.signal.throwIfAborted();
         await input.ports.verifyImage(state.image!);
+        const staleRejectedObservation = Boolean(
+          input.observationVersion &&
+          state.observationVersion !== input.observationVersion &&
+          state.segmentation &&
+          (state.segmentation.imageIssues.length ||
+            intent.parts.some(
+              (part) => part.required && state.segmentation!.missingPartIds.includes(part.id),
+            )),
+        );
+        if (staleRejectedObservation) {
+          // A transparent PNG previously observed against black can be rejected
+          // even though the classroom's light matte makes its ink readable.
+          // Recheck those exact pixels before spending on a replacement image.
+          await save({
+            segmentation: undefined,
+            coarseSegmentation: undefined,
+            refinementVersion: undefined,
+            cutouts: undefined,
+            beats: undefined,
+          });
+        }
         if (!state.segmentation) {
           await phase("segmentation");
           const result = await call(() =>
@@ -198,6 +238,7 @@ export function runGuidedImageDisplay(input: {
           );
           await save({
             segmentation: segmentationSchema(intent).parse(result),
+            observationVersion: input.observationVersion,
           });
         }
         const observed = segmentationSchema(intent).parse(state.segmentation);
@@ -206,7 +247,9 @@ export function runGuidedImageDisplay(input: {
         );
         if (!missing.length && !observed.imageIssues.length) break;
         if (
-          (state.rejectedImages?.length ?? 0) >= (input.maxImageRepairs ?? 1)
+          (state.rejectedImages?.length ?? 0) -
+            (state.imageRepairRetry?.rejectedImagesOffset ?? 0) >=
+          (input.maxImageRepairs ?? 1)
         ) {
           throw new Error(
             `Image needs review before narration: ${[...missing.map((p) => `missing ${p.label}`), ...observed.imageIssues].join("; ")}`,

@@ -77,6 +77,8 @@ export type CreateTeachingDerivationRunInput = Readonly<{
 
 export type UpdateTeachingDerivationRunInput = Readonly<{
   id: string;
+  /** Optional CAS fence. Omission preserves historical callers. */
+  expectedGenerationToken?: string | null;
   status?: TeachingDerivationRunStatus;
   revision?: number;
   repairAttempts?: number;
@@ -94,6 +96,7 @@ export type UpdateTeachingDerivationRunInput = Readonly<{
 export type AppendTeachingDerivationStepInput = Readonly<{
   runId: string;
   expectedRevision: number;
+  expectedGenerationToken?: string | null;
   documentJson: string;
   derivedJson: string;
   revision: number;

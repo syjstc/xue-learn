@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../../../../env.js";
 import type { ProviderSpec } from "../../../core/types.js";
 import type {
   LlmProvider,
@@ -19,7 +20,7 @@ export const codexLlmSpec: ProviderSpec<
   defaultModel: () => "",
   // The actual credential is provided by the Electron host at request time;
   // never advertise this subscription route from hosted services.
-  hasCredentials: () => process.env.XUELEARN_DESKTOP_LOCAL === "1",
+  hasCredentials: () => getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1",
   defaultOptions: defaultCodexLlmOptions,
   create: ({ env }, selection: LlmProviderSelection) =>
     createCodexLlmProvider(env, selection),

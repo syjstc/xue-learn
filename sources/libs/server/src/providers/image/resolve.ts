@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../../env.js";
 import { getEnv, type Env } from "../../env.js";
 import { isImageGenerationFeatureEnabled } from "../../features.js";
 import { getImageRuntimeConfig } from "../../images/runtime-config.js";
@@ -66,7 +67,7 @@ export function resetImageProviderCache(userId?: string): void {
 
 export function isImageGenerationAvailable(env: Env = getEnv()): boolean {
   if (
-    !isImageGenerationFeatureEnabled(process.env.XUELEARN_DESKTOP_LOCAL === "1")
+    !isImageGenerationFeatureEnabled(getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1")
   ) {
     return false;
   }

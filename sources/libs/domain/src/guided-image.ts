@@ -165,13 +165,13 @@ export function guidedImageHighlightRegions(
         const shortSide = Math.min(image.width, image.height);
         // Scale with the object, while limiting how much of the image is added.
         const padding = Math.min(
-          shortSide * 0.06,
+          shortSide * 0.025,
           Math.max(
-            shortSide * 0.015,
+            shortSide * 0.008,
             Math.max(
               (right - left) * image.width,
               (bottom - top) * image.height,
-            ) * 0.16,
+            ) * 0.06,
           ),
         );
         const dx = padding / image.width;
@@ -198,9 +198,9 @@ export type GuidedImageHighlightFrame = Readonly<{
   }>[];
 }>;
 
-// Keep surrounding labels and relationships readable. The shared renderer adds
-// an outside contour to identify the subject without washing out the context.
-const FOCUS_BACKGROUND_OPACITY = 0.88;
+// Keep context visible as a quiet reference while the narrated regions retain
+// their original contrast. All display surfaces sample this same spotlight.
+const FOCUS_BACKGROUND_OPACITY = 0.28;
 
 export function guidedImageStillFrame(
   regions: readonly GuidedImageRegion[],

@@ -4,6 +4,8 @@ export type NarratedMaterialSequenceToken = Readonly<{
   kind: "heading" | "paragraph" | "display" | "check";
   sourceIndex: number;
   text?: string;
+  /** A persisted component job owns its own complete narration. */
+  selfNarrated?: boolean;
 }>;
 
 export type NarratedMaterialSequenceIssue = Readonly<{
@@ -224,7 +226,7 @@ export function validateNarratedMaterialSequence(
               "each display block must be followed by a paragraph narration",
           });
         }
-        pendingDisplay = token;
+        pendingDisplay = token.selfNarrated ? null : token;
       } else if (token.kind === "paragraph" && pendingDisplay) {
         pendingDisplay = null;
       }
@@ -274,6 +276,7 @@ export function narratedTokensFromBlocks(
             : ("display" as const),
     sourceIndex,
     text: typeof block.text === "string" ? block.text : undefined,
+    selfNarrated: block.type === "display" && Boolean((block as {document?: {root?: {build?: unknown}}}).document?.root?.build),
   }));
 }
 

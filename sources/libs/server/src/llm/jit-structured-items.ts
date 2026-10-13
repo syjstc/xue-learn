@@ -859,7 +859,7 @@ export function createMaterialGenerationJitItemsSchema(params: {
           item.kind === "component_intent" ||
           item.kind === "svg_ref",
       ).length;
-      if (blockEquivalentCount < MIN_LEARNING_MATERIAL_BLOCKS) {
+      if (blockEquivalentCount < MIN_LEARNING_MATERIAL_BLOCKS && !items.some(item => item.kind === "block" && item.block.type === "display")) {
         ctx.addIssue({
           code: "custom",
           message: `material requires at least ${MIN_LEARNING_MATERIAL_BLOCKS} content items (introduction, blocks, or visual slots)`,
@@ -914,6 +914,7 @@ export function createMaterialGenerationJitItemsSchema(params: {
                 sourceIndex,
                 text:
                   item.block.type === "paragraph" ? item.block.text : undefined,
+                selfNarrated: item.block.type === "display" && Boolean(item.block.document.root.build),
               });
             }
             return tokens;

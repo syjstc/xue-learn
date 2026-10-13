@@ -1,5 +1,5 @@
 import type {MaterialTeaching} from "./material-teaching.js";
-import {materialTeachingSortOperations} from "./material-teaching.js";
+import {materialTeachingSortOperations} from "./material-teaching-sort.js";
 
 export type MaterialTeachingFocusTarget = Readonly<{id: string; label: string; operationIds: readonly string[]}>;
 type Entry = readonly [id: string, label: string, operations: string];

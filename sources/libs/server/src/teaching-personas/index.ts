@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import type {
   LearningGoalRepository,
   TeachingPersonaRepository,
@@ -279,7 +280,7 @@ export function getBuiltinTeachingPersona(
   locale: PersonaPromptLocale = "zh-Hans",
 ): TeachingPersona | null {
   const code = refOrCode.replace(/^builtin:/, "") as BuiltinTeachingPersonaCode;
-  if (process.env.XUELEARN_CLIENT_KIND === "godot" && refOrCode.replace(/^builtin:/, "") === GODOT_RUIYU_CODE) {
+  if (getRuntimeEnvironment().XUELEARN_CLIENT_KIND === "godot" && refOrCode.replace(/^builtin:/, "") === GODOT_RUIYU_CODE) {
     return godotRuiyuPersona(locale);
   }
   return BUILTIN_VARIANTS[code]
@@ -339,7 +340,7 @@ export async function resolveTeachingPersona(
   goalId?: string,
   locale: PersonaPromptLocale = "zh-Hans",
 ): Promise<TeachingPersona> {
-  if (process.env.XUELEARN_CLIENT_KIND === "godot") return godotRuiyuPersona(locale);
+  if (getRuntimeEnvironment().XUELEARN_CLIENT_KIND === "godot") return godotRuiyuPersona(locale);
   const repositories = persistence();
   const [settings, goal] = await Promise.all([
     repositories.settings.findByUserId(userId),
@@ -350,7 +351,7 @@ export async function resolveTeachingPersona(
     settings?.teachingPersonaRef ||
     DEFAULT_TEACHING_PERSONA_REF;
   const ref =
-    process.env.XUELEARN_DESKTOP_LOCAL === "1"
+    getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1"
       ? rawRef
       : hostedPublicTeachingPersonaRef(rawRef);
   const builtin = getBuiltinTeachingPersona(ref, locale);

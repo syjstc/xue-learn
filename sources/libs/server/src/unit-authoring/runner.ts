@@ -1,4 +1,6 @@
 import { RUIYAN_SHADOW_GUIDED_IMAGE_INSTRUCTION, withCurrentCourseDisplayInstructions } from "../learning-systems/capabilities/unit-content/material-prompt.js";
+import { loadDisplayAuthoringCatalog, displayCatalogInstruction } from "../display-build/catalog.js";
+import { acceptedDisplayBuildDrafts, createDisplayTopicSchema, createDisplayTopicTool, enqueueDisplayTopic, type DisplayBuildTopicDraft } from "./display-topic.js";
 import { acceptedGuidedImageDrafts, completeGuidedImageTopic, createGuidedImageTopicSchema, guidedImageTopicTool, type GuidedImageTopicDraft } from "./guided-image-topic.js";
 import { publishedTopicRewrite } from "./published-topic-rewrite.js";
 import { parseFlattenedMaterialItems } from "./section-material-envelope.js";
@@ -445,9 +447,13 @@ async function runSectionMaterialAuthoringAgentInScope(input: {
   publishedMaterial?: LearningMaterialContent;
   languageBlock?: string;
   guidedImagePersonaRef?: string;
+  imageRepairRetryKey?: string;
   onToken?: (delta: string) => void | Promise<void>;
   onPartial?: (items: MaterialGenerationJitItem[]) => void | Promise<void>;
 }): Promise<MaterialGenerationJitItem[]> {
+  const displayManifests = await loadDisplayAuthoringCatalog();
+  const pluginInstruction = displayCatalogInstruction(displayManifests);
+  if (pluginInstruction) input = {...input, prompt: `${input.prompt}\n\n${pluginInstruction}`};
   const imageFirst = Boolean(input.guidedImagePersonaRef) && supportsDisplay("guided_image_intent");
   if (imageFirst) input = { ...input, prompt: `${input.prompt}\n\n${RUIYAN_SHADOW_GUIDED_IMAGE_INSTRUCTION}` };
   const session = await ensureUnitAuthoringSession(input);
@@ -466,6 +472,10 @@ async function runSectionMaterialAuthoringAgentInScope(input: {
     Boolean(input.force),
   );
   const recoverGuided = async (messages: readonly LlmMessageRecord[], allowed: readonly string[], materials: Map<string, TopicMaterialCommit>, omit?: string | null) => {
+    for (const [topicId, saved] of acceptedDisplayBuildDrafts(messages, allowed)) {
+      if (topicId === omit) continue;
+      materials.set(topicId, await enqueueDisplayTopic({...input, ...saved, manifests: displayManifests}));
+    }
     for (const [topicId, saved] of acceptedGuidedImageDrafts(messages, allowed)) {
       if (topicId === omit) continue;
       materials.set(topicId, await completeGuidedImageTopic({
@@ -577,7 +587,7 @@ async function runSectionMaterialAuthoringAgentInScope(input: {
               transcript,
             ),
             transcript,
-            { capabilities: getActivePresentationCapabilities(), imageFirst },
+            { capabilities: getActivePresentationCapabilities(), imageFirst, pluginInstruction },
           ),
           expectedTool: "commit_section_topics",
           resultSchema: sectionTopicsAuthoringSchema,
@@ -634,15 +644,16 @@ async function runSectionMaterialAuthoringAgentInScope(input: {
 
   let lastMessageId: string | null = session.state.lastMessageId;
   const topicSchema = (topicId: string) =>
-    (imageFirst ? createGuidedImageTopicSchema : createTopicMaterialCommitSchema)({
+    createDisplayTopicSchema((imageFirst ? createGuidedImageTopicSchema : createTopicMaterialCommitSchema)({
       allowedTopicIds,
       expectedTopicId: topicId,
       generalEducation,
       validateLearnerContent: true,
       imagesEnabled: getActivePresentationCapabilities() ? isImageGenerationAvailable() : undefined,
-    });
+    }), displayManifests, topicId);
+  const displayTopicTool = createDisplayTopicTool(displayManifests, imageFirst);
   const topicPrompt = (topic: { id: string; title: string }) =>
-    `${imageFirst ? RUIYAN_SHADOW_GUIDED_IMAGE_INSTRUCTION + "\n" : ""}${presentationCapabilityInstruction(isImageGenerationAvailable()) ? presentationCapabilityInstruction(isImageGenerationAvailable()) + "\n" : ""}Call commit_topic_material for topicId ${JSON.stringify(topic.id)} titled ${JSON.stringify(topic.title)} only. One display (atomic figure or ${getActivePresentationCapabilities()?.stageRoles ? "one main figure plus one brief helper" : `a stage of 2–${getActivePresentationCapabilities()?.maxStageFigures ?? 4} figures`} with ids) and as many lecture-style spoken cues as needed to teach it clearly (for compare: explain each side and the contrast). Give every display, side, figure, and code region a short unique id. Each cue needs text plus targetIds listing one or more of those ids (one object, two of four, or the display id for the whole board). Do not rewrite accepted topics: ${[...materials.keys()].filter((id) => id !== topic.id).join(", ") || "(none yet)"}.`;
+    `${pluginInstruction}\n${imageFirst ? RUIYAN_SHADOW_GUIDED_IMAGE_INSTRUCTION + "\n" : ""}${presentationCapabilityInstruction(isImageGenerationAvailable()) ? presentationCapabilityInstruction(isImageGenerationAvailable()) + "\n" : ""}Call commit_topic_material for topicId ${JSON.stringify(topic.id)} titled ${JSON.stringify(topic.title)} only. One display (atomic figure or ${getActivePresentationCapabilities()?.stageRoles ? "one main figure plus one brief helper" : `a stage of 2–${getActivePresentationCapabilities()?.maxStageFigures ?? 4} figures`} with ids) and as many lecture-style spoken cues as needed to teach it clearly. An asynchronous display_build uses empty cues because its component agent owns the complete narration. Give every display, side, figure, and code region a short unique id. Each ordinary cue needs text plus targetIds listing one or more actual ids. Do not rewrite accepted topics: ${[...materials.keys()].filter((id) => id !== topic.id).join(", ") || "(none yet)"}.`;
   const topicRoundPrompt = (
     topic: { id: string; title: string },
     extra = "",
@@ -655,14 +666,14 @@ async function runSectionMaterialAuthoringAgentInScope(input: {
 
   for (const topic of outline.topics) {
     if (materials.has(topic.id) && topic.id !== rewriteTopicId) continue;
-    let material: TopicMaterialCommit | GuidedImageTopicDraft | null = null;
+    let material: TopicMaterialCommit | GuidedImageTopicDraft | DisplayBuildTopicDraft | null = null;
     let imageRevisionId = "";
     const prompt = withCurrentCourseDisplayInstructions(
       topic.id === rewriteTopicId && rewriteRoundPrompt
         ? `${rewriteRoundPrompt}\n\n${displayInstruction}`
         : topicRoundPrompt(topic),
       transcript,
-      { capabilities: getActivePresentationCapabilities(), imageFirst },
+      { capabilities: getActivePresentationCapabilities(), imageFirst, pluginInstruction },
     );
     try {
       const round = await runWithLlmTraceAsync(
@@ -672,7 +683,7 @@ async function runSectionMaterialAuthoringAgentInScope(input: {
             transcript,
             prompt,
             expectedTool: "commit_topic_material",
-            toolCatalog: imageFirst ? [guidedImageTopicTool] : undefined,
+            toolCatalog: [displayTopicTool],
             resultSchema: topicSchema(topic.id),
             signal: input.signal,
             meta: {
@@ -713,10 +724,10 @@ async function runSectionMaterialAuthoringAgentInScope(input: {
                   [],
                 ),
                 [],
-                { capabilities: getActivePresentationCapabilities(), imageFirst },
+                { capabilities: getActivePresentationCapabilities(), imageFirst, pluginInstruction },
               ),
               expectedTool: "commit_topic_material",
-              toolCatalog: imageFirst ? [guidedImageTopicTool] : undefined,
+              toolCatalog: [displayTopicTool],
               resultSchema: topicSchema(topic.id),
               operation: "unit.authoring_agent.cold_repair",
               signal: input.signal,
@@ -739,12 +750,18 @@ async function runSectionMaterialAuthoringAgentInScope(input: {
         material = cold.result;
         imageRevisionId = cold.assistantMessage.toolCalls?.[0]?.id ?? lastMessageId ?? "";
       } catch (repairError) {
-        if (imageFirst || input.signal?.aborted) throw repairError;
+        if (imageFirst || displayManifests.length || input.signal?.aborted) throw repairError;
         material = fallbackTopicMaterial({
           topicId: topic.id,
           title: topic.title,
         });
       }
+    }
+    if (material.display.type === "display_build") {
+      // The accepted intent is already durable in the transcript. Persist the
+      // immutable job and slot, then continue the next topic without awaiting its agent.
+      material = await enqueueDisplayTopic({...input, draft: material as DisplayBuildTopicDraft,
+        revisionId: imageRevisionId, manifests: displayManifests});
     }
     if (material.display.type === "guided_image_intent") {
       // Persisted intent precedes every expensive child step. Image failures are

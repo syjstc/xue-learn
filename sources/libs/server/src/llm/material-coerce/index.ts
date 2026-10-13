@@ -211,6 +211,8 @@ function coerceIllustrationShapedDisplay(
 export function coerceTopicDisplay(display: unknown): unknown {
   let record = asRecord(display);
   if (!record) return display;
+  // A plugin document is already a typed tree. Never reduce it to a text card.
+  if (record.type === "display") return record;
   const type = typeof record.type === "string" ? record.type.trim() : "";
   if (TOPIC_CALLOUT_ALIASES.has(type)) {
     record = {

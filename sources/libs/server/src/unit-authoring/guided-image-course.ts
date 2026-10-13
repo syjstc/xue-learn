@@ -20,6 +20,8 @@ import {
   imageSha256,
   normalizeGuidedImage,
   cutGuidedImageRegion,
+  guidedImageObservationDataUrl,
+  GUIDED_IMAGE_OBSERVATION_VERSION,
 } from "../learning-systems/capabilities/material-components/guided-image/assets.js";
 import {
   guidedImagePrompt,
@@ -47,6 +49,7 @@ type CourseGuidedImageInput = {
   revisionId: string;
   intent: GuidedImageIntent;
   personaRef: string;
+  imageRepairRetryKey?: string;
   signal?: AbortSignal;
   onProgress?: (phase: string) => void | Promise<void>;
 };
@@ -166,13 +169,16 @@ async function generateCourseGuidedImageContent(
     return found.data;
   };
   const dataUrl = async (image: GuidedImageAsset) =>
-    `data:image/png;base64,${(await imageData(image)).toString("base64")}`;
+    guidedImageObservationDataUrl(await imageData(image));
   const display = await runGuidedImageDisplay({
     runId: thread.id,
     intent: input.intent,
     persona,
     signal,
     checkpoint: stored.checkpoint,
+    imageRepairRetryKey: input.imageRepairRetryKey,
+    maxImageRepairs: 3,
+    observationVersion: GUIDED_IMAGE_OBSERVATION_VERSION,
     save: async (checkpoint) => {
       onPhase(checkpoint.phase);
       await repository.updateThreadState(

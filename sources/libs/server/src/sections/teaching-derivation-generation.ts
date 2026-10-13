@@ -1,3 +1,4 @@
+import type { LearningSystemRuntime } from "../learning-systems/runtime.js";
 import { randomUUID } from "node:crypto";
 import {
   ANALYZER_VERSION,
@@ -22,7 +23,7 @@ import {
 } from "../learning-systems/capabilities/teaching-derivation/keys.js";
 import { buildTeachingDerivationInvocationPrompt } from "../learning-systems/capabilities/teaching-derivation/prompt.js";
 import { emitTeachingDerivationEvent } from "../learning-systems/capabilities/teaching-derivation/session.js";
-import { requireTeachingDerivationPersistence } from "../learning-systems/capabilities/teaching-derivation/persistence.js";
+import { requireTeachingDerivationPersistence, runWithTeachingDerivationGenerationFence } from "../learning-systems/capabilities/teaching-derivation/persistence.js";
 import type { UnitSectionPlanRepository, TeachingDerivationRunRecord } from "../../../domain/src/index.js";
 import {
   selectResumableTeachingDerivationRun,
@@ -60,6 +61,7 @@ export function buildUnitTeachingDerivationRequirement(input: {
 }
 
 export type TeachingDerivationGenerationParams = {
+  runtime?: LearningSystemRuntime;
   userId: string;
   unitId: string;
   sectionId?: string;
@@ -98,6 +100,7 @@ export async function generateTeachingDerivationDocument(params: TeachingDerivat
     visualDisplays: params.visualDisplays,
   });
   const persistence = requireTeachingDerivationPersistence();
+  const fenceGeneration = params.runScope?.kind === "display-build";
   params.signal?.throwIfAborted();
   if (params.runId && params.force) throw Error("Cannot replace an explicitly owned teaching-derivation run");
   const resumable = params.runId ? await persistence.getRun(params.runId)
@@ -135,12 +138,14 @@ export async function generateTeachingDerivationDocument(params: TeachingDerivat
     resume = live
       ? { committedSteps: live.steps.length, revision: live.revision }
       : undefined;
-    await persistence.updateRun({
+    const claimed = await persistence.updateRun({
       id: runId,
       status: "running",
       generationToken: params.token,
+      ...(fenceGeneration ? {expectedGenerationToken: resumable.generationToken} : {}),
       now,
     });
+    if (!claimed) throw Error("Teaching derivation generation lease changed before resume");
   } else {
     runId = randomUUID();
     const document = { ...emptyTeachingDerivationDocument({
@@ -181,6 +186,7 @@ export async function generateTeachingDerivationDocument(params: TeachingDerivat
     if (!params.onPartialTeachingDerivation) return;
     const current = await persistence.getRun(runId);
     if (!current) return;
+    if (fenceGeneration && current.generationToken !== params.token) throw Error("Teaching derivation generation lease lost");
     const live = tryParseLiveTeachingDocument(current.documentJson);
     if (!live) return;
     let derived: TeachingDerivationDerivedV1 | null = null;
@@ -195,8 +201,9 @@ export async function generateTeachingDerivationDocument(params: TeachingDerivat
   let failureMessage =
     "Teaching derivation generation did not finish a valid teaching script.";
   try {
-    await runTeachingDerivationAgent({
+    await runWithTeachingDerivationGenerationFence(fenceGeneration ? {runId, ownerUserId: params.userId, token: params.token, signal: params.signal} : undefined, () => runTeachingDerivationAgent({
       runId,
+      runtime: params.runtime,
       userId: params.userId,
       title: params.sectionTitle,
       locale: params.locale,
@@ -211,6 +218,11 @@ export async function generateTeachingDerivationDocument(params: TeachingDerivat
       traceId: params.generationRunId ?? runId,
       signal: params.signal,
       send: async (event) => {
+        if (fenceGeneration && event.type === "tool_started") {
+          params.signal?.throwIfAborted();
+          const owned = await persistence.getRun(runId);
+          if (owned?.generationToken !== params.token) throw Error("Teaching derivation generation lease lost");
+        }
         if (event.type === "run_failed") {
           failureMessage = event.error.message;
           await emitTeachingDerivationEvent(runId, event);
@@ -219,6 +231,7 @@ export async function generateTeachingDerivationDocument(params: TeachingDerivat
           await persistence.updateRun({
             id: runId,
             status: "cancelled",
+            ...(fenceGeneration ? {expectedGenerationToken: params.token} : {}),
             now: new Date(),
           });
         }
@@ -228,7 +241,7 @@ export async function generateTeachingDerivationDocument(params: TeachingDerivat
       },
       operation: UNIT_TEACHING_DERIVATION_OPERATION,
       platformFunded: false,
-    });
+    }));
   } catch (cause) {
     failureMessage = cause instanceof Error ? cause.message : failureMessage;
     throw cause instanceof Error ? cause : new Error(failureMessage);
@@ -236,6 +249,7 @@ export async function generateTeachingDerivationDocument(params: TeachingDerivat
     const current = await persistence.getRun(runId);
     if (
       current &&
+      (!fenceGeneration || current.generationToken === params.token) &&
       current.status !== "complete" &&
       current.status !== "cancelled" &&
       current.status !== "failed" &&
@@ -244,12 +258,13 @@ export async function generateTeachingDerivationDocument(params: TeachingDerivat
       await persistence.updateRun({
         id: runId,
         status: "failed",
+        ...(fenceGeneration ? {expectedGenerationToken: params.token} : {}),
         now: new Date(),
       });
     }
   }
   const run = await persistence.getRun(runId);
-  if (!run || run.status !== "complete") {
+  if (!run || run.status !== "complete" || fenceGeneration && run.generationToken !== params.token) {
     throw new Error(
       run?.status === "cancelled"
         ? "Teaching derivation generation was cancelled."

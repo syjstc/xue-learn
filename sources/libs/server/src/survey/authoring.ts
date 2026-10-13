@@ -254,7 +254,7 @@ export const compactSurveyPreviewItemBindingSchema = z.object({
   scope: z.string().optional(),
   learningTargetIds: z.array(z.string()).optional(),
   checkpointAfter: z.boolean().optional(),
-  contentKind: surveySectionContentKindSchema.optional(),
+  contentKind: z.literal("standard").optional(),
 });
 
 export const compactSurveyPreviewBindingSchema = z.object({
@@ -496,7 +496,7 @@ export function prepareSurveyAuthoring(
     )
     .transform((items) => {
       const draft = assembleSurveyItems(
-        items,
+        items.map(item => item.kind === "outline" ? {...item, contentKind: "standard" as const} : item),
         input.canonicalLearningTargets ?? [],
         input.sectionPlanningMode,
       );

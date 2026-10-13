@@ -298,6 +298,9 @@ function normalizeBlock(item: unknown): InteractiveBlock | null {
 
   const type = normalizeBlockType(b.type ?? b.component_type);
   if (!type) return null;
+  // Preserve the complete plugin document, its revision and pending build reference.
+  // Envelope validation happens after normalization; unsupported nodes remain visible placeholders.
+  if (type === "display") return {...b, type} as InteractiveBlock;
 
   if (type === "heading") {
     const text = asString(b.text ?? b.title ?? b.content);
@@ -911,6 +914,7 @@ function ensureMinBlocks(
   introduction: string,
 ): InteractiveBlock[] {
   const result = stripPaddingTipCallouts(blocks);
+  if (result.some(block => block.type === "display")) return result;
   if (result.length >= MIN_LEARNING_MATERIAL_BLOCKS) {
     return result;
   }

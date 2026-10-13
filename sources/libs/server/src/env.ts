@@ -356,14 +356,23 @@ const envSchema = z.object({
 export type Env = z.infer<typeof envSchema>;
 
 let cached: Env | null = null;
+let configuredEnvironment: (() => NodeJS.ProcessEnv) | undefined;
 
-function envInput(): NodeJS.ProcessEnv {
-  return { ...process.env };
+/** Host-owned credentials/configuration without writing secrets to process.env.
+ * Configure once per server composition; refresh cached provider settings when
+ * its underlying snapshot changes. Never expose this source to browser code. */
+export function configureEnvSource(source: (() => NodeJS.ProcessEnv) | undefined): void {
+  configuredEnvironment = source;
+  cached = null;
+}
+
+export function getRuntimeEnvironment(): NodeJS.ProcessEnv {
+  return configuredEnvironment ? { ...configuredEnvironment() } : { ...process.env };
 }
 
 export function getEnv(): Env {
   if (cached) return cached;
-  const parsed = envSchema.safeParse(envInput());
+  const parsed = envSchema.safeParse(getRuntimeEnvironment());
   if (!parsed.success) {
     const fieldErrors = parsed.error.flatten().fieldErrors;
     const custom = parsed.error.issues
@@ -383,25 +392,25 @@ export function resetEnvCache(): void {
 
 function hasEmbeddingConfigured(provider: EmbeddingProviderId): boolean {
   if (provider === "builtin") {
-    return process.env.XUELEARN_DESKTOP_LOCAL === "1";
+    return getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1";
   }
   if (provider === "openai") {
-    return Boolean(process.env.OPENAI_API_KEY?.trim());
+    return Boolean(getRuntimeEnvironment().OPENAI_API_KEY?.trim());
   }
   if (provider === "custom_embedding") {
     return Boolean(
-      process.env.CUSTOM_EMBEDDING_API_KEY?.trim() &&
-      process.env.CUSTOM_EMBEDDING_BASE_URL?.trim(),
+      getRuntimeEnvironment().CUSTOM_EMBEDDING_API_KEY?.trim() &&
+      getRuntimeEnvironment().CUSTOM_EMBEDDING_BASE_URL?.trim(),
     );
   }
   if (provider === "bigmodel") {
-    return Boolean(process.env.BIGMODEL_API_KEY?.trim());
+    return Boolean(getRuntimeEnvironment().BIGMODEL_API_KEY?.trim());
   }
   if (provider === "ollama") {
-    return Boolean(process.env.OLLAMA_BASE_URL?.trim());
+    return Boolean(getRuntimeEnvironment().OLLAMA_BASE_URL?.trim());
   }
   return Boolean(
-    process.env.MINIMAX_API_KEY?.trim() && process.env.MINIMAX_GROUP_ID?.trim(),
+    getRuntimeEnvironment().MINIMAX_API_KEY?.trim() && getRuntimeEnvironment().MINIMAX_GROUP_ID?.trim(),
   );
 }
 
@@ -413,33 +422,33 @@ export function hasProviderCredentials(provider: LlmProviderId): boolean {
   switch (provider) {
     case "custom":
       return Boolean(
-        process.env.CUSTOM_OPENAI_API_KEY?.trim() &&
-        process.env.CUSTOM_OPENAI_BASE_URL?.trim(),
+        getRuntimeEnvironment().CUSTOM_OPENAI_API_KEY?.trim() &&
+        getRuntimeEnvironment().CUSTOM_OPENAI_BASE_URL?.trim(),
       );
     case "openai":
-      return Boolean(process.env.OPENAI_API_KEY?.trim());
+      return Boolean(getRuntimeEnvironment().OPENAI_API_KEY?.trim());
     case "codex":
       // Codex subscription credentials are owned by the Electron host. The
       // sidecar receives a short-lived token through its private runtime
       // channel, so there is deliberately no environment credential here.
-      return process.env.XUELEARN_DESKTOP_LOCAL === "1";
+      return getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1";
     case "deepseek":
-      return Boolean(process.env.DEEPSEEK_API_KEY?.trim());
+      return Boolean(getRuntimeEnvironment().DEEPSEEK_API_KEY?.trim());
     case "fireworks":
-      return Boolean(process.env.FIREWORKS_API_KEY?.trim());
+      return Boolean(getRuntimeEnvironment().FIREWORKS_API_KEY?.trim());
     case "doubao":
-      return Boolean(process.env.DOUBAO_API_KEY?.trim());
+      return Boolean(getRuntimeEnvironment().DOUBAO_API_KEY?.trim());
     case "bigmodel":
-      return Boolean(process.env.BIGMODEL_API_KEY?.trim());
+      return Boolean(getRuntimeEnvironment().BIGMODEL_API_KEY?.trim());
     case "qwen":
-      return Boolean(process.env.DASHSCOPE_API_KEY?.trim());
+      return Boolean(getRuntimeEnvironment().DASHSCOPE_API_KEY?.trim());
     case "minimax":
       return Boolean(
-        process.env.MINIMAX_API_KEY?.trim() &&
-        process.env.MINIMAX_GROUP_ID?.trim(),
+        getRuntimeEnvironment().MINIMAX_API_KEY?.trim() &&
+        getRuntimeEnvironment().MINIMAX_GROUP_ID?.trim(),
       );
     case "ollama":
-      return Boolean(process.env.OLLAMA_BASE_URL?.trim());
+      return Boolean(getRuntimeEnvironment().OLLAMA_BASE_URL?.trim());
     default: {
       const _exhaustive: never = provider;
       return _exhaustive;
@@ -454,15 +463,15 @@ export function hasEmbeddingProviderCredentials(
 }
 
 export function hasTavilyConfigured(): boolean {
-  return Boolean(process.env.TAVILY_API_KEY?.trim());
+  return Boolean(getRuntimeEnvironment().TAVILY_API_KEY?.trim());
 }
 
 export function hasDoubaoSearchConfigured(): boolean {
-  return Boolean(process.env.DOUBAO_SEARCH_API_KEY?.trim());
+  return Boolean(getRuntimeEnvironment().DOUBAO_SEARCH_API_KEY?.trim());
 }
 
 export function hasAnySearchConfigured(): boolean {
-  return Boolean(process.env.ANYSEARCH_API_KEY?.trim());
+  return Boolean(getRuntimeEnvironment().ANYSEARCH_API_KEY?.trim());
 }
 
 export function hasSearchProviderCredentials(
@@ -484,5 +493,5 @@ export function hasSearchProviderCredentials(
 
 /** @deprecated Use hasLlmConfigured */
 export function hasOpenAI(): boolean {
-  return Boolean(process.env.OPENAI_API_KEY?.trim());
+  return Boolean(getRuntimeEnvironment().OPENAI_API_KEY?.trim());
 }

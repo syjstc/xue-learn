@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import { randomUUID } from "node:crypto";
 import { GenerationCancelledError } from "../generation/errors.js";
 import type {
@@ -29,7 +30,7 @@ export async function generateMaterialImage(
   input: GenerateImageInput,
 ) {
   const result = await provider.generateImage(input);
-  if (process.env.XUELEARN_DESKTOP_LOCAL !== "1") return result;
+  if (getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL !== "1") return result;
 
   const normalized = await removeDesktopOpaqueBackground(
     result.data,
@@ -149,7 +150,7 @@ export async function enrichMaterialWithImages(
   const provider = imageProvider;
 
   const maxImages =
-    process.env.XUELEARN_DESKTOP_DEV === "1"
+    getRuntimeEnvironment().XUELEARN_DESKTOP_DEV === "1"
       ? Math.max(12, getImageRuntimeConfig().maxIllustrations)
       : getImageRuntimeConfig().maxIllustrations;
   const storageRevision = meta?.storageRevision?.trim() || randomUUID();
@@ -198,7 +199,7 @@ export async function enrichMaterialWithImages(
       },
       meta: { goalId: meta?.goalId, unitTitle: meta?.unitTitle, unitId },
     });
-    const isDesktopLocal = process.env.XUELEARN_DESKTOP_LOCAL === "1";
+    const isDesktopLocal = getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1";
     try {
       const result = await generateMaterialImage(provider, {
         prompt: job.block.prompt,
@@ -367,7 +368,7 @@ export async function replaceSvgBlockWithIllustration(
     meta: { goalId: meta?.goalId, unitTitle: meta?.unitTitle, unitId },
   });
 
-  const isDesktopLocal = process.env.XUELEARN_DESKTOP_LOCAL === "1";
+  const isDesktopLocal = getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1";
   try {
     const result = await generateMaterialImage(provider, {
       prompt: drafted.prompt,
@@ -463,7 +464,7 @@ export async function regenerateIllustrationBlock(
     meta: { goalId: meta?.goalId, unitTitle: meta?.unitTitle, unitId },
   });
 
-  const isDesktopLocal = process.env.XUELEARN_DESKTOP_LOCAL === "1";
+  const isDesktopLocal = getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1";
   try {
     const result = await generateMaterialImage(provider, {
       prompt: effectivePrompt,

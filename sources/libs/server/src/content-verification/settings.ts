@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import type { GlobalGenerationSettingsRepository } from "../../../domain/src/index.js";
 import { requireGlobalGenerationSettingsPersistence } from "../generation/global-generation-settings-persistence.js";
 import {
@@ -34,7 +35,7 @@ function parseMode(value: string): ContentVerificationMode {
 }
 
 function parseProvider(value: string): LlmProviderId {
-  if (process.env.XUELEARN_DESKTOP_LOCAL !== "1") return HOSTED_LLM_PROVIDER;
+  if (getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL !== "1") return HOSTED_LLM_PROVIDER;
   return isActiveLlmProvider(value) ? value : "deepseek";
 }
 
@@ -99,7 +100,7 @@ export async function updateContentVerificationSettings(
   const provider = patch.provider ?? current.provider;
   if (
     !isActiveLlmProvider(provider) ||
-    (process.env.XUELEARN_DESKTOP_LOCAL !== "1" &&
+    (getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL !== "1" &&
       provider !== HOSTED_LLM_PROVIDER)
   )
     throw new RangeError("Invalid verification provider");

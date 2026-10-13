@@ -102,8 +102,9 @@ ${MATERIAL_TEACHING_AUTHORING_RULES}`;
 export function withCurrentCourseDisplayInstructions(
   prompt: string,
   transcript: readonly { role: string; content: string }[],
-  options: { capabilities?: PresentationCapabilities; imageFirst: boolean },
+  options: { capabilities?: PresentationCapabilities; imageFirst: boolean; pluginInstruction?: string },
 ): string {
+  if (options.pluginInstruction) return `${prompt}\n\n${COURSE_LEARNER_FACING_CONTENT_INSTRUCTION}\n${options.imageFirst ? RUIYAN_SHADOW_GUIDED_IMAGE_INSTRUCTION : ""}\n\nCurrent display contract:\n${options.pluginInstruction}`;
   const instructions = [COURSE_LEARNER_FACING_CONTENT_INSTRUCTION,
     ...(supportsDisplay("music", options.capabilities) ? [COURSE_DISPLAY_SELECTION_INSTRUCTION, COURSE_MUSIC_INSTRUCTION] : []),
     ...(supportsDisplay("stage", options.capabilities) ? [COURSE_PRESENTATION_INSTRUCTION] : []),

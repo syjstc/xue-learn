@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import { beginSearchRequestLog } from "../llm/request-log.js";
 import {
   type ContentSource,
@@ -38,13 +39,13 @@ type GlobalSearchDocument = {
 };
 
 function getApiKey(): string | null {
-  const apiKey = process.env.DOUBAO_SEARCH_API_KEY?.trim();
+  const apiKey = getRuntimeEnvironment().DOUBAO_SEARCH_API_KEY?.trim();
   return apiKey || null;
 }
 
 function getBaseUrl(): string {
   return (
-    process.env.DOUBAO_SEARCH_BASE_URL?.trim().replace(/\/$/, "") ||
+    getRuntimeEnvironment().DOUBAO_SEARCH_BASE_URL?.trim().replace(/\/$/, "") ||
     DEFAULT_BASE_URL
   );
 }

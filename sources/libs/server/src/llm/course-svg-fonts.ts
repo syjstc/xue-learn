@@ -1,3 +1,4 @@
+import { getRuntimeEnvironment } from "../env.js";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -11,7 +12,7 @@ const COURSE_SVG_FONT_FILENAMES = [
  * sidecar otherwise choose different CJK fallback glyphs and text metrics.
  */
 export function resolveCourseSvgFontFiles(): string[] {
-  const configuredRoot = process.env.XUELEARN_SVG_FONT_DIR?.trim();
+  const configuredRoot = getRuntimeEnvironment().XUELEARN_SVG_FONT_DIR?.trim();
   const roots = [
     configuredRoot,
     join(process.cwd(), "fonts"),

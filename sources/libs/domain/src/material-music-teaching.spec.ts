@@ -81,3 +81,16 @@ test("one pitch can use distinct notated durations while pitch-only objects reta
   delete note.beats;
   expect(() => validateMusicTeaching(block)).not.toThrow();
 });
+
+test("a nested unified music component schedules its exact score by public node identity", () => {
+  const block = source();
+  const display = {type: "display", document: {root: {id: "composition", kind: "general:composition", payload: {}, slots: {main: [
+    {id: "piano", kind: "music:score", payload: {block}},
+  ]}}}};
+  const original = JSON.stringify(display);
+  const expected = compileMusicTeachingClip(block, "half-tone", 2);
+  expect(resolveMusicCue(display, {figureId: "piano", clipId: "half-tone", repeat: 2})).toEqual({...expected, figureId: "piano"});
+  expect(() => resolveMusicCue(display, {figureId: block.id, clipId: "half-tone"})).toThrow("Music action must reference");
+  expect(() => resolveMusicCue(display, {figureId: "piano", clipId: "absent"})).toThrow("Unknown music clip");
+  expect(JSON.stringify(display)).toBe(original);
+});

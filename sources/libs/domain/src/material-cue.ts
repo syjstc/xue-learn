@@ -4,6 +4,7 @@ import { materialVisualTarget } from "./material-visual.js";
 import { readMaterialTeaching, materialTeachingSteps, materialTeachingTarget } from "./material-teaching.js";
 import {materialTeachingFocusTargets, materialTeachingFocusTarget} from "./material-teaching-focus.js";
 import { materialCalloutDetails } from "./material-callout-details.js";
+import { displayDocumentTargets } from "./material-display.js";
 
 export const MATERIAL_STAGE_LAYOUTS = [
   "split-h",
@@ -36,6 +37,8 @@ export function isMaterialLayoutCueTarget(value: string): boolean {
 }
 
 export type MaterialCue = Readonly<{
+  /** Stable authored Display timeline cue, retained across narration clocks. */
+  timelineCueId?: string;
   music?: MusicCueAction;
   target: string;
   /** One or more addressable object ids on the board (display, figure, side, region). */
@@ -341,6 +344,7 @@ function uniqueIds(
 function parseCue(raw: unknown): MaterialCue | null {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
   const record = raw as {
+    timelineCueId?: unknown;
     target?: unknown;
     targetIds?: unknown;
     op?: unknown;
@@ -373,6 +377,7 @@ function parseCue(raw: unknown): MaterialCue | null {
     : [];
   return {
     target,
+    ...(typeof record.timelineCueId === 'string' && record.timelineCueId.trim() ? {timelineCueId: record.timelineCueId.trim()} : {}),
     ...(record.music ? { music: record.music } : {}),
     ...(targetIds.length > 0 ? { targetIds } : {}),
     ...(figureId ? { figureId } : {}),
@@ -386,6 +391,7 @@ export function sanitizeParagraphCue(raw: unknown): MaterialCue | undefined {
 }
 
 type CueDisplay = Readonly<{
+  document?: unknown;
   templateId?: unknown;
   content?: unknown;
   title?: unknown;
@@ -521,6 +527,10 @@ function collectFigureCueObjects(
 ) {
   const figureId = displayId(figure);
   const type = typeof figure.type === "string" ? figure.type : "";
+  if (type === "display" && figure.document) {
+    for (const id of displayDocumentTargets(figure.document as import("../../display/src/types.js").DisplayDocument))
+      addCueObject(objects, seen, {id, kind: "display", lightingIds: [...lightingPrefix, id]});
+  }
   for (const detail of materialCalloutDetails(figure)) {
     addCueObject(objects, seen, {
       id: detail.id,
