@@ -1,0 +1,18 @@
+.course-browser { display: grid; gap: 1rem; color: var(--foreground); }
+.course-browser-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.course-browser-toolbar h2 { margin: 0; font-size: 1.3rem; font-weight: 650; }
+.course-browser-toolbar p { margin: .35rem 0 0; color: var(--muted-foreground); }
+.course-browser-search { max-width: 34rem; }
+.course-browser-layout { display: grid; grid-template-columns: minmax(14rem, 1fr) minmax(0, 2fr); align-items: start; gap: 1.25rem; }
+.course-browser-catalog { display: grid; gap: .35rem; max-height: 70vh; overflow: auto; padding: .15rem; }
+.course-browser-count { margin: 0 0 .3rem; color: var(--muted-foreground); font-size: .85rem; }
+.course-browser-unit { display: flex; height: auto; min-height: 3.5rem; flex-direction: column; align-items: flex-start; gap: .2rem; padding: .65rem .8rem; text-align: left; white-space: normal; }
+.course-browser-unit-title { font-weight: 550; overflow-wrap: anywhere; }
+.course-browser-unit-context { color: var(--muted-foreground); font-size: .75rem; font-weight: 400; overflow-wrap: anywhere; }
+.course-browser-sections { display: grid; gap: .8rem; }
+.course-browser-copy { white-space: pre-wrap; line-height: 1.7; overflow-wrap: anywhere; }
+.course-browser-error { overflow-wrap: anywhere; }
+@media (max-width: 760px) {
+  .course-browser-layout { grid-template-columns: minmax(0, 1fr); }
+  .course-browser-catalog { max-height: 18rem; }
+}

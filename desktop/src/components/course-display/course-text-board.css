@@ -1,0 +1,194 @@
+/* JSON text, one shared surface. Focus never shrinks or fades its neighbours. */
+.course-text-board {
+  container-type: inline-size;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-height: 100%;
+  padding: 1.15em 1.2em;
+  overflow: auto;
+  border: 1px solid var(--ds-border-light);
+  border-radius: 0.65em;
+  color: var(--lp-deep);
+  background: var(--ds-background);
+  font-size: 1.1em;
+  font-weight: 400;
+  line-height: 1.65;
+}
+.course-display-board > .course-text-board {
+  font-size: clamp(17px, 1.3cqw, 19px);
+}
+.lp-stage .course-text-board {
+  font-size: 1.65em;
+}
+.course-display-board[data-board-type="stage"]:has(> .course-text-board) {
+  display: flex;
+  align-items: safe center;
+}
+.course-text-board-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+.course-text-board-table th,
+.course-text-board-table td {
+  padding: 0.8em 0.6em;
+  vertical-align: top;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.course-text-board-table thead th {
+  position: relative;
+  vertical-align: bottom;
+  font-size: 1.15em;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.course-text-board-table thead th::after {
+  content: "";
+  position: absolute;
+  left: 0.8em;
+  right: 0.8em;
+  bottom: 0;
+  height: 3px;
+  background: var(--ds-primary);
+  opacity: var(--text-board-emphasis, 0);
+}
+.course-text-board-table :is(th, td):first-child {
+  width: 16%;
+  padding-left: 0;
+}
+.course-text-board-table tbody :is(th, td) {
+  border-top: 1px solid var(--ds-border-light);
+}
+.course-text-board-table tbody th {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: var(--ds-muted);
+}
+.course-text-board-table [data-stage-index],
+.course-text-board-columns > section {
+  background: rgba(194, 91, 86, calc(var(--text-board-emphasis, 0) * 0.065));
+}
+.course-text-board .course-text-board-copy {
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  line-height: inherit;
+}
+.course-text-board-copy p {
+  margin: 0.65em 0;
+}
+.course-text-board-copy > :first-child {
+  margin-top: 0;
+}
+.course-text-board-copy > :last-child {
+  margin-bottom: 0;
+}
+.course-text-board-copy strong {
+  font-weight: 650;
+}
+.course-text-board-mobile-label {
+  display: none;
+}
+.course-text-board-columns {
+  display: grid;
+  grid-template-columns: repeat(var(--text-board-columns), minmax(0, 1fr));
+}
+.course-text-board-columns > section {
+  min-width: 0;
+  padding: 0.25em 1.1em 0.8em;
+  border-left: 1px solid var(--ds-border-light);
+}
+.course-text-board-columns > section:first-child {
+  border-left: 0;
+}
+.course-text-board-columns h3 {
+  margin: 0 0 0.9em;
+  padding-bottom: 0.7em;
+  border-bottom: 3px solid rgba(194, 91, 86, var(--text-board-emphasis, 0));
+  font-size: 1.2em;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.course-text-board-prose {
+  font-size: 0.95em;
+}
+.course-text-board-note {
+  margin-top: 1.3em;
+  padding-top: 1.15em;
+  border-top: 1px solid var(--ds-border);
+  border-top-color: color-mix(
+    in srgb,
+    var(--ds-primary) calc(var(--text-board-emphasis, 0) * 100%),
+    var(--ds-border)
+  );
+}
+.course-text-board-note .course-callout {
+  font-size: 0.94em;
+}
+.course-text-board-note .course-callout[data-variant="tip"] {
+  padding-left: 0;
+  border-left: 0;
+}
+.course-display-board[data-board-motion="smooth"]
+  .course-text-board
+  [data-stage-index] {
+  transition: background-color 300ms ease;
+}
+
+@container (max-width: 600px) {
+  .course-text-board-columns {
+    grid-template-columns: 1fr;
+  }
+  .course-text-board-columns > section {
+    border-left: 0;
+    border-top: 1px solid var(--ds-border-light);
+    padding: 1em 0.7em;
+  }
+  .course-text-board-columns > section:first-child {
+    border-top: 0;
+  }
+  .course-text-board-columns h3 {
+    margin-bottom: 0.6em;
+    padding-bottom: 0.4em;
+  }
+  .course-text-board-table,
+  .course-text-board-table tbody,
+  .course-text-board-table tr {
+    display: block;
+  }
+  .course-text-board-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    clip-path: inset(50%);
+    overflow: hidden;
+  }
+  .course-text-board-table tbody th:first-child {
+    display: block;
+    width: auto;
+    padding: 1em 0 0.5em;
+    font-size: 0.88em;
+  }
+  .course-text-board-table tbody td {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+    gap: 1em;
+    padding: 0.6em 0.5em;
+    border: 0;
+  }
+  .course-text-board-mobile-label {
+    display: block;
+    font-weight: 650;
+    font-size: 0.9em;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .course-display-board[data-board-motion="smooth"]
+    .course-text-board
+    [data-stage-index] {
+    transition: none;
+  }
+}

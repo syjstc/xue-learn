@@ -1,0 +1,97 @@
+/* Chat reads semantic text at its actual size. The shared film projection uses
+ * fixed coordinates and two fitting transforms, which make nested cards tiny.
+ * Keep that projection for diagrams; let text boards use normal document flow. */
+.desktop-display-host[data-display-presentation="chat"] .display-film-composition {
+  height: auto;
+  grid-auto-rows: auto;
+  align-items: start;
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-composition[style*="repeat"] {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)) !important;
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-composition > [data-focused="true"] {
+  outline: 2px solid var(--course-content-link);
+  outline-offset: 3px;
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage:is(
+  [data-display-artwork="general:callout"],
+  [data-display-artwork="general:text"],
+  [data-display-artwork="general:compare"],
+  [data-display-artwork="general:cards"]
+) {
+  height: auto;
+  min-height: 240px;
+  aspect-ratio: auto;
+  overflow: visible;
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage:is(
+  [data-display-artwork="general:callout"],
+  [data-display-artwork="general:text"],
+  [data-display-artwork="general:compare"],
+  [data-display-artwork="general:cards"]
+) > .display-film-canvas {
+  position: relative;
+  width: 100% !important;
+  height: auto !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage:is(
+  [data-display-artwork="general:callout"],
+  [data-display-artwork="general:text"],
+  [data-display-artwork="general:compare"],
+  [data-display-artwork="general:cards"]
+) > .display-film-canvas > .rm-native-board {
+  position: relative;
+  inset: auto;
+  padding: 0;
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-callout {
+  position: relative;
+  inset: auto;
+  overflow: visible;
+  font-size: 18px;
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-callout-canvas {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none !important;
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-text {
+  min-height: 240px;
+  padding: 24px;
+  gap: 16px;
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-text h2 {
+  font-size: 22px;
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-text p {
+  font-size: 18px;
+  line-height: 1.7;
+}
+.desktop-display-host[data-display-presentation="chat"] :is(.rm-new-compare, .rm-new-cards) {
+  height: auto;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)) !important;
+  grid-template-rows: auto !important;
+}
+.desktop-display-host[data-display-presentation="chat"] :is(.rm-new-compare > .rm-panel, .rm-native-card) {
+  display: block;
+  padding: 20px;
+}
+.desktop-display-host[data-display-presentation="chat"] :is(.rm-new-compare, .rm-new-cards) h3 {
+  font-size: 22px;
+  line-height: 1.4;
+  margin-block: 12px !important;
+}
+.desktop-display-host[data-display-presentation="chat"] :is(.rm-new-compare, .rm-new-cards) p {
+  font-size: 18px;
+  line-height: 1.7;
+  margin-top: 12px !important;
+  padding-top: 12px;
+}
+.desktop-display-host[data-display-presentation="chat"] :is(.rm-new-compare, .rm-new-cards) small {
+  font-size: 14px;
+}

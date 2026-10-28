@@ -1,0 +1,63 @@
+XueLearn Brand Asset License 1.0 (Noncommercial)
+SPDX-License-Identifier: LicenseRef-XueLearn-Brand-Noncommercial-1.0
+
+Copyright (c) 2026 XueLearn brand asset contributors. All rights reserved
+except for the permissions expressly granted below.
+
+1. Scope
+
+"Assets" means the XueLearn logos, wordmarks, application icons and branded
+installer backgrounds listed in BRAND_ASSETS.json, including reproductions and
+adaptations of their artwork. Paths in that inventory are public-repository
+paths. Only Assets actually included in a distribution are licensed by it.
+This license does not cover the MIT source code or third-party assets.
+
+2. Noncommercial permission
+
+The rights holders grant you a worldwide, non-exclusive, royalty-free permission
+to copy, display, redistribute and adapt the Assets for Noncommercial Use, subject
+to this license and BRAND_POLICY.md. Noncommercial Use means use that is not
+primarily intended for or directed toward commercial advantage or monetary
+compensation. Personal study, unpaid community contributions and noncommercial
+source mirrors are examples, provided they do not imply official endorsement.
+
+Keep this license, the copyright notice and the brand policy with redistributed
+Assets. Identify an adapted Asset as modified. A change of color, size, filename
+or format does not remove the artwork from this license. You may not sublicense
+the Assets under MIT or other terms that conflict with this license.
+
+3. Private use and development
+
+You may run the official application for personal or internal business use with
+its existing branding. You may also copy and display the Assets privately while
+evaluating, testing, building or developing the code, including as part of paid
+employment. These permissions do not authorize branding or marketing a
+third-party product or service, or supplying branded copies to customers.
+
+4. Commercial branding and endorsement
+
+Other commercial use of the Assets requires prior written permission from the
+rights holders. This includes selling or licensing the Assets, including them
+as branding in a paid or commercially promoted product or service, and using
+them to promote a business. Paid distribution or a commercially operated service
+does not become noncommercial merely because access to the code is free.
+
+Do not imply that a modified or third-party product is an official XueLearn
+release, is provided by the XueLearn maintainers, or has their endorsement.
+The permitted brand uses and identification of forks are described in
+BRAND_POLICY.md. No exclusive trademark rights are granted.
+
+5. Independent rights
+
+This license does not limit exceptions or uses allowed by applicable law,
+including lawful descriptive use. The separate MIT code license and the original
+licenses of third-party materials remain in force on their own terms. A breach
+of these brand conditions ends this brand permission, not the separate MIT grant.
+
+6. Warranty and permissions
+
+The Assets are provided "AS IS", without warranties, to the maximum extent
+permitted by applicable law. No rights to third-party marks are granted.
+For commercial brand permission, contact contact@xue-learn.com and describe the
+intended use, distribution and artwork. Permission must be expressly granted;
+the absence of a response is not permission.

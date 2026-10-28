@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "package": "@xue-learn/core",
+  "version": "0.3.12",
+  "artifact": "vendor/xue-learn-core-0.3.12-6022ad6e32bb.tgz",
+  "sha256": "6022ad6e32bb8015cacce7cf9ffd2eeda0a9692346941e2905939b8da1fdc47a",
+  "releaseManifestSha256": "8d5e5ca558983a0fbdcb510f5eda2bdcbbc0d6a755061498f9156eefe246361c",
+  "packageJsonSha256": "66d2f91d8431c7c36a39f852d1ae633ae3a0048a380d9279da6ba6740dfbb7cb"
+}

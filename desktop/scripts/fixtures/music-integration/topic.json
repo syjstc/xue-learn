@@ -1,0 +1,20 @@
+{
+  "topicId": "t1",
+  "display": {
+    "type": "music", "version": 1, "id": "triad", "title": "三个音：依次响起与同时响起", "key": "C", "meter": "4/4", "tempo": 90, "keyboard": true, "notation": "both",
+    "parts": [{ "id": "melody", "label": "钢琴", "clef": "treble", "instrument": "piano", "bars": [
+      {"notes": [{"pitches": ["C4"], "beats": 1}, {"pitches": ["E4"], "beats": 1}, {"pitches": ["G4"], "beats": 1}, {"pitches": [], "beats": 1}]},
+      {"notes": [{"pitches": ["C4", "E4", "G4"], "beats": 3}, {"pitches": [], "beats": 1}]}
+    ]}],
+    "steps": [
+      {"id": "separate", "label": "先听三个音", "bars": [1, 1], "parts": ["melody"], "focus": ["melody:1.1", "melody:1.2", "melody:1.3"]},
+      {"id": "together", "label": "同时发声", "bars": [2, 2], "parts": ["melody"], "focus": ["melody:2.1"], "compare": {"label": "依次发声", "bars": [1, 1], "parts": ["melody"]}},
+      {"id": "timbre", "label": "换音色听", "bars": [2, 2], "parts": ["melody"], "compare": {"label": "管风琴", "bars": [2, 2], "parts": ["melody"], "instruments": [{"part": "melody", "instrument": "organ"}]}}
+    ]
+  },
+  "cues": [
+    {"text": "先按播放，听 C、E、G 依次响起。三个音占用不同的时间位置，键盘会逐个亮起。", "targetIds": ["separate"], "op": "highlight"},
+    {"text": "现在三个音同时响起，组成 C 大三和弦。同一组音可以依次演奏，也可以同时演奏；用 A、B 对照，听它们的差别。", "targetIds": ["together"], "op": "highlight"},
+    {"text": "换成管风琴再听。发声的质感改变了，但三个音的音高关系没有变。", "targetIds": ["timbre"], "op": "highlight"}
+  ]
+}

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="430" viewBox="0 0 660 430">
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffaf3"/>
+      <stop offset="0.55" stop-color="#fffdf9"/>
+      <stop offset="1" stop-color="#f5f1e9"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ed6b32"/>
+      <stop offset="1" stop-color="#f2a365"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="7" stdDeviation="11" flood-color="#593721" flood-opacity="0.09"/>
+    </filter>
+  </defs>
+
+  <rect width="660" height="430" fill="url(#canvas)"/>
+  <circle cx="-28" cy="-24" r="138" fill="#f6a06f" opacity="0.09"/>
+  <circle cx="690" cy="450" r="178" fill="#9aa795" opacity="0.09"/>
+  <path d="M520 -18c27 47 64 76 116 88" fill="none" stroke="#e97842" stroke-width="2" opacity="0.12"/>
+  <path d="M-32 362c52-27 101-34 151-20" fill="none" stroke="#899888" stroke-width="2" opacity="0.12"/>
+
+  <text x="330" y="54" text-anchor="middle" fill="#342e29"
+        font-family="'PingFang SC', 'Hiragino Sans GB', -apple-system, BlinkMacSystemFont, sans-serif"
+        font-size="24" font-weight="650">安装好会学</text>
+  <text x="330" y="81" text-anchor="middle" fill="#766d64"
+        font-family="'PingFang SC', 'Hiragino Sans GB', -apple-system, BlinkMacSystemFont, sans-serif"
+        font-size="13.5">将「好会学」拖到「应用程序」</text>
+
+  <rect x="113" y="121" width="166" height="170" rx="31" fill="#ffffff" opacity="0.80"
+        stroke="#eadfd3" filter="url(#shadow)"/>
+  <rect x="381" y="121" width="166" height="170" rx="31" fill="#ffffff" opacity="0.80"
+        stroke="#e4e1da" filter="url(#shadow)"/>
+
+  <path d="M307 206h47" fill="none" stroke="url(#accent)" stroke-width="5"
+        stroke-linecap="round" stroke-dasharray="2 10"/>
+  <path d="m345 193 15 13-15 13" fill="none" stroke="#ed7540" stroke-width="5"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="205" y="335" width="250" height="36" rx="18" fill="#ffffff" opacity="0.72" stroke="#ece3da"/>
+  <circle cx="229" cy="353" r="5" fill="#879584"/>
+  <text x="242" y="358" fill="#655e57"
+        font-family="'PingFang SC', 'Hiragino Sans GB', -apple-system, BlinkMacSystemFont, sans-serif"
+        font-size="12.5">学习数据保存在你的 Mac 上</text>
+</svg>

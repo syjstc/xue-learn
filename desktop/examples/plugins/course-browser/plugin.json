@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "org.xuelearn.course-browser",
+  "name": "课程浏览器",
+  "version": "0.1.0",
+  "apiVersion": 1,
+  "description": "在宿主界面中浏览当前工作区的课程，复用宿主的 React、UI 组件和课程能力。",
+  "requires": {
+    "workspace.courses": 1
+  },
+  "contributes": {
+    "views": [
+      {
+        "id": "courses",
+        "title": "课程浏览器",
+        "entry": "view.mjs",
+        "stylesheet": "view.css"
+      }
+    ]
+  },
+  "integrity": {
+    "view.mjs": "81a4bc365049477be7f5fdc7686d4b839ea6aadcb1b578d855084b9a8f998293",
+    "view.css": "10acf8744bfa7b47bc1c077231898e7038e6c63e3fb871f141c69a8d99587e67"
+  }
+}

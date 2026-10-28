@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "org.xuelearn.workspace-inspector",
+  "name": "Workspace Inspector",
+  "version": "0.1.0",
+  "apiVersion": 1,
+  "description": "Checks that the current workspace is connected through the Desktop plugin host.",
+  "runtime": {
+    "entry": "plugin.cjs"
+  },
+  "requires": {
+    "workspace.connection": 1
+  },
+  "contributes": {
+    "commands": [
+      {
+        "id": "workspace.inspect",
+        "title": "Inspect current workspace"
+      }
+    ]
+  },
+  "integrity": {
+    "plugin.cjs": "252119cdd6c2acec665b394ec866db48a5c829b18dc7c918ecc79388528c2dc9"
+  }
+}

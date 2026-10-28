@@ -1,0 +1,19 @@
+{
+  "name": "@cognilearn/lab-runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config vite.config.ts",
+    "build": "vite build --config vite.config.ts",
+    "test": "jest --config jest.config.ts"
+  },
+  "dependencies": {
+    "@react-three/fiber": "^9.7.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "three": "^0.185.1",
+    "@xue-learn/core": "file:../../vendor/xue-learn-core-0.3.12-6022ad6e32bb.tgz"
+  },
+  "license": "MIT"
+}

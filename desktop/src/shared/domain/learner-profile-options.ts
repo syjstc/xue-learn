@@ -1,0 +1,392 @@
+export type OptionGroup = {
+  category: string;
+  items: string[];
+};
+
+export const DOMAIN_GROUPS: OptionGroup[] = [
+  {
+    category: "理学",
+    items: [
+      "数学",
+      "物理学",
+      "化学",
+      "生物学",
+      "地理学",
+      "天文学",
+      "统计学",
+      "数据科学",
+    ],
+  },
+  {
+    category: "工学",
+    items: [
+      "计算机科学",
+      "软件工程",
+      "人工智能",
+      "电子工程",
+      "通信工程",
+      "自动化",
+      "机械工程",
+      "材料科学",
+      "土木工程",
+      "建筑学",
+      "环境工程",
+      "航空航天",
+    ],
+  },
+  {
+    category: "医学与健康",
+    items: [
+      "临床医学",
+      "护理学",
+      "药学",
+      "口腔医学",
+      "公共卫生",
+      "营养学",
+      "心理学",
+      "康复医学",
+    ],
+  },
+  {
+    category: "商业与管理",
+    items: [
+      "工商管理",
+      "市场营销",
+      "人力资源",
+      "项目管理",
+      "创业",
+      "电子商务",
+      "供应链管理",
+      "运营管理",
+    ],
+  },
+  {
+    category: "金融与经济",
+    items: ["金融学", "会计学", "投资学", "经济学", "精算学", "风险管理"],
+  },
+  {
+    category: "法律与公共事务",
+    items: ["法学", "公共管理", "国际关系", "政治学", "社会学"],
+  },
+  {
+    category: "语言与文学",
+    items: [
+      "汉语言文学",
+      "英语",
+      "日语",
+      "韩语",
+      "法语",
+      "德语",
+      "西班牙语",
+      "翻译学",
+    ],
+  },
+  {
+    category: "艺术与设计",
+    items: [
+      "平面设计",
+      "UI/UX设计",
+      "工业设计",
+      "建筑设计",
+      "动画",
+      "游戏设计",
+      "影视制作",
+      "音乐",
+      "摄影",
+    ],
+  },
+  {
+    category: "媒体与内容创作",
+    items: [
+      "自媒体",
+      "内容运营",
+      "文案写作",
+      "视频创作",
+      "播客制作",
+      "新媒体运营",
+    ],
+  },
+  {
+    category: "职业技能",
+    items: [
+      "教师",
+      "产品经理",
+      "前端开发",
+      "后端开发",
+      "测试工程师",
+      "数据分析师",
+      "AI工程师",
+      "设计师",
+      "销售",
+      "客服",
+    ],
+  },
+  {
+    category: "兴趣爱好",
+    items: [
+      "阅读",
+      "绘画",
+      "摄影",
+      "健身",
+      "跑步",
+      "游泳",
+      "羽毛球",
+      "围棋",
+      "国际象棋",
+      "烹饪",
+      "园艺",
+    ],
+  },
+];
+
+export const POPULAR_DOMAINS = [
+  "计算机科学",
+  "人工智能",
+  "数据科学",
+  "软件工程",
+  "金融学",
+  "产品设计",
+  "前端开发",
+  "后端开发",
+  "心理学",
+  "英语",
+  "UI/UX设计",
+  "市场营销",
+  "工商管理",
+  "临床医学",
+  "法学",
+  "会计学",
+  "电子工程",
+  "统计学",
+  "产品经理",
+  "数据分析师",
+  "自媒体",
+  "摄影",
+  "健身",
+  "日语",
+];
+
+export const DOMAIN_OPTIONS = DOMAIN_GROUPS.flatMap((group) => group.items);
+
+export const SKILL_GROUPS: OptionGroup[] = [
+  {
+    category: "数学",
+    items: [
+      "数学基础",
+      "微积分",
+      "线性代数",
+      "概率论",
+      "数理统计",
+      "离散数学",
+      "数学建模",
+      "运筹学",
+    ],
+  },
+  {
+    category: "语言 · 英语",
+    items: [
+      "英语口语",
+      "英语听力",
+      "英语阅读",
+      "英语写作",
+      "商务英语",
+      "学术英语",
+      "雅思",
+      "托福",
+      "GRE英语",
+    ],
+  },
+  {
+    category: "语言 · 中文",
+    items: ["中文阅读", "中文写作", "演讲表达"],
+  },
+  {
+    category: "语言 · 其他",
+    items: ["日语", "韩语", "法语", "德语", "西班牙语"],
+  },
+  {
+    category: "编程 · 基础",
+    items: [
+      "Python",
+      "JavaScript",
+      "TypeScript",
+      "Java",
+      "Go",
+      "Rust",
+      "C",
+      "C++",
+      "C#",
+      "Kotlin",
+      "Swift",
+      "Dart",
+    ],
+  },
+  {
+    category: "编程 · 前端",
+    items: [
+      "HTML",
+      "CSS",
+      "React",
+      "Vue",
+      "Angular",
+      "Next.js",
+      "Flutter",
+      "React Native",
+    ],
+  },
+  {
+    category: "编程 · 后端",
+    items: ["Node.js", "Spring Boot", "Django", "FastAPI", "NestJS", "ASP.NET"],
+  },
+  {
+    category: "编程 · 数据库",
+    items: ["SQL", "MySQL", "PostgreSQL", "Redis", "MongoDB"],
+  },
+  {
+    category: "编程 · 算法",
+    items: ["数据结构", "算法设计", "LeetCode", "竞赛编程"],
+  },
+  {
+    category: "编程 · 运维",
+    items: ["Linux", "Docker", "Kubernetes", "DevOps", "云计算"],
+  },
+  {
+    category: "AI 与数据",
+    items: [
+      "数据分析",
+      "数据可视化",
+      "Excel",
+      "Power BI",
+      "Tableau",
+      "机器学习",
+      "深度学习",
+      "大语言模型",
+      "Prompt Engineering",
+      "Agent开发",
+      "RAG",
+      "AI应用开发",
+    ],
+  },
+  {
+    category: "产品与设计",
+    items: [
+      "产品设计",
+      "产品管理",
+      "用户研究",
+      "原型设计",
+      "Figma",
+      "UI设计",
+      "UX设计",
+      "Design System",
+    ],
+  },
+  {
+    category: "商业",
+    items: [
+      "市场营销",
+      "品牌建设",
+      "增长运营",
+      "用户运营",
+      "销售技巧",
+      "商业分析",
+    ],
+  },
+  {
+    category: "金融",
+    items: ["财务分析", "会计基础", "股票投资", "基金投资", "量化交易"],
+  },
+  {
+    category: "写作与内容创作",
+    items: [
+      "文案写作",
+      "小说写作",
+      "技术写作",
+      "学术写作",
+      "视频脚本",
+      "SEO写作",
+    ],
+  },
+  {
+    category: "演讲与沟通",
+    items: ["公众演讲", "沟通技巧", "谈判技巧", "面试技巧"],
+  },
+  {
+    category: "考试与证书",
+    items: ["高考", "考研", "公务员考试", "教师资格证", "PMP", "CFA", "CPA"],
+  },
+  {
+    category: "艺术与创作",
+    items: [
+      "绘画",
+      "水彩",
+      "素描",
+      "插画",
+      "平面设计",
+      "摄影",
+      "视频剪辑",
+      "动画制作",
+    ],
+  },
+  {
+    category: "健康与运动",
+    items: [
+      "健身",
+      "力量训练",
+      "跑步",
+      "游泳",
+      "瑜伽",
+      "羽毛球",
+      "篮球",
+      "足球",
+      "网球",
+    ],
+  },
+  {
+    category: "生活技能",
+    items: [
+      "时间管理",
+      "学习方法",
+      "记忆训练",
+      "阅读技巧",
+      "理财",
+      "烹饪",
+      "育儿",
+    ],
+  },
+];
+
+export const POPULAR_SKILLS = [
+  "Python",
+  "JavaScript",
+  "TypeScript",
+  "React",
+  "英语阅读",
+  "英语口语",
+  "数据分析",
+  "机器学习",
+  "大语言模型",
+  "产品设计",
+  "Figma",
+  "面试技巧",
+  "职场沟通",
+  "SQL",
+  "Excel",
+  "时间管理",
+  "学习方法",
+  "公众演讲",
+  "文案写作",
+  "Node.js",
+  "数据结构",
+  "Prompt Engineering",
+  "雅思",
+  "健身",
+];
+
+export type SkillOption = {
+  category: string;
+  label: string;
+};
+
+export const COMMON_SKILLS: SkillOption[] = SKILL_GROUPS.flatMap((group) =>
+  group.items.map((label) => ({ category: group.category, label })),
+);

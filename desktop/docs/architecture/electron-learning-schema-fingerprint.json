@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "schemaId": "electron-learning.v1",
+  "tableCount": 125,
+  "structureFingerprint": "3e7d95aab4c02e3a3fe573fddd7104b75d123b61128a6ee1f4b1653b0ec3f528",
+  "legacyHistoryFingerprint": "6bdb3a0786accdd914e8e22d766e304729748f33b75b705757842be088d98c71",
+  "legacyExtensionFingerprint": "31983c272bd85e0b65139dded7928399eeb57e1186ccb7efc0ff038844c19822",
+  "statementsSha256": "94f2c6c5c55dede78df8b5fe2c70fbffdce755ebc921c6793527e16e80c0ae53",
+  "coreObjectsSha256": "4e7ce9ef4d14c074c88269e03b2396128940af6d1d3626dfb9b4e83ebc0d5ca2"
+}
