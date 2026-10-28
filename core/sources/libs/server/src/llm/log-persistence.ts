@@ -1,0 +1,1 @@
+import type{LlmRequestLogRepository}from"../../../domain/src/index.js";let configured:LlmRequestLogRepository|undefined;export function configureLlmRequestLogPersistence(value:LlmRequestLogRepository|undefined){configured=value}export function requireLlmRequestLogPersistence(){if(!configured)throw new Error("LLM request-log persistence is not configured");return configured}

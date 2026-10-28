@@ -1,0 +1,154 @@
+.lp-derivation-scene {
+  align-self: stretch;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+}
+/* Warm charcoal uses product ink; the surrounding stage stays light. */
+.lp-stage-formula {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 46px 54px 52px;
+  overflow: hidden;
+  border: 8px solid var(--ds-surface-inset);
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      ellipse at 35% 0%,
+      color-mix(in srgb, var(--ds-inverse) 6%, transparent),
+      transparent 65%
+    ),
+    linear-gradient(
+      115deg,
+      var(--lp-ink),
+      color-mix(in srgb, var(--lp-ink) 92%, black)
+    );
+  color: var(--ds-foreground);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--ds-inverse) 18%, transparent),
+    inset 0 0 48px #00000020;
+  --ds-foreground: var(--ds-inverse);
+  --ds-primary: color-mix(
+    in srgb,
+    var(--ds-primary-light) 55%,
+    var(--ds-inverse)
+  );
+  --ds-muted: color-mix(in srgb, var(--ds-inverse) 85%, var(--lp-ink));
+}
+.lp-formula-viewport {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  mask-image: none;
+  display: flex;
+  justify-content: space-between;
+}
+.lp-formula-sheet {
+  position: relative;
+  margin: 0 auto;
+}
+.lp-stage-formula-row {
+  position: absolute;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.lp-stage-formula-label {
+  flex: 0 0 32px;
+  height: 32px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ds-muted);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 560;
+}
+.lp-stage-formula-row .fer-motion-renderer {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  padding: 0;
+}
+.lp-stage-formula .fer-motion-svg {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+.lp-formula-tray {
+  position: absolute;
+  bottom: 10px;
+  right: 44px;
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  height: 15px;
+  padding: 0 18px 3px;
+  border-bottom: 3px solid
+    color-mix(in srgb, var(--ds-muted) 30%, var(--ds-surface-inset));
+  border-radius: 3px;
+  border-color: #ffffff25;
+}
+.lp-formula-tray i {
+  width: 54px;
+  height: 7px;
+  border-radius: 3px;
+  background: var(--ds-primary);
+}
+.lp-formula-tray i:nth-child(2) {
+  background: var(--ds-inverse);
+}
+.lp-formula-tray i:nth-child(3) {
+  width: 35px;
+  height: 12px;
+  background: var(--ds-muted);
+}
+.lp-formula-position {
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  right: 0;
+  width: 3px;
+  border-radius: 3px;
+  background: #ffffff12;
+}
+.lp-formula-position i {
+  position: absolute;
+  width: 100%;
+  border-radius: inherit;
+  background: var(--ds-muted);
+}
+
+.lp-formula-lane {
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    transparent,
+    black 12px,
+    black calc(100% - 12px),
+    transparent
+  );
+}
+.lp-formula-lane--reference {
+  border-right: 1px solid color-mix(in srgb, var(--ds-inverse) 17%, transparent);
+  padding-right: 20px;
+}
+.lp-formula-lane--reference .lp-formula-sheet {
+  margin-left: 0;
+}
+.lp-formula-statement {
+  margin: 0;
+  max-width: 86%;
+  color: var(--ds-foreground);
+  font-size: 2em;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.35;
+  text-align: center;
+}

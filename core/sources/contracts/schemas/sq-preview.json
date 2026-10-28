@@ -1,0 +1,315 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xue-learn.local/schemas/sq-preview.json",
+  "title": "SqPreview",
+  "type": "object",
+  "required": [
+    "survey",
+    "questions",
+    "learningTargets"
+  ],
+  "properties": {
+    "survey": {
+      "type": "object",
+      "required": [
+        "outline",
+        "learningTargetLabels"
+      ],
+      "properties": {
+        "outline": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "contentKind": {
+          "type": "string",
+          "enum": ["standard", "formal_derivation"],
+          "description": "Optional lesson-level teaching label for standalone micro courses. formal_derivation means the whole micro is one stepwise symbolic process (proof, formula derivation, or STEM worked calculation). Full-goal units keep contentKind on sectionOutline or sectionPlan items instead."
+        },
+        "sectionOutline": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "description": "Optional frozen teaching spine for new full-goal units",
+          "items": {
+            "$ref": "#/$defs/SectionOutlineItem"
+          }
+        },
+        "sectionPlan": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "description": "Optional frozen grouping of Survey outline points for KACOM-free full units; groups cover the outline once in order",
+          "items": {
+            "$ref": "#/$defs/SectionPlanItem"
+          }
+        },
+        "learningTargetLabels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Derived labels from the published learning targets"
+        }
+      }
+    },
+    "learningTargets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/LearningTarget"
+      },
+      "description": "Published course-local learning targets; empty only for standalone micro courses without KACOM"
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/GuidingQuestion"
+      },
+      "minItems": 1,
+      "maxItems": 8
+    },
+    "componentSelection": {
+      "type": "object",
+      "required": [
+        "mainCategory",
+        "enabledCategories"
+      ],
+      "properties": {
+        "mainCategory": {
+          "enum": [
+            "base",
+            "math_visualization",
+            "process_sequence",
+            "data_visualization",
+            "mechanics_lab",
+            "circuit_lab",
+            "chemistry_lab"
+          ]
+        },
+        "enabledCategories": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "base",
+              "math_visualization",
+              "process_sequence",
+              "data_visualization",
+              "mechanics_lab",
+              "circuit_lab",
+              "chemistry_lab"
+            ]
+          },
+          "minItems": 1
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "plannedComponents": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "componentType",
+              "description"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^component_[1-8]$"
+              },
+              "componentType": {
+                "enum": [
+                  "step_sort",
+                  "graph",
+                  "chart",
+                  "math_scene",
+                  "mechanics_sandbox",
+                  "circuit_sandbox",
+                  "chemistry_lab"
+                ]
+              },
+              "description": {
+                "type": "string",
+                "minLength": 8,
+                "maxLength": 2000
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "SectionOutlineItem": {
+      "type": "object",
+      "required": [
+        "title",
+        "scope",
+        "learningTargetIds",
+        "checkpointAfter"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "learningTargetIds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^lt_[0-9]+$"
+          }
+        },
+        "checkpointAfter": {
+          "type": "boolean"
+        },
+        "contentKind": {
+          "type": "string",
+          "enum": ["standard", "formal_derivation"],
+          "description": "Optional teaching label. formal_derivation is for a section whose job is a stepwise symbolic process: a proof, formula derivation, or STEM worked calculation. Do not use it when formulas only appear in prose."
+        }
+      }
+    },
+    "SectionPlanItem": {
+      "type": "object",
+      "required": [
+        "title",
+        "scope",
+        "outlineIndexes"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "outlineIndexes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "contentKind": {
+          "type": "string",
+          "enum": ["standard", "formal_derivation"],
+          "description": "Optional teaching label. formal_derivation is for a section whose job is a stepwise symbolic process: a proof, formula derivation, or STEM worked calculation. Do not use it when formulas only appear in prose."
+        }
+      }
+    },
+    "LearningTarget": {
+      "type": "object",
+      "required": [
+        "id",
+        "label"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^lt_[0-9]+$",
+          "description": "Unit-local learning-target id, e.g. lt_1"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Short learning-target label"
+        },
+        "durableId": {
+          "type": "string",
+          "description": "Goal-scoped durable LearningTarget id supplied by the server"
+        },
+        "cognitiveEntityIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "Atoms or higher constructs required by this learning target"
+        },
+        "explanation": {
+          "type": "string"
+        },
+        "learningObjective": {
+          "type": "string"
+        },
+        "assessmentCriteria": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "importance": {
+          "enum": [
+            "core",
+            "supporting",
+            "enrichment"
+          ]
+        },
+        "importanceWeight": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "difficulty": {
+          "enum": [
+            "easy",
+            "medium",
+            "hard"
+          ]
+        },
+        "targetCognitiveLevel": {
+          "enum": [
+            "remember",
+            "understand",
+            "apply",
+            "analyze",
+            "evaluate",
+            "create"
+          ]
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "isEntry": {
+          "type": "boolean"
+        },
+        "isExit": {
+          "type": "boolean"
+        }
+      }
+    },
+    "GuidingQuestion": {
+      "type": "object",
+      "required": [
+        "text",
+        "learningTargetIds"
+      ],
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "learningTargetIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^lt_[0-9]+$"
+          },
+          "description": "Published target refs; empty only for standalone micro courses"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schema": "xuelearn.domain-teaching-skill/v1",
+  "slug": "general-teaching",
+  "topicCategory": "general",
+  "domainPaths": ["general"],
+  "tags": ["general", "explanation", "practice", "feedback"],
+  "learningModes": [
+    "skill_practice",
+    "conceptual_understanding",
+    "professional_applied",
+    "creative_expression",
+    "mixed"
+  ],
+  "appliesTo": [
+    "goal_plan",
+    "module_units",
+    "unit_content",
+    "scenario_theater"
+  ],
+  "references": []
+}

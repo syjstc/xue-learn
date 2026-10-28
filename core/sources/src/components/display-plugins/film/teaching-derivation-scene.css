@@ -1,0 +1,307 @@
+/* Desktop classroom only. Fixed design coordinates; every animated value is
+   evaluated from the same formula progress used by exact export seeks. */
+.lp-teaching-scene {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px 28px;
+  color: var(--ds-ink);
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: 24px;
+  box-shadow: 0 10px 32px color-mix(in srgb, var(--ds-ink) 6%, transparent);
+  --teaching-formula-emphasis: var(--ds-primary-dark);
+  --teaching-formula-cancellation: var(--ds-primary-dark);
+  --course-content-surface: var(--ds-surface);
+}
+.lp-teaching-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex: none;
+}
+.lp-teaching-heading span {
+  color: var(--ds-muted);
+  font-size: 19px;
+  letter-spacing: 0.08em;
+}
+.lp-teaching-heading h2 {
+  font-size: 30px;
+  line-height: 1.35;
+  margin: 4px 0 0;
+  font-weight: 650;
+}
+.lp-teaching-heading strong {
+  color: var(--ds-primary-dark);
+  font-size: 36px;
+  font-variant-numeric: tabular-nums;
+}
+.lp-teaching-heading small {
+  font-size: 20px;
+  color: var(--ds-muted);
+  font-weight: 400;
+}
+.lp-teaching-lanes {
+  display: grid;
+  grid-template-columns: minmax(0, 0.28fr) minmax(0, 0.72fr);
+  gap: 28px;
+  min-height: 0;
+  flex: 1;
+}
+.lp-teaching-context {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 20px;
+  border-radius: 18px;
+  background: var(--ds-surface-container);
+  overflow: hidden;
+}
+.lp-teaching-premises {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+}
+.lp-teaching-references {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 0 0 42%;
+}
+.is-dense .lp-teaching-references {
+  flex: 1;
+}
+.lp-teaching-support {
+  display: contents;
+}
+.lp-teaching-scene.is-dense .lp-teaching-support {
+  display: grid;
+  grid-template-columns: minmax(0, 0.64fr) minmax(0, 0.36fr);
+  gap: 18px;
+  height: 280px;
+  flex: none;
+}
+.lp-teaching-scene.is-dense .lp-teaching-support > .lp-teaching-premises {
+  border-radius: 16px;
+  padding: 14px 20px;
+  background: var(--ds-surface-container);
+}
+.lp-teaching-scene.is-dense .lp-teaching-support h3 {
+  font-size: 18px;
+  color: var(--ds-muted);
+  font-weight: 500;
+}
+.lp-teaching-scene.is-dense .lp-teaching-givens .lp-teaching-copy {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 28px;
+  row-gap: 8px;
+}
+.lp-teaching-lanes.is-full {
+  grid-template-columns: minmax(0, 1fr);
+}
+.lp-teaching-scene h3 {
+  font-size: 23px;
+  margin: 0;
+  font-weight: 650;
+}
+.lp-teaching-givens {
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.lp-teaching-givens p {
+  margin: 0 0 6px;
+}
+.lp-teaching-no-givens {
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--ds-muted);
+  margin: 16px 0;
+}
+/* Conditions share the fitted reason panel. Reserving a fixed condition block
+   here starves the reference lane, even on steps with no condition text. */
+.lp-teaching-context h4 {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--ds-muted);
+  margin: 8px 0;
+}
+.lp-teaching-current {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.lp-teaching-current-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 0 0 12px;
+}
+.lp-teaching-current-heading > span {
+  font-size: 20px;
+  color: var(--ds-primary-dark);
+  padding: 6px 14px;
+  background: var(--ds-primary-container);
+  border-radius: 99px;
+}
+.lp-teaching-cards {
+  position: relative;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
+.lp-teaching-card {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid var(--ds-border);
+  border-radius: 16px;
+  background: var(--ds-surface);
+  padding: 10px 16px;
+}
+.lp-teaching-card header {
+  flex: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 21px;
+  line-height: 1.3;
+  color: var(--ds-ink);
+}
+.lp-teaching-card header span {
+  min-width: 0;
+}
+.lp-teaching-card header small {
+  font-size: 16px;
+  color: var(--ds-muted);
+  flex-shrink: 0;
+}
+.lp-teaching-cards.is-horizontal .lp-teaching-card header {
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+.lp-teaching-context .lp-teaching-card {
+  background: var(--ds-surface);
+  padding: 8px 12px;
+}
+.lp-teaching-context .lp-teaching-card header {
+  font-size: 18px;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.lp-teaching-formula-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+}
+.lp-teaching-formula-content {
+  /* Size to the typeset line, then scale. Width 100% made KaTeX report the
+     slot width, so long formulas were clipped instead of fitted. */
+  width: max-content;
+  max-width: none;
+  margin-inline: auto;
+  flex: none;
+  transform-origin: center center;
+  font-size: 42px;
+}
+.lp-teaching-context .lp-teaching-formula-content {
+  font-size: 28px;
+}
+.lp-teaching-formula-content > div {
+  /* The reading renderer's 4rem floor is larger than a reference formula.
+     Fit and center the measured math, without that invisible extra height. */
+  min-height: 0;
+  overflow: visible;
+}
+.lp-teaching-formula-content .katex-display {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  white-space: nowrap;
+}
+.lp-teaching-formula-content .katex {
+  color: inherit;
+}
+.lp-teaching-reason {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  height: 144px;
+  padding: 14px 20px;
+  border: 1px solid var(--ds-border-light);
+  border-radius: 16px;
+  background: var(--ds-surface-container);
+}
+.lp-teaching-scene.is-dense .lp-teaching-reason {
+  height: 100%;
+  min-width: 0;
+}
+.lp-teaching-reason > span {
+  font-size: 18px;
+  color: var(--ds-muted);
+}
+.lp-teaching-copy-window {
+  min-height: 0;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  margin-top: 6px;
+}
+.lp-teaching-copy {
+  display: flow-root;
+  white-space: pre-line;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+/* Beat the native film paragraph rule, which otherwise pins this at 26px
+   even while TeachingCopy measures and shrinks its parent. */
+.lp-teaching-scene .lp-teaching-copy p {
+  margin: 0;
+  min-width: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+.lp-teaching-copy p + p {
+  margin-top: 6px;
+}
+.is-dense .lp-teaching-givens p + p {
+  margin-top: 0;
+}
+
+/* KaTeX's block width can hide overflowing .base spans. Measure the intrinsic
+   no-wrap line, centered even when wider than its unscaled viewport. */
+.lp-teaching-formula-content .katex-display > .katex {
+  flex: none;
+  width: max-content;
+}
+
+/* Focused teaching keeps the complete source in the reading view. The bounded
+   classroom shows the current cue and explicitly selected premises only. */
+.lp-teaching-scene.is-focused .lp-teaching-support{display:flex;height:144px;gap:18px;flex:none;min-height:0}
+.lp-teaching-scene.is-focused .lp-teaching-support.has-givens{height:190px}
+.lp-teaching-scene.is-focused .lp-teaching-reason{height:100%;min-width:0;flex:1;box-sizing:border-box}
+.lp-teaching-scene.is-focused .lp-teaching-support>.lp-teaching-premises{flex:0 0 36%;padding:14px 20px;background:var(--ds-surface-container);border-radius:16px;box-sizing:border-box}
+.lp-teaching-scene.is-focused .lp-teaching-givens .lp-teaching-copy{display:block}
+.lp-teaching-lanes.is-visual{grid-template-columns:minmax(0,.46fr) minmax(0,.54fr);gap:24px}
+.lp-teaching-visual{display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden;padding:16px;border:1px solid var(--ds-border-light);border-radius:18px;background:var(--ds-surface-container)}
+.lp-teaching-visual>.guided-image{height:100%;min-height:0}
+.lp-teaching-visual .guided-image-viewport{height:100%;min-height:0;flex:1}
+.lp-teaching-visual-references{display:flex;flex-direction:column;min-height:0;flex:0 0 30%}
+.lp-teaching-visual-references h4{font-size:18px;font-weight:500;color:var(--ds-muted);margin:6px 0}

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xue-learn.com/contracts/domain-teaching-skill-adapter.json",
+  "title": "XueLearn domain teaching skill adapter",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "slug", "topicCategory", "domainPaths", "tags", "learningModes", "appliesTo", "references"],
+  "properties": {
+    "schema": { "const": "xuelearn.domain-teaching-skill/v1" },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "maxLength": 64 },
+    "topicCategory": { "enum": ["language", "mathematics", "natural_science", "computer_science", "engineering", "humanities", "social_science", "music", "arts", "business", "health_medicine", "professional", "general"] },
+    "domainPaths": { "type": "array", "maxItems": 20, "items": { "type": "string", "minLength": 1, "maxLength": 120 } },
+    "tags": { "type": "array", "maxItems": 30, "items": { "type": "string", "minLength": 1, "maxLength": 60 } },
+    "learningModes": { "type": "array", "items": { "enum": ["skill_practice", "conceptual_understanding", "research_scholarship", "professional_applied", "creative_expression", "mixed"] } },
+    "appliesTo": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["goal_plan", "module_units", "unit_content"] } },
+    "references": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "appliesTo", "keywords"],
+        "properties": {
+          "path": { "type": "string", "pattern": "^references/[A-Za-z0-9._-]+$" },
+          "appliesTo": { "type": "array", "minItems": 1, "items": { "enum": ["goal_plan", "module_units", "unit_content"] } },
+          "keywords": { "type": "array", "maxItems": 30, "items": { "type": "string", "minLength": 1, "maxLength": 60 } }
+        }
+      }
+    }
+  }
+}

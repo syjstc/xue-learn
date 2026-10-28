@@ -1,0 +1,236 @@
+.music-teaching-canvas {
+  width: 100%;
+  min-width: 0;
+}
+.music-teaching {
+  /* Physical key colors keep their identity in both reading themes. */
+  --music-key-ivory: #fffdf8;
+  --music-key-ivory-shade: #eee8df;
+  --music-key-ebony: #302c2a;
+  --music-key-ebony-light: #58514d;
+  --music-mark-ink: color-mix(
+    in srgb,
+    var(--music-focus) 75%,
+    var(--music-foreground)
+  );
+}
+.music-teaching .music-heading {
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+.music-teaching .music-heading > .music-playback-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lp-stage .music-teaching,
+.music-teaching[data-music-clocked="true"] {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+.lp-stage .music-teaching-canvas,
+.music-teaching[data-music-clocked="true"] .music-teaching-canvas {
+  flex: 1;
+  min-height: 0;
+}
+.music-teaching-canvas > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  fill: var(--music-foreground);
+  stroke: var(--music-foreground);
+}
+.lp-stage .music-teaching-canvas > svg,
+.music-teaching[data-music-clocked="true"] .music-teaching-canvas > svg {
+  height: 100%;
+}
+.music-teaching-canvas path,
+.music-teaching-canvas rect,
+.music-teaching-canvas text {
+  transition: none;
+}
+.music-teaching-view {
+  fill: var(--music-foreground);
+  stroke: var(--music-foreground);
+}
+.music-teaching-view > g path[fill]:not([fill="none"]) {
+  fill: var(--music-foreground);
+}
+.music-teaching-note.is-focus path[fill]:not([fill="none"]) {
+  fill: var(--music-focus);
+}
+.music-teaching-note.is-playing path[fill]:not([fill="none"]) {
+  fill: var(--music-active);
+}
+.music-view-label {
+  font: 600 17px sans-serif;
+  stroke: none;
+  fill: var(--music-muted);
+  color: var(--music-muted);
+}
+.music-teaching-label-copy {
+  display: flow-root;
+  width: 100%;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  font-family: sans-serif;
+}
+.music-teaching-title {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.45;
+  min-width: 0;
+}
+.music-teaching-title p {
+  margin: 0;
+}
+.lp-stage .music-teaching-title,
+.music-teaching[data-music-clocked="true"] .music-teaching-title {
+  font-size: 32px;
+}
+.music-teaching-label-copy .katex,
+.music-teaching .music-heading .katex {
+  font-size: 1em;
+  color: inherit;
+}
+.music-teaching-label-copy .katex-html {
+  white-space: nowrap;
+}
+.music-key-ivory-top {
+  stop-color: var(--music-key-ivory);
+}
+.music-key-ivory-bottom {
+  stop-color: var(--music-key-ivory-shade);
+}
+.music-key-ebony-top {
+  stop-color: var(--music-key-ebony-light);
+}
+.music-key-ebony-bottom {
+  stop-color: var(--music-key-ebony);
+}
+.music-keyboard-bed {
+  fill: color-mix(in srgb, var(--music-muted) 16%, var(--music-background));
+  stroke: var(--music-border);
+  stroke-width: 1;
+}
+.music-keyboard-felt {
+  fill: none;
+  stroke: color-mix(in srgb, var(--music-active) 65%, var(--music-muted));
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.music-teaching-key .music-key-body {
+  stroke: color-mix(
+    in srgb,
+    var(--music-key-ebony) 20%,
+    var(--music-key-ivory)
+  );
+  stroke-width: 1;
+}
+.music-teaching-key.black .music-key-body {
+  stroke: var(--music-key-ebony);
+}
+.music-teaching-key .music-key-bevel {
+  fill: none;
+  stroke: color-mix(in srgb, var(--music-key-ebony) 18%, transparent);
+  stroke-width: 1;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+.music-teaching-key.black .music-key-bevel {
+  stroke: color-mix(in srgb, var(--music-key-ivory) 24%, transparent);
+}
+.music-teaching-key text {
+  fill: var(--music-key-ebony);
+  stroke: none;
+  font-family: sans-serif;
+  font-weight: 500;
+}
+.music-teaching-key[tabindex="0"] {
+  cursor: pointer;
+}
+.music-teaching-key:focus-visible .music-key-body {
+  stroke: var(--music-active);
+  stroke-width: 3;
+}
+.music-teaching-note.is-focus,
+.music-teaching-note.is-focus [fill]:not([fill="none"]) {
+  fill: var(--music-focus);
+}
+.music-teaching-key.is-focus .music-key-body {
+  fill: var(--music-key-focus, var(--music-focus));
+  stroke: var(--music-focus);
+}
+.music-teaching-key.black.is-focus .music-key-body {
+  fill: color-mix(in srgb, var(--music-focus) 60%, var(--music-key-ebony));
+}
+.music-teaching-note.is-playing,
+.music-teaching-note.is-playing [fill]:not([fill="none"]) {
+  fill: var(--music-active);
+}
+.music-teaching-key.is-playing .music-key-body,
+.music-teaching-key.black.is-playing .music-key-body {
+  fill: var(--music-active);
+  stroke: var(--music-active);
+}
+.music-teaching-key.is-playing text {
+  fill: var(--music-key-ivory);
+}
+.music-view-accent {
+  fill: none;
+  stroke: color-mix(in srgb, var(--music-focus) 45%, var(--music-border));
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.music-teaching-mark {
+  fill: var(--music-mark-ink);
+  stroke: var(--music-mark-ink);
+  pointer-events: none;
+}
+.music-mark-path {
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.music-mark-path.is-link {
+  stroke-dasharray: 3 5;
+}
+.music-mark-origin {
+  fill: none;
+  stroke-width: 1.5;
+}
+.music-mark-label {
+  font: 600 16px sans-serif;
+  stroke: none;
+  color: var(--music-mark-ink);
+}
+[data-music-layout="classroom"] .music-view-label {
+  font-size: 22px;
+}
+[data-music-layout="classroom"] .music-mark-label {
+  font-size: 18px;
+}
+.music-teaching-mark .music-mark-backdrop {
+  fill: color-mix(in srgb, var(--music-focus) 8%, var(--music-background));
+  stroke: color-mix(in srgb, var(--music-focus) 28%, var(--music-background));
+  stroke-width: 1;
+}
+.music-teaching-view.is-focus .music-view-label {
+  fill: var(--music-foreground);
+  color: var(--music-foreground);
+}
+.music-teaching-view.is-focus .music-view-accent {
+  stroke: var(--music-focus);
+}
+.music-narration-focus {
+  fill: none;
+  stroke: var(--music-focus);
+  stroke-width: 2.2;
+  pointer-events: none;
+}
+.music-narration-focus-trace { fill: none; stroke-linecap: round; }
+.music-narration-focus-pointer { fill: none; stroke-linecap: round; stroke-linejoin: round; }

@@ -1,0 +1,353 @@
+{
+  "topicIndex": 1,
+  "title": "把三拍分组听稳：音符数不是拍数",
+  "kind": "display",
+  "display": {
+    "type": "music",
+    "version": 2,
+    "id": "meter-demo",
+    "title": "三拍分组：每组一、二、三",
+    "layout": "column",
+    "notes": [
+      {
+        "id": "mt-a",
+        "pitches": [
+          "C4"
+        ],
+        "beats": 1
+      },
+      {
+        "id": "mt-b",
+        "pitches": [
+          "E4"
+        ],
+        "beats": 0.5
+      },
+      {
+        "id": "mt-c",
+        "pitches": [
+          "F4"
+        ],
+        "beats": 0.5
+      },
+      {
+        "id": "mt-d",
+        "pitches": [
+          "G4"
+        ],
+        "beats": 1
+      },
+      {
+        "id": "mt-e",
+        "pitches": [
+          "D4"
+        ],
+        "beats": 1
+      },
+      {
+        "id": "mt-f",
+        "pitches": [
+          "F4"
+        ],
+        "beats": 0.5
+      },
+      {
+        "id": "mt-g",
+        "pitches": [
+          "G4"
+        ],
+        "beats": 0.5
+      },
+      {
+        "id": "mt-h",
+        "pitches": [
+          "A4"
+        ],
+        "beats": 1
+      },
+      {
+        "id": "mt-bass-a",
+        "pitches": [
+          "C3"
+        ],
+        "beats": 3
+      },
+      {
+        "id": "mt-bass-b",
+        "pitches": [
+          "G2"
+        ],
+        "beats": 3
+      }
+    ],
+    "views": [
+      {
+        "id": "mt-melody",
+        "kind": "staff",
+        "label": "每组：一拍＋两个半拍＋一拍",
+        "clef": "treble",
+        "notes": [
+          "mt-a",
+          "mt-b",
+          "mt-c",
+          "mt-d",
+          "mt-e",
+          "mt-f",
+          "mt-g",
+          "mt-h"
+        ]
+      },
+      {
+        "id": "mt-bass",
+        "kind": "staff",
+        "label": "低音在每组三拍的开头进入",
+        "clef": "bass",
+        "notes": [
+          "mt-bass-a",
+          "mt-bass-b"
+        ]
+      }
+    ],
+    "marks": [
+      {
+        "id": "mt-group-a",
+        "kind": "bracket",
+        "label": "第一组：1｜2与｜3",
+        "anchors": [
+          {
+            "viewId": "mt-melody",
+            "noteId": "mt-a"
+          },
+          {
+            "viewId": "mt-melody",
+            "noteId": "mt-d"
+          }
+        ]
+      },
+      {
+        "id": "mt-group-b",
+        "kind": "bracket",
+        "label": "第二组：1｜2与｜3",
+        "anchors": [
+          {
+            "viewId": "mt-melody",
+            "noteId": "mt-e"
+          },
+          {
+            "viewId": "mt-melody",
+            "noteId": "mt-h"
+          }
+        ]
+      },
+      {
+        "id": "mt-strong-a",
+        "kind": "label",
+        "label": "第{}1拍：强位",
+        "anchors": [
+          {
+            "viewId": "mt-melody",
+            "noteId": "mt-a"
+          }
+        ]
+      },
+      {
+        "id": "mt-strong-b",
+        "kind": "label",
+        "label": "第{}1拍：强位",
+        "anchors": [
+          {
+            "viewId": "mt-melody",
+            "noteId": "mt-e"
+          }
+        ]
+      }
+    ],
+    "clips": [
+      {
+        "id": "mt-supported",
+        "label": "旋律与分组低音",
+        "tempo": 90,
+        "instrument": "piano",
+        "events": [
+          {
+            "notes": [
+              "mt-a",
+              "mt-bass-a"
+            ],
+            "beats": 1
+          },
+          {
+            "notes": [
+              "mt-b"
+            ],
+            "beats": 0.5
+          },
+          {
+            "notes": [
+              "mt-c"
+            ],
+            "beats": 0.5
+          },
+          {
+            "notes": [
+              "mt-d"
+            ],
+            "beats": 1
+          },
+          {
+            "notes": [
+              "mt-e",
+              "mt-bass-b"
+            ],
+            "beats": 1
+          },
+          {
+            "notes": [
+              "mt-f"
+            ],
+            "beats": 0.5
+          },
+          {
+            "notes": [
+              "mt-g"
+            ],
+            "beats": 0.5
+          },
+          {
+            "notes": [
+              "mt-h"
+            ],
+            "beats": 1
+          }
+        ]
+      },
+      {
+        "id": "mt-alone",
+        "label": "只留旋律，保持三拍计数",
+        "tempo": 90,
+        "instrument": "piano",
+        "events": [
+          {
+            "notes": [
+              "mt-a"
+            ],
+            "beats": 1
+          },
+          {
+            "notes": [
+              "mt-b"
+            ],
+            "beats": 0.5
+          },
+          {
+            "notes": [
+              "mt-c"
+            ],
+            "beats": 0.5
+          },
+          {
+            "notes": [
+              "mt-d"
+            ],
+            "beats": 1
+          },
+          {
+            "notes": [
+              "mt-e"
+            ],
+            "beats": 1
+          },
+          {
+            "notes": [
+              "mt-f"
+            ],
+            "beats": 0.5
+          },
+          {
+            "notes": [
+              "mt-g"
+            ],
+            "beats": 0.5
+          },
+          {
+            "notes": [
+              "mt-h"
+            ],
+            "beats": 1
+          }
+        ]
+      }
+    ]
+  },
+  "cues": [
+    {
+      "figureId": "meter-demo",
+      "text": "数音符不等于数拍子。这段明确按四分音符为一拍、每小节三拍来组织，你沿用一、二、三的稳定计数，不随音符变多而加速。",
+      "targetIds": [
+        "mt-group-a",
+        "mt-group-b"
+      ]
+    },
+    {
+      "figureId": "meter-demo",
+      "text": "先听带低音的版本：每组三拍的开头都有低音进入，旋律节奏也重复，二者共同提示分组边界。",
+      "targetIds": [
+        "mt-bass",
+        "mt-melody"
+      ],
+      "music": {
+        "figureId": "meter-demo",
+        "clipId": "mt-supported"
+      }
+    },
+    {
+      "figureId": "meter-demo",
+      "text": "第一组C占第一拍，E和F各占半拍、合起来占第二拍，G占第三拍，所以四个旋律音仍然只有三拍。",
+      "targetIds": [
+        "mt-group-a"
+      ]
+    },
+    {
+      "figureId": "meter-demo",
+      "text": "第二组D占第一拍，F和G合占第二拍，A占第三拍；节奏模式重复，但音高换了，分组位置没有因此改变。",
+      "targetIds": [
+        "mt-group-b"
+      ]
+    },
+    {
+      "figureId": "meter-demo",
+      "text": "按三拍子的常规节拍层级，每组第一拍是强位，第二、第三拍是弱位。这里第一组的C和第二组的D都落在强位。",
+      "targetIds": [
+        "mt-strong-a",
+        "mt-strong-b"
+      ]
+    },
+    {
+      "figureId": "meter-demo",
+      "text": "两个组内最高的旋律音G和A都落在第三拍，仍是弱位；音高最高，并没有获得强拍资格。",
+      "targetIds": [
+        "mt-d",
+        "mt-h"
+      ]
+    },
+    {
+      "figureId": "meter-demo",
+      "text": "现在去掉低音再听，继续均匀数一、二、三；第二拍内部可以默数二、与，但不要多添一拍。",
+      "targetIds": [
+        "mt-melody"
+      ],
+      "music": {
+        "figureId": "meter-demo",
+        "clipId": "mt-alone"
+      }
+    },
+    {
+      "figureId": "meter-demo",
+      "text": "低音提示撤掉后，既定的三拍结构仍保留；强拍是一种组织位置，并不要求每次都有更响的声音替它报到。",
+      "targetIds": [
+        "mt-strong-a",
+        "mt-strong-b"
+      ]
+    }
+  ]
+}

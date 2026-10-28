@@ -1,0 +1,21 @@
+.teaching-companion-viewport{position:relative;width:100%;height:100%;min-height:0;overflow:hidden}
+.teaching-companion-canvas{position:absolute;width:1000px;height:620px;transform-origin:0 0;display:flex;flex-direction:column}
+.teaching-companion-canvas>.lp-media-scene{width:100%;height:100%;min-height:0}
+.teaching-companion-canvas .teaching-display{height:100%;min-height:0}
+.teaching-companion-canvas .visual-board{height:100%;min-height:0}
+.teaching-function-plot{display:flex;flex-direction:column;margin:0;width:100%;height:100%;min-height:0}
+.teaching-function-plot svg{display:block;width:100%;min-height:0;flex:1;font-size:32px;color:var(--ds-ink);overflow:visible}
+.teaching-function-plot svg text{fill:currentColor}
+.teaching-plot-axis{stroke:var(--ds-muted);stroke-width:2}
+.teaching-plot-curve{fill:none;stroke:var(--ds-ink);stroke-width:4;stroke-linejoin:round}
+.teaching-plot-area.is-positive{fill:var(--ds-info)}
+.teaching-plot-area.is-negative{fill:var(--ds-primary-dark)}
+.teaching-plot-guide{stroke:var(--ds-muted);stroke-width:2;stroke-dasharray:6 6}
+.teaching-plot-marker{fill:var(--ds-primary-dark)}
+.teaching-function-plot figcaption{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:6px 10px 12px;font-size:19px}
+.teaching-function-plot figcaption>span{border-radius:12px;background:var(--ds-surface-container);padding:6px 10px}
+.teaching-function-plot figcaption [data-selected=true]{outline:2px solid var(--ds-primary-dark)}
+.teaching-function-plot figcaption strong{margin-left:6px}
+.teaching-reading-companion{height:320px;min-width:0;overflow:hidden;border-radius:16px;border:1px solid var(--ds-border);padding:12px}
+.teaching-reading-companion>.guided-image{height:100%}
+.teaching-reading-companion .guided-image-viewport{height:100%;min-height:0;flex:1}

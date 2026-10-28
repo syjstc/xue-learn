@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xue-learn.local/schemas/unit-lab.json",
+  "title": "UnitLab",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "title", "summary", "items"],
+  "properties": {
+    "type": { "const": "unit_lab" },
+    "schemaVersion": { "enum": [1, 2] },
+    "title": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "summary": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "items": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status", "title", "componentType"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["ready", "failed"] },
+          "title": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "componentType": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["embedded_lab", "inline_component", "failed"] },
+          "manifest": { "$ref": "./lab-manifest.json" },
+          "block": {
+            "anyOf": [
+              { "$ref": "./physics-lab.json" },
+              { "$ref": "./chemistry-lab.json" },
+              { "type": "object", "additionalProperties": true }
+            ]
+          },
+          "error": { "type": "string" },
+          "fallbackBody": { "type": "string" }
+        }
+      }
+    }
+  }
+}

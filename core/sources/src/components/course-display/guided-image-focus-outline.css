@@ -1,0 +1,8 @@
+.guided-image-focus-outline {
+  fill: none;
+  stroke: var(--course-content-link, var(--rm-accent, #a84843));
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  opacity: 0.5;
+}

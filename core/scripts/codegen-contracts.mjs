@@ -1,0 +1,21 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const source=path.join(root,'sources');
+const selected=process.argv.find(arg=>arg.startsWith('--out='));
+const output=selected?path.resolve(root,selected.slice(6)):source;
+if(output!==source&&!output.startsWith(root+path.sep))throw Error('Contract output must stay in this Core repository');
+const schemas=[['common',null],['sq-preview','SqPreview'],['learning-material','LearningMaterial'],['goal','LearningGoal'],['cornell','CornellNotes'],['quiz','Quiz'],['goal-map-plan','GoalMapPlan'],['physics-lab','PhysicsLab'],['chemistry-lab','ChemistryLab'],['course-source-v1','CourseSourceSnapshotV1']];
+const directories=['src/shared/api/generated','libs/contracts/src/generated'].map(dir=>path.join(output,dir));
+for(const dir of directories)fs.mkdirSync(dir,{recursive:true});
+const command=process.platform==='win32'?'pnpm.cmd':'pnpm';
+const run=args=>execFileSync(command,['exec',...args],{cwd:root,stdio:'inherit'});
+run(['openapi-typescript',path.join(source,'contracts/openapi.yaml'),'-o',path.join(directories[0],'api.ts')]);
+for(const [name] of schemas)run(['json2ts','-i',path.join(source,'contracts/schemas',name+'.json'),'-o',path.join(directories[0],name+'.ts')]);
+const index=['/** Generated contract types. Run pnpm codegen in the Core repository. */','export type * from "./api.js";',...schemas.filter(([,name])=>name).map(([file,name])=>`export type { ${name} } from "./${file}.js";`),'export type { InteractiveBlock } from "./learning-material.js";','export type { QuizQuestion } from "./quiz.js";'].join('\n')+'\n';
+fs.writeFileSync(path.join(directories[0],'index.ts'),index);
+for(const file of fs.readdirSync(directories[0]))fs.copyFileSync(path.join(directories[0],file),path.join(directories[1],file));
+console.log(`Generated both contract type surfaces in ${path.relative(root,output)}.`);

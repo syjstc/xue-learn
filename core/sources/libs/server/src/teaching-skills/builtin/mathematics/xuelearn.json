@@ -1,0 +1,61 @@
+{
+  "schema": "xuelearn.domain-teaching-skill/v1",
+  "slug": "mathematics",
+  "topicCategory": "mathematics",
+  "domainPaths": [
+    "mathematics",
+    "mathematics/pure",
+    "mathematics/applied",
+    "mathematics/statistics"
+  ],
+  "tags": [
+    "mathematics",
+    "math",
+    "arithmetic",
+    "algebra",
+    "geometry",
+    "trigonometry",
+    "calculus",
+    "linear algebra",
+    "probability",
+    "statistics",
+    "proof",
+    "quantitative reasoning",
+    "function",
+    "graph",
+    "visualization",
+    "problem solving"
+  ],
+  "learningModes": [
+    "skill_practice",
+    "conceptual_understanding",
+    "research_scholarship",
+    "professional_applied",
+    "mixed"
+  ],
+  "appliesTo": [
+    "goal_plan",
+    "module_units",
+    "unit_content",
+    "scenario_theater"
+  ],
+  "references": [
+    {
+      "path": "references/visual-representations.md",
+      "appliesTo": ["module_units", "unit_content"],
+      "keywords": [
+        "graph",
+        "plot",
+        "function",
+        "geometry",
+        "vector",
+        "transformation",
+        "calculus",
+        "probability",
+        "statistics",
+        "distribution",
+        "visualization"
+      ]
+    }
+  ]
+}

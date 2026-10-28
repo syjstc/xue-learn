@@ -1,0 +1,1084 @@
+{
+  "name": "@xue-learn/core",
+  "version": "0.3.12",
+  "description": "Reusable XueLearn learning rules, services, displays, contracts and workspace SDK",
+  "type": "module",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "pnpm@9.15.9",
+  "main": "./dist/browser.js",
+  "types": "./types/core/src/browser.d.ts",
+  "files": [
+    "dist",
+    "types",
+    "sources",
+    "resources",
+    "release-manifest.v1.json",
+    "LICENSE",
+    "LICENSING.md",
+    "LICENSE-BRAND",
+    "BRAND_POLICY.md",
+    "BRAND_ASSETS.json",
+    "THIRD_PARTY_NOTICES.md",
+    "docs"
+  ],
+  "exports": {
+    "./browser": {
+      "types": "./types/core/src/browser.d.ts",
+      "import": "./dist/browser.js",
+      "default": "./dist/browser.js"
+    },
+    "./display": {
+      "types": "./types/core/src/display.d.ts",
+      "import": "./dist/display.js",
+      "default": "./dist/display.js"
+    },
+    "./node": {
+      "types": "./types/core/src/node.d.ts",
+      "import": "./dist/node.js",
+      "default": "./dist/node.js"
+    },
+    "./workspace-client": {
+      "types": "./types/core/src/workspace-client.d.ts",
+      "import": "./dist/workspace-client.js",
+      "default": "./dist/workspace-client.js"
+    },
+    ".": {
+      "types": "./types/core/src/browser.d.ts",
+      "import": "./dist/browser.js",
+      "default": "./dist/browser.js"
+    },
+    "./display.css": "./dist/display.css",
+    "./source/*": "./sources/*",
+    "./package.json": "./package.json",
+    "./domain": {
+      "types": "./types/libs/domain/src/index.d.ts",
+      "import": "./sources/libs/domain/src/index.ts",
+      "default": "./sources/libs/domain/src/index.ts"
+    },
+    "./domain/*": {
+      "types": "./types/libs/domain/src/*.d.ts",
+      "import": "./sources/libs/domain/src/*.ts",
+      "default": "./sources/libs/domain/src/*.ts"
+    },
+    "./common": {
+      "types": "./types/libs/common/src/index.d.ts",
+      "import": "./sources/libs/common/src/index.ts",
+      "default": "./sources/libs/common/src/index.ts"
+    },
+    "./common/*": {
+      "types": "./types/libs/common/src/*.d.ts",
+      "import": "./sources/libs/common/src/*.ts",
+      "default": "./sources/libs/common/src/*.ts"
+    },
+    "./server": {
+      "types": "./types/core/src/node.d.ts",
+      "import": "./sources/core/src/node.ts",
+      "default": "./sources/core/src/node.ts"
+    },
+    "./server/*": {
+      "types": "./types/libs/server/src/*.d.ts",
+      "import": "./sources/libs/server/src/*.ts",
+      "default": "./sources/libs/server/src/*.ts"
+    },
+    "./contracts": {
+      "types": "./types/libs/contracts/src/index.d.ts",
+      "import": "./sources/libs/contracts/src/index.ts",
+      "default": "./sources/libs/contracts/src/index.ts"
+    },
+    "./contracts/*": {
+      "types": "./types/libs/contracts/src/*.d.ts",
+      "import": "./sources/libs/contracts/src/*.ts",
+      "default": "./sources/libs/contracts/src/*.ts"
+    },
+    "./runtime-contracts": {
+      "types": "./types/libs/runtime-contracts/src/index.d.ts",
+      "import": "./sources/libs/runtime-contracts/src/index.ts",
+      "default": "./sources/libs/runtime-contracts/src/index.ts"
+    },
+    "./runtime-contracts/*": {
+      "types": "./types/libs/runtime-contracts/src/*.d.ts",
+      "import": "./sources/libs/runtime-contracts/src/*.ts",
+      "default": "./sources/libs/runtime-contracts/src/*.ts"
+    },
+    "./formula-analysis": {
+      "types": "./types/libs/formula-analysis/src/index.d.ts",
+      "import": "./sources/libs/formula-analysis/src/index.ts",
+      "default": "./sources/libs/formula-analysis/src/index.ts"
+    },
+    "./formula-analysis/*": {
+      "types": "./types/libs/formula-analysis/src/*.d.ts",
+      "import": "./sources/libs/formula-analysis/src/*.ts",
+      "default": "./sources/libs/formula-analysis/src/*.ts"
+    },
+    "./formal-derivation": {
+      "types": "./types/libs/formal-derivation/src/index.d.ts",
+      "import": "./sources/libs/formal-derivation/src/index.ts",
+      "default": "./sources/libs/formal-derivation/src/index.ts"
+    },
+    "./formal-derivation/*": {
+      "types": "./types/libs/formal-derivation/src/*.d.ts",
+      "import": "./sources/libs/formal-derivation/src/*.ts",
+      "default": "./sources/libs/formal-derivation/src/*.ts"
+    },
+    "./teaching-derivation": {
+      "types": "./types/libs/teaching-derivation/src/index.d.ts",
+      "import": "./sources/libs/teaching-derivation/src/index.ts",
+      "default": "./sources/libs/teaching-derivation/src/index.ts"
+    },
+    "./teaching-derivation/*": {
+      "types": "./types/libs/teaching-derivation/src/*.d.ts",
+      "import": "./sources/libs/teaching-derivation/src/*.ts",
+      "default": "./sources/libs/teaching-derivation/src/*.ts"
+    },
+    "./formal-expression-core": {
+      "types": "./types/libs/formal-expression-core/src/index.d.ts",
+      "import": "./sources/libs/formal-expression-core/src/index.ts",
+      "default": "./sources/libs/formal-expression-core/src/index.ts"
+    },
+    "./formal-expression-core/*": {
+      "types": "./types/libs/formal-expression-core/src/*.d.ts",
+      "import": "./sources/libs/formal-expression-core/src/*.ts",
+      "default": "./sources/libs/formal-expression-core/src/*.ts"
+    },
+    "./formal-expression-motion": {
+      "types": "./types/libs/formal-expression-motion/src/index.d.ts",
+      "import": "./sources/libs/formal-expression-motion/src/index.ts",
+      "default": "./sources/libs/formal-expression-motion/src/index.ts"
+    },
+    "./formal-expression-motion/*": {
+      "types": "./types/libs/formal-expression-motion/src/*.d.ts",
+      "import": "./sources/libs/formal-expression-motion/src/*.ts",
+      "default": "./sources/libs/formal-expression-motion/src/*.ts"
+    },
+    "./lab-engine": {
+      "types": "./types/libs/lab-engine/src/index.d.ts",
+      "import": "./sources/libs/lab-engine/src/index.ts",
+      "default": "./sources/libs/lab-engine/src/index.ts"
+    },
+    "./lab-engine/*": {
+      "types": "./types/libs/lab-engine/src/*.d.ts",
+      "import": "./sources/libs/lab-engine/src/*.ts",
+      "default": "./sources/libs/lab-engine/src/*.ts"
+    },
+    "./lab-protocol": {
+      "types": "./types/libs/lab-protocol/src/index.d.ts",
+      "import": "./sources/libs/lab-protocol/src/index.ts",
+      "default": "./sources/libs/lab-protocol/src/index.ts"
+    },
+    "./lab-protocol/*": {
+      "types": "./types/libs/lab-protocol/src/*.d.ts",
+      "import": "./sources/libs/lab-protocol/src/*.ts",
+      "default": "./sources/libs/lab-protocol/src/*.ts"
+    },
+    "./memory": {
+      "types": "./types/libs/memory/src/index.d.ts",
+      "import": "./sources/libs/memory/src/index.ts",
+      "default": "./sources/libs/memory/src/index.ts"
+    },
+    "./memory/*": {
+      "types": "./types/libs/memory/src/*.d.ts",
+      "import": "./sources/libs/memory/src/*.ts",
+      "default": "./sources/libs/memory/src/*.ts"
+    },
+    "./renderer/*": "./sources/src/*",
+    "./display/extensions": {
+      "types": "./types/core/src/display-extensions.d.ts",
+      "import": "./dist/display-extensions.js",
+      "default": "./dist/display-extensions.js"
+    },
+    "./domain/*.ts": {
+      "types": "./types/libs/domain/src/*.d.ts",
+      "import": "./sources/libs/domain/src/*.ts",
+      "default": "./sources/libs/domain/src/*.ts"
+    },
+    "./common/*.ts": {
+      "types": "./types/libs/common/src/*.d.ts",
+      "import": "./sources/libs/common/src/*.ts",
+      "default": "./sources/libs/common/src/*.ts"
+    },
+    "./server/*.ts": {
+      "types": "./types/libs/server/src/*.d.ts",
+      "import": "./sources/libs/server/src/*.ts",
+      "default": "./sources/libs/server/src/*.ts"
+    },
+    "./contracts/*.ts": {
+      "types": "./types/libs/contracts/src/*.d.ts",
+      "import": "./sources/libs/contracts/src/*.ts",
+      "default": "./sources/libs/contracts/src/*.ts"
+    },
+    "./runtime-contracts/*.ts": {
+      "types": "./types/libs/runtime-contracts/src/*.d.ts",
+      "import": "./sources/libs/runtime-contracts/src/*.ts",
+      "default": "./sources/libs/runtime-contracts/src/*.ts"
+    },
+    "./formula-analysis/*.ts": {
+      "types": "./types/libs/formula-analysis/src/*.d.ts",
+      "import": "./sources/libs/formula-analysis/src/*.ts",
+      "default": "./sources/libs/formula-analysis/src/*.ts"
+    },
+    "./formal-derivation/*.ts": {
+      "types": "./types/libs/formal-derivation/src/*.d.ts",
+      "import": "./sources/libs/formal-derivation/src/*.ts",
+      "default": "./sources/libs/formal-derivation/src/*.ts"
+    },
+    "./teaching-derivation/*.ts": {
+      "types": "./types/libs/teaching-derivation/src/*.d.ts",
+      "import": "./sources/libs/teaching-derivation/src/*.ts",
+      "default": "./sources/libs/teaching-derivation/src/*.ts"
+    },
+    "./formal-expression-core/*.ts": {
+      "types": "./types/libs/formal-expression-core/src/*.d.ts",
+      "import": "./sources/libs/formal-expression-core/src/*.ts",
+      "default": "./sources/libs/formal-expression-core/src/*.ts"
+    },
+    "./formal-expression-motion/*.ts": {
+      "types": "./types/libs/formal-expression-motion/src/*.d.ts",
+      "import": "./sources/libs/formal-expression-motion/src/*.ts",
+      "default": "./sources/libs/formal-expression-motion/src/*.ts"
+    },
+    "./lab-engine/*.ts": {
+      "types": "./types/libs/lab-engine/src/*.d.ts",
+      "import": "./sources/libs/lab-engine/src/*.ts",
+      "default": "./sources/libs/lab-engine/src/*.ts"
+    },
+    "./lab-protocol/*.ts": {
+      "types": "./types/libs/lab-protocol/src/*.d.ts",
+      "import": "./sources/libs/lab-protocol/src/*.ts",
+      "default": "./sources/libs/lab-protocol/src/*.ts"
+    },
+    "./memory/*.ts": {
+      "types": "./types/libs/memory/src/*.d.ts",
+      "import": "./sources/libs/memory/src/*.ts",
+      "default": "./sources/libs/memory/src/*.ts"
+    },
+    "./server/assessment": {
+      "types": "./types/libs/server/src/assessment/index.d.ts",
+      "import": "./sources/libs/server/src/assessment/index.ts",
+      "default": "./sources/libs/server/src/assessment/index.ts"
+    },
+    "./server/learner-state-memory": {
+      "types": "./types/libs/server/src/learner-state-memory/index.d.ts",
+      "import": "./sources/libs/server/src/learner-state-memory/index.ts",
+      "default": "./sources/libs/server/src/learner-state-memory/index.ts"
+    },
+    "./server/llm/providers": {
+      "types": "./types/libs/server/src/llm/providers/index.d.ts",
+      "import": "./sources/libs/server/src/llm/providers/index.ts",
+      "default": "./sources/libs/server/src/llm/providers/index.ts"
+    },
+    "./server/observability": {
+      "types": "./types/libs/server/src/observability/index.d.ts",
+      "import": "./sources/libs/server/src/observability/index.ts",
+      "default": "./sources/libs/server/src/observability/index.ts"
+    },
+    "./server/personal-sync": {
+      "types": "./types/libs/server/src/personal-sync/index.d.ts",
+      "import": "./sources/libs/server/src/personal-sync/index.ts",
+      "default": "./sources/libs/server/src/personal-sync/index.ts"
+    },
+    "./server/providers/audio": {
+      "types": "./types/libs/server/src/providers/audio/index.d.ts",
+      "import": "./sources/libs/server/src/providers/audio/index.ts",
+      "default": "./sources/libs/server/src/providers/audio/index.ts"
+    },
+    "./server/providers/image": {
+      "types": "./types/libs/server/src/providers/image/index.d.ts",
+      "import": "./sources/libs/server/src/providers/image/index.ts",
+      "default": "./sources/libs/server/src/providers/image/index.ts"
+    },
+    "./server/sections": {
+      "types": "./types/libs/server/src/sections/index.d.ts",
+      "import": "./sources/libs/server/src/sections/index.ts",
+      "default": "./sources/libs/server/src/sections/index.ts"
+    },
+    "./server/teaching-personas": {
+      "types": "./types/libs/server/src/teaching-personas/index.d.ts",
+      "import": "./sources/libs/server/src/teaching-personas/index.ts",
+      "default": "./sources/libs/server/src/teaching-personas/index.ts"
+    },
+    "./server/teaching-skills": {
+      "types": "./types/libs/server/src/teaching-skills/index.d.ts",
+      "import": "./sources/libs/server/src/teaching-skills/index.ts",
+      "default": "./sources/libs/server/src/teaching-skills/index.ts"
+    },
+    "./fixtures/music-integration/topic.json": {
+      "types": "./types/scripts/fixtures/music-integration/topic.json",
+      "import": "./sources/scripts/fixtures/music-integration/topic.json",
+      "default": "./sources/scripts/fixtures/music-integration/topic.json"
+    },
+    "./display/course-board-content": {
+      "types": "./types/src/components/course-display/course-board-content.d.ts",
+      "import": "./sources/src/components/course-display/course-board-content.tsx",
+      "default": "./sources/src/components/course-display/course-board-content.tsx"
+    },
+    "./display/course-board-media": {
+      "types": "./types/src/components/course-display/course-board-media.d.ts",
+      "import": "./sources/src/components/course-display/course-board-media.tsx",
+      "default": "./sources/src/components/course-display/course-board-media.tsx"
+    },
+    "./display/course-callout": {
+      "types": "./types/src/components/course-display/course-callout.d.ts",
+      "import": "./sources/src/components/course-display/course-callout.tsx",
+      "default": "./sources/src/components/course-display/course-callout.tsx"
+    },
+    "./display/guided-image-display": {
+      "types": "./types/src/components/course-display/guided-image-display.d.ts",
+      "import": "./sources/src/components/course-display/guided-image-display.tsx",
+      "default": "./sources/src/components/course-display/guided-image-display.tsx"
+    },
+    "./display/music-teaching-display": {
+      "types": "./types/src/components/course-display/music-teaching-display.d.ts",
+      "import": "./sources/src/components/course-display/music-teaching-display.tsx",
+      "default": "./sources/src/components/course-display/music-teaching-display.tsx"
+    },
+    "./display/teaching-display": {
+      "types": "./types/src/components/course-display/teaching-display.d.ts",
+      "import": "./sources/src/components/course-display/teaching-display.tsx",
+      "default": "./sources/src/components/course-display/teaching-display.tsx"
+    },
+    "./display/teaching.css": "./sources/src/components/course-display/teaching/teaching-display.css",
+    "./display/teaching-visual": {
+      "types": "./types/src/components/course-display/teaching/teaching-visual.d.ts",
+      "import": "./sources/src/components/course-display/teaching/teaching-visual.tsx",
+      "default": "./sources/src/components/course-display/teaching/teaching-visual.tsx"
+    },
+    "./display/templates/discipline-scenes": {
+      "types": "./types/src/components/course-display/teaching/templates/discipline-scenes.d.ts",
+      "import": "./sources/src/components/course-display/teaching/templates/discipline-scenes.tsx",
+      "default": "./sources/src/components/course-display/teaching/templates/discipline-scenes.tsx"
+    },
+    "./display/templates.css": "./sources/src/components/course-display/teaching/templates/templates.css",
+    "./components/desktop-python-editor/python-editor-provider": {
+      "types": "./types/src/components/desktop-python-editor/python-editor-provider.d.ts",
+      "import": "./sources/src/components/desktop-python-editor/python-editor-provider.tsx",
+      "default": "./sources/src/components/desktop-python-editor/python-editor-provider.tsx"
+    },
+    "./components/desktop-python-editor/python-runtime": {
+      "types": "./types/src/components/desktop-python-editor/python-runtime.d.ts",
+      "import": "./sources/src/components/desktop-python-editor/python-runtime.ts",
+      "default": "./sources/src/components/desktop-python-editor/python-runtime.ts"
+    },
+    "./components/goals/desktop-document-preview": {
+      "types": "./types/src/components/goals/desktop-document-preview.d.ts",
+      "import": "./sources/src/components/goals/desktop-document-preview.tsx",
+      "default": "./sources/src/components/goals/desktop-document-preview.tsx"
+    },
+    "./components/markdown/code-block-shell": {
+      "types": "./types/src/components/markdown/code-block-shell.d.ts",
+      "import": "./sources/src/components/markdown/code-block-shell.tsx",
+      "default": "./sources/src/components/markdown/code-block-shell.tsx"
+    },
+    "./components/markdown/math-latex": {
+      "types": "./types/src/components/markdown/math-latex.d.ts",
+      "import": "./sources/src/components/markdown/math-latex.tsx",
+      "default": "./sources/src/components/markdown/math-latex.tsx"
+    },
+    "./components/markdown/prose-markdown": {
+      "types": "./types/src/components/markdown/prose-markdown.d.ts",
+      "import": "./sources/src/components/markdown/prose-markdown.tsx",
+      "default": "./sources/src/components/markdown/prose-markdown.tsx"
+    },
+    "./ui/button": {
+      "types": "./types/src/components/ui/button.d.ts",
+      "import": "./sources/src/components/ui/button.tsx",
+      "default": "./sources/src/components/ui/button.tsx"
+    },
+    "./ui/dialog": {
+      "types": "./types/src/components/ui/dialog.d.ts",
+      "import": "./sources/src/components/ui/dialog.tsx",
+      "default": "./sources/src/components/ui/dialog.tsx"
+    },
+    "./ui/sheet": {
+      "types": "./types/src/components/ui/sheet.d.ts",
+      "import": "./sources/src/components/ui/sheet.tsx",
+      "default": "./sources/src/components/ui/sheet.tsx"
+    },
+    "./components/wizard/graph-block": {
+      "types": "./types/src/components/wizard/graph-block.d.ts",
+      "import": "./sources/src/components/wizard/graph-block.tsx",
+      "default": "./sources/src/components/wizard/graph-block.tsx"
+    },
+    "./components/wizard/interactive-material/material-visual-frame": {
+      "types": "./types/src/components/wizard/interactive-material/material-visual-frame.d.ts",
+      "import": "./sources/src/components/wizard/interactive-material/material-visual-frame.tsx",
+      "default": "./sources/src/components/wizard/interactive-material/material-visual-frame.tsx"
+    },
+    "./features/teaching-derivation/board": {
+      "types": "./types/src/features/teaching-derivation/teaching-derivation-board.d.ts",
+      "import": "./sources/src/features/teaching-derivation/teaching-derivation-board.tsx",
+      "default": "./sources/src/features/teaching-derivation/teaching-derivation-board.tsx"
+    },
+    "./utils": {
+      "types": "./types/src/shared/utils.d.ts",
+      "import": "./sources/src/shared/utils.ts",
+      "default": "./sources/src/shared/utils.ts"
+    },
+    "./api/types": {
+      "types": "./types/src/shared/api/generated/api.d.ts",
+      "import": "./sources/src/shared/api/generated/api.ts",
+      "default": "./sources/src/shared/api/generated/api.ts"
+    },
+    "./api": {
+      "types": "./types/src/shared/api/generated/index.d.ts",
+      "import": "./sources/src/shared/api/generated/index.ts",
+      "default": "./sources/src/shared/api/generated/index.ts"
+    },
+    "./api/sq-preview": {
+      "types": "./types/src/shared/api/generated/sq-preview.d.ts",
+      "import": "./sources/src/shared/api/generated/sq-preview.ts",
+      "default": "./sources/src/shared/api/generated/sq-preview.ts"
+    },
+    "./shared/design-tokens": {
+      "types": "./types/src/shared/design-tokens.d.ts",
+      "import": "./sources/src/shared/design-tokens.ts",
+      "default": "./sources/src/shared/design-tokens.ts"
+    },
+    "./dev": {
+      "types": "./types/src/shared/dev.d.ts",
+      "import": "./sources/src/shared/dev.ts",
+      "default": "./sources/src/shared/dev.ts"
+    },
+    "./shared/dom/text-range-rect": {
+      "types": "./types/src/shared/dom/text-range-rect.d.ts",
+      "import": "./sources/src/shared/dom/text-range-rect.ts",
+      "default": "./sources/src/shared/dom/text-range-rect.ts"
+    },
+    "./shared/domain/compare-block": {
+      "types": "./types/src/shared/domain/compare-block.d.ts",
+      "import": "./sources/src/shared/domain/compare-block.ts",
+      "default": "./sources/src/shared/domain/compare-block.ts"
+    },
+    "./shared/domain/course-card-build": {
+      "types": "./types/src/shared/domain/course-card-build.d.ts",
+      "import": "./sources/src/shared/domain/course-card-build.ts",
+      "default": "./sources/src/shared/domain/course-card-build.ts"
+    },
+    "./shared/domain/graph": {
+      "types": "./types/src/shared/domain/graph.d.ts",
+      "import": "./sources/src/shared/domain/graph.ts",
+      "default": "./sources/src/shared/domain/graph.ts"
+    },
+    "./shared/domain/material-anchor": {
+      "types": "./types/src/shared/domain/material-anchor.d.ts",
+      "import": "./sources/src/shared/domain/material-anchor.ts",
+      "default": "./sources/src/shared/domain/material-anchor.ts"
+    },
+    "./shared/domain/material-highlight": {
+      "types": "./types/src/shared/domain/material-highlight.d.ts",
+      "import": "./sources/src/shared/domain/material-highlight.ts",
+      "default": "./sources/src/shared/domain/material-highlight.ts"
+    },
+    "./shared/domain/unit-lab": {
+      "types": "./types/src/shared/domain/unit-lab.d.ts",
+      "import": "./sources/src/shared/domain/unit-lab.ts",
+      "default": "./sources/src/shared/domain/unit-lab.ts"
+    },
+    "./features": {
+      "types": "./types/src/shared/features.d.ts",
+      "import": "./sources/src/shared/features.ts",
+      "default": "./sources/src/shared/features.ts"
+    },
+    "./i18n": {
+      "types": "./types/src/shared/i18n/index.d.ts",
+      "import": "./sources/src/shared/i18n/index.tsx",
+      "default": "./sources/src/shared/i18n/index.tsx"
+    },
+    "./schemas": {
+      "types": "./types/src/shared/llm/schemas.d.ts",
+      "import": "./sources/src/shared/llm/schemas.ts",
+      "default": "./sources/src/shared/llm/schemas.ts"
+    },
+    "./shared/music/audio-ownership": {
+      "types": "./types/src/shared/music/audio-ownership.d.ts",
+      "import": "./sources/src/shared/music/audio-ownership.ts",
+      "default": "./sources/src/shared/music/audio-ownership.ts"
+    },
+    "./shared/music/clip-player": {
+      "types": "./types/src/shared/music/clip-player.d.ts",
+      "import": "./sources/src/shared/music/clip-player.ts",
+      "default": "./sources/src/shared/music/clip-player.ts"
+    },
+    "./client-runtime": {
+      "types": "./types/src/shared/runtime/client-runtime.d.ts",
+      "import": "./sources/src/shared/runtime/client-runtime.ts",
+      "default": "./sources/src/shared/runtime/client-runtime.ts"
+    },
+    "./shared/runtime/local-preferences": {
+      "types": "./types/src/shared/runtime/local-preferences.d.ts",
+      "import": "./sources/src/shared/runtime/local-preferences.ts",
+      "default": "./sources/src/shared/runtime/local-preferences.ts"
+    },
+    "./shared/types/content-sources": {
+      "types": "./types/src/shared/types/content-sources.d.ts",
+      "import": "./sources/src/shared/types/content-sources.ts",
+      "default": "./sources/src/shared/types/content-sources.ts"
+    },
+    "./server/cognitive-model": {
+      "types": "./types/libs/server/src/cognitive-model/index.d.ts",
+      "import": "./sources/libs/server/src/cognitive-model/index.ts",
+      "default": "./sources/libs/server/src/cognitive-model/index.ts"
+    },
+    "./server/learning-systems": {
+      "types": "./types/libs/server/src/learning-systems/index.d.ts",
+      "import": "./sources/libs/server/src/learning-systems/index.ts",
+      "default": "./sources/libs/server/src/learning-systems/index.ts"
+    },
+    "./server/agenda": {
+      "types": "./types/libs/server/src/agenda/index.d.ts",
+      "import": "./sources/libs/server/src/agenda/index.ts",
+      "default": "./sources/libs/server/src/agenda/index.ts"
+    },
+    "./server/providers/llm": {
+      "types": "./types/libs/server/src/providers/llm/index.d.ts",
+      "import": "./sources/libs/server/src/providers/llm/index.ts",
+      "default": "./sources/libs/server/src/providers/llm/index.ts"
+    },
+    "./server/cognition": {
+      "types": "./types/libs/server/src/cognition/index.d.ts",
+      "import": "./sources/libs/server/src/cognition/index.ts",
+      "default": "./sources/libs/server/src/cognition/index.ts"
+    },
+    "./formal-expression-motion/styles.css": "./sources/libs/formal-expression-motion/src/styles.css",
+    "./server/scenario-theater": {
+      "types": "./types/libs/server/src/scenario-theater/index.d.ts",
+      "import": "./sources/libs/server/src/scenario-theater/index.ts",
+      "default": "./sources/libs/server/src/scenario-theater/index.ts"
+    },
+    "./server/unit-lab": {
+      "types": "./types/libs/server/src/unit-lab/index.d.ts",
+      "import": "./sources/libs/server/src/unit-lab/index.ts",
+      "default": "./sources/libs/server/src/unit-lab/index.ts"
+    },
+    "./server/llm/material-coerce": {
+      "types": "./types/libs/server/src/llm/material-coerce/index.d.ts",
+      "import": "./sources/libs/server/src/llm/material-coerce/index.ts",
+      "default": "./sources/libs/server/src/llm/material-coerce/index.ts"
+    },
+    "./display/runtime": {
+      "types": "./types/core/src/display-runtime.d.ts",
+      "import": "./dist/display-runtime.js",
+      "default": "./dist/display-runtime.js"
+    },
+    "./display/plugins": {
+      "types": "./types/core/src/display-plugins.d.ts",
+      "import": "./dist/display-plugins.js",
+      "default": "./dist/display-plugins.js"
+    },
+    "./display/catalog": {
+      "types": "./types/core/src/display-catalog.d.ts",
+      "import": "./dist/display-catalog.js",
+      "default": "./dist/display-catalog.js"
+    },
+    "./display/protocol": {
+      "types": "./types/libs/display/src/index.d.ts",
+      "import": "./sources/libs/display/src/index.ts",
+      "default": "./sources/libs/display/src/index.ts"
+    },
+    "./display/runtime.css": "./dist/display-runtime.css",
+    "./display/plugins.css": "./dist/display-plugins.css",
+    "./server/display-build": {
+      "types": "./types/libs/server/src/display-build/index.d.ts",
+      "import": "./sources/libs/server/src/display-build/index.ts",
+      "default": "./sources/libs/server/src/display-build/index.ts"
+    },
+    "./server/display-plugins": {
+      "types": "./types/libs/server/src/display-plugins/index.d.ts",
+      "import": "./sources/libs/server/src/display-plugins/index.ts",
+      "default": "./sources/libs/server/src/display-plugins/index.ts"
+    },
+    "./server/display-workspace": {
+      "types": "./types/libs/server/src/display-workspace/index.d.ts",
+      "import": "./sources/libs/server/src/display-workspace/index.ts",
+      "default": "./sources/libs/server/src/display-workspace/index.ts"
+    },
+    "./display/workspace": {
+      "types": "./types/core/src/display-workspace.d.ts",
+      "import": "./dist/display-workspace.js",
+      "default": "./dist/display-workspace.js"
+    },
+    "./display/workspace.css": "./dist/display-workspace.css",
+    "./display/sampling": {
+      "types": "./types/core/src/display-sampling.d.ts",
+      "import": "./dist/display-sampling.js",
+      "default": "./dist/display-sampling.js"
+    },
+    "./display/film": {
+      "types": "./types/core/src/display-film.d.ts",
+      "import": "./dist/display-film.js",
+      "default": "./dist/display-film.js"
+    },
+    "./server/course-teaching": {
+      "types": "./types/libs/server/src/course-teaching/index.d.ts",
+      "import": "./sources/libs/server/src/course-teaching/index.ts",
+      "default": "./sources/libs/server/src/course-teaching/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs && node scripts/verify-public-exports.mjs && node scripts/verify-entries.mjs",
+    "check:boundaries": "node scripts/build.mjs --check",
+    "test": "jest --config jest.config.cjs --runInBand --watchman=false",
+    "prepack": "pnpm run build",
+    "codegen": "node scripts/codegen-contracts.mjs",
+    "check:exports": "node scripts/verify-public-exports.mjs"
+  },
+  "dependencies": {
+    "@astral-sh/ruff-wasm-nodejs": "0.16.0",
+    "@base-ui/react": "1.5.0",
+    "@expo-google-fonts/noto-sans-sc": "0.4.3",
+    "@langchain/core": "1.2.3",
+    "@langchain/langgraph": "1.4.8",
+    "@langchain/ollama": "1.3.0",
+    "@langchain/openai": "1.5.5",
+    "@langchain/textsplitters": "1.0.1",
+    "@napi-rs/canvas": "0.1.80",
+    "@nestjs/common": "11.1.24",
+    "@nestjs/config": "4.0.4",
+    "@nestjs/core": "11.1.24",
+    "@nestjs/platform-express": "11.1.24",
+    "@resvg/resvg-js": "2.6.2",
+    "@tavily/core": "0.7.5",
+    "@wasm-fmt/clang-format": "20.1.7",
+    "@xyflow/react": "12.11.0",
+    "class-transformer": "0.5.1",
+    "class-validator": "0.14.4",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "elkjs": "0.11.1",
+    "express": "5.2.1",
+    "highlight.js": "11.11.1",
+    "jsonrepair": "3.15.0",
+    "katex": "0.17.0",
+    "lottie-web": "5.13.0",
+    "lucide-react": "1.17.0",
+    "mammoth": "1.12.0",
+    "marked": "18.0.5",
+    "parse5": "4.0.0",
+    "pdf-lib": "1.17.1",
+    "pdf-parse": "2.4.5",
+    "pdf-to-img": "6.2.0",
+    "pdfjs-dist": "5.4.296",
+    "pino": "9.14.0",
+    "pino-http": "10.5.0",
+    "playwright": "1.60.0",
+    "prettier": "3.9.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-markdown": "10.1.0",
+    "react-router-dom": "7.17.0",
+    "reflect-metadata": "0.2.2",
+    "remark-gfm": "4.0.1",
+    "remark-math": "6.0.0",
+    "rxjs": "7.8.2",
+    "sharp": "0.35.1",
+    "tailwind-merge": "3.6.0",
+    "tesseract.js": "7.0.0",
+    "three": "0.185.1",
+    "ts-fsrs": "5.4.1",
+    "ts-pattern": "5.9.0",
+    "tslib": "2.8.1",
+    "unified": "11.0.5",
+    "vexflow": "4.2.5",
+    "web-tree-sitter": "0.20.8",
+    "word-extractor": "1.0.4",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@swc/core": "1.15.43",
+    "@types/express": "4.17.25",
+    "@types/jest": "29.5.14",
+    "@types/katex": "0.16.8",
+    "@types/node": "20.19.42",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@types/three": "0.185.0",
+    "esbuild": "0.28.1",
+    "jest": "29.7.0",
+    "jest-environment-jsdom": "29.7.0",
+    "json-schema-to-typescript": "15.0.4",
+    "openapi-typescript": "7.13.0",
+    "ts-jest": "29.4.11",
+    "typescript": "5.9.3"
+  },
+  "typesVersions": {
+    "*": {
+      "components/wizard/interactive-material/material-visual-frame": [
+        "types/src/components/wizard/interactive-material/material-visual-frame.d.ts"
+      ],
+      "components/desktop-python-editor/python-editor-provider": [
+        "types/src/components/desktop-python-editor/python-editor-provider.d.ts"
+      ],
+      "components/desktop-python-editor/python-runtime": [
+        "types/src/components/desktop-python-editor/python-runtime.d.ts"
+      ],
+      "components/goals/desktop-document-preview": [
+        "types/src/components/goals/desktop-document-preview.d.ts"
+      ],
+      "fixtures/music-integration/topic.json": [
+        "types/scripts/fixtures/music-integration/topic.json"
+      ],
+      "components/markdown/code-block-shell": [
+        "types/src/components/markdown/code-block-shell.d.ts"
+      ],
+      "display/templates/discipline-scenes": [
+        "types/src/components/course-display/teaching/templates/discipline-scenes.d.ts"
+      ],
+      "formal-expression-motion/styles.css": [
+        "sources/libs/formal-expression-motion/src/styles.css"
+      ],
+      "components/markdown/prose-markdown": [
+        "types/src/components/markdown/prose-markdown.d.ts"
+      ],
+      "features/teaching-derivation/board": [
+        "types/src/features/teaching-derivation/teaching-derivation-board.d.ts"
+      ],
+      "shared/domain/material-highlight": [
+        "types/src/shared/domain/material-highlight.d.ts"
+      ],
+      "shared/runtime/local-preferences": [
+        "types/src/shared/runtime/local-preferences.d.ts"
+      ],
+      "shared/domain/course-card-build": [
+        "types/src/shared/domain/course-card-build.d.ts"
+      ],
+      "components/markdown/math-latex": [
+        "types/src/components/markdown/math-latex.d.ts"
+      ],
+      "display/music-teaching-display": [
+        "types/src/components/course-display/music-teaching-display.d.ts"
+      ],
+      "components/wizard/graph-block": [
+        "types/src/components/wizard/graph-block.d.ts"
+      ],
+      "shared/domain/material-anchor": [
+        "types/src/shared/domain/material-anchor.d.ts"
+      ],
+      "display/course-board-content": [
+        "types/src/components/course-display/course-board-content.d.ts"
+      ],
+      "display/guided-image-display": [
+        "types/src/components/course-display/guided-image-display.d.ts"
+      ],
+      "shared/music/audio-ownership": [
+        "types/src/shared/music/audio-ownership.d.ts"
+      ],
+      "shared/types/content-sources": [
+        "types/src/shared/types/content-sources.d.ts"
+      ],
+      "server/learner-state-memory": [
+        "types/libs/server/src/learner-state-memory/index.d.ts"
+      ],
+      "shared/domain/compare-block": [
+        "types/src/shared/domain/compare-block.d.ts"
+      ],
+      "display/course-board-media": [
+        "types/src/components/course-display/course-board-media.d.ts"
+      ],
+      "server/llm/material-coerce": [
+        "types/libs/server/src/llm/material-coerce/index.d.ts"
+      ],
+      "shared/dom/text-range-rect": [
+        "types/src/shared/dom/text-range-rect.d.ts"
+      ],
+      "formal-expression-motion/*.ts": [
+        "types/libs/formal-expression-motion/src/*.d.ts"
+      ],
+      "formal-expression-motion/*": [
+        "types/libs/formal-expression-motion/src/*.d.ts"
+      ],
+      "display/teaching-display": [
+        "types/src/components/course-display/teaching-display.d.ts"
+      ],
+      "formal-expression-motion": [
+        "types/libs/formal-expression-motion/src/index.d.ts"
+      ],
+      "server/teaching-personas": [
+        "types/libs/server/src/teaching-personas/index.d.ts"
+      ],
+      "shared/music/clip-player": [
+        "types/src/shared/music/clip-player.d.ts"
+      ],
+      "formal-expression-core/*.ts": [
+        "types/libs/formal-expression-core/src/*.d.ts"
+      ],
+      "display/teaching-visual": [
+        "types/src/components/course-display/teaching/teaching-visual.d.ts"
+      ],
+      "formal-expression-core/*": [
+        "types/libs/formal-expression-core/src/*.d.ts"
+      ],
+      "server/learning-systems": [
+        "types/libs/server/src/learning-systems/index.d.ts"
+      ],
+      "server/scenario-theater": [
+        "types/libs/server/src/scenario-theater/index.d.ts"
+      ],
+      "display/course-callout": [
+        "types/src/components/course-display/course-callout.d.ts"
+      ],
+      "formal-expression-core": [
+        "types/libs/formal-expression-core/src/index.d.ts"
+      ],
+      "server/cognitive-model": [
+        "types/libs/server/src/cognitive-model/index.d.ts"
+      ],
+      "server/providers/audio": [
+        "types/libs/server/src/providers/audio/index.d.ts"
+      ],
+      "server/providers/image": [
+        "types/libs/server/src/providers/image/index.d.ts"
+      ],
+      "server/teaching-skills": [
+        "types/libs/server/src/teaching-skills/index.d.ts"
+      ],
+      "shared/domain/unit-lab": [
+        "types/src/shared/domain/unit-lab.d.ts"
+      ],
+      "display/templates.css": [
+        "sources/src/components/course-display/teaching/templates/templates.css"
+      ],
+      "teaching-derivation/*.ts": [
+        "types/libs/teaching-derivation/src/*.d.ts"
+      ],
+      "display/teaching.css": [
+        "sources/src/components/course-display/teaching/teaching-display.css"
+      ],
+      "server/llm/providers": [
+        "types/libs/server/src/llm/providers/index.d.ts"
+      ],
+      "server/observability": [
+        "types/libs/server/src/observability/index.d.ts"
+      ],
+      "server/personal-sync": [
+        "types/libs/server/src/personal-sync/index.d.ts"
+      ],
+      "server/providers/llm": [
+        "types/libs/server/src/providers/llm/index.d.ts"
+      ],
+      "shared/design-tokens": [
+        "types/src/shared/design-tokens.d.ts"
+      ],
+      "teaching-derivation/*": [
+        "types/libs/teaching-derivation/src/*.d.ts"
+      ],
+      "shared/domain/graph": [
+        "types/src/shared/domain/graph.d.ts"
+      ],
+      "teaching-derivation": [
+        "types/libs/teaching-derivation/src/index.d.ts"
+      ],
+      "formal-derivation/*.ts": [
+        "types/libs/formal-derivation/src/*.d.ts"
+      ],
+      "runtime-contracts/*.ts": [
+        "types/libs/runtime-contracts/src/*.d.ts"
+      ],
+      "display/extensions": [
+        "types/core/src/display-extensions.d.ts"
+      ],
+      "formal-derivation/*": [
+        "types/libs/formal-derivation/src/*.d.ts"
+      ],
+      "runtime-contracts/*": [
+        "types/libs/runtime-contracts/src/*.d.ts"
+      ],
+      "formula-analysis/*.ts": [
+        "types/libs/formula-analysis/src/*.d.ts"
+      ],
+      "formal-derivation": [
+        "types/libs/formal-derivation/src/index.d.ts"
+      ],
+      "formula-analysis/*": [
+        "types/libs/formula-analysis/src/*.d.ts"
+      ],
+      "runtime-contracts": [
+        "types/libs/runtime-contracts/src/index.d.ts"
+      ],
+      "server/assessment": [
+        "types/libs/server/src/assessment/index.d.ts"
+      ],
+      "formula-analysis": [
+        "types/libs/formula-analysis/src/index.d.ts"
+      ],
+      "server/cognition": [
+        "types/libs/server/src/cognition/index.d.ts"
+      ],
+      "workspace-client": [
+        "types/core/src/workspace-client.d.ts"
+      ],
+      "server/sections": [
+        "types/libs/server/src/sections/index.d.ts"
+      ],
+      "server/unit-lab": [
+        "types/libs/server/src/unit-lab/index.d.ts"
+      ],
+      "api/sq-preview": [
+        "types/src/shared/api/generated/sq-preview.d.ts"
+      ],
+      "client-runtime": [
+        "types/src/shared/runtime/client-runtime.d.ts"
+      ],
+      "lab-protocol/*.ts": [
+        "types/libs/lab-protocol/src/*.d.ts"
+      ],
+      "lab-protocol/*": [
+        "types/libs/lab-protocol/src/*.d.ts"
+      ],
+      "server/agenda": [
+        "types/libs/server/src/agenda/index.d.ts"
+      ],
+      "lab-protocol": [
+        "types/libs/lab-protocol/src/index.d.ts"
+      ],
+      "lab-engine/*.ts": [
+        "types/libs/lab-engine/src/*.d.ts"
+      ],
+      "display.css": [
+        "dist/display.css"
+      ],
+      "lab-engine/*": [
+        "types/libs/lab-engine/src/*.d.ts"
+      ],
+      "contracts/*.ts": [
+        "types/libs/contracts/src/*.d.ts"
+      ],
+      "contracts/*": [
+        "types/libs/contracts/src/*.d.ts"
+      ],
+      "lab-engine": [
+        "types/libs/lab-engine/src/index.d.ts"
+      ],
+      "renderer/*.tsx": [
+        "types/src/*.d.ts"
+      ],
+      "renderer/*.ts": [
+        "types/src/*.d.ts"
+      ],
+      "api/types": [
+        "types/src/shared/api/generated/api.d.ts"
+      ],
+      "contracts": [
+        "types/libs/contracts/src/index.d.ts"
+      ],
+      "renderer/*": [
+        "sources/src/*"
+      ],
+      "ui/button": [
+        "types/src/components/ui/button.d.ts"
+      ],
+      "ui/dialog": [
+        "types/src/components/ui/dialog.d.ts"
+      ],
+      "features": [
+        "types/src/shared/features.d.ts"
+      ],
+      "ui/sheet": [
+        "types/src/components/ui/sheet.d.ts"
+      ],
+      "source/*.tsx": [
+        "types/*.d.ts"
+      ],
+      "common/*.ts": [
+        "types/libs/common/src/*.d.ts"
+      ],
+      "domain/*.ts": [
+        "types/libs/domain/src/*.d.ts"
+      ],
+      "memory/*.ts": [
+        "types/libs/memory/src/*.d.ts"
+      ],
+      "server/*.ts": [
+        "types/libs/server/src/*.d.ts"
+      ],
+      "source/*.ts": [
+        "types/*.d.ts"
+      ],
+      "browser": [
+        "types/core/src/browser.d.ts"
+      ],
+      "common/*": [
+        "types/libs/common/src/*.d.ts"
+      ],
+      "display": [
+        "types/core/src/display.d.ts"
+      ],
+      "domain/*": [
+        "types/libs/domain/src/*.d.ts"
+      ],
+      "memory/*": [
+        "types/libs/memory/src/*.d.ts"
+      ],
+      "schemas": [
+        "types/src/shared/llm/schemas.d.ts"
+      ],
+      "server/*": [
+        "types/libs/server/src/*.d.ts"
+      ],
+      "source/*": [
+        "sources/*"
+      ],
+      "common": [
+        "types/libs/common/src/index.d.ts"
+      ],
+      "domain": [
+        "types/libs/domain/src/index.d.ts"
+      ],
+      "memory": [
+        "types/libs/memory/src/index.d.ts"
+      ],
+      "server": [
+        "types/core/src/node.d.ts"
+      ],
+      "utils": [
+        "types/src/shared/utils.d.ts"
+      ],
+      "i18n": [
+        "types/src/shared/i18n/index.d.ts"
+      ],
+      "node": [
+        "types/core/src/node.d.ts"
+      ],
+      "api": [
+        "types/src/shared/api/generated/index.d.ts"
+      ],
+      "dev": [
+        "types/src/shared/dev.d.ts"
+      ],
+      "display/runtime": [
+        "types/core/src/display-runtime.d.ts"
+      ],
+      "display/plugins": [
+        "types/core/src/display-plugins.d.ts"
+      ],
+      "display/catalog": [
+        "types/core/src/display-catalog.d.ts"
+      ],
+      "display/protocol": [
+        "types/libs/display/src/index.d.ts"
+      ],
+      "server/display-build": [
+        "types/libs/server/src/display-build/index.d.ts"
+      ],
+      "server/display-plugins": [
+        "types/libs/server/src/display-plugins/index.d.ts"
+      ],
+      "server/display-workspace": [
+        "types/libs/server/src/display-workspace/index.d.ts"
+      ],
+      "display/workspace": [
+        "types/core/src/display-workspace.d.ts"
+      ],
+      "display/sampling": [
+        "types/core/src/display-sampling.d.ts"
+      ],
+      "display/film": [
+        "types/core/src/display-film.d.ts"
+      ],
+      "server/course-teaching": [
+        "types/libs/server/src/course-teaching/index.d.ts"
+      ]
+    }
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": [
+      "ES2022"
+    ],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "noUncheckedSideEffectImports": false,
+    "paths": {
+      "@cognilearn/contracts": [
+        "./libs/contracts/src/index.ts"
+      ],
+      "@cognilearn/domain": [
+        "./libs/domain/src/index.ts"
+      ],
+      "@cognilearn/domain/*": [
+        "./libs/domain/src/*"
+      ],
+      "@cognilearn/lab-engine": [
+        "./libs/lab-engine/src/index.ts"
+      ],
+      "@cognilearn/lab-protocol": [
+        "./libs/lab-protocol/src/index.ts"
+      ],
+      "@cognilearn/formal-expression-core": [
+        "./libs/formal-expression-core/src/index.ts"
+      ],
+      "@cognilearn/formal-expression-motion": [
+        "./libs/formal-expression-motion/src/index.ts"
+      ],
+      "@cognilearn/formal-expression-motion/styles.css": [
+        "./libs/formal-expression-motion/src/styles.css"
+      ],
+      "@cognilearn/formal-derivation": [
+        "./libs/formal-derivation/src/index.ts"
+      ],
+      "@cognilearn/formula-analysis": [
+        "./libs/formula-analysis/src/index.ts"
+      ],
+      "@cognilearn/teaching-derivation": [
+        "./libs/teaching-derivation/src/index.ts"
+      ],
+      "@cognilearn/memory": [
+        "./libs/memory/src/index.ts"
+      ],
+      "@cognilearn/llm": [
+        "./libs/llm/src/index.ts"
+      ],
+      "@cognilearn/runtime-contracts": [
+        "./libs/runtime-contracts/src/index.ts"
+      ],
+      "@/*": [
+        "./src/*"
+      ],
+      "@cognilearn/common": [
+        "./libs/common/src/index.ts"
+      ],
+      "@cognilearn/common/agent-user-facing": [
+        "./libs/common/src/agent-user-facing.ts"
+      ],
+      "@cognilearn/common/normalize-html-line-breaks": [
+        "./libs/common/src/normalize-html-line-breaks.ts"
+      ],
+      "@cognilearn/server": [
+        "./libs/server/src/index.ts"
+      ],
+      "@cognilearn/server/*": [
+        "./libs/server/src/*"
+      ],
+      "@cognilearn/common/*": [
+        "./libs/common/src/*"
+      ],
+      "@cognilearn/runtime-contracts/*": [
+        "./libs/runtime-contracts/src/*"
+      ]
+    },
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "exclude": [
+    "node_modules",
+    "tmp",
+    "dist"
+  ]
+}

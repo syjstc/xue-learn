@@ -1,0 +1,28 @@
+/** Compatibility artwork exports. New hosts should load domain plugins dynamically. */
+export {TeachingDerivationScene} from '../../src/components/display-plugins/film/teaching-derivation-scene.js';
+export {DerivationScene} from '../../src/components/display-plugins/film/formal-derivation-scene.js';
+export {FormulaBoard} from '../../src/components/display-plugins/film/formula-board.js';
+export {sampleFormulaBoard} from '../../src/components/display-plugins/film/formula-board-sampling.js';
+export {AnimatedChart,chartBounds,chartColors} from '../../src/components/display-plugins/film/animated-chart.js';
+export {CodeBoard} from '../../src/components/display-plugins/film/code-board.js';
+export * from '../../src/components/display-plugins/film/code-board-sampling.js';
+export {ImageBoard} from '../../src/components/display-plugins/film/image-board.js';
+export * from '../../src/components/display-plugins/film/image-board-sampling.js';
+export {SpatialAssembly,spatialPosition} from '../../src/components/display-plugins/film/spatial-assembly.js';
+export {LottieExplainer} from '../../src/components/display-plugins/film/lottie-explainer.js';
+export {createLottiePreset} from '../../src/components/display-plugins/film/lottie-presets.js';
+export {MotionScene} from '../../src/components/display-plugins/film/motion-scene.js';
+export * from '../../src/components/display-plugins/film/motion-scene-sampling.js';
+export {OcclusionLab} from '../../src/components/display-plugins/film/occlusion-lab.js';
+export {sampleOcclusionLab} from '../../src/components/display-plugins/film/occlusion-motion.js';
+export {EvaluationLab} from '../../src/components/display-plugins/film/evaluation-lab.js';
+export {sampleEvaluationLab} from '../../src/components/display-plugins/film/evaluation-motion.js';
+export {sampleLessonMotion,ease,type LessonMotion} from '../../src/components/display-plugins/film/lesson-motion.js';
+export {teachingCardLayout} from '../../src/components/display-plugins/film/teaching-card-layout.js';
+export {formulaBoardLayout} from '../../src/components/display-plugins/film/formula-board-layout.js';
+export * from '../../src/components/display-plugins/film/classroom-formula.js';
+export type {FilmPresentation} from '../../src/components/display-plugins/film/presentation.js';
+export * from '../../src/components/display-plugins/derivation-sampling.js';
+export {SpecialBoard} from '../../src/components/display-plugins/film/special-scenes.js';
+export {World,Observation} from '../../src/components/display-plugins/film/world.js';
+export * from '../../src/components/display-plugins/film/world-geometry.js';

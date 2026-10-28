@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xue-learn.local/schemas/physics-lab.json",
+  "title": "PhysicsLab",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "experimentId", "experimentVersion", "title", "summary", "branch", "stage", "renderMode", "parameters"],
+  "properties": {
+    "type": { "const": "physics_lab" },
+    "experimentId": { "type": "string", "enum": ["inclined_plane_friction", "collision_1d", "simple_pendulum", "driven_damped_spring", "projectile_motion", "wave_interference", "ideal_gas_process", "electrostatic_field", "electromagnetic_induction", "thin_lens_imaging", "double_slit_interference", "quantum_tunneling_1d"] },
+    "experimentVersion": { "const": 2 },
+    "title": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "summary": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "branch": { "type": "string", "enum": ["mechanics", "waves", "thermodynamics", "electromagnetism", "optics", "modern_physics"] },
+    "stage": { "type": "string", "enum": ["middle_school", "high_school", "undergraduate", "graduate"] },
+    "renderMode": { "type": "string", "enum": ["2d", "3d", "hybrid"] },
+    "parameters": { "type": "object", "additionalProperties": { "type": "number" } },
+    "targetObservation": { "type": "string", "maxLength": 240 },
+    "controls": { "type": "array", "items": { "type": "string" }, "maxItems": 32 },
+    "observations": { "type": "array", "maxItems": 64, "items": { "type": "object", "additionalProperties": false, "required": ["id", "label", "value"], "properties": { "id": { "type": "string" }, "label": { "type": "string" }, "value": {}, "unit": { "type": "string" }, "kind": { "type": "string", "enum": ["scalar", "vector", "text"] } } } },
+    "series": { "type": "array", "maxItems": 8, "items": { "type": "object", "additionalProperties": false, "required": ["id", "label", "x", "y"], "properties": { "id": { "type": "string" }, "label": { "type": "string" }, "unit": { "type": "string" }, "x": { "type": "array", "items": { "type": "number" }, "maxItems": 2000 }, "y": { "type": "array", "items": { "type": "number" }, "maxItems": 2000 } } } },
+    "analysis": { "type": "object", "properties": { "enabled": { "const": false } }, "required": ["enabled"], "additionalProperties": false }
+  }
+}

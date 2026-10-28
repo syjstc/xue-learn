@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xue-learn.local/schemas/chemistry-lab.json",
+  "title": "ChemistryLab",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "experimentId", "experimentVersion", "title", "summary", "stage", "renderMode", "parameters"],
+  "properties": {
+    "type": { "const": "chemistry_lab" },
+    "experimentId": { "type": "string", "enum": ["acid_base_indicator", "acid_base_titration", "precipitation_reaction", "mass_conservation"] },
+    "experimentVersion": { "const": 1 },
+    "title": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "summary": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "stage": { "type": "string", "enum": ["middle_school", "high_school", "undergraduate"] },
+    "renderMode": { "type": "string", "enum": ["2d", "3d"] },
+    "parameters": { "type": "object", "additionalProperties": { "type": "number" } },
+    "targetObservation": { "type": "string", "maxLength": 240 },
+    "controls": { "type": "array", "items": { "type": "string" }, "maxItems": 16 },
+    "observations": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "value"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "value": {},
+          "unit": { "type": "string" },
+          "kind": { "type": "string", "enum": ["scalar", "text", "state"] }
+        }
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["step", "scaleZeroed", "completed", "observations", "vessels"],
+      "properties": {
+        "step": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "scaleZeroed": { "type": "boolean" },
+        "completed": { "type": "boolean" },
+        "pH": { "type": "number", "minimum": 0, "maximum": 14 },
+        "indicatorColor": { "type": "string", "maxLength": 40 },
+        "titrantVolumeMl": { "type": "number", "minimum": 0, "maximum": 100 },
+        "measuredVolumeMl": { "type": "number", "minimum": 0, "maximum": 1000 },
+        "precipitateG": { "type": "number", "minimum": 0, "maximum": 1000 },
+        "measuredMassG": { "type": "number", "minimum": 0, "maximum": 1000 },
+        "totalMassG": { "type": "number", "minimum": 0, "maximum": 1000 },
+        "observations": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label", "value"],
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string" },
+              "value": {},
+              "unit": { "type": "string" },
+              "kind": { "type": "string", "enum": ["scalar", "text", "state"] }
+            }
+          }
+        },
+        "vessels": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "kind", "label", "volumeMl", "contents"],
+            "properties": {
+              "id": { "type": "string", "maxLength": 40 },
+              "kind": { "type": "string", "enum": ["beaker", "conical_flask", "test_tube", "dropper", "burette", "graduated_cylinder", "balance"] },
+              "label": { "type": "string", "maxLength": 80 },
+              "volumeMl": { "type": "number", "minimum": 0, "maximum": 1000 },
+              "contents": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1000 } },
+              "color": { "type": "string", "maxLength": 40 },
+              "precipitateG": { "type": "number", "minimum": 0, "maximum": 1000 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

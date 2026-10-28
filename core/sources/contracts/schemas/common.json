@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xue-learn.local/schemas/common.json",
+  "title": "CommonEnums",
+  "$defs": {
+    "ContentLanguageCode": {
+      "type": "string",
+      "enum": ["zh-Hans", "zh-Hant", "en", "ja", "ko", "es", "fr", "de", "other", "auto"]
+    },
+    "ContentStyleCode": {
+      "type": "string",
+      "enum": [
+        "conversational",
+        "balanced",
+        "serious",
+        "concise"
+      ]
+    },
+    "Difficulty": {
+      "type": "string",
+      "enum": ["easy", "medium", "hard"]
+    }
+  }
+}
