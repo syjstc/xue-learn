@@ -10,6 +10,7 @@ let mockImageStorageDir = "";
 
 jest.mock("../env.js", () => ({
   getEnv: () => ({ IMAGE_STORAGE_DIR: mockImageStorageDir }),
+  getRuntimeEnvironment: () => ({ XUELEARN_DESKTOP_LOCAL: "0" }),
 }));
 
 describe("stored generated image AIGC display", () => {

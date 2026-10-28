@@ -1,6 +1,6 @@
 # XueLearn Desktop
 
-Independent public desktop learning application. Electron is the host technology; Desktop is the project name. Learning rules, shared services/displays and the workspace SDK come from a fixed `@xue-learn/core` release recorded in `core-dependency.v1.json`. This repository has no copied Core library implementation.
+Public desktop learning application in the [XueLearn monorepo](../README.md). Electron is the host technology; Desktop is the project name. Learning rules, shared services/displays and the workspace SDK come from the fixed `@xue-learn/core` release recorded in `core-dependency.v1.json`. Core's source is in `../core`; Desktop consumes its packed release rather than importing sibling source files.
 
 ## Use the application
 
@@ -8,7 +8,7 @@ When a Desktop installer is published, install the version for your operating sy
 
 ## Run from source
 
-Clone the complete Desktop repository, including `vendor/`. Install Node.js and pnpm `9.15.9`, then run these commands from the repository root:
+Clone the complete public monorepo, including Desktop's pinned archive in `vendor/`. Install Node.js and pnpm `9.15.9`, then run these commands from `desktop/`:
 
 ```sh
 pnpm install --frozen-lockfile

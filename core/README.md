@@ -1,6 +1,6 @@
 # XueLearn Core
 
-Independent public learning library. Product repositories consume fixed, integrity-checked release artifacts.
+Public learning library under `core/` in the XueLearn monorepo. Desktop is developed alongside Core; private product repositories consume fixed, integrity-checked release artifacts.
 
 Run `pnpm install --frozen-lockfile`, `pnpm test`, `pnpm build` and `pnpm pack`. The build emits JavaScript, TypeScript declarations and an integrity manifest. Browser/display entries reject Node APIs; Node services and the workspace connection SDK have separate entries. No desktop host, SQL driver or private product is included.
 

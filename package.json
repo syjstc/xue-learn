@@ -1,0 +1,17 @@
+{
+  "name": "xue-learn-public",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@9.15.9",
+  "scripts": {
+    "setup": "pnpm --dir core install --frozen-lockfile && pnpm --dir desktop install --frozen-lockfile",
+    "build:core": "pnpm --dir core run build",
+    "test:core": "pnpm --dir core test",
+    "check:desktop-core": "pnpm --dir desktop run check:core",
+    "build:desktop": "pnpm --dir desktop run build",
+    "test:desktop": "pnpm --dir desktop test",
+    "check": "pnpm run build:core && pnpm run test:core && pnpm run check:desktop-core && pnpm run test:desktop && pnpm --dir desktop run build:desktop-renderer && pnpm --dir desktop run local-runtime:build",
+    "sync:core": "node scripts/sync-core.mjs",
+    "dev": "pnpm --dir desktop dev"
+  }
+}

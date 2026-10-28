@@ -1,0 +1,7 @@
+/.cache/
+/node_modules/
+/core/.cache/
+/core/artifacts/
+/desktop/.cache/
+/desktop/artifacts/
+.DS_Store

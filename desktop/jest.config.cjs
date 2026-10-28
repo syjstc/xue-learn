@@ -126,6 +126,7 @@ module.exports={
   },
   "moduleNameMapper": {
     "^(\\.{1,2}/.*)\\.js$": "$1",
+    "^marked$": "<rootDir>/node_modules/marked/lib/marked.umd.js",
     "\\.(css|png|svg|woff2?|ttf)$": "<rootDir>/scripts/test-style.cjs"
   },
   "transformIgnorePatterns": [

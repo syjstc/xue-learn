@@ -35,8 +35,8 @@ dependencies you redistribute. Required attribution and truthful statements such
 as "Based on XueLearn" are allowed under the brand policy.
 
 This scope applies to the public Core + Desktop distribution and the files from
-it included in a library artifact. Inventory paths refer to the public repository
-root; an artifact may contain only a subset. This grant does not include private
+it included in a library artifact. Inventory paths refer to the `desktop/`
+directory; an artifact may contain only a subset. This grant does not include private
 products, the integration repository's remaining files/history, learner content
 or user data. License metadata in a code package describes its own code and does
 not override the separate asset licenses above.
