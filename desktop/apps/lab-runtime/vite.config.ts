@@ -59,7 +59,7 @@ export default defineConfig({
   },
   server: {
     fs: {
-      allow: [path.resolve(__dirname, "../..")],
+      allow: [path.resolve(__dirname, "../../../")],
     },
     host: process.env.VITE_LAB_HOST ?? "0.0.0.0",
     port: Number(process.env.VITE_LAB_PORT ?? 5177),

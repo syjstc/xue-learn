@@ -1,6 +1,6 @@
 # XueLearn Desktop
 
-Public desktop learning application in the [XueLearn monorepo](../README.md). Electron is the host technology; Desktop is the project name. Learning rules, shared services/displays and the workspace SDK come from the fixed `@xue-learn/core` release recorded in `core-dependency.v1.json`. Core's source is in `../core`; Desktop consumes its packed release rather than importing sibling source files.
+Public desktop learning application in the [XueLearn monorepo](../README.md). Electron is the host technology; Desktop is the project name. Learning rules, shared services/displays and the workspace SDK come from the current `@xue-learn/core` workspace package in `../core`.
 
 ## Use the application
 
@@ -8,15 +8,15 @@ When a Desktop installer is published, install the version for your operating sy
 
 ## Run from source
 
-Clone the complete public monorepo, including Desktop's pinned archive in `vendor/`. Install Node.js and pnpm `9.15.9`, then run these commands from `desktop/`:
+Clone the complete public monorepo. Install Node.js and pnpm `9.15.9`, then run these commands from the repository root:
 
 ```sh
-pnpm install --frozen-lockfile
-pnpm run check:core
-pnpm dev
+pnpm run setup
+pnpm run check
+pnpm run dev
 ```
 
-`pnpm dev` starts the renderer, local service and Electron. The lab runtime is disabled by default and does not open port 5177. To include the lab runtime for a development session, run `XUELEARN_DESKTOP_ENABLE_LAB=1 pnpm dev`.
+`pnpm run dev` builds the current Core, starts the renderer, local service and Electron, and rebuilds Core when its source changes. The lab runtime is disabled by default and does not open port 5177. To include the lab runtime for a development session, run `XUELEARN_DESKTOP_ENABLE_LAB=1 pnpm run dev`.
 
 Running `pnpm dev` again focuses the existing XueLearn window and exits successfully before starting any watchers. To apply Electron main/preload changes or recover from a stuck development process, run:
 
@@ -28,7 +28,7 @@ pnpm desktop:restart
 
 Use `pnpm desktop:stop` to stop processes while keeping generated output, or `pnpm desktop:clean --dry-run` to preview the exact process IDs and paths. These commands support macOS and Linux and require `ps` and `lsof`. Cleanup checks process ownership and start times, and refuses to stop an unrelated application merely because it occupies a development port. If a required port remains occupied, it reports the conflict and leaves generated files intact.
 
-Core is installed from the release archive retained in this repository; no sibling Core checkout, npm publication of Core or separately deployed Core server is needed. Dependency installation must allow the native modules to build or install their platform binaries.
+Desktop's `workspace:*` dependency links to this repository's Core source. Its startup and build commands rebuild Core and check the link before use. Dependency installation must allow the native modules to build or install their platform binaries.
 
 The host is in `apps/desktop`, its service in `apps/local-runtime`, and its owned SQLite adapter in `persistence/sqlite`. Live learner workspaces are not relocated by the source split.
 
@@ -48,17 +48,15 @@ exercises the real Electron host and optional Video package in disposable profil
 ## Build an installer
 
 ```sh
-pnpm run check:core
-pnpm test
-pnpm build
-pnpm --dir apps/desktop run make
+pnpm run check
+pnpm --dir desktop/apps/desktop run make
 ```
 
-`pnpm build` compiles the application. `make` stages the local service and native dependencies, then creates the host platform's installer under `apps/desktop/out/`. Signing, notarization and installation checks on another machine are release steps; a successful source build alone does not verify an installer.
+`make` rebuilds Core and Desktop, stages the local service and native dependencies, then creates the host platform's installer under `apps/desktop/out/`. Signing, notarization and installation checks on another machine are release steps; a successful source build alone does not verify an installer.
 
 ## Update Core
 
-Maintainers choose a new Core release explicitly with `pnpm run core:pin -- /path/to/new-core.tgz`, reinstall dependencies to update the lockfile, and run Desktop's checks before releasing a new Desktop version. Core changes do not automatically change an installed application.
+Core and Desktop change in the same Git commit. Desktop automatically builds and uses the current workspace Core; no archive pin or matching Core version bump is needed. An installed application receives Core changes when a new Desktop build is released.
 
 See [public distribution and Core update steps](docs/operations/public-desktop-product.md) for the complete workflow and the files that must be committed together. [Core API verification](docs/core-api-verification.md) records the existing source tests and build verification scope.
 

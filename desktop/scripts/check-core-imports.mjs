@@ -38,7 +38,7 @@ export function checkCoreImports(root) {
     let resolved;
     try { resolved=fs.realpathSync(require.resolve(specifier)); }
     catch(error) { throw Error('Unresolvable public Core import '+specifier+' in '+references[0]+': '+error.message); }
-    if(!resolved.startsWith(core+path.sep))throw Error('Core import escaped the installed package: '+specifier);
+    if(!resolved.startsWith(core+path.sep))throw Error('Core import escaped the workspace package: '+specifier);
   }
   console.log('Checked '+files+' consumer source files and '+imports.size+' public Core imports.');
   return {files,imports:imports.size};

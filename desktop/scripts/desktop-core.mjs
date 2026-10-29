@@ -4,6 +4,7 @@ import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
 
 export const desktopRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+export const repositoryRoot=path.resolve(desktopRoot,'..');
 const require=createRequire(path.join(desktopRoot,'package.json'));
 export const coreRoot=path.dirname(path.dirname(require.resolve('@xue-learn/core/browser')));
 export const coreSources=path.join(coreRoot,'sources');
@@ -21,10 +22,10 @@ export function resolveDesktopModule(specifier,importer){
     if(raw.startsWith(path.join(desktopRoot,'src')+path.sep))return file(raw)??file(path.join(coreSources,'src',path.relative(path.join(desktopRoot,'src'),raw)));
   }
 }
-export function desktopSourcePlugin(){return {name:'desktop-installed-core',enforce:'pre',resolveId(specifier,importer){return resolveDesktopModule(specifier,importer)??null;}};}
+export function desktopSourcePlugin(){return {name:'desktop-workspace-core',enforce:'pre',resolveId(specifier,importer){return resolveDesktopModule(specifier,importer)??null;}};}
 export function desktopBuildAudit(label){return {name:'desktop-source-ownership',generateBundle(){
   const inputs=[...this.getModuleIds()].filter(id=>path.isAbsolute(id));
-  const outside=inputs.filter(id=>!path.resolve(id.split('?')[0]).startsWith(desktopRoot+path.sep));
-  if(outside.length)throw Error('Desktop build read sibling sources: '+outside.slice(0,10).join(', '));
+  const outside=inputs.filter(id=>!path.resolve(id.split('?')[0]).startsWith(repositoryRoot+path.sep));
+  if(outside.length)throw Error('Desktop build read outside the public monorepo: '+outside.slice(0,10).join(', '));
   const target=path.join(desktopRoot,'build-receipts');fs.mkdirSync(target,{recursive:true});fs.writeFileSync(path.join(target,label+'.json'),JSON.stringify({inputs,outsideRepository:[]},null,2)+'\n');
 }};}

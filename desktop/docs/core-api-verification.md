@@ -1,5 +1,7 @@
 # Desktop 公共 Core API 验证
 
+此文记录 2026-10-09 独立仓库使用固定 Core 制品时的验证结果。当前单仓库改用 `workspace:*`；现行开发和构建流程见 [Desktop 开源分发与 Core 更新](operations/public-desktop-product.md)。
+
 验证日期：2026-10-09。Desktop 使用已安装的 `@xue-learn/core@0.2.1` 固定发布制品。业务代码导入 `/runtime-contracts`、`/server/...`、`/i18n`、`/ui/...` 等公共能力名称；原 Core 源目录路径已迁移。
 
 ## 执行结果
