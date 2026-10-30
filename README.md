@@ -8,9 +8,9 @@
 
 安装包包含应用和本地服务，使用者不需要安装 Node.js 或 pnpm。打开应用后，从下拉菜单选择模型服务商或通用 OpenAI 兼容服务，填写 API Key，再从服务商实时返回的列表选择模型。DeepSeek 作为推荐选项；未提供模型列表的服务可手动填写模型 ID。随后按提示准备本机知识检索。语音、图片和联网搜索可按需配置，搜索不可用时会告知并跳过。模型 API 可能按用量计费，应用不附带 API 额度。
 
-[内部预览下载](https://github.com/syjstc/xue-learn/releases) · [首次使用与 Mac 发布说明](docs/mac-preview.md)
+[下载 Mac 安装包（Apple 芯片）](https://github.com/syjstc/xue-learn/releases/download/v0.3.0-preview.1/HaoHuiXue-0.3.0-mac-arm64.dmg) · [首次使用与 Mac 发布说明](docs/mac-preview.md)
 
-Mac 下载包必须通过应用与 DMG 的 Developer ID 签名、Apple 公证、票据及 Gatekeeper 检查。架构、哈希和校验结果见随包的 `release-manifest.json`。当前仓库的私有下载需要 GitHub 访问权限。
+Mac 下载包必须通过应用与 DMG 的 Developer ID 签名、Apple 公证、票据及 Gatekeeper 检查。发布时只上传 DMG 安装包。当前仓库的私有下载需要 GitHub 访问权限。
 
 Core and Desktop share one pnpm workspace and one lockfile. Desktop uses `workspace:*` to resolve the Core source in this repository. Every Desktop check, test, development start and full build rebuilds Core first, so a Desktop change uses the current Core without a separate version bump or archive pin.
 

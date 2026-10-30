@@ -33,12 +33,12 @@ Apple 的提交 ID 与进度保存在 `.release/notary/`。等待超时后，可
 
 ## GitHub 预览下载
 
-在私有仓库创建预发布，例如 `v0.3.0-preview.1`，上传 `.dmg`、`SHA256SUMS` 和 `release-manifest.json`。只有有权限的 GitHub 用户可以访问私有预览。
+发布页只上传对应版本和架构的 DMG。`SHA256SUMS`、`release-manifest.json`、`notarization.json` 保留在本地用于发布核验，不作为下载附件。私有阶段需要有权限的 GitHub 用户访问，公开后直接使用同一下载入口。
 
 ```sh
-gh release create v0.3.0-preview.1 .release/mac/* \
+gh release create v0.3.0-preview.1 .release/mac/HaoHuiXue-0.3.0-mac-arm64.dmg \
   --repo syjstc/xue-learn --prerelease \
-  --title '好会学 Desktop 0.3.0 · Mac 内部预览' \
+  --title '好会学 Desktop 0.3.0 · macOS' \
   --notes-file docs/releases/v0.3.0-preview.1.md
 ```
 
