@@ -4,6 +4,7 @@ module.exports={
   "watchman": false,
   "modulePathIgnorePatterns": ["<rootDir>/apps/desktop/out/", "<rootDir>/apps/desktop/.forge-resources/"],
   "testMatch": [
+    "<rootDir>/apps/local-runtime/src/renderer-shell.spec.ts",
     "<rootDir>/src/components/wizard/conversation/assessment-readiness-notice.spec.tsx",
     "<rootDir>/apps/desktop/src/provider-model-catalog.spec.ts",
     "<rootDir>/src/desktop-local/provider-quick-setup-card.spec.tsx",

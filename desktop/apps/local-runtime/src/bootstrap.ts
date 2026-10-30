@@ -2,6 +2,7 @@ import {installLearningExtensionPreservationGuards} from "@cognilearn/desktop-pe
 import {ELECTRON_LEARNING_SCHEMA_TABLES} from "@cognilearn/desktop-persistence/learning-schema";
 import {validatedLegacyLearningExtensionTables} from "@cognilearn/desktop-persistence/learning-schema";
 import {WorkspaceServiceLifecycle} from "./workspace-service-lifecycle.ts";
+import { rendererShell } from "./renderer-shell.ts";
 import {workspaceBackgroundTaskCount} from "@cognilearn/desktop-persistence/workspace-retention";
 import {createWorkspaceLearningPort} from "@cognilearn/desktop-persistence/workspace-learning";
 import "reflect-metadata";
@@ -395,18 +396,7 @@ async function startOwnedLocalRuntime(message: LocalSidecarStartMessage, ownersh
   app
     .getHttpAdapter()
     .getInstance()
-    .use((req: Request, res: Response, next: () => void) => {
-      if (req.path === "/api" || req.path.startsWith("/api/")) {
-        next();
-        return;
-      }
-      if (req.method === "GET") {
-        if (disableRendererCache) res.setHeader("Cache-Control", "no-store");
-        res.sendFile(resolve(message.rendererPath, "index.html"));
-        return;
-      }
-      next();
-    });
+    .use(rendererShell(message.rendererPath, disableRendererCache));
   await runStartupPhase("Nest application initialization", () => app.init());
   const requestedPort = Number.parseInt(
     process.env.XUELEARN_DESKTOP_SIDECAR_PORT ?? "",
