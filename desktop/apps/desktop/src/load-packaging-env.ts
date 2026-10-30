@@ -7,6 +7,7 @@ export function loadPackagingEnv({ cwd }: { cwd: string }) {
   const candidates = [
     resolve(cwd, ".env.packaging"),
     resolve(cwd, "../..", ".env.packaging"),
+    resolve(cwd, "../../..", ".env.packaging"),
   ];
   const path = candidates.find((candidate) => existsSync(candidate));
   if (!path) return { loaded: false, path: candidates[0] };

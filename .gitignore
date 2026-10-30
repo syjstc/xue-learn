@@ -8,3 +8,5 @@
 .DS_Store
 
 /.release/
+.env.packaging
+.env.packaging.local

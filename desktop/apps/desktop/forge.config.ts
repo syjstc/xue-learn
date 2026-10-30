@@ -78,6 +78,7 @@ const config = {
         }
       : undefined,
     osxNotarize:
+      process.env.XUELEARN_MANAGED_MAC_NOTARIZATION !== "1" &&
       process.env.APPLE_ID &&
       process.env.APPLE_APP_SPECIFIC_PASSWORD &&
       process.env.APPLE_TEAM_ID

@@ -11,6 +11,7 @@ import {
 } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { assertTrustedMacRelease } from "./mac-release-config.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 if (process.platform !== "darwin")
@@ -59,9 +60,8 @@ const destination = path.join(root, ".release/mac");
 await mkdir(destination, { recursive: true });
 const fileName = `HaoHuiXue-${version}-mac-${process.arch}.dmg`;
 const target = path.join(destination, fileName);
-await copyFile(installer, target);
 const sha256 = createHash("sha256")
-  .update(await readFile(target))
+  .update(await readFile(installer))
   .digest("hex");
 const signature = spawnSync("codesign", ["--display", "--verbose=4", app], {
   encoding: "utf8",
@@ -72,10 +72,55 @@ const team = details.match(/^TeamIdentifier=(.+)$/m)?.[1] ?? null;
 const notarized =
   spawnSync("xcrun", ["stapler", "validate", app], { encoding: "utf8" })
     .status === 0;
-const signatureVerified = spawnSync("codesign", ["--verify", "--deep", "--strict", app], { encoding: "utf8" }).status === 0;
-const developerIdSigned = signatureVerified && Boolean(
-  identity?.startsWith("Developer ID Application:"),
+const signatureVerified =
+  spawnSync("codesign", ["--verify", "--deep", "--strict", app], {
+    encoding: "utf8",
+  }).status === 0;
+const developerIdSigned =
+  signatureVerified &&
+  Boolean(identity?.startsWith("Developer ID Application:"));
+const dmgDetails = spawnSync(
+  "codesign",
+  ["--display", "--verbose=4", installer],
+  { encoding: "utf8" },
 );
+const dmgSignature = dmgDetails.stdout + dmgDetails.stderr;
+const installerSigned =
+  dmgSignature.includes("Authority=Developer ID Application:") &&
+  dmgSignature.includes(`TeamIdentifier=${team}\n`) &&
+  spawnSync("codesign", ["--verify", "--strict", installer], {
+    encoding: "utf8",
+  }).status === 0;
+const installerNotarized =
+  spawnSync("xcrun", ["stapler", "validate", installer], { encoding: "utf8" })
+    .status === 0;
+const gatekeeperAccepted =
+  spawnSync("spctl", ["--assess", "--type", "execute", app], {
+    encoding: "utf8",
+  }).status === 0;
+const installerGatekeeperAccepted =
+  spawnSync(
+    "spctl",
+    [
+      "--assess",
+      "--type",
+      "open",
+      "--context",
+      "context:primary-signature",
+      installer,
+    ],
+    { encoding: "utf8" },
+  ).status === 0;
+assertTrustedMacRelease({
+  developerIdSigned,
+  signatureVerified,
+  notarized,
+  installerSigned,
+  installerNotarized,
+  gatekeeperAccepted,
+  installerGatekeeperAccepted,
+});
+await copyFile(installer, target);
 const manifest = {
   product: "好会学 Desktop",
   version,
@@ -87,8 +132,12 @@ const manifest = {
   developerIdSigned,
   signatureVerified,
   notarized,
+  installerSigned,
+  installerNotarized,
+  gatekeeperAccepted,
+  installerGatekeeperAccepted,
   signingTeam: team === "not set" ? null : team,
-  distribution: developerIdSigned && notarized ? "signed" : "internal-preview",
+  distribution: "signed-and-notarized",
   setup: {
     providerSelection: "dropdown",
     recommendedProvider: "deepseek",

@@ -16,6 +16,8 @@
 ```sh
 pnpm install --frozen-lockfile
 pnpm run check
+cp .env.packaging.example .env.packaging
+# 填写已有签名身份和 Apple 公证配置后运行：
 pnpm run build:mac
 ```
 
@@ -23,9 +25,11 @@ pnpm run build:mac
 
 安装包、SHA-256 和签名状态清单在 `.release/mac/`，文件名为 `HaoHuiXue-<version>-mac-<arch>.dmg`。`arm64` 对应 Apple 芯片，`x64` 对应 Intel；当前机器只验证其本机架构，不能把另一架构标为已验收。
 
-收集脚本会核验打包资源、记录版本、架构、哈希、Developer ID 签名和公证状态。安装包不包含学习数据、API Key、私有 Video/Game/Platform 产品或额外下载的知识检索模型。
+构建流程会签名应用、提交 Apple 公证、装订应用票据，再生成并签名 DMG、完成 DMG 公证和票据装订。导出前核验应用和 DMG 的签名、公证票据以及 Gatekeeper 结果；任一项失败都会停止，不导出新下载包。安装包不包含学习数据、API Key、私有 Video/Game/Platform 产品或额外下载的知识检索模型。
 
-内部包如果没有 Developer ID 签名和公证，macOS 可能阻止打开，不应作为面向新用户的正式宣传下载版本。正式发布前配置 Forge 已支持的 `MACOS_SIGN_IDENTITY`、`APPLE_ID`、`APPLE_APP_SPECIFIC_PASSWORD`、`APPLE_TEAM_ID`，完成签名、公证及另一台 Mac 的安装验收。凭据通过环境变量或被忽略的 `.env.packaging` 提供。
+签名和公证都是下载包的必需条件，私有预览也执行相同检查。通过被忽略的 `.env.packaging` 或环境变量提供已有配置：签名身份为 `MACOS_SIGN_IDENTITY`；公证支持现有钥匙串配置 `APPLE_NOTARY_KEYCHAIN_PROFILE`、App Store Connect API 密钥文件路径及 ID/Issuer，或 Apple ID/专用密码/团队。示例见根目录 `.env.packaging.example`。私钥保留在本机原有位置，凭据不进入源码或安装包。
+
+Apple 的提交 ID 与进度保存在 `.release/notary/`。等待超时后，可用 Node 24 执行 `node scripts/build-mac-release.mjs --finish-existing` 继续现有产物的公证；相同归档会复用提交 ID。Apple 拒绝时会保留公证日志供排查。
 
 ## GitHub 预览下载
 

@@ -10,7 +10,7 @@
 
 [内部预览下载](https://github.com/syjstc/xue-learn/releases) · [首次使用与 Mac 发布说明](docs/mac-preview.md)
 
-预览包的架构、哈希、签名和公证状态见随包的 `release-manifest.json`。当前仓库的私有下载需要 GitHub 访问权限。
+Mac 下载包必须通过应用与 DMG 的 Developer ID 签名、Apple 公证、票据及 Gatekeeper 检查。架构、哈希和校验结果见随包的 `release-manifest.json`。当前仓库的私有下载需要 GitHub 访问权限。
 
 Core and Desktop share one pnpm workspace and one lockfile. Desktop uses `workspace:*` to resolve the Core source in this repository. Every Desktop check, test, development start and full build rebuilds Core first, so a Desktop change uses the current Core without a separate version bump or archive pin.
 

@@ -12,7 +12,8 @@
     "test:desktop": "pnpm --dir desktop test",
     "check": "pnpm run build:core && pnpm run test:core && pnpm run test:desktop && pnpm --dir desktop run build:desktop-renderer && pnpm --dir desktop run local-runtime:build",
     "dev": "node scripts/dev.mjs",
-    "build:mac": "pnpm --dir desktop/apps/desktop run make && node scripts/collect-mac-release.mjs",
+    "build:mac": "node scripts/build-mac-release.mjs",
+    "test:mac-release": "node --test scripts/mac-release.test.mjs",
     "check:renderer": "pnpm --dir desktop exec tsc --noEmit -p src/desktop-local/tsconfig.json",
     "check:main": "pnpm --dir desktop exec tsc --noEmit -p apps/desktop/tsconfig.json"
   }
