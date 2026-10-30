@@ -37,7 +37,7 @@ export async function bootstrapSocraticForSession(
       send: (
         event:
           | { type: "message"; delta: string; role?: "assistant" }
-          | { type: "thinking" },
+          | { type: "thinking"; delta?: string },
       ) => void | Promise<void>;
       signal?: AbortSignal;
     };

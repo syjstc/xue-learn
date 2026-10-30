@@ -57,8 +57,15 @@ export function parseCustomChatEndpointsState(
   }
 }
 
+export const MINIMAX_REASONING_EFFORTS = [
+  "low", "medium", "high", "xhigh", "max",
+] as const;
+export const minimaxReasoningEffortSchema = z.enum(MINIMAX_REASONING_EFFORTS);
+export type MinimaxReasoningEffort = z.infer<typeof minimaxReasoningEffortSchema>;
+
 export const localChatThinkingSettingsSchema = z.object({
   minimaxThinkingEnabled: z.boolean(),
+  minimaxReasoningEffort: minimaxReasoningEffortSchema.default("max"),
   ollamaThinkingEnabled: z.boolean(),
   deepseekThinkingEnabled: z.boolean(),
   openaiThinkingEnabled: z.boolean(),
@@ -73,6 +80,7 @@ export type LocalChatThinkingSettings = z.infer<
 
 export const defaultLocalChatThinkingSettings: LocalChatThinkingSettings = {
   minimaxThinkingEnabled: false,
+  minimaxReasoningEffort: "max",
   ollamaThinkingEnabled: false,
   deepseekThinkingEnabled: false,
   openaiThinkingEnabled: false,
@@ -225,6 +233,7 @@ export const localAiModelSettingsPatchSchema = z.discriminatedUnion(
         providerId: z.enum(localChatProviderIds),
         model: z.string().trim().min(1).max(200),
         minimaxThinkingEnabled: z.boolean().optional(),
+        minimaxReasoningEffort: minimaxReasoningEffortSchema.optional(),
         ollamaThinkingEnabled: z.boolean().optional(),
         deepseekThinkingEnabled: z.boolean().optional(),
         openaiThinkingEnabled: z.boolean().optional(),

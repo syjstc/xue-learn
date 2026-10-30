@@ -9,6 +9,11 @@ import { materialTeachingTreeIssues } from "../../../domain/src/material-teachin
 import { guidedImageDisplaySchema } from "../learning-systems/capabilities/material-components/guided-image/schema.js";
 import { TOPIC_CATEGORIES } from "../../../common/src/index.js";
 import { z } from "zod";
+import { modulePathContextSchema } from "../goal-creation/learning-path.js";
+import {
+  learningPathContractSchema,
+  validateLearningPath,
+} from "../../../domain/src/learning-path-contract.js";
 import { safeCourseSvgMarkupSchema } from "./safe-svg.js";
 import {
   normalizeGoalMapPlan,
@@ -553,6 +558,7 @@ export const moduleUnitPlanningBriefSchema = z.object({
   rationale: z.string().trim().min(1),
   /** Ordered sub-map phases; these are scope briefs, not committed lesson titles. */
   progression: z.array(z.string().trim().min(1)).min(1).max(8),
+  pathContract: modulePathContextSchema.optional(),
 });
 
 const defaultModuleUnitPlanningBrief = {
@@ -630,6 +636,8 @@ export const goalMapPlanFieldsSchema = z.object({
   mapStructure: mapStructureSchema,
   outOfScope: z.array(z.string()).default([]),
   prerequisitesAssumed: z.array(z.string()).default([]),
+  /** Whole-goal KACOM planning contracts; legacy plans intentionally omit these. */
+  learningPath: learningPathContractSchema.optional(),
 });
 
 /** Goal identity authored first so learners can see summary/meta immediately. */
@@ -648,6 +656,7 @@ export const goalCurriculumJourneyBindingSchema = z.object({
     .array(curriculumModuleJourneyStubSchema)
     .min(MIN_TOP_LEVEL_UNITS)
     .max(MAX_SEQUENTIAL_MODULES),
+  learningPath: learningPathContractSchema,
 });
 
 /** Provider-authored V2 shape; structural map fields are derived server-side. */
@@ -672,7 +681,23 @@ function finalizeGoalMapPlanPayload(data: unknown): unknown {
 export const goalMapPlanSchema = z.preprocess(
   finalizeGoalMapPlanPayload,
   goalMapPlanFieldsSchema,
-);
+).superRefine((plan, ctx) => {
+  if (!plan.learningPath) return;
+  const titles = plan.modules?.map((module) => module.title) ?? [];
+  if (new Set(titles).size !== titles.length) {
+    ctx.addIssue({ code: "custom", path: ["modules"], message: "Capability-path modules need distinct titles." });
+  }
+  for (const issue of validateLearningPath(plan.learningPath, {
+    moduleCount: plan.modules?.length ?? 0,
+    outcomeCount: plan.whatYouWillLearn.length,
+  }).issues) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["learningPath"],
+      message: `${issue.code} at ${issue.at}: ${issue.message}`,
+    });
+  }
+});
 
 export type GoalMapPlan = z.infer<typeof goalMapPlanFieldsSchema>;
 

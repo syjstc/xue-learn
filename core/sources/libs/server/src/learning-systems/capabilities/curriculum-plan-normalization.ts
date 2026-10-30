@@ -1,5 +1,7 @@
 import type { GoalMapPlan } from "../../llm/schemas.js";
 import type { ContentLanguageCode } from "../../llm/content-language.js";
+import { learningPathContractSchema } from "../../../../domain/src/learning-path-contract.js";
+import { pathModuleBrief } from "../../goal-creation/learning-path.js";
 import {
   MAX_MODULE_UNITS,
   MAX_SEQUENTIAL_MODULES,
@@ -174,6 +176,7 @@ export function hydrateCurriculumModule(raw: unknown): unknown {
     ? (module.plannedOutcomes as string[])
     : [];
   module.unitPlanningBrief = {
+    ...(rawBrief.pathContract ? { pathContract: rawBrief.pathContract } : {}),
     scopeSize,
     rationale:
       typeof rawBrief.rationale === "string" && rawBrief.rationale.trim()
@@ -196,9 +199,15 @@ export function preprocessGoalMapPlanPayload(data: unknown): unknown {
   const root = { ...(data as Record<string, unknown>) };
   delete root.mapScope;
   if (Array.isArray(root.modules) && root.modules.length > 0) {
+    const parsedPath = learningPathContractSchema.safeParse(root.learningPath);
+    const path = parsedPath.success ? parsedPath.data : undefined;
     const modules = root.modules
-      .slice(0, MAX_SEQUENTIAL_MODULES)
-      .map(hydrateCurriculumModule) as Array<Record<string, unknown>>;
+      .slice(0, root.learningPath ? root.modules.length : MAX_SEQUENTIAL_MODULES)
+      .map((module, index) => hydrateCurriculumModule(
+        path?.modules[index] && module && typeof module === "object"
+          ? { ...module, ...pathModuleBrief(path, path.modules[index]) }
+          : module,
+      )) as Array<Record<string, unknown>>;
     root.schemaVersion = 2;
     root.modules = modules;
     root.majorAreas = modules.map((module) => ({
@@ -208,14 +217,18 @@ export function preprocessGoalMapPlanPayload(data: unknown): unknown {
       estimatedChildCount: module.estimatedUnitCount,
       groupingAxis: "strict_sequential_milestone",
     }));
-    const estimatedLeafUnits = Math.max(1, modules.length);
+    const estimatedLeafUnits = path
+      ? path.modules.reduce((sum, module) => sum + module.units.length, 0)
+      : Math.max(1, modules.length);
     root.mapStructure = {
       recommendedDepth: 2,
       estimatedLeafUnits,
-      layeringStrategy:
-        "Strict ordered modules; each module expands only after unlock.",
-      nestingRationale:
-        "Course milestones stay compact while their lesson units are generated just in time.",
+      layeringStrategy: path
+        ? "Whole-goal module and lesson contracts; prerequisite-ordered execution."
+        : "Strict ordered modules; each module expands only after unlock.",
+      nestingRationale: path
+        ? "All capability dependencies are planned up front; teaching content remains on demand."
+        : "Course milestones stay compact while their lesson units are generated just in time.",
     };
     if (!Array.isArray(root.whatYouWillLearn)) {
       root.whatYouWillLearn = [

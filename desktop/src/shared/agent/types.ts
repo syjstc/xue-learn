@@ -111,6 +111,7 @@ export type ChatDisplayMessage = {
   toolUi?: PendingToolUi;
   streaming?: boolean;
   thinking?: boolean;
+  thinkingContent?: string;
   knowledgeActivity?: import("@xue-learn/core/domain").KnowledgeActivity;
   contextSnapshot?: AgentMessageContextSnapshot;
 };

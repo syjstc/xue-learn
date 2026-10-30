@@ -23,6 +23,8 @@ import { AgentChatWorkspace } from "@/components/agent/agent-chat-workspace";
 import type { GoalCreationLiveProgress } from "@/components/agent/agent-chat";
 import type { PendingGoalStart } from "@/components/agent/assistant-provider";
 import { GoalCreationRetryButton } from "@/components/agent/goal-creation-retry-button";
+import { GoalPlanStreamCard } from "@/components/agent/goal-plan-stream-card";
+import { goalPlanPreviewFromEvents } from "@/shared/agent/goal-plan-stream-preview";
 import { Button } from "@xue-learn/core/ui/button";
 import { useConfirm } from "@/hooks/use-confirm";
 import {
@@ -232,10 +234,12 @@ const DRAFT_STATUS_KEYS: Record<string, TranslationKey> = {
 
 function AutomaticCreationFeed({
   events,
+  planningEvents,
   session,
   actionBusy = false,
 }: {
   events: Array<GoalCreationSessionEvent & { text: string }>;
+  planningEvents: readonly GoalCreationSessionEvent[];
   session: GoalCreationSession;
   actionBusy?: boolean;
 }) {
@@ -244,6 +248,10 @@ function AutomaticCreationFeed({
   const [now, setNow] = useState(() => Date.now());
   const running = session.status === "running";
   const needsRetry = goalCreationNeedsRetry(session);
+  const planProgress = useMemo(
+    () => goalPlanPreviewFromEvents(planningEvents),
+    [planningEvents],
+  );
   const latestEvent = events.at(-1);
   const stepKey = goalCreationStepKey({
     sequence: latestEvent?.sequence,
@@ -444,7 +452,8 @@ function AutomaticCreationFeed({
                   {t(
                     (DRAFT_STATUS_KEYS[
                       module.status === "queued" ? "researching" : module.status
-                    ] ?? "goalCreation.draftStatus.researching") as TranslationKey,
+                    ] ??
+                      "goalCreation.draftStatus.researching") as TranslationKey,
                   )}
                 </span>
               </li>
@@ -452,6 +461,11 @@ function AutomaticCreationFeed({
           </ul>
         ) : null}
       </div>
+      {session.phase === "planning" && planProgress && !needsRetry ? (
+        <div className="shrink-0">
+          <GoalPlanStreamCard preview={planProgress.preview} />
+        </div>
+      ) : null}
       {needsRetry ? (
         <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-destructive/20 bg-destructive/5 px-6 py-10">
           <p className="max-w-sm text-center text-sm leading-6 text-foreground">
@@ -527,10 +541,7 @@ export function GoalCreationFlow({
     displaySession?.phase === "goal_scope"
   ) {
     goalCreationConfirmedRef.current = false;
-  } else if (
-    displaySession &&
-    displaySession.phase !== "confirmation"
-  ) {
+  } else if (displaySession && displaySession.phase !== "confirmation") {
     goalCreationConfirmedRef.current = true;
   }
   const loading = goalId ? goalQuery.isPending : activeQuery.isPending;
@@ -778,10 +789,7 @@ export function GoalCreationFlow({
   const sessionActions = (
     <>
       {session.actions.canRetry ? (
-        <GoalCreationRetryButton
-          sessionId={session.id}
-          disabled={isBusy}
-        />
+        <GoalCreationRetryButton sessionId={session.id} disabled={isBusy} />
       ) : null}
       {session.actions.canStop ? (
         <Button
@@ -945,6 +953,7 @@ export function GoalCreationFlow({
           {showLiveFeed ? (
             <AutomaticCreationFeed
               events={visibleEvents}
+              planningEvents={eventsQuery.data?.events ?? []}
               session={session}
               actionBusy={isBusy}
             />

@@ -24,7 +24,8 @@
     "build:plugin-sdk": "node scripts/build-plugin-sdk.mjs",
     "build:example-plugin": "node scripts/build-example-plugin.mjs",
     "test:plugins": "pnpm run check:core && jest --config jest.config.cjs --runInBand --watchman=false packages/plugin-sdk/src apps/desktop/src/plugins src/features/plugins src/desktop-local/local-embedding-setup-gate.spec.tsx apps/desktop/src/packaged-resource-audit.spec.ts",
-    "verify:plugins": "node scripts/verify-desktop-plugins.mjs"
+    "verify:plugins": "node scripts/verify-desktop-plugins.mjs",
+    "verify:plugin-ui": "node scripts/verify-plugin-ui.mjs"
   },
   "dependencies": {
     "@astral-sh/ruff-wasm-nodejs": "0.16.0",

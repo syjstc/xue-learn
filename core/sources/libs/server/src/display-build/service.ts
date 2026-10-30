@@ -86,10 +86,11 @@ export class DisplayBuildRuntime {
   private async notify(run: DisplayBuildRun) {
     try { await this.options.onUpdate?.(run); } catch { /* Observers cannot invalidate committed work. */ }
   }
-  async retry(id: string, ownerUserId: string): Promise<DisplayBuildRun> {
+  async retry(id: string, ownerUserId: string, options: {onlyIfFailed?: boolean} = {}): Promise<DisplayBuildRun> {
     for (;;) {
       const run = await this.getOwned(id, ownerUserId);
       if (!run) throw Error("Display build not found");
+      if (options.onlyIfFailed && run.status !== "failed") return run;
       if (run.status === "ready" || run.status === "running" || run.status === "pending") return run;
       const next = {...run, status: "pending" as const, error: undefined, leaseToken: undefined, leaseUntil: undefined,
         revision: run.revision + 1, updatedAt: Date.now()};

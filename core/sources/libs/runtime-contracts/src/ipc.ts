@@ -120,6 +120,10 @@ export interface XueLearnDesktopBridge {
     register(html: string): Promise<HtmlPlaygroundRegistration>;
     release(documentId: string): Promise<void>;
   };
+  /** Optional until Desktop is restarted after an update. Uses its built-in Chromium. */
+  readingPdf?: {
+    render(input: {html: string; layout: "mobile" | "desktop"}): Promise<Uint8Array>;
+  };
   personalSync: {
     /** Optional while a running desktop preload is upgraded by an app restart. */
     getProgress?(): Promise<PersonalSyncProgress>;

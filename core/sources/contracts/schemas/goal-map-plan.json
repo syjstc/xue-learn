@@ -11,34 +11,61 @@
     "mapStructure"
   ],
   "properties": {
-    "schemaVersion": { "type": "integer", "enum": [1, 2] },
-    "refinedTitle": { "type": "string" },
-    "domainAnalysis": { "$ref": "#/$defs/DomainAnalysis" },
-    "topicOverview": { "type": "string" },
+    "schemaVersion": {
+      "type": "integer",
+      "enum": [
+        1,
+        2
+      ]
+    },
+    "refinedTitle": {
+      "type": "string"
+    },
+    "domainAnalysis": {
+      "$ref": "#/$defs/DomainAnalysis"
+    },
+    "topicOverview": {
+      "type": "string"
+    },
     "whatYouWillLearn": {
       "type": "array",
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      }
     },
     "majorAreas": {
       "type": "array",
-      "items": { "$ref": "#/$defs/MajorArea" }
+      "items": {
+        "$ref": "#/$defs/MajorArea"
+      }
     },
     "modules": {
       "type": "array",
       "minItems": 1,
       "maxItems": 8,
-      "items": { "$ref": "#/$defs/CurriculumModule" }
+      "items": {
+        "$ref": "#/$defs/CurriculumModule"
+      }
     },
-    "mapStructure": { "$ref": "#/$defs/MapStructure" },
+    "mapStructure": {
+      "$ref": "#/$defs/MapStructure"
+    },
     "outOfScope": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "default": []
     },
     "prerequisitesAssumed": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "default": []
+    },
+    "learningPath": {
+      "$ref": "#/$defs/LearningPathContract"
     }
   },
   "$defs": {
@@ -64,12 +91,22 @@
         "modeClarification"
       ],
       "properties": {
-        "field": { "type": "string" },
-        "subdomain": { "type": "string" },
-        "learningMode": { "$ref": "#/$defs/LearningMode" },
+        "field": {
+          "type": "string"
+        },
+        "subdomain": {
+          "type": "string"
+        },
+        "learningMode": {
+          "$ref": "#/$defs/LearningMode"
+        },
         "domainTag": {
           "type": "string",
-          "enum": ["stem", "humanities", "general"]
+          "enum": [
+            "stem",
+            "humanities",
+            "general"
+          ]
         },
         "topicCategory": {
           "type": "string",
@@ -89,15 +126,24 @@
             "general"
           ]
         },
-        "modeClarification": { "type": "string" },
+        "modeClarification": {
+          "type": "string"
+        },
         "alternateInterpretations": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["label", "whyNotChosen"],
+            "required": [
+              "label",
+              "whyNotChosen"
+            ],
             "properties": {
-              "label": { "type": "string" },
-              "whyNotChosen": { "type": "string" }
+              "label": {
+                "type": "string"
+              },
+              "whyNotChosen": {
+                "type": "string"
+              }
             }
           },
           "default": []
@@ -113,29 +159,51 @@
         "nestingRationale"
       ],
       "properties": {
-        "recommendedDepth": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "recommendedDepth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
         "estimatedLeafUnits": {
           "type": "integer",
           "minimum": 1,
           "maximum": 200
         },
-        "layeringStrategy": { "type": "string" },
-        "nestingRationale": { "type": "string" }
+        "layeringStrategy": {
+          "type": "string"
+        },
+        "nestingRationale": {
+          "type": "string"
+        }
       }
     },
     "MajorArea": {
       "type": "object",
-      "required": ["title", "description"],
+      "required": [
+        "title",
+        "description"
+      ],
       "properties": {
-        "title": { "type": "string" },
-        "description": { "type": "string" },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
         "mapRole": {
           "type": "string",
-          "enum": ["leaf", "branch"],
+          "enum": [
+            "leaf",
+            "branch"
+          ],
           "default": "leaf"
         },
-        "estimatedChildCount": { "type": "integer" },
-        "groupingAxis": { "type": "string" }
+        "estimatedChildCount": {
+          "type": "integer"
+        },
+        "groupingAxis": {
+          "type": "string"
+        }
       }
     },
     "CurriculumModule": {
@@ -152,26 +220,38 @@
         "dependsOnPrevious"
       ],
       "properties": {
-        "title": { "type": "string" },
-        "summary": { "type": "string" },
-        "objective": { "type": "string" },
+        "title": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "objective": {
+          "type": "string"
+        },
         "plannedOutcomes": {
           "type": "array",
           "minItems": 1,
           "maxItems": 6,
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "entryFoundationBriefs": {
           "type": "array",
           "maxItems": 6,
-          "items": { "$ref": "#/$defs/EntryFoundationBrief" },
+          "items": {
+            "$ref": "#/$defs/EntryFoundationBrief"
+          },
           "default": []
         },
         "exitCapabilityBriefs": {
           "type": "array",
           "minItems": 1,
           "maxItems": 8,
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "estimatedUnitCount": {
           "type": "integer",
@@ -181,23 +261,40 @@
         "unitPlanningBrief": {
           "$ref": "#/$defs/ModuleUnitPlanningBrief"
         },
-        "dependsOnPrevious": { "type": "string" }
+        "dependsOnPrevious": {
+          "type": "string"
+        }
       }
     },
     "ModuleUnitPlanningBrief": {
       "type": "object",
-      "required": ["scopeSize", "rationale", "progression"],
+      "required": [
+        "scopeSize",
+        "rationale",
+        "progression"
+      ],
       "properties": {
         "scopeSize": {
           "type": "string",
-          "enum": ["compact", "standard", "large"]
+          "enum": [
+            "compact",
+            "standard",
+            "large"
+          ]
         },
-        "rationale": { "type": "string" },
+        "rationale": {
+          "type": "string"
+        },
         "progression": {
           "type": "array",
           "minItems": 1,
           "maxItems": 8,
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
+        },
+        "pathContract": {
+          "$ref": "#/$defs/ModulePathContext"
         }
       }
     },
@@ -211,12 +308,22 @@
         "verificationDimensions"
       ],
       "properties": {
-        "ref": { "type": "string", "pattern": "^ef_[1-9]\\d*$" },
-        "title": { "type": "string" },
-        "rationale": { "type": "string" },
+        "ref": {
+          "type": "string",
+          "pattern": "^ef_[1-9]\\d*$"
+        },
+        "title": {
+          "type": "string"
+        },
+        "rationale": {
+          "type": "string"
+        },
         "criticality": {
           "type": "string",
-          "enum": ["critical", "recommended"]
+          "enum": [
+            "critical",
+            "recommended"
+          ]
         },
         "verificationDimensions": {
           "type": "array",
@@ -224,10 +331,424 @@
           "maxItems": 3,
           "items": {
             "type": "string",
-            "enum": ["memory", "understanding", "application"]
+            "enum": [
+              "memory",
+              "understanding",
+              "application"
+            ]
           }
         }
       }
+    },
+    "LearningPathContract": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "number",
+          "const": 1
+        },
+        "entities": {
+          "minItems": 1,
+          "maxItems": 240,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema0"
+          }
+        },
+        "baseline": {
+          "$ref": "#/$defs/__schema3"
+        },
+        "goal": {
+          "type": "object",
+          "properties": {
+            "outcomes": {
+              "minItems": 1,
+              "maxItems": 12,
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/__schema8"
+              }
+            },
+            "assessment": {
+              "$ref": "#/$defs/__schema10"
+            }
+          },
+          "required": [
+            "outcomes",
+            "assessment"
+          ]
+        },
+        "modules": {
+          "minItems": 1,
+          "maxItems": 8,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema11"
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "entities",
+        "baseline",
+        "goal",
+        "modules"
+      ]
+    },
+    "ModulePathContext": {
+      "type": "object",
+      "properties": {
+        "entities": {
+          "minItems": 1,
+          "maxItems": 240,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema0"
+          }
+        },
+        "baseline": {
+          "$ref": "#/$defs/__schema3"
+        },
+        "contract": {
+          "$ref": "#/$defs/__schema11"
+        }
+      },
+      "required": [
+        "entities",
+        "baseline",
+        "contract"
+      ]
+    },
+    "__schema0": {
+      "type": "object",
+      "properties": {
+        "semanticKey": {
+          "$ref": "#/$defs/__schema1"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "atom",
+            "concept",
+            "skill",
+            "competency"
+          ]
+        },
+        "title": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "description": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "scope": {
+          "$ref": "#/$defs/__schema2"
+        }
+      },
+      "required": [
+        "semanticKey",
+        "kind",
+        "title",
+        "description",
+        "scope"
+      ]
+    },
+    "__schema1": {
+      "type": "string",
+      "maxLength": 120,
+      "pattern": "^[a-z][a-z0-9_.:-]*$"
+    },
+    "__schema2": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 600
+    },
+    "__schema3": {
+      "maxItems": 24,
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/__schema4"
+      }
+    },
+    "__schema4": {
+      "type": "object",
+      "properties": {
+        "entityKey": {
+          "$ref": "#/$defs/__schema1"
+        },
+        "dimensions": {
+          "$ref": "#/$defs/__schema5"
+        },
+        "threshold": {
+          "$ref": "#/$defs/__schema7"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "reported",
+            "unknown"
+          ]
+        },
+        "rationale": {
+          "$ref": "#/$defs/__schema2"
+        }
+      },
+      "required": [
+        "entityKey",
+        "dimensions",
+        "threshold",
+        "status",
+        "rationale"
+      ]
+    },
+    "__schema5": {
+      "minItems": 1,
+      "maxItems": 7,
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/__schema6"
+      }
+    },
+    "__schema6": {
+      "type": "string",
+      "enum": [
+        "memory",
+        "understanding",
+        "application",
+        "transfer",
+        "fluency",
+        "stability",
+        "independence"
+      ]
+    },
+    "__schema7": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 1
+    },
+    "__schema8": {
+      "type": "object",
+      "properties": {
+        "outcomeRef": {
+          "type": "string",
+          "pattern": "^o_[1-9]\\d*$"
+        },
+        "requires": {
+          "minItems": 1,
+          "maxItems": 8,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema9"
+          }
+        }
+      },
+      "required": [
+        "outcomeRef",
+        "requires"
+      ]
+    },
+    "__schema9": {
+      "type": "object",
+      "properties": {
+        "entityKey": {
+          "$ref": "#/$defs/__schema1"
+        },
+        "dimensions": {
+          "$ref": "#/$defs/__schema5"
+        },
+        "threshold": {
+          "$ref": "#/$defs/__schema7"
+        }
+      },
+      "required": [
+        "entityKey",
+        "dimensions",
+        "threshold"
+      ]
+    },
+    "__schema10": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "criteria": {
+          "minItems": 1,
+          "maxItems": 6,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema2"
+          }
+        },
+        "assistance": {
+          "type": "string",
+          "enum": [
+            "independent",
+            "light_hint",
+            "guided"
+          ]
+        },
+        "context": {
+          "type": "string",
+          "enum": [
+            "same",
+            "near",
+            "far"
+          ]
+        }
+      },
+      "required": [
+        "task",
+        "criteria",
+        "assistance",
+        "context"
+      ]
+    },
+    "__schema11": {
+      "type": "object",
+      "properties": {
+        "moduleRef": {
+          "type": "string",
+          "pattern": "^m_[1-8]$"
+        },
+        "requires": {
+          "maxItems": 16,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema12"
+          }
+        },
+        "provides": {
+          "minItems": 1,
+          "maxItems": 8,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema9"
+          }
+        },
+        "assessment": {
+          "$ref": "#/$defs/__schema10"
+        },
+        "rationale": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "units": {
+          "minItems": 1,
+          "maxItems": 20,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema13"
+          }
+        }
+      },
+      "required": [
+        "moduleRef",
+        "requires",
+        "provides",
+        "assessment",
+        "rationale",
+        "units"
+      ]
+    },
+    "__schema12": {
+      "type": "object",
+      "properties": {
+        "entityKey": {
+          "$ref": "#/$defs/__schema1"
+        },
+        "dimensions": {
+          "$ref": "#/$defs/__schema5"
+        },
+        "threshold": {
+          "$ref": "#/$defs/__schema7"
+        },
+        "source": {
+          "type": "string",
+          "pattern": "^(baseline|u_[1-8]_[1-9]\\d*)$"
+        },
+        "rationale": {
+          "$ref": "#/$defs/__schema2"
+        }
+      },
+      "required": [
+        "entityKey",
+        "dimensions",
+        "threshold",
+        "source",
+        "rationale"
+      ]
+    },
+    "__schema13": {
+      "type": "object",
+      "properties": {
+        "unitRef": {
+          "type": "string",
+          "pattern": "^u_[1-8]_[1-9]\\d*$"
+        },
+        "title": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "summary": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "difficulty": {
+          "type": "string",
+          "enum": [
+            "easy",
+            "medium",
+            "hard"
+          ]
+        },
+        "milestoneRole": {
+          "type": "string",
+          "enum": [
+            "introduce",
+            "practice",
+            "integrate",
+            "verify"
+          ]
+        },
+        "requires": {
+          "maxItems": 12,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema12"
+          }
+        },
+        "provides": {
+          "minItems": 1,
+          "maxItems": 8,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema9"
+          }
+        },
+        "supports": {
+          "minItems": 1,
+          "maxItems": 4,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema1"
+          }
+        },
+        "assessment": {
+          "$ref": "#/$defs/__schema10"
+        },
+        "rationale": {
+          "$ref": "#/$defs/__schema2"
+        }
+      },
+      "required": [
+        "unitRef",
+        "title",
+        "summary",
+        "difficulty",
+        "milestoneRole",
+        "requires",
+        "provides",
+        "supports",
+        "assessment",
+        "rationale"
+      ]
     }
   }
 }

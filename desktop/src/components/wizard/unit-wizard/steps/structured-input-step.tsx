@@ -20,12 +20,16 @@ import { AssistantSectionMaterial } from "../../unit-sections/assistant-section-
 import { ConversationTypingIndicator } from "../../conversation/learning-conversation-surface.tsx";
 import { getAuthUser } from "@/shared/auth";
 import { assistantCourseClientContentRevision } from "@/shared/domain/assistant-course-feed";
+import { DesktopPluginSlot } from "@/features/plugins/ui-extensions";
+import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
+import { ReadingSectionBody } from "@/features/reading/reading-course-view";
 
 type Props = {
   model: UnitWizardModel;
   initialSectionId?: string | null;
   initialSectionAnchor?: string | null;
   conversationMode?: boolean;
+  bodyMode?: "chat" | "reading";
   onActiveSectionChange?: (sectionId: string) => void;
 };
 
@@ -65,6 +69,7 @@ export function StructuredInputStep({
   initialSectionId,
   initialSectionAnchor,
   conversationMode = false,
+  bodyMode = "chat",
   onActiveSectionChange,
 }: Props) {
   const t = useT();
@@ -127,7 +132,8 @@ export function StructuredInputStep({
   const persistedSections = sections.filter((section) => !section.legacy);
   const hasSections = persistedSections.length > 0;
   const usesSectionLearning =
-    !isMicro && (hasSections || !material || isContextLoading("material"));
+    hasSections || (!isMicro && (!material || isContextLoading("material")));
+  const readingBody = bodyMode === "reading" && isDesktopLocalRuntime();
   const usesSectionStyleMaterial = shouldUseSectionStyleMaterial({
     conversationMode,
     hasSections,
@@ -301,7 +307,7 @@ export function StructuredInputStep({
                           className="shrink-0"
                           onClick={() => {
                             if (
-                              (hasSections && firstSectionReady) ||
+                              (hasSections && (readingBody || firstSectionReady)) ||
                               Boolean(material)
                             )
                               setStructuredTab("material");
@@ -331,6 +337,8 @@ export function StructuredInputStep({
               className={`scroll-mt-16 relative min-w-0 space-y-4 ${material && (sq || cornell) ? "pb-20" : ""}`}
               role="tabpanel"
             >
+              <DesktopPluginSlot slot="unit.content.actions" context={{ goalId, unitId, sectionId: initialSectionId ?? undefined }} />
+              <DesktopPluginSlot slot="unit.content.panels" context={{ goalId, unitId, sectionId: initialSectionId ?? undefined }} />
               {usesSectionLearning ? (
                 <>
                   {hasSections ? (
@@ -357,6 +365,7 @@ export function StructuredInputStep({
                         void finishMaterialReading()
                       }
                       presentationMode={conversationMode ? "chat" : "reading"}
+                      bodyMode={bodyMode}
                       miniTestDrafts={sectionMiniTestDrafts}
                       onMiniTestDraftChange={setSectionMiniTestDraft}
                       onActiveSectionChange={onActiveSectionChange}
@@ -387,6 +396,11 @@ export function StructuredInputStep({
                     </>
                   )}
                 </>
+              ) : readingBody ? (
+                <ReadingSectionBody unitId={unitId} sectionId={unitId} goalId={goalId}
+                  continuing={materialInteractionBusy}
+                  onContinue={() => void finishMaterialReading()}
+                  continueLabel={t("wizard.steps.structured.finishReading")} />
               ) : (
                 <>
                   {!conversationMode && !usesSectionStyleMaterial ? (
@@ -568,7 +582,7 @@ export function StructuredInputStep({
             </section>
           )}
 
-          {structuredTab === "questions" && sq && material && (
+          {structuredTab === "questions" && sq && (material || hasSections) && (
             <section
               ref={questionsPanelRef}
               className="scroll-mt-16 min-w-0 space-y-4"

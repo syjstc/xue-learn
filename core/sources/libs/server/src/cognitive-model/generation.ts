@@ -11,6 +11,7 @@ import { retrieveContextForUnitWithSources } from "../rag/retrieve.js";
 import { retrieveOrSearchWebKnowledge } from "../search/web-knowledge.js";
 import { quizEvidenceContractIssues } from "./quiz-evidence.js";
 import { learningTargetLessonFitIssues } from "./target-lesson-fit.js";
+import { unitPathPrompt, validateUnitPathContract, type BoundUnitPath } from "./path-contract.js";
 
 const generatedEntityRef = z.string().regex(/^e_\d+$/);
 const externalEntityRef = z.string().regex(/^x_\d+$/);
@@ -615,6 +616,7 @@ export function buildExternalEntityCatalog(params: {
   currentCurriculumKey: string;
   predecessorExitEntityIds: ReadonlySet<string>;
   maximumEntities?: number;
+  preferredSemanticKeys?: ReadonlySet<string>;
 }): ExternalCognitiveEntityReference[] {
   const seenIds = new Set<string>();
   const seenStableKeys = new Set<string>();
@@ -624,6 +626,8 @@ export function buildExternalEntityCatalog(params: {
     )
     .sort(
       (left, right) =>
+        Number(params.preferredSemanticKeys?.has(right.semanticKey ?? "")) -
+          Number(params.preferredSemanticKeys?.has(left.semanticKey ?? "")) ||
         Number(params.predecessorExitEntityIds.has(right.id)) -
           Number(params.predecessorExitEntityIds.has(left.id)) ||
         compareStableText(left.stableKey, right.stableKey) ||
@@ -890,6 +894,7 @@ export type UnitCognitiveModelGenerationParams = {
   contentSummary: string;
   planningOutcomes?: Array<{ ref: string; label: string }>;
   planningOutcomeRefs?: string[];
+  pathContract?: BoundUnitPath;
   moduleContext?: {
     title: string;
     objective: string;
@@ -969,14 +974,14 @@ export function normalizeUnitPlanningOutcomeContext(
 }
 
 export function unitCognitiveEntityBudget(
-  _params: Pick<UnitCognitiveModelGenerationParams, "moduleContext">,
+  params: Pick<UnitCognitiveModelGenerationParams, "moduleContext" | "pathContract">,
 ): number {
   const targetBudget = 4;
   // Keep each lesson compact, but do not let entities authored by earlier
   // lessons make a later lesson's contract impossible to satisfy. The module
   // total is planning guidance; the per-lesson bound is the hard generation
   // safeguard.
-  return Math.min(18, targetBudget * 3);
+  return Math.min(18, Math.max(targetBudget * 3, params.pathContract?.entities.length ?? 0));
 }
 
 export function validateUnitCognitiveEntityBudget(
@@ -1003,12 +1008,15 @@ export function prepareUnitCognitiveModelAuthoring(
   const targetBudget = 4;
   const entityBudget = unitCognitiveEntityBudget(params);
   const externalEntities = buildExternalEntityCatalog({
-    entities: params.existingEntities,
+    entities: params.existingEntities.filter((entity) =>
+      !params.pathContract?.otherPlannedEntityKeys.includes(entity.semanticKey ?? ""),
+    ),
     currentCurriculumKey: params.currentCurriculumKey,
     predecessorExitEntityIds: new Set(
       params.predecessorExits.map((entity) => entity.id),
     ),
     maximumEntities: 60 - entityBudget,
+    preferredSemanticKeys: new Set(params.pathContract?.entities.map((entity) => entity.semanticKey)),
   });
   const externalById = new Map(
     externalEntities.map((entity) => [entity.id, entity]),
@@ -1042,6 +1050,8 @@ ${
 
 Outcomes assigned to this lesson:
 ${params.planningOutcomeRefs?.join(", ") || "None (legacy unbound lesson)"}
+
+${unitPathPrompt(params.pathContract)}
 
 ${
   params.moduleContext
@@ -1205,6 +1215,7 @@ export async function generateUnitCognitiveModel(
   );
   validateUnitCognitiveEntityBudget(proposal, entityBudget);
   validateProposalPlanningOutcomeCoverage(proposal, params);
+  validateUnitPathContract(proposal, externalEntities, params.pathContract);
   validateExternalEntityReferences(proposal, externalEntities);
   const lessonFit = learningTargetLessonFitIssues(proposal.learningTargets, {
     contentLanguage: params.contentLanguage,

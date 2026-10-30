@@ -1,4 +1,5 @@
 import { learnerFacingContentIssues, learnerFacingTextIssue } from "./learner-facing-content.js";
+import {analyzeFormula, matchFormulaTrees} from '../../formula-analysis/src/index.js';
 
 const reportedText = "外力功记账和配置参照的失效条件，已有hooke_limits中的模型边界直接引用，不重教定义。";
 
@@ -64,6 +65,21 @@ describe("learner-facing course content", () => {
     expect(learnerFacingContentIssues({ language: "text", code: reportedText }).map(issue => issue.path)).toEqual([["code"]]);
     expect(learnerFacingContentIssues({ intent: { title: "已有hooke_limits中的边界", composition: "Do not reteach the definition.", parts: [{ id: "part_1", label: "参见 lt_1", description: "Internal image instructions" }] } }).map(issue => issue.path))
       .toEqual([["intent", "title"], ["intent", "parts", 0, "label"]]);
+  });
+
+  it('accepts host-generated formula correspondence while still checking visible derivation labels', () => {
+    const before = analyzeFormula('x + 1'), after = analyzeFormula('y^2');
+    const correspondence = matchFormulaTrees(before, after);
+    expect(correspondence.unmatchedBefore.length).toBeGreaterThan(0);
+    expect(correspondence.unmatchedAfter.length).toBeGreaterThan(0);
+    const value = {document: {root: {payload: {derived: {steps: [{before, after, transitions: [{correspondence}]}]}}}}};
+    const saved = JSON.stringify(value);
+    expect(learnerFacingContentIssues(value)).toEqual([]);
+    expect(JSON.stringify(value)).toBe(saved);
+    const transition = value.document.root.payload.derived.steps[0]!.transitions[0]!;
+    Object.assign(transition, {label: `参见 ${correspondence.unmatchedBefore[0]}`});
+    expect(learnerFacingContentIssues(value).map(issue => issue.path))
+      .toEqual([['document', 'root', 'payload', 'derived', 'steps', 0, 'transitions', 0, 'label']]);
   });
 
   it.each([

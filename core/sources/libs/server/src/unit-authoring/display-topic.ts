@@ -9,6 +9,8 @@ import { enqueueDisplayMaterial } from "../display-build/material.js";
 import { getDisplayBuildRuntime } from "../display-build/service.js";
 import { topicMaterialCommitProviderBindingSchema, type TopicMaterialCommit } from "../llm/material-topic.js";
 import { guidedImageTopicTool } from "./guided-image-topic.js";
+import {toJsonSchema} from "@langchain/core/utils/json_schema";
+import {normalizeMinimaxToolValue} from "../providers/llm/vendors/minimax/tool-arguments.js";
 
 export const displayBuildTopicSchema = z.object({
   topicId: z.string().trim().min(1), display: displayBuildIntentSchema,
@@ -25,7 +27,7 @@ function buildIssues(intent: DisplayBuildIntent, manifests: readonly DisplayPlug
 }
 
 export function createDisplayTopicSchema<T>(base: z.ZodType<T>, manifests: readonly DisplayPluginManifest[], expectedTopicId: string) {
-  return z.union([displayBuildTopicSchema, base]).superRefine((value, ctx) => {
+  const schema = z.union([displayBuildTopicSchema, base]).superRefine((value, ctx) => {
     const candidate = value as {topicId?: string; display?: Record<string, unknown>};
     if (candidate.topicId !== expectedTopicId) ctx.addIssue({code: "custom", message: `Commit only topic ${expectedTopicId}`});
     if (manifests.length && candidate.display && !["display", "display_build", "guided_image_intent"].includes(String(candidate.display.type)))
@@ -37,6 +39,19 @@ export function createDisplayTopicSchema<T>(base: z.ZodType<T>, manifests: reado
         ctx.addIssue({code: "custom", path: ["display", "document"], message});
     }
   });
+  return z.preprocess((value, ctx) => {
+    const display = (value as {display?: {type?: string}} | null)?.display;
+    if (display?.type === "display") {
+      const parsed = materialDisplayBlockSchema.safeParse(display);
+      if (!parsed.success) {
+        // Keep the precise document paths outside the display/build union;
+        // otherwise the repair prompt sees only a top-level "Invalid input".
+        for (const issue of parsed.error.issues) ctx.addIssue({...issue, path: ["display", ...issue.path]});
+        return z.NEVER;
+      }
+    }
+    return value;
+  }, schema);
 }
 
 export function createDisplayTopicTool(manifests: readonly DisplayPluginManifest[], imageFirst: boolean) {
@@ -49,9 +64,29 @@ export function createDisplayTopicTool(manifests: readonly DisplayPluginManifest
   const displays: z.ZodType[] = manifests.length ? [materialDisplayBlockSchema,
     ...(imageFirst ? [guidedImageTopicTool.schema.shape.display.options[0]!] : []), ...builds] : [...base.shape.display.options, ...builds];
   const display = displays.length === 1 ? displays[0]! : z.union(displays as [z.ZodType, z.ZodType, ...z.ZodType[]]);
+  const schema = base.extend({display, cues: z.array(topicMaterialCommitProviderBindingSchema.shape.cues.element)});
+  const binding = toJsonSchema(schema);
   return {name: "commit_topic_material" as const,
     description: "Commit one topic using installed display plugins and their exact schemas. Complex displays use display_build with empty cues; the host persists a background component task without blocking the next topic. Other displays retain complete narration.",
-    schema: base.extend({display, cues: z.array(topicMaterialCommitProviderBindingSchema.shape.cues.element)})};
+    schema,
+    normalizeMinimaxArgs: (args: Record<string, unknown>): Record<string, unknown> => {
+      const normalized = normalizeMinimaxToolValue(args, binding) as Record<string, unknown>;
+      const block = normalized.display as {type?: string; document?: import("../../../display/src/types.js").DisplayDocument} | undefined;
+      if (block?.type !== "display" || !block.document || !Array.isArray(block.document.plugins)) return normalized;
+      const locked = manifests.filter(manifest => block.document!.plugins.some(lock => lock?.id === manifest.id && lock.version === manifest.version));
+      const visit = (node: unknown, depth: number): unknown => {
+        if (!node || typeof node !== "object" || Array.isArray(node) || depth > 64) return node;
+        const value = node as Record<string, unknown>;
+        const matches = locked.flatMap(manifest => manifest.components.filter(component => component.kind === value.kind && component.version === value.version));
+        return {...value,
+          ...(Object.hasOwn(value, "payload") && matches.length === 1 && matches[0]!.payloadSchema !== undefined ? {payload: normalizeMinimaxToolValue(value.payload, matches[0]!.payloadSchema)} : {}),
+          ...(Array.isArray(value.children) ? {children: value.children.map(child => visit(child, depth + 1))} : {}),
+          ...(value.slots && typeof value.slots === "object" && !Array.isArray(value.slots) ? {slots: Object.fromEntries(Object.entries(value.slots).map(([name, children]) =>
+            [name, Array.isArray(children) ? children.map(child => visit(child, depth + 1)) : children]))} : {}),
+        };
+      };
+      return {...normalized, display: {...block, document: {...block.document, root: visit(block.document.root, 0)}}};
+    }};
 }
 
 export function acceptedDisplayBuildDrafts(messages: readonly LlmMessageRecord[], allowed: readonly string[]) {

@@ -64,7 +64,7 @@ const submitSocraticFeedbackTool = defineAgentTool({
 });
 
 export type SocraticStreamEvent =
-  { type: "message"; delta: string; role?: "assistant" } | { type: "thinking" };
+  { type: "message"; delta: string; role?: "assistant" } | { type: "thinking"; delta?: string };
 
 export type SocraticStreamSend = (
   event: SocraticStreamEvent,
@@ -192,8 +192,8 @@ export async function streamSocratic(
     assistantText += delta;
     await send({ type: "message", delta, role: "assistant" });
   };
-  const sendThinking = async () => {
-    await send({ type: "thinking" });
+  const sendThinking = async (delta?: string) => {
+    await send({ type: "thinking", ...(delta ? { delta } : {}) });
   };
 
   const logHandle = await beginLlmRequestLog({
@@ -224,7 +224,7 @@ export async function streamSocratic(
       gathered = aiMsg as AIMessageChunk;
       const streamChunk = extractAssistantStreamChunk(gathered);
       if (streamChunk.delta || streamChunk.thinking) {
-        if (streamChunk.thinking) await sendThinking();
+        if (streamChunk.thinking) await sendThinking(streamChunk.thinkingDelta);
         if (streamChunk.delta) {
           await tagFilter.push(streamChunk.delta, {
             onVisible: sendAssistantDelta,
@@ -242,7 +242,7 @@ export async function streamSocratic(
         const streamChunk = extractAssistantStreamChunk(chunk);
         if (streamChunk.delta || streamChunk.thinking) {
           await logHandle?.recordFirstResponse();
-          if (streamChunk.thinking) await sendThinking();
+          if (streamChunk.thinking) await sendThinking(streamChunk.thinkingDelta);
           if (streamChunk.delta) {
             await tagFilter.push(streamChunk.delta, {
               onVisible: sendAssistantDelta,

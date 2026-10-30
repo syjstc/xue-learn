@@ -12,6 +12,8 @@ export type MaterialAnchor = {
   scope: "introduction" | "key_takeaway" | "block" | "cornell_cue";
   /** Section-local material owner; prevents intro/takeaway anchors leaking into sibling sections. */
   sectionId?: string;
+  /** Immutable reading document and block; never resolve against Display material. */
+  reading?: { documentId: string; blockId: string };
   /** Index at thread creation time; re-resolved via blockKey when material changes. */
   blockIndex?: number;
   takeawayIndex?: number;
@@ -156,6 +158,8 @@ export function anchorId(anchor: MaterialAnchor): string {
     highlightKey: anchor.highlightKey,
     textRange: anchor.textRange,
     wrongOptionIndex: anchor.wrongOptionIndex,
+    reading: anchor.reading,
+    selectedText: anchor.reading ? anchor.selectedText : undefined,
   };
   return fnv1a(JSON.stringify(key));
 }
@@ -164,7 +168,7 @@ export function resolveBlockIndex(
   material: LearningMaterialContent,
   anchor: MaterialAnchor,
 ): number | null {
-  if (anchor.scope !== "block") return null;
+  if (anchor.reading || anchor.scope !== "block") return null;
 
   if (anchor.blockKey) {
     for (let i = 0; i < material.blocks.length; i++) {
@@ -220,6 +224,11 @@ export function anchorLabel(
 export function parseMaterialAnchor(raw: unknown): MaterialAnchor | null {
   if (!raw || typeof raw !== "object") return null;
   const o = raw as Record<string, unknown>;
+  const reading = o.reading as MaterialAnchor["reading"];
+  if (o.reading !== undefined && (!reading || typeof reading !== "object" ||
+      typeof reading.documentId !== "string" || !reading.documentId ||
+      typeof reading.blockId !== "string" || !reading.blockId ||
+      typeof o.sectionId !== "string" || !o.sectionId || o.scope !== "block")) return null;
   if (
     o.scope !== "introduction" &&
     o.scope !== "key_takeaway" &&
@@ -231,6 +240,7 @@ export function parseMaterialAnchor(raw: unknown): MaterialAnchor | null {
   return {
     scope: o.scope as MaterialAnchor["scope"],
     sectionId: typeof o.sectionId === "string" ? o.sectionId : undefined,
+    ...(reading ? {reading: {documentId: reading.documentId, blockId: reading.blockId}} : {}),
     blockIndex: typeof o.blockIndex === "number" ? o.blockIndex : undefined,
     takeawayIndex:
       typeof o.takeawayIndex === "number" ? o.takeawayIndex : undefined,

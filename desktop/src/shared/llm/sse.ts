@@ -18,7 +18,7 @@ export type SseEvent =
     }
   | { type: "language"; code: string; label: string }
   | { type: "token"; delta: string }
-  | { type: "thinking" }
+  | { type: "thinking"; delta?: string }
   | {
       type: "reasoning_status";
       status: "requested" | "active" | "unsupported";
@@ -32,6 +32,7 @@ export type SseEvent =
       status: "active" | "complete";
       message: string;
       elapsedSeconds: number;
+      capabilityPath?: { moduleTitles: string[]; unitCount: number };
     }
   | {
       type: "planning_stage";

@@ -1,5 +1,8 @@
 import { runValidatedStructuredGeneration } from "../../llm/validated-structured-generation.js";
+import { learningPathFixture } from "../../../../domain/src/learning-path-contract.fixture.js";
 import { runGoalAuthoringRound } from "../../goal-authoring/runner.js";
+import { runGoalPathAuthoring } from "../../goal-authoring/path.js";
+import { parseMapPlan, serializeMapPlan } from "../../goals/map-plan.js";
 import {
   buildGoalMapPlanPrompt,
   buildGoalIdentityPrompt,
@@ -15,9 +18,14 @@ jest.mock("../../llm/validated-structured-generation.js", () => ({
 jest.mock("../../goal-authoring/runner.js", () => ({
   runGoalAuthoringRound: jest.fn(),
 }));
+jest.mock("../../goal-authoring/path.js", () => ({
+  runGoalPathAuthoring: jest.fn(),
+  goalAuthoringCheckpointKey: () => "checkpoint-1",
+}));
 
 const mockedRunValidated = jest.mocked(runValidatedStructuredGeneration);
 const mockedRunGoalAuthoringRound = jest.mocked(runGoalAuthoringRound);
+const mockedRunGoalPath = jest.mocked(runGoalPathAuthoring);
 
 describe("prepareGoalCurriculumPlanAuthoring", () => {
   it("keeps later uploaded source requirements in both blueprint stages", () => {
@@ -37,6 +45,7 @@ describe("prepareGoalCurriculumPlanAuthoring", () => {
   beforeEach(() => {
     mockedRunValidated.mockReset();
     mockedRunGoalAuthoringRound.mockReset();
+    mockedRunGoalPath.mockReset();
   });
   it("reuses the hosted prompt/schema/normalization for deep planning", () => {
     const input = {
@@ -124,7 +133,7 @@ describe("prepareGoalCurriculumPlanAuthoring", () => {
     }
   });
 
-  it("authors identity then the slim module journey on the durable agent path", async () => {
+  it("authors identity then assembles separately committed path parts on the durable agent path", async () => {
     const identity = {
       schemaVersion: 2 as const,
       refinedTitle: "Systems design",
@@ -142,6 +151,7 @@ describe("prepareGoalCurriculumPlanAuthoring", () => {
       prerequisitesAssumed: ["Basic programming"],
     };
     const journey = {
+      learningPath: learningPathFixture(),
       modules: [
         {
           title: "Foundations",
@@ -163,9 +173,8 @@ describe("prepareGoalCurriculumPlanAuthoring", () => {
         },
       ],
     };
-    mockedRunGoalAuthoringRound
-      .mockResolvedValueOnce(identity)
-      .mockResolvedValueOnce(journey);
+    mockedRunGoalAuthoringRound.mockResolvedValueOnce(identity);
+    mockedRunGoalPath.mockResolvedValueOnce(journey);
     const onIdentity = jest.fn();
 
     const result = await planGoalMapStream({
@@ -181,8 +190,10 @@ describe("prepareGoalCurriculumPlanAuthoring", () => {
 
     expect(
       mockedRunGoalAuthoringRound.mock.calls.map((call) => call[0]?.expectedTool),
-    ).toEqual(["commit_goal_identity", "commit_goal_journey"]);
+    ).toEqual(["commit_goal_identity"]);
     expect(onIdentity).toHaveBeenCalledWith(identity);
+    expect(mockedRunGoalAuthoringRound.mock.calls[0]![0].checkpointKey).toContain("goal-identity:v1:");
+    expect(mockedRunGoalPath).toHaveBeenCalledWith(expect.objectContaining({ identity, goalId: "goal-1" }));
     expect(result.modules?.map((module) => module.title)).toEqual([
       "Foundations",
       "Practice",
@@ -190,6 +201,12 @@ describe("prepareGoalCurriculumPlanAuthoring", () => {
     ]);
     expect(result.prerequisitesAssumed).toEqual(["Basic programming"]);
     expect(result.mapStructure.estimatedLeafUnits).toBe(3);
+    const reloaded = parseMapPlan(serializeMapPlan(result))!;
+    expect(reloaded.learningPath).toEqual(journey.learningPath);
+    expect(reloaded.modules?.[1]?.unitPlanningBrief.pathContract?.contract).toEqual(journey.learningPath.modules[1]);
+    const broken = structuredClone(result);
+    broken.learningPath!.modules[1]!.units[0]!.requires[0]!.source = "u_3_1";
+    expect(() => serializeMapPlan(broken)).toThrow();
   });
 
   it("matches module count to confirmed scope instead of a textbook quota", () => {

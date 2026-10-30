@@ -47,6 +47,7 @@ export function buildUnitJourney(input: {
   hasSocratic: boolean;
   isLearningDone: boolean;
   orientationOnly?: boolean;
+  readingBody?: boolean;
 }): {
   nodes: UnitJourneyNode[];
   references: UnitJourneyReference[];
@@ -117,7 +118,7 @@ export function buildUnitJourney(input: {
         ? "current"
         : isFinished(section.status)
           ? "completed"
-          : priorDone && section.generationStatus !== "failed"
+          : priorDone && (input.readingBody && section.sectionKind === "content" || section.generationStatus !== "failed")
             ? "available"
             : "locked",
     });

@@ -25,6 +25,13 @@ it('preserves installed third-party document locks and keeps unknown types expli
  expect(materialDisplayDocument({type:'display',document:saved})).toBe(saved);
  expect(materialDisplayDocument({type:'future-kind',id:'future'}).root.kind).toBe('legacy:future-kind');
 });
+it('keeps image regions scoped to their original stage figure in chat and narration intervals',()=>{
+ const source={type:'stage',id:'pictures',layout:'split-h',figures:[{type:'illustration',id:'first',caption:'First',imageUrl:'/first.png'},{type:'illustration',id:'second',caption:'Second',imageUrl:'/second.png'}]};
+ const document=materialDisplayDocument(source,{activeTargetIds:['fig:second:image:subject'],previousActiveTargetIds:['fig:first:image:subject'],
+  teachingTimeline:{tick:120_000,intervals:[{startTick:0,durationTicks:96_000,targetIds:['fig:first:image:subject']},{startTick:96_000,durationTicks:96_000,targetIds:['fig:second:image:subject']}]}});
+ expect(document.root.children![0].payload).toMatchObject({activeTargetIds:[],previousActiveTargetIds:['image:subject'],teachingTimeline:{intervals:[{targetIds:['image:subject']},{targetIds:[]}]}});
+ expect(document.root.children![1].payload).toMatchObject({activeTargetIds:['image:subject'],previousActiveTargetIds:[],teachingTimeline:{intervals:[{targetIds:[]},{targetIds:['image:subject']}]}});
+});
 it('requires ready derivations to contain their prepared document',()=>{
  const component=builtinDisplayPluginForKind('math:derivation')!.components.find(component=>component.kind==='math:derivation')!;
  expect(validateDisplayPayload({title:'Still pending'},component.payloadSchema)).not.toEqual([]);

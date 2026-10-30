@@ -665,8 +665,8 @@ async function runSubagentLoopCore(
       }
       pendingAssistantText += delta;
     };
-    const sendThinking = async () => {
-      await ctx.send({ type: "thinking" });
+    const sendThinking = async (delta?: string) => {
+      await ctx.send({ type: "thinking", ...(delta ? { delta } : {}) });
     };
 
     const logHandle = await beginLlmRequestLog({
@@ -709,7 +709,7 @@ async function runSubagentLoopCore(
         gathered = aiMsg as AIMessageChunk;
         const streamChunk = extractAssistantStreamChunk(gathered);
         if (streamChunk.delta || streamChunk.thinking) {
-          if (streamChunk.thinking) await sendThinking();
+          if (streamChunk.thinking) await sendThinking(streamChunk.thinkingDelta);
           if (streamChunk.delta) {
             await tagFilter.push(streamChunk.delta, {
               onVisible: sendAssistantDelta,
@@ -727,7 +727,7 @@ async function runSubagentLoopCore(
           const streamChunk = extractAssistantStreamChunk(chunk);
           if (streamChunk.delta || streamChunk.thinking) {
             await logHandle?.recordFirstResponse();
-            if (streamChunk.thinking) await sendThinking();
+            if (streamChunk.thinking) await sendThinking(streamChunk.thinkingDelta);
             if (streamChunk.delta) {
               await tagFilter.push(streamChunk.delta, {
                 onVisible: sendAssistantDelta,

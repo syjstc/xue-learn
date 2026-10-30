@@ -69,3 +69,57 @@ test("direct display authoring cannot forge job references or invoke an uninstal
   const clean = {...display, document: {...display.document, plugins: [{id: "uninstalled", version: "1.0.0"}], root: {...display.document.root, build: undefined}}};
   expect(() => schema.parse({topicId: "energy", display: clean, cues: []})).toThrow("plugin unavailable");
 });
+
+describe("malformed provider display documents", () => {
+  const topic = () => ({topicId: "energy", display: {type: "display", id: "proof", title: "Energy conservation",
+    document: {version: 1, id: "proof", plugins: [{id: manifest.id, version: manifest.version}],
+      root: {id: "proof", kind: "math:derivation", version: 1, payload: {document: {}}}}},
+    cues: [{text: "Energy passes from one object to another.", targetIds: ["proof"]}]});
+  const schemas = () => [topicMaterialCommitBindingSchema,
+    createTopicMaterialCommitSchema({allowedTopicIds: ["energy"], expectedTopicId: "energy"}),
+    createDisplayTopicSchema(createTopicMaterialCommitSchema({allowedTopicIds: ["energy"], expectedTopicId: "energy"}), [manifest], "energy")];
+
+  test.each([
+    ["children", {children: {item: []}}, "children"],
+    ["slot children", {slots: {detail: {item: []}}}, "slots.detail"],
+    ["targets", {targets: {item: ["focus"]}}, "targets"],
+    ["nested children", {children: [{id: "child", kind: "math:derivation", version: 1, payload: {document: {}}, children: {item: []}}]}, "children.0.children"],
+  ])("%s reach schema validation instead of throwing during cue preprocessing", (_name, invalid, path) => {
+    const candidate = topic();
+    Object.assign(candidate.display.document.root, invalid);
+    const original = structuredClone(candidate);
+    for (const schema of schemas()) {
+      const parsed = schema.safeParse(candidate);
+      expect(parsed.success).toBe(false);
+      if (parsed.success) throw Error("Malformed display was accepted");
+      expect(JSON.stringify(parsed.error.issues)).toContain(path.split(".").at(-1));
+      expect(parsed.error.message).toContain("expected array");
+    }
+    expect(candidate).toEqual(original);
+  });
+
+  test("wrapped plugin locks and string node versions remain repairable validation errors", () => {
+    const candidate = topic();
+    Object.assign(candidate.display.document, {plugins: {item: candidate.display.document.plugins}});
+    Object.assign(candidate.display.document.root, {version: "1", children: {item: []}});
+    for (const schema of schemas()) {
+      const parsed = schema.safeParse(candidate);
+      expect(parsed.success).toBe(false);
+      if (parsed.success) throw Error("Malformed display was accepted");
+      expect(parsed.error.message).toContain("expected number");
+      expect(parsed.error.message).toContain("expected array");
+    }
+  });
+
+  test("valid child and slot targets still retain their narration and exact plugin version", () => {
+    const candidate = topic();
+    Object.assign(candidate.display.document.root, {
+      children: [{id: "child", kind: "math:derivation", version: 1, payload: {document: {}}, targets: ["focus"]}],
+      slots: {detail: [{id: "detail", kind: "math:derivation", version: 1, payload: {document: {}}}]},
+    });
+    candidate.cues[0]!.targetIds = ["child/focus", "detail"];
+    const parsed = topicMaterialCommitBindingSchema.parse(candidate);
+    expect(parsed.display).toEqual(candidate.display);
+    expect(parsed.cues[0]!.targetIds).toEqual(["child/focus", "detail"]);
+  });
+});

@@ -25,6 +25,14 @@ import { CURRICULUM_PLANNING_VIEW_KEYS } from "../../llm/curriculum-planning-key
 import { teachingSkillGenerationMeta } from "../../teaching-skills/prompt.js";
 import { parseLlmJson } from "../../llm/sanitize-response.js";
 import {
+  LEARNING_PATH_INSTRUCTION,
+  LEARNING_PATH_JSON_SHAPE,
+  refinePathJourney,
+} from "../../goal-creation/learning-path.js";
+import {
+  validateLearningPath,
+} from "../../../../domain/src/learning-path-contract.js";
+import {
   goalMapPlanSchema,
   goalMapPlanFieldsSchema,
   goalCurriculumPlanV2BindingSchema,
@@ -109,6 +117,12 @@ function normalizedGoalPlanCandidate(
   droppedCount: number;
 } {
   const preprocessed = preprocessGoalMapPlanPayload(candidate);
+  // Bound paths cannot silently lose modules, requirements or identities during
+  // legacy "helpful" normalization. Their graph must be repaired as a whole.
+  if (preprocessed && typeof preprocessed === "object" &&
+      "learningPath" in preprocessed) {
+    return { value: preprocessed, normalizedCount: 0, droppedCount: 0 };
+  }
   if (
     !preprocessed ||
     typeof preprocessed !== "object" ||
@@ -198,7 +212,7 @@ function goalPlanRecoveryPolicy(params: {
     sourceSchema: z.unknown(),
     normalize: (candidate: unknown) =>
       normalizedGoalPlanCandidate(candidate, params.contentLanguage),
-    repairSlots: ({ candidate }: { candidate: unknown; error: z.ZodError }) => {
+    repairSlots: ({ candidate, error }: { candidate: unknown; error: z.ZodError }) => {
       if (
         !candidate ||
         typeof candidate !== "object" ||
@@ -219,6 +233,17 @@ function goalPlanRecoveryPolicy(params: {
         ];
       }
       const root = candidate as Record<string, unknown>;
+      if (root.learningPath !== undefined ||
+          error.issues.some((issue) => issue.path[0] === "learningPath")) {
+        return [{
+          slot: {
+            description: `Repair the complete capability path while preserving the confirmed goal and valid parts. ${error.issues.map((issue) => issue.message).join("; ")}. ${LEARNING_PATH_INSTRUCTION}`,
+            currentValue: candidate,
+            schema: goalCurriculumPlanV2BindingSchema,
+          },
+          apply: (_root: unknown, value: unknown) => value,
+        }];
+      }
       const repairContext = {
         goalTitle: params.title,
         outputLanguage: languageLabel,
@@ -347,7 +372,8 @@ export const PLAN_SCHEMA_SHAPE = `{
     "summary": "the next capability that requires the previous module",
     "objective": "observable capability achieved at this later exit",
     "dependsOnPrevious": "how this builds on the prior milestone"
-  }]
+  }],
+  "learningPath": ${LEARNING_PATH_JSON_SHAPE}
 }`;
 
 export const IDENTITY_SCHEMA_SHAPE = `{
@@ -373,7 +399,8 @@ export const JOURNEY_SCHEMA_SHAPE = `{
     "summary": "what changes for the learner in this module",
     "objective": "observable capability achieved at exit",
     "dependsOnPrevious": "for module 1, state the entry foundation"
-  }]
+  }],
+  "learningPath": ${LEARNING_PATH_JSON_SHAPE}
 }`;
 
 export function buildGoalMapPlanPrompt(params: {
@@ -465,8 +492,8 @@ Phase B — plan the sequential module journey (AFTER domain is clear):
     - Do not collapse a genuine multi-stage journey into one large module, and do not invent adjacent chapters, extra theorems, applications, or exam drills unless they are required to achieve the confirmed goal.
     - Prefer fewer modules for genuinely narrow goals; never pad with generic buckets such as "Introduction" or "Advanced Topics".
     - A module is a small goal with a demonstrable learner capability, NOT a topic bucket, taxonomy pillar, or renamed map branch.
-    - Module N+1 must depend on capabilities expected from Module N. Parallel independent pillars are invalid.
-    - Author only title, summary, objective, and dependsOnPrevious. Do not invent lesson counts, lesson titles, planning briefs, entry-foundation objects, or exit-capability lists; later module workers author those after research.
+    - Order by real prerequisite dependencies, allowing independent foundations to converge. Never invent dependencies merely to force a linear navigation order.
+    - Author title, summary, objective, and dependsOnPrevious for the module summary, plus the complete learningPath contracts specified below.
     - objective must be observable performance. Avoid vague buckets such as "Introduction", "Fundamentals", or "Advanced Topics" unless they describe a real performance transition.
     - dependsOnPrevious explains the dependency. For Module 1, name the assumed entry foundation.
 12. Journey quality:
@@ -474,7 +501,8 @@ Phase B — plan the sequential module journey (AFTER domain is clear):
     - Progress from foundation to guided performance to independent/transfer performance as the domain permits.
     - Respect uploaded source order only when it is pedagogically coherent; otherwise explain the milestone sequence through the module dependencies.
 
-Output schemaVersion 2. Do NOT output majorAreas, mapStructure, unit/session titles, targets, entities, atoms, relations, assessments, lesson counts, or content.`;
+${LEARNING_PATH_INSTRUCTION}
+Output schemaVersion 2. Do NOT output majorAreas, mapStructure, detailed KACOM definitions, assessment questions, or lesson content.`;
 }
 
 function planningPromptPreamble(
@@ -550,12 +578,16 @@ Frozen identity (do not rewrite):
 - Field: ${identity.domainAnalysis.field} → ${identity.domainAnalysis.subdomain}
 - Learning mode: ${identity.domainAnalysis.learningMode}
 - Overview: ${identity.topicOverview}
-- Outcomes:\n${identity.whatYouWillLearn.map((item) => `  - ${item}`).join("\n")}
+- Outcomes:\n${identity.whatYouWillLearn.map((item, index) => `  - o_${index + 1}: ${item}`).join("\n")}
 - Assumed prerequisites:\n${prerequisites}
 
 Author 1–8 ordered milestone modules that match the confirmed goal's actual scope. Use one module when the entire goal is a single narrow observable capability (one named theorem, identity, proof, formula, or skill). Use 2–3 only for a few genuine milestones, and 4–8 only when the learner asked for a broad journey. Never pad toward 3–6. Do not collapse a genuine multi-stage journey into one large module, and do not invent extra chapters. Never pad with generic buckets such as "Introduction" or "Advanced Topics".
-Each module has only title, summary, objective, and dependsOnPrevious. Module N+1 must depend on Module N. For module 1, dependsOnPrevious names the assumed entry foundation.
-Do not invent lesson counts, lesson titles, planning briefs, entry-foundation objects, or exit-capability lists.`;
+Each module summary has title, summary, objective, and dependsOnPrevious. Describe actual prerequisite dependencies; independent foundations can converge. For module 1, dependsOnPrevious names the entry foundation.
+${LEARNING_PATH_INSTRUCTION}
+
+Both modules and learningPath are required top-level arguments in this same commit. Keep descriptions concise so the entire path fits. Close every module/unit contract; a modules-only or unfinished learningPath payload cannot be accepted.
+Argument structure (expand the example to cover every frozen outcome and planned module):
+${JOURNEY_SCHEMA_SHAPE}`;
 }
 
 function buildDetailedPlanPrompt(params: {
@@ -660,14 +692,23 @@ export function prepareGoalCurriculumPlanAuthoring(
       candidate,
       input.contentLanguage,
     ).value;
-    return planResponseSchema.parse(normalized);
+    const plan = planResponseSchema.parse(normalized);
+    if (!plan.learningPath) {
+      throw new Error("New goal plans require a complete learningPath contract.");
+    }
+    return plan;
   };
   return {
     operation,
     prompt,
     standalonePrompt: `${CURRICULUM_PLANNING_INSTRUCTION}\n\n${prompt}`,
     contextInvocation,
-    schema: planResponseSchema,
+    schema: planResponseSchema.superRefine((plan, ctx) => {
+      if (!plan.learningPath) ctx.addIssue({
+        code: "custom", path: ["learningPath"],
+        message: "A new goal needs its complete module and unit capability path.",
+      });
+    }),
     bindingSchema: goalCurriculumPlanV2BindingSchema,
     schemaShape: PLAN_SCHEMA_SHAPE,
     recoveryPolicy,
@@ -738,6 +779,7 @@ function journeyRecoveryPolicy(params: {
       return combined.normalize({
         schemaVersion: 2,
         modules: root.modules,
+        learningPath: root.learningPath,
       });
     },
     repairSlots: ({
@@ -782,6 +824,9 @@ export function prepareGoalCurriculumJourneyAuthoring(
     prepared.contextInvocation,
     input.identity,
   );
+  const schema = goalCurriculumJourneyBindingSchema.superRefine((value, ctx) =>
+    refinePathJourney(value, ctx, input.identity.whatYouWillLearn.length),
+  );
   return {
     ...prepared,
     prompt,
@@ -789,8 +834,8 @@ export function prepareGoalCurriculumJourneyAuthoring(
     bindingSchema: goalCurriculumJourneyBindingSchema,
     schemaShape: JOURNEY_SCHEMA_SHAPE,
     recoveryPolicy: journeyRecoveryPolicy(input),
-    parseResult: (candidate: unknown) =>
-      goalCurriculumJourneyBindingSchema.parse(candidate),
+    schema,
+    parseResult: (candidate: unknown) => schema.parse(candidate),
   };
 }
 
@@ -850,6 +895,12 @@ export async function planGoalMapStream(params: {
   onIdentity?: (identity: GoalCurriculumIdentity) => void | Promise<void>;
   wrapIdentity?: <T>(run: () => Promise<T>) => Promise<T>;
   wrapJourney?: <T>(run: () => Promise<T>) => Promise<T>;
+  onPathProgress?: (progress: {
+    moduleTitles: string[];
+    unitCount: number;
+    complete: boolean;
+    plan?: GoalMapPlan;
+  }) => void | Promise<void>;
 }): Promise<GoalMapPlan> {
   const prepared = prepareGoalCurriculumPlanAuthoring(params);
   const wrapIdentity =
@@ -859,6 +910,8 @@ export async function planGoalMapStream(params: {
   if (params.authoringAgent) {
     const { runGoalAuthoringRound } =
       await import("../../goal-authoring/runner.js");
+    const { runGoalPathAuthoring, goalAuthoringCheckpointKey } =
+      await import("../../goal-authoring/path.js");
     const identityPrepared = prepareGoalCurriculumIdentityAuthoring(params);
     const identity = await wrapIdentity(() =>
       runGoalAuthoringRound({
@@ -867,6 +920,12 @@ export async function planGoalMapStream(params: {
         prompt: identityPrepared.standalonePrompt,
         resultSchema: identityPrepared.bindingSchema,
         operation: "goal.authoring_agent",
+        checkpointKey: `goal-identity:v1:${goalAuthoringCheckpointKey({
+          title: params.title, level: params.level,
+          contentLanguage: params.contentLanguage, pathSource: params.pathSource,
+          generationOptions: params.generationOptions,
+          teachingSkillBlock: params.teachingSkillBlock,
+        })}`,
         signal: params.signal,
         onToken: params.onToken,
         meta: {
@@ -879,29 +938,27 @@ export async function planGoalMapStream(params: {
       }),
     );
     await params.onIdentity?.(identity);
-    const journeyPrepared = prepareGoalCurriculumJourneyAuthoring({
-      ...params,
-      identity,
-    });
     const journey = await wrapJourney(() =>
-      runGoalAuthoringRound({
+      runGoalPathAuthoring({
         ...params.authoringAgent!,
-        expectedTool: "commit_goal_journey",
-        prompt: journeyPrepared.standalonePrompt,
-        resultSchema: journeyPrepared.bindingSchema,
-        operation: "goal.authoring_agent",
+        identity,
+        instruction: `${GOAL_DIRECTED_TEACHING_POLICY}\n\n${CURRICULUM_PLANNING_INSTRUCTION}\n\n${getLanguagePromptInstruction(params.contentLanguage)}`,
         signal: params.signal,
         onToken: params.onToken,
-        meta: {
-          goalTitle: params.title,
-          level: params.level,
-          pathSource: params.pathSource,
-          contentLanguage: params.contentLanguage,
-          stage: "journey",
-        },
+        onProgress: params.onPathProgress,
       }),
     );
-    return prepared.parseResult({ ...identity, ...journey });
+    const plan = prepared.parseResult({ ...identity, ...journey });
+    await params.onPathProgress?.({
+      moduleTitles: plan.modules!.map((module) => module.title),
+      unitCount: validateLearningPath(plan.learningPath!, {
+        moduleCount: plan.modules!.length,
+        outcomeCount: plan.whatYouWillLearn.length,
+      }).unitCount,
+      complete: true,
+      plan,
+    });
+    return plan;
   }
   return runValidatedStructuredGeneration(
     {

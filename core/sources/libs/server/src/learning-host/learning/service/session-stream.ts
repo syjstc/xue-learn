@@ -1567,7 +1567,7 @@ export async function sessionStream(
             send: async (
               event:
                 | { type: "message"; delta: string; role?: "assistant" }
-                | { type: "thinking" },
+                | { type: "thinking"; delta?: string },
             ) => {
               await ctx.send(event);
             },

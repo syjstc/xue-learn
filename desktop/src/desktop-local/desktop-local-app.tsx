@@ -22,6 +22,7 @@ import { LocalTeachingSkillsPage } from "./local-teaching-skills-page.tsx";
 import {LocalDisplayPluginsPage} from "./local-display-plugins-page.tsx";
 import { LocalPluginsPage } from "./local-plugins-page.tsx";
 import { LocalPluginViewPage } from "@/features/plugins/plugin-view";
+import { DesktopPluginUiProvider } from "@/features/plugins/ui-extensions";
 import {DisplayWorkspaceProvider} from "@xue-learn/core/display/workspace";
 import {displayWorkspaceClient} from "@/features/display/workspace";
 import { LocalTokenUsagePage } from "./local-token-usage-page.tsx";
@@ -139,7 +140,7 @@ export function DesktopLocalApp() {
                     <DisplayWorkspaceProvider client={displayWorkspaceClient}><AssistantProvider>
                       <div className="desktop-local-window min-h-screen min-w-0 bg-background antialiased">
                         <div className="desktop-local-content min-h-0 min-w-0">
-                          <Shell />
+                          <DesktopPluginUiProvider><Shell /></DesktopPluginUiProvider>
                         </div>
                         <FloatingActionStack>
                           <AssistantFab />

@@ -12,6 +12,7 @@ export function llmRuntimeConfigToSelection(
       embeddingModel: config.embeddingModel,
       embeddingProvider: config.embeddingProvider,
       minimaxThinkingEnabled: config.minimaxThinkingEnabled,
+      minimaxReasoningEffort: config.minimaxReasoningEffort,
       ollamaThinkingEnabled: config.ollamaThinkingEnabled,
       deepseekThinkingEnabled: config.deepseekThinkingEnabled,
       openaiThinkingEnabled: config.openaiThinkingEnabled,

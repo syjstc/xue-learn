@@ -26,7 +26,7 @@ export function FormalDerivationDisplay({node}:DisplayRendererProps){
 }
 
 const module:DisplayPluginModule<DisplayRenderer>={components:{
- 'math:formula@1':createAnimatedDisplay('formula.v1',({component,...context})=><FormulaBoard props={component.props} {...context}/>),
+ 'math:formula@1':createAnimatedDisplay('formula.v1',({component,...context})=><FormulaBoard props={component.props} {...context}/>,{fluid:true}),
  'math:chart@1':createAnimatedDisplay('animated-chart.v1',({component,motion})=><AnimatedChart props={component.props} motion={motion}/>),
  'math:teaching@1':TeachingDisplay,'math:derivation@1':DerivationDisplay,'math:formal-derivation@1':FormalDerivationDisplay,
 },validators:{'math:chart@1':value=>{const p=value as {categories:unknown[];series:{values:number[]}[];chart:string};return p.series.every(s=>s.values.length===p.categories.length&&s.values.every(Number.isFinite))&&(p.chart!=='donut'||p.series[0].values.every(n=>n>=0)&&p.series[0].values.some(n=>n>0));}}};

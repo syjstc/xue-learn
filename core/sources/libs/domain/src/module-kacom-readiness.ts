@@ -69,11 +69,7 @@ export function evaluateModuleKacomStructuralReadiness(
       reason: `Module cognitive working-set budget exceeded: ${input.workingSetEntityCount}/${input.entityBudget.maximumWorkingSet}`,
     };
   }
-  if (input.newlyAuthoredEntityCount < input.entityBudget.recommendedNewMin) {
-    return {
-      status: "invalid",
-      reason: `Module new cognitive entity minimum not met: ${input.newlyAuthoredEntityCount}/${input.entityBudget.recommendedNewMin}`,
-    };
-  }
+  // A compact or reuse-only contract is valid. This is a planning recommendation,
+  // not a reason to fabricate extra KACOM entities after coverage is established.
   return { status: "audit_ready", entityBudget: input.entityBudget };
 }

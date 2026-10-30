@@ -16,6 +16,9 @@ export type BackendTranslationParams = Record<string, string | number>;
 export const DEFAULT_BACKEND_LOCALE: BackendLocale = "zh-Hans";
 
 const en = {
+  "status.planning.path.progress": "Planning the full capability path: {modules} modules and {units} lesson contracts drafted. Checking their prerequisites next.",
+  "status.planning.path.checked": "Path structure checked: {modules} modules, {units} lessons. {assumptions} entry assumptions still need learning evidence.",
+  "status.planning.path.materialized": "Preparing “{title}” from its approved capability contracts; teaching content will be generated when needed.",
   "error.remotion.previewRequired": "Please finish this unit’s preview before creating a Remotion film; full course material is not required.",
   "error.remotion.overviewRequired": "Please finish preparing the course introduction before creating its video.",
   "error.remotion.previewChanged": "The preview changed during production. Retry from the latest preview; the previous film is preserved.",
@@ -1024,6 +1027,9 @@ const zhHans: Record<BackendTranslationKey, string> = {
   "status.planning.journey.pulse2": "正在检查模块是否覆盖完整学习目标…",
   "status.planning.journey.pulse3":
     "正在消除重复，让后一模块建立在前一模块之上…",
+  "status.planning.path.progress": "正在规划全程能力路径：已形成 {modules} 个模块、{units} 个单元契约，接下来核对前后衔接。",
+  "status.planning.path.checked": "路径结构已校验：{modules} 个模块、{units} 个单元；{assumptions} 项起点基础仍需学习证据验证。",
+  "status.planning.path.materialized": "正在按已确认的能力契约准备「{title}」，正文将在学习时生成。",
   "status.planning.journey.completed": "模块学习路径已形成",
   "status.planning.moduleCapabilities.started":
     "正在定义「{title}」的出口能力…",
@@ -1677,6 +1683,9 @@ const zhHant: Record<BackendTranslationKey, string> = {
   "status.planning.journey.pulse2": "正在檢查模組是否覆蓋完整學習目標…",
   "status.planning.journey.pulse3":
     "正在消除重複，讓後一模組建立在前一模組之上…",
+  "status.planning.path.progress": "正在規劃全程能力路徑：已形成 {modules} 個模組、{units} 個單元契約，接下來核對前後銜接。",
+  "status.planning.path.checked": "路徑結構已校驗：{modules} 個模組、{units} 個單元；{assumptions} 項起點基礎仍需學習證據驗證。",
+  "status.planning.path.materialized": "正在按已確認的能力契約準備「{title}」，正文將在學習時生成。",
   "status.planning.journey.completed": "模組學習路徑已形成",
   "status.planning.moduleCapabilities.started":
     "正在定義「{title}」的出口能力…",

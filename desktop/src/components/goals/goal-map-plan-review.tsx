@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { InlineGenStream } from "@/components/ai/inline-gen-stream";
 import { GoalMapPlanDisplay } from "@/components/goals/goal-map-plan-display";
+import { GoalPlanStreamCard } from "@/components/agent/goal-plan-stream-card";
 import { useAiGeneration } from "@/hooks/use-ai-generation";
 import { useConfirmGoalPlan } from "@/hooks/api";
 import {
@@ -40,6 +41,7 @@ export function GoalMapPlanReview({
   const [displayTitle, setDisplayTitle] = useState(goalTitle);
   const [aiInstruction, setAiInstruction] = useState("");
   const [plan, setPlan] = useState<GoalMapPlan | null>(null);
+  const [previewSource, setPreviewSource] = useState("");
   const isSequentialPlan =
     plan?.schemaVersion === 2 && Boolean(plan.modules?.length);
   const startedRef = useRef(false);
@@ -50,6 +52,7 @@ export function GoalMapPlanReview({
     scopeId: goalId,
     onRestore: (run) => {
       if (run.statusMessage) setStatus(run.statusMessage);
+      if (run.tokenPreview) setPreviewSource(run.tokenPreview);
     },
   });
   const busy = aiGen.loading || confirmPlan.isPending;
@@ -57,6 +60,9 @@ export function GoalMapPlanReview({
   const handleStreamEvent = useCallback(
     (event: SseEvent) => {
       if (event.type === "status") setStatus(event.message);
+      if (event.type === "planning_activity") setStatus(event.message);
+      if (event.type === "token")
+        setPreviewSource((source) => source + event.delta);
       if (
         event.type === "done" &&
         event.plan &&
@@ -76,8 +82,9 @@ export function GoalMapPlanReview({
   );
 
   const runContractStream = useCallback(
-    async (regenerate = false) => {
+    async (regenerate = false, adjustment = aiInstruction.trim()) => {
       setError("");
+      setPreviewSource("");
       if (regenerate) setPlan(null);
       setStatus(
         regenerate
@@ -87,9 +94,9 @@ export function GoalMapPlanReview({
       try {
         await aiGen.startPost(
           `/api/goals/${goalId}/plan/stream`,
-          { regenerate, adjustment: aiInstruction.trim() },
+          { regenerate, adjustment },
           handleStreamEvent,
-          "goal.plan.contract",
+          "goal.curriculum.plan",
         );
       } catch (cause) {
         setError(
@@ -117,6 +124,16 @@ export function GoalMapPlanReview({
           setLoading(false);
           return;
         }
+        const reconnected = await aiGen.reconnectActive(
+          handleStreamEvent,
+          (operation) =>
+            operation === "goal.curriculum.plan" ||
+            operation === "goal.plan.contract",
+        );
+        if (reconnected.length > 0) {
+          setLoading(false);
+          return;
+        }
         if (data.plan) {
           setPlan(data.plan);
           setLoading(false);
@@ -127,12 +144,7 @@ export function GoalMapPlanReview({
           setLoading(false);
           return;
         }
-        const reconnected = await aiGen.reconnectActive(
-          handleStreamEvent,
-          (operation) => operation === "goal.plan.contract",
-        );
-        if (reconnected.length === 0) await runContractStream(false);
-        else setLoading(false);
+        await runContractStream(false);
       } catch (cause) {
         setError(
           cause instanceof Error
@@ -169,20 +181,14 @@ export function GoalMapPlanReview({
 
   if ((loading || aiGen.loading) && !plan) {
     return (
-      <Card>
-        <CardTitle style={{ fontFamily: "var(--font-display)" }}>
-          {t("goalDetail.planReview.organizingTitle")}
-        </CardTitle>
-        <p className="mt-2 text-sm text-[var(--text-400)]">
-          {t("goalDetail.planReview.organizingDescription")}
-        </p>
+      <GoalPlanStreamCard source={previewSource}>
         <InlineGenStream
           status={status}
           canStop={aiGen.canStop()}
           onStop={() => void aiGen.stop()}
           className="mt-4"
         />
-      </Card>
+      </GoalPlanStreamCard>
     );
   }
 
@@ -203,7 +209,22 @@ export function GoalMapPlanReview({
       </Card>
 
       {plan ? (
-        <GoalMapPlanDisplay topicOverview={plan.topicOverview} plan={plan} />
+        <GoalMapPlanDisplay
+          topicOverview={plan.topicOverview}
+          plan={plan}
+          disabled={busy}
+          onMissingFoundation={
+            generationEnabled
+              ? (title) => {
+                  const feedback = t("capabilityPath.bridgeFeedback", {
+                    title,
+                  });
+                  setAiInstruction(feedback);
+                  void runContractStream(true, feedback);
+                }
+              : undefined
+          }
+        />
       ) : null}
 
       <Card>

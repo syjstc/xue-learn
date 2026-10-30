@@ -531,6 +531,7 @@ export function AgentChat({
                           content={m.content}
                           showCursor={Boolean(m.streaming)}
                           thinking={m.thinking}
+                          thinkingContent={m.thinkingContent}
                           onNavigate={onNavigate}
                           variant="compact"
                         />

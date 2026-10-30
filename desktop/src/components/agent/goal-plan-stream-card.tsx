@@ -1,10 +1,20 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Check, LoaderCircle, Route, Sparkles, Target } from "lucide-react";
+import {
+  Check,
+  LoaderCircle,
+  Route,
+  Sparkles,
+  Target,
+  ListChecks,
+} from "lucide-react";
 import { LlmMarkdown } from "@/components/markdown/llm-markdown";
 import type { GoalMapPlan } from "@/shared/api";
-import { parseGoalPlanStreamPreview } from "@/shared/agent/goal-plan-stream-preview";
+import {
+  parseGoalPlanStreamPreview,
+  type GoalPlanStreamPreview,
+} from "@/shared/agent/goal-plan-stream-preview";
 import { LEARNING_MODE_LABELS } from "@/shared/goals/domain-labels";
 import { cn } from "@xue-learn/core/utils";
 import { useI18n } from "@xue-learn/core/i18n";
@@ -17,6 +27,11 @@ function previewFromPlan(plan: GoalMapPlan) {
     learningMode: plan.domainAnalysis.learningMode,
     topicOverview: plan.topicOverview,
     outcomes: plan.whatYouWillLearn,
+    unitCount:
+      plan.learningPath?.modules.reduce(
+        (count, module) => count + module.units.length,
+        0,
+      ) ?? 0,
     modules:
       plan.schemaVersion === 2 && plan.modules?.length
         ? plan.modules.map((module) => ({
@@ -32,24 +47,36 @@ function previewFromPlan(plan: GoalMapPlan) {
 
 export function GoalPlanStreamCard({
   source = "",
+  preview: restoredPreview,
   plan,
   ready = false,
   children,
 }: {
   source?: string;
+  preview?: GoalPlanStreamPreview;
   plan?: GoalMapPlan;
   ready?: boolean;
   children?: ReactNode;
 }) {
   const { t } = useI18n();
-  const steps = [{ label: t("assistant.plan.direction"), icon: Target }, { label: t("assistant.plan.outcomes"), icon: Sparkles }, { label: t("assistant.plan.route"), icon: Route }];
+  const steps = [
+    { label: t("assistant.plan.direction"), icon: Target },
+    { label: t("assistant.plan.outcomes"), icon: Sparkles },
+    { label: t("assistant.plan.route"), icon: Route },
+    ...(!ready || plan?.learningPath
+      ? [{ label: t("capabilityPath.checkStep"), icon: ListChecks }]
+      : []),
+  ];
   const preview = plan
     ? previewFromPlan(plan)
-    : parseGoalPlanStreamPreview(source);
+    : (restoredPreview ?? parseGoalPlanStreamPreview(source));
   const completedSteps = [
-    ready || Boolean(preview.field && preview.subdomain),
+    ready || Boolean(preview.field),
     ready || preview.outcomes.length > 0,
-    ready || preview.modules.length > 0,
+    // Module headings arrive before their lesson contracts. Keep the route
+    // active until the complete, validated plan is available.
+    ready,
+    ready,
   ];
   const activeStep = Math.min(
     completedSteps.findIndex((complete) => !complete),
@@ -61,6 +88,9 @@ export function GoalPlanStreamCard({
     LEARNING_MODE_LABELS[
       preview.learningMode as keyof typeof LEARNING_MODE_LABELS
     ];
+  const subtitle = [preview.field, preview.subdomain, learningModeLabel]
+    .filter((value) => value && value !== title)
+    .join(" · ");
 
   return (
     <section
@@ -83,7 +113,9 @@ export function GoalPlanStreamCard({
         </span>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-foreground">
-            {ready ? t("assistant.plan.readyTitle") : t("assistant.plan.generatingTitle")}
+            {ready
+              ? t("assistant.plan.readyTitle")
+              : t("assistant.plan.generatingTitle")}
           </p>
           <p className="mt-0.5 text-xs leading-5 text-muted-foreground">
             {ready
@@ -93,13 +125,19 @@ export function GoalPlanStreamCard({
         </div>
       </div>
 
-      <div className="grid grid-cols-3 border-y border-[var(--course-content-border)] bg-[var(--bg-50)]/55 px-3 py-2.5">
+      <div
+        className={cn(
+          "grid gap-y-2 border-y border-[var(--course-content-border)] bg-[var(--bg-50)]/55 px-3 py-2.5",
+          steps.length === 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3",
+        )}
+      >
         {steps.map((step, index) => {
           const Icon = completedSteps[index] ? Check : step.icon;
           const active = index === resolvedActiveStep && !completedSteps[index];
           return (
             <div
               key={step.label}
+              aria-current={active ? "step" : undefined}
               className={cn(
                 "flex items-center justify-center gap-1.5 text-[11px] sm:text-xs",
                 completedSteps[index] || active
@@ -129,12 +167,8 @@ export function GoalPlanStreamCard({
         {title ? (
           <div>
             <p className="text-sm font-semibold text-foreground">{title}</p>
-            {preview.field || preview.subdomain || learningModeLabel ? (
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {[preview.field, preview.subdomain, learningModeLabel]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </p>
+            {subtitle ? (
+              <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>
             ) : null}
           </div>
         ) : (
@@ -186,7 +220,12 @@ export function GoalPlanStreamCard({
         {preview.modules.length > 0 ? (
           <div>
             <p className="mb-1.5 text-[11px] font-medium text-muted-foreground">
-              {t("assistant.plan.moduleCount", { count: preview.modules.length })}
+              {t("assistant.plan.moduleCount", {
+                count: preview.modules.length,
+              })}
+              {preview.unitCount > 0
+                ? ` · ${t("capabilityPath.unitCount", { count: preview.unitCount })}`
+                : ""}
             </p>
             <ol className="space-y-1.5">
               {preview.modules

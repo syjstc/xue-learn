@@ -1,6 +1,7 @@
 import type { DesktopPluginCapabilityContext } from './manager';
 import type { DesktopHostCapabilities } from './host-capabilities';
 import { readCompletedUnitPreview, UnitPreviewCapabilityError } from './unit-preview-capability';
+import { DESKTOP_PLUGIN_UI_SLOTS } from '../../../../packages/plugin-sdk/src/index';
 
 /** Sessions stay in Desktop main; plugins receive only the requested domain result. */
 export interface CorePluginCapabilityOptions {
@@ -78,6 +79,9 @@ export async function registerCorePluginCapabilities(host: DesktopHostCapabiliti
 
   const disposers: Array<() => Promise<void>> = [];
   try {
+    disposers.push(await host.register('ui.extensions', 1, {
+      describe: async args => { argumentsFor(args, []); return { slots: [...DESKTOP_PLUGIN_UI_SLOTS] }; },
+    }));
     disposers.push(await host.register('learning.preview', 1, {
       ensure: (args, context) => {
         const {unitId, locale = 'zh-Hans'} = argumentsFor(args, ['unitId', 'locale']);

@@ -5,6 +5,20 @@ display protocols. Plugins can contribute custom React views **inside Desktop**,
 using the host's React instance, UI components and workspace capabilities. A
 UI-only plugin needs no backend, API server, worker or separate application.
 
+Plugins can also declare `contributes.ui` with named placements: lesson-title
+actions, lesson-body actions, inline lesson panels and settings tabs. Desktop
+renders action controls and navigation, resolves encoded course context and
+mounts custom panels through the same verified renderer session. The
+`ui.extensions@1` capability gates compatibility. The [SDK placement contract](../packages/plugin-sdk/README.md#ui-placements)
+contains manifest examples and the supported slot catalog.
+
+Video Studio 0.2.11 uses `unit.content.actions` to open the current lesson's
+saved video editor and `settings.tabs` to expose export preferences. Chat,
+reading and immersive body presentations share the placement. The full learning
+return path is carried with the view. Disabling a plugin removes its placements;
+unavailable settings tabs resolve back to the profile tab after the registry
+has loaded. No video-specific IDs appear in the host's learning/settings UI.
+
 A plugin may additionally declare `runtime.mode: "host"` for trusted native and
 background work inside Desktop main, or `runtime.mode: "worker"` (the default)
 for an isolated utility process. Video Studio uses host mode. Renderer and native
@@ -408,10 +422,10 @@ workspace and dispose their contributions on disable, preserving one display
 protocol. Future extraction should retain versioned public capability contracts,
 plugin-owned data migration, reversible registrations and crash isolation.
 Marketplace distribution, publisher signatures, sandboxing for untrusted code,
-automatic upgrades, host task queues and additional renderer slots remain
-separate follow-up capabilities. The current embedded extension point is a
-dedicated plugin page inside Desktop, not arbitrary injection into every
-existing learning screen.
+automatic upgrades and host task queues remain separate follow-up capabilities.
+Renderer integration uses dedicated plugin pages and the named UI slots listed
+in the SDK. Additional screens can add explicit slots without arbitrary DOM
+injection or plugin patches to learning components.
 
 ## Trusted native composition
 

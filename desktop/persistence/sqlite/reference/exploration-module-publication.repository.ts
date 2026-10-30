@@ -1,3 +1,4 @@
+import { reconcilePathPrerequisites } from "./prepared-module-publication.repository.js";
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
 import type { ExplorationModulePublicationRepository, PublishExplorationModuleInput, PublishExplorationModuleResult, } from "@xue-learn/core/domain";
@@ -43,7 +44,7 @@ export class MikroOrmExplorationModulePublicationRepository implements Explorati
             throw new Error("Module is not an exploration goal");
         }
         const module = resultRows(await execute(`SELECT "id", "goalId", "generationBuildToken",
-                "generationVersion"
+                "generationVersion", "unitPlanningBrief"
            FROM ${moduleTable}
           WHERE "id" = ? AND "goalId" = ?${lock}`, [input.moduleId, input.goalId]))[0];
         if (!module)
@@ -77,7 +78,7 @@ export class MikroOrmExplorationModulePublicationRepository implements Explorati
                 unit.title,
                 index,
                 unit.difficulty,
-                JSON.stringify(previousUnitId ? [previousUnitId] : []),
+                JSON.stringify(JSON.stringify(rowValue(module, "unitPlanningBrief") ?? "").includes("pathContract") ? [] : previousUnitId ? [previousUnitId] : []),
                 unit.contentSummary,
                 `a_${input.orderIndex + 1}`,
                 JSON.stringify([]),
@@ -111,6 +112,7 @@ export class MikroOrmExplorationModulePublicationRepository implements Explorati
         if (updatedRows.length === 0) {
             throw new Error("Module generation lease was superseded");
         }
+        if (JSON.stringify(rowValue(module, "unitPlanningBrief") ?? "").includes("pathContract")) await reconcilePathPrerequisites(execute, unitTable, moduleTable, input.goalId);
         return {
             moduleId: input.moduleId,
             published: true,

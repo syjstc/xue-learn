@@ -1,29 +1,20 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { WorkspaceSidebarBackButton } from "@/components/layout/workspace-sidebar-back-button";
 import {
-  LOCAL_SETTINGS_SECTION_IDS,
-  SETTINGS_SECTIONS,
-  resolveSettingsSection,
-  settingsSectionPath,
-} from "@/components/settings/settings-sections";
+  activeSettingsSection,
+  useSettingsSections,
+} from "@/components/settings/use-settings-sections";
 import { useT } from "@xue-learn/core/i18n";
-import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 import { cn } from "@xue-learn/core/utils";
 
 export function SettingsWorkspaceSubview() {
   const t = useT();
   const [searchParams] = useSearchParams();
-  const visibleSections = isDesktopLocalRuntime()
-    ? SETTINGS_SECTIONS.filter((section) =>
-        LOCAL_SETTINGS_SECTION_IDS.includes(section.id),
-      )
-    : SETTINGS_SECTIONS;
-  const requestedSection = resolveSettingsSection(searchParams.get("tab"));
-  const activeSection = visibleSections.some(
-    (section) => section.id === requestedSection,
-  )
-    ? requestedSection
-    : "profile";
+  const { sections: visibleSections } = useSettingsSections();
+  const activeSection = activeSettingsSection(
+    searchParams.get("tab"),
+    visibleSections,
+  );
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -44,12 +35,16 @@ export function SettingsWorkspaceSubview() {
         className="min-h-0 flex-1 space-y-0.5 overflow-y-auto border-t border-[var(--border-200)] px-2.5 py-2"
         aria-label={t("settings.categoryAria")}
       >
-        {visibleSections.map(({ id, labelKey, icon: Icon }) => {
+        {visibleSections.map(({ id, title, icon: Icon }) => {
           const active = id === activeSection;
           return (
             <Link
               key={id}
-              to={settingsSectionPath(id)}
+              to={
+                id === "profile"
+                  ? "/settings"
+                  : `/settings?${new URLSearchParams({ tab: id })}`
+              }
               aria-current={active ? "page" : undefined}
               className={cn(
                 "flex h-9 items-center gap-2 rounded-lg px-2.5 text-sm transition-colors",
@@ -59,7 +54,7 @@ export function SettingsWorkspaceSubview() {
               )}
             >
               <Icon className="size-4 shrink-0" aria-hidden />
-              <span className="truncate">{t(labelKey)}</span>
+              <span className="truncate">{title}</span>
             </Link>
           );
         })}

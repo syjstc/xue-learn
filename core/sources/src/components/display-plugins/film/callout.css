@@ -1,4 +1,8 @@
 /* Preserved accepted film artwork; all cue motion is sampled by the host. */
+.rm-glass-callout-shell{position:relative;margin:8px;padding:7px 5px 10px;border-radius:30px}
+.rm-glass-callout-emblem{position:absolute!important;right:25px;top:10px;width:135px;height:115px;opacity:.24}
+.rm-glass-callout-shell:has(.course-callout-details[data-reserved-space]):not(:has(.course-callout-detail:not([data-pending="true"]))){visibility:hidden}
+.rm-glass-callout-shell .course-callout-title{padding-right:85px}
 .display-film-callout{position:absolute;inset:12px 20px 36px;overflow:hidden;font-size:30px;--course-content:var(--rm-ink);--course-content-muted:var(--rm-muted);--course-content-border:var(--rm-border);--course-content-surface:var(--rm-surface);--course-content-link:var(--rm-accent);--ds-info:var(--rm-accent);--ds-warning:#b17e22}
 .display-film-callout-canvas{position:absolute;top:0;left:0;width:100%;transform-origin:0 0}
 .display-film-callout,.display-film-callout *{animation:none!important;transition:none!important}

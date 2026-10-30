@@ -152,6 +152,7 @@ export class LocalAiModelsController {
       customChatEndpoints:
         customChatEndpoints ?? emptyCustomChatEndpointsState,
       minimaxThinkingEnabled: config.minimaxThinkingEnabled,
+      minimaxReasoningEffort: config.minimaxReasoningEffort,
       ollamaThinkingEnabled: config.ollamaThinkingEnabled,
       deepseekThinkingEnabled: config.deepseekThinkingEnabled,
       openaiThinkingEnabled: config.openaiThinkingEnabled,
@@ -197,6 +198,9 @@ export class LocalAiModelsController {
           chatModel: patch.model,
           ...(patch.minimaxThinkingEnabled !== undefined
             ? { minimaxThinkingEnabled: patch.minimaxThinkingEnabled }
+            : {}),
+          ...(patch.minimaxReasoningEffort !== undefined
+            ? { minimaxReasoningEffort: patch.minimaxReasoningEffort }
             : {}),
           ...(patch.ollamaThinkingEnabled !== undefined
             ? { ollamaThinkingEnabled: patch.ollamaThinkingEnabled }

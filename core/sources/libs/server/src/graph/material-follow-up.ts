@@ -28,6 +28,17 @@ import {
 } from "../sections/index.js";
 import { parseJson } from "../utils.js";
 import { requireMaterialFollowUpPersistence } from "./material-follow-up-persistence.js";
+import { readingFollowUpContext } from "../reading/follow-up.js";
+
+type FollowUpMaterialContext = AggregatedUnitMaterialContext & {anchorSnippet?: string};
+
+export async function getMaterialFollowUpContext(
+  userId: string, unitId: string, anchor: MaterialAnchor,
+): Promise<FollowUpMaterialContext | null> {
+  return anchor.reading
+    ? readingFollowUpContext(userId, unitId, anchor)
+    : getAggregatedUnitMaterialContext(unitId, undefined);
+}
 
 export async function listMaterialFollowUps(userId: string, unitId: string) {
   const rows =
@@ -85,7 +96,7 @@ export type ReplyMaterialFollowUpParams = {
   /** Text from an assistant reply explicitly quoted for this turn. */
   quotedText?: string;
   traceId: string;
-  materialContext?: AggregatedUnitMaterialContext;
+  materialContext?: FollowUpMaterialContext;
   learnerStateMemoryRead?: LearnerStateMemoryReadRepository;
   signal?: AbortSignal;
   send: (event: AgentSseEvent) => Promise<void>;
@@ -96,7 +107,7 @@ export async function replyMaterialFollowUp(
 ): Promise<{ threadId: string; messages: FollowUpMessage[] }> {
   const materialContext =
     params.materialContext ??
-    (await getAggregatedUnitMaterialContext(params.unitId, undefined));
+    (await getMaterialFollowUpContext(params.userId, params.unitId, params.anchor));
   if (!materialContext) {
     throw new Error("请先生成学习正文");
   }
@@ -119,8 +130,9 @@ export async function replyMaterialFollowUp(
       ? resolveGoalContentLanguage(goal.contentLanguage, goal.title)
       : "zh-Hans",
   );
-  const anchorSnippet =
-    params.learningPosition?.anchorText ?? params.anchorSnippet ?? anchorContextSnippet(material, params.anchor);
+  const anchorSnippet = params.anchor.reading
+    ? params.anchorSnippet ?? materialContext.anchorSnippet ?? ""
+    : params.learningPosition?.anchorText ?? params.anchorSnippet ?? anchorContextSnippet(material, params.anchor);
 
   let threadId = params.threadId;
   let history: FollowUpMessage[] = [];
@@ -187,7 +199,9 @@ export async function replyMaterialFollowUp(
     .join("\n\n");
   const moduleContext = await getUnitModulePromptBlock(params.unitId);
 
-  const learningGuidance = await beginLearningGuidanceTurn({
+  // The existing trajectory resolver is indexed to Display material. Reading
+  // quotes retain their own versioned context instead of binding to that index.
+  const learningGuidance = params.anchor.reading ? undefined : await beginLearningGuidanceTurn({
     userId: params.userId, unitId: params.unitId, threadId: params.threadId, eventId: params.traceId,
     position: params.learningPosition ?? { version: 1, unitId: params.unitId, sectionId: params.anchor.sectionId, mode: "reading", anchorText: anchorSnippet },
     sourceText: userMsg.content, activeVisitId: params.activeVisitId,

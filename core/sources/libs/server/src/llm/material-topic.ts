@@ -1,5 +1,5 @@
 import { materialMusicTreeIssues } from "../../../domain/src/material-music.js";
-import { displayDocumentTargets } from "../../../domain/src/material-display.js";
+import { displayDocumentTargets, materialDisplayDocumentSchema } from "../../../domain/src/material-display.js";
 import { learnerFacingContentIssues } from "../../../domain/src/learner-facing-content.js";
 import { resolveMusicCue } from "../../../domain/src/material-music-teaching.js";
 import { musicCueActionSchema } from "./music-schema.js";
@@ -398,7 +398,11 @@ function preprocessTopicMaterial(
   const record = asRecord(value);
   if (!record) return value;
   const display = assignTopicDisplayIds(coerceTopicDisplay(record.display));
-  const cues = Array.isArray(record.cues)
+  // Cue normalization walks the Display tree. Leave malformed provider trees
+  // untouched so the schema below reports field errors to the repair turn.
+  const canSplitCues = asRecord(display)?.type !== "display" ||
+    materialDisplayDocumentSchema.safeParse(asRecord(display)?.document).success;
+  const cues = Array.isArray(record.cues) && canSplitCues
     ? splitTopicCues(record.cues, display)
     : record.cues;
   const topicId = firstNonEmptyString(record.topicId, expectedTopicId);

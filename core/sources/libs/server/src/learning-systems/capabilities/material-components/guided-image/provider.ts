@@ -19,15 +19,16 @@ export function guidedImagePrompt(
   intent: GuidedImageIntent,
   correction?: readonly string[],
 ) {
-  return `Create one teaching image for this frozen intent. Do not add narration or long explanatory paragraphs. Short labels must be exactly in ${intent.language}. Depict all required parts and their relationships; use visually distinct, individually recognizable objects. Preserve useful organic silhouettes instead of turning every part into a rectangular card.
+  return `Create one teaching image for this frozen intent. Do not add unrequested narration or long explanatory paragraphs. Preserve the labels, legends, axes and evidence qualifiers explicitly required by the intent. Short labels must be exactly in ${intent.language}. Depict all required parts and their relationships; use visually distinct, individually recognizable objects. Preserve useful organic silhouettes instead of turning every part into a rectangular card.
 Fit the COMPLETE composition and EVERY label inside an 8% safe margin on ALL four sides. Reduce the whole composition if necessary; never crop labels, hands, feet or lower objects. Keep enough vertical room below the bottom row for its labels. Connectors must not cross labels or unrelated objects. Any arrow must follow the exact from -> to direction in relationships; use an undirected connector if it only expresses association.
-${JSON.stringify(intent)}${correction?.length ? `\nA previous attempt needs these concrete corrections. Keep the same teaching content while fixing them:\n${JSON.stringify(correction)}` : ""}`;
+${JSON.stringify(intent)}${correction?.length ? `\nA previous attempt needs these concrete corrections. If an attached reference image is supplied, edit its incorrect geometry; otherwise draw a corrected replacement. Change actual positions, counts and connector endpoints as needed, not merely their text labels. Keep the complete frozen teaching content and every correct relationship; rearrange the composition when needed for accuracy and readability.\n${JSON.stringify(correction)}` : ""}`;
 }
 
 export async function segmentGuidedImage(params: {
   intent: GuidedImageIntent;
   image: GuidedImageAsset;
   dataUrl: string;
+  previousImageIssues?: readonly string[];
   selection?: LlmProviderSelection;
   signal: AbortSignal;
 }) {
@@ -44,6 +45,12 @@ export async function segmentGuidedImage(params: {
           prompt: JSON.stringify({
             intent: params.intent,
             image: { width: params.image.width, height: params.image.height },
+            ...(params.previousImageIssues?.length ? {
+              repairReview: {
+                previousFindings: params.previousImageIssues,
+                instruction: "Recheck EVERY prior finding against the current pixels. Earlier findings may already be fixed: do not reject a resolved issue or assume that an old issue still exists. Conversely, changed text labels are not evidence that geometry was repaired. Trace the actual start and arrowhead of each cited connector; count the actual drawn cells or objects; compare actual event positions on a shared axis. Report every remaining or regressed substantive contradiction in imageIssues. Also perform the full intent review for new defects. Keep correct relationships and teaching content intact.",
+              },
+            } : {}),
             ...(validationError ? { correction: validationError } : {}),
           }),
           imageDataUrl: params.dataUrl,
@@ -56,6 +63,7 @@ export async function segmentGuidedImage(params: {
           meta: {
             imageHash: params.image.sha256,
             displayId: params.intent.id,
+            previousImageIssueCount: params.previousImageIssues?.length ?? 0,
             imageModelSource: route.source,
           },
         }),

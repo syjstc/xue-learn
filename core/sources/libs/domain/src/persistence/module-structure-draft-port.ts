@@ -70,8 +70,26 @@ export type ModuleStructureDraftProgress = Readonly<{
   }>;
 }>;
 
+/** Atomically publish an audited path revision with its bound module briefs. */
+export type CommitModulePathRepairsInput = Readonly<{
+  goalId: string;
+  sessionId: string;
+  expectedMapPlanJson: string;
+  mapPlanJson: string;
+  modules: readonly Readonly<{
+    moduleId: string;
+    expectedCandidateHash: string;
+    plannedOutcomesJson: string;
+    exitCapabilityBriefsJson: string;
+    estimatedUnitCount: number;
+    unitPlanningBriefJson: string;
+  }>[];
+}>;
+
 /** Durable unpublished module-structure candidates for agentic goal creation. */
 export interface ModuleStructureDraftRepository {
+  /** Older hosts can still materialize paths, but cannot publish an unsaved revision. */
+  commitPathRepairs?(input: CommitModulePathRepairsInput): Promise<boolean>;
   upsertMany(
     inputs: readonly UpsertModuleStructureDraftInput[],
   ): Promise<void>;

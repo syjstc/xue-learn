@@ -99,6 +99,7 @@ export type SessionActionResponse = Record<string, unknown> & {
 };
 
 export type UnitWizardProps = {
+  active?: boolean;
   unitId: string;
   goalId: string;
   unitTitle: string;

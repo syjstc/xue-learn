@@ -6,6 +6,8 @@ import {createDisplayClock} from '../../../../libs/display/src/clock.js';
 import type {DisplayRendererProps} from '../../display-runtime/index.js';
 import {activeDisplayTargets,type DisplayTimelineCue} from '../../../../libs/display/src/index.js';
 jest.mock('./callout.css', () => ({}));
+jest.mock('./glass-scene.css', () => ({}));
+jest.mock('./glass-sculpture.css', () => ({}));
 jest.mock('./stage.css', () => ({}));
 jest.mock('./lesson-board.css', () => ({}));
 jest.mock('../../course-display/presentation-stage.css', () => ({}));

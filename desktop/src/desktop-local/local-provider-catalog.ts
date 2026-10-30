@@ -44,7 +44,12 @@ export const LOCAL_DEFAULT_MODELS: Record<
   Record<string, readonly string[]>
 > = {
   chat: {
-    minimax: ["MiniMax-M3", "MiniMax-M2.7-highspeed", "MiniMax-M2.7"],
+    minimax: [
+      "MiniMax-M3",
+      "MiniMax-M3.1-Flash",
+      "MiniMax-M2.7-highspeed",
+      "MiniMax-M2.7",
+    ],
     openai: ["gpt-5.6-luna"],
     deepseek: ["deepseek-flash"],
     fireworks: [
@@ -156,6 +161,7 @@ export type LocalChatThinkingControl =
       customEndpoint?: boolean;
     }
   | { kind: "doubao"; configurable: boolean; customEndpoint?: boolean }
+  | { kind: "minimax-effort" }
   | {
       kind: "custom";
       protocol: CustomThinkingProtocol;
@@ -168,6 +174,9 @@ function vendorChatThinkingControl(
   customEndpoint = false,
 ): Exclude<LocalChatThinkingControl, { kind: "custom" }> {
   if (providerId === "minimax") {
+    if (/^MiniMax-M3\.1-Flash$/i.test(model.trim())) {
+      return { kind: "minimax-effort" };
+    }
     return {
       kind: "switch",
       field: "minimaxThinkingEnabled",
@@ -308,6 +317,9 @@ export function chatThinkingFromSettings(
     minimaxThinkingEnabled:
       settings?.minimaxThinkingEnabled ??
       defaultLocalChatThinkingSettings.minimaxThinkingEnabled,
+    minimaxReasoningEffort:
+      settings?.minimaxReasoningEffort ??
+      defaultLocalChatThinkingSettings.minimaxReasoningEffort,
     ollamaThinkingEnabled:
       settings?.ollamaThinkingEnabled ??
       defaultLocalChatThinkingSettings.ollamaThinkingEnabled,

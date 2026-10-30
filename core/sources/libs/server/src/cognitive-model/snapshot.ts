@@ -282,6 +282,7 @@ export async function persistUnitCognitiveProposal(params: {
   modelVersion: number;
   proposal: UnitCognitiveModelProposal;
   externalEntities: ExternalCognitiveEntityReference[];
+  pathEntityKeys?: readonly string[];
 }): Promise<void> {
   const proposal = unitCognitiveModelProposalSchema.parse(
     canonicalizeAllowlistedEntityReuse(
@@ -360,11 +361,11 @@ export async function persistUnitCognitiveProposal(params: {
     }
     const stableKey =
       previous?.stableKey ??
-      scopedStableKey(
+      (params.pathEntityKeys?.includes(normalizedKey) ? `path:${normalizedKey}` : scopedStableKey(
         params.unit.curriculumKey,
         proposalEntity.kind,
         normalizedKey,
-      );
+      ));
     const nextDefinition =
       proposalEntity.kind === "atom"
         ? {

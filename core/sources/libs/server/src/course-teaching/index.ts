@@ -2,6 +2,8 @@ import {z} from 'zod';
 import type {CourseSourceSnapshotV1} from '../../../runtime-contracts/src/course-source.js';
 import {assertDisplayBuildsReady, resolveDisplayBuilds, unfinishedDisplayBuilds} from '../display-build/material.js';
 import {materialDisplayBlockSchema} from '../../../domain/src/material-display.js';
+import {getDisplayBuildRuntime} from '../display-build/service.js';
+import {displayBuildRetryReason, displayBuildRetryDelayMs} from '../display-build/retry.js';
 
 const block = z.object({type: z.string().min(1)}).catchall(z.unknown());
 /** Previously accepted teaching can fill an empty course section, never replace it. */
@@ -96,12 +98,28 @@ export class CourseTeachingContentService {
     }
     // Builders use the course workspace's existing durable jobs. They are
     // joined here, never recreated in a video-owned derivation repository.
+    const retried = new Set<string>();
     while (true) {
       source = await this.draft(userId, unitId);
       const resolved = await resolveDisplayBuilds(source, userId);
       const pending = unfinishedDisplayBuilds(resolved);
-      if (pending.some(job => !['pending', 'running'].includes(job.status)))
-        throw Error(`Course display build failed: ${pending.map(job => job.error || job.nodeId).join('; ')}`);
+      const failed = pending.filter(job => !['pending', 'running'].includes(job.status));
+      if (failed.length) {
+        const runtime = getDisplayBuildRuntime();
+        // One resume per build per request. Repeated outages return to the
+        // caller's delayed retry; validation errors and cancellations stop.
+        if (!runtime || failed.some(job => job.status !== 'failed' || retried.has(job.jobId)
+          || !displayBuildRetryReason(job.error ?? '')))
+          throw Error(`Course display build failed: ${failed.map(job => job.error || job.nodeId).join('; ')}`);
+        for (const job of failed) {
+          if (retried.has(job.jobId)) continue;
+          const run = await runtime.getOwned(job.jobId, userId);
+          const reason = run?.status === 'failed' ? displayBuildRetryReason(run.error ?? '') : null;
+          if (!run || !reason || Date.now() < run.updatedAt + displayBuildRetryDelayMs(reason)) continue;
+          retried.add(job.jobId);
+          await runtime.retry(job.jobId, userId, {onlyIfFailed: true});
+        }
+      }
       if (!pending.length) break;
       if (Date.now() - started > 60 * 60_000) throw Error('Course display preparation is still pending; continue from the saved course jobs');
       await (this.dependencies.wait?.() ?? new Promise<void>(resolve => setTimeout(resolve, 500)));

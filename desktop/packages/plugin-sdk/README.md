@@ -72,10 +72,41 @@ The host context provides:
 - `call(capability, method, args)`: versioned host capability calls bound to this view's workspace.
 - `execute(command, args)`: optional declared worker commands; `navigate(path)`: host navigation.
 - `pluginId`, `viewId`, `workspaceId`, `signal`, and `onDispose(callback)`: identity and cleanup.
+- `initialPath` and immutable `context`: the plugin's initial internal route, selected goal/unit/section and the host return position.
 
 Bundle the browser module as ESM; use `host.React` and avoid unresolved imports of `react` or `react/jsx-runtime`. Ordinary DOM elements and custom CSS are supported. Prefix CSS selectors with a plugin-specific class because the document is shared. The host removes the stylesheet on disposal. React effects clean up component resources; `onDispose` cleans up resources owned by the factory. Leaving the view, switching workspace or disabling the plugin revokes its host-issued session and pending capability work.
 
-The current embedded extension point is a dedicated plugin page at `/local/plugins/:pluginId/views/:viewId`; arbitrary slots in other learning screens are not implemented. Renderer code is trusted and shares the host document. It is not a sandbox for untrusted JavaScript.
+Dedicated pages at `/local/plugins/:pluginId/views/:viewId` and declared UI placements reuse the same verified view loader. Renderer code is trusted and shares the host document. It is not a sandbox for untrusted JavaScript.
+
+## UI placements
+
+SDK 0.3 adds `contributes.ui`. Declare `"ui.extensions": 1` in `requires`; older hosts cannot enable a package that needs these placements. Contributions reference a declared embedded `viewId` or, for action slots, a declared `command`. They have plugin-scoped IDs, a title, an optional description/icon and an integer `order` from -1000 to 1000. Desktop supplies button styling and settings navigation.
+
+| Slot | Placement | Target |
+| --- | --- | --- |
+| `unit.header.actions` | Next to the current lesson title | Embedded view or command |
+| `unit.content.actions` | Above the lesson body in chat, reading and immersive modes | Embedded view or command |
+| `unit.content.panels` | Inline custom React panel above the lesson body | Embedded view |
+| `settings.tabs` | Settings sidebar and mobile navigation | Embedded view |
+
+```json
+{
+  "requires": { "ui.extensions": 1, "workspace.courses": 1 },
+  "contributes": {
+    "views": [{ "id": "studio", "title": "Studio", "entry": "view.mjs" }],
+    "ui": [
+      { "id": "open-video", "slot": "unit.content.actions", "title": "View video", "icon": "video", "viewId": "studio", "path": "/units/{unitId}?goal={goalId}" },
+      { "id": "video-settings", "slot": "settings.tabs", "title": "Video", "viewId": "studio", "path": "/settings" }
+    ]
+  }
+}
+```
+
+Route templates support `{goalId}`, `{unitId}`, `{sectionId}` and `{returnTo}`. Values are encoded as URL components; missing required context hides a placement. Settings cannot require course context. A contributed view receives `host.initialPath`; initialize its private router from that path. It receives presentation context in `host.context`, while workspace authority always comes from the native view session. Commands receive `{ context }`. Icons are `puzzle`, `video`, `settings`, `book`, `sparkles`, `chart` or `play`.
+
+Only active plugins contribute UI. Disable, failure, removal and workspace changes revoke or remount affected views; settings fall back to the profile tab when their plugin becomes unavailable. IDs are namespaced as `plugin:PLUGIN_ID:CONTRIBUTION_ID` in `/settings?tab=...`. An action's host page retains the full return path, query and fragment. Inline panels and settings tabs inherit the normal view failure boundary and cleanup.
+
+This is a host-owned slot contract, not arbitrary DOM insertion. Add another named slot in the SDK and host when a new screen needs one; plugins do not patch core components or register unbounded host routes.
 
 ## Optional workers
 
@@ -114,7 +145,7 @@ Declare exact capability major versions in `requires`. Neither renderer nor work
 
 `examples/plugins/course-browser` is a complete embedded UI-only plugin with no bundled React or runtime entry. `examples/plugins/workspace-inspector` is a small worker example. Regenerate both packages' hashes using `node scripts/build-example-plugin.mjs`, then install either directory from Desktop's plugin manager. Integrity uses SHA-256 of each file except `plugin.json`. Contained relative symlinks are supported and use SHA-256 of `symlink:` followed by the link target. Files not listed in integrity are rejected.
 
-The current Video Studio package still opens a separate application; introducing this SDK does not migrate its UI, generation workflow or persistence. See [Desktop plugin architecture](../../docs/desktop-plugins.md) for the implemented boundary and migration direction.
+Video Studio runs inside Desktop. Version 0.2.11 contributes a contextual lesson-body action and a Video settings tab with workspace-scoped export preferences. See [Desktop plugin architecture](../../docs/desktop-plugins.md) for ownership and lifecycle boundaries.
 
 `contributes.displayPackages` reserves compatibility with existing display package directories. A host must provide a complete activation/disposal adapter before enabling those contributions; the first host release rejects them rather than silently installing permanent display resources. Existing display plugins continue using their current loader.
 

@@ -4,13 +4,14 @@ import type {DisplayPluginModule} from '../../../../libs/display/src/types.js';
 import {FilmStage} from '../film/stage.js';
 import {readMaterialVisual} from '../../../../libs/domain/src/material-visual.js';
 import {AnimatedChart} from '../film/animated-chart.js';
-import {StoryText} from '../film/text.js';
 import {CalloutDisplay} from '../film/callout.js';
 import {GeneralBoard} from '../film/general-board.js';
 import {conversationPages,type ConversationTurn} from '../conversation.js';
 import {createAnimatedDisplay} from './animated.js';
 import {TeachingDisplay} from './teaching.js';
 import {displayFocus} from './focus.js';
+import {GlassText, GlassConversation} from '../film/glass-reading.js';
+import {glassSeconds} from '../film/glass-scene.js';
 import {compositionPages} from '../composition-pages.js';
 export function CompositionDisplay({node,children,slots,timeline,clock,mode}:DisplayRendererProps){
  const payload=node.payload as {layout?:string;columns?:number};
@@ -34,7 +35,11 @@ export function VisualDisplay(props:DisplayRendererProps){
  const Renderer=block.kind==='bars'?VisualBars:block.kind==='layers'?VisualLayers:VisualProcess;
  return <Renderer {...props} node={{...props.node,payload:translated}}/>;
 }
-export function TextDisplay({node}:DisplayRendererProps){const payload=node.payload as {title?:string;text:string};return <FilmStage kind={node.kind}><article className="display-film-text rm-panel">{payload.title&&<h2><StoryText text={payload.title}/></h2>}<p><StoryText text={payload.text}/></p></article></FilmStage>;}
+export function TextDisplay(props:DisplayRendererProps){
+ const payload=props.node.payload as {title?:string;text:string;presentation?:{startTick?:number}};
+ const seconds=glassSeconds(props.clock,props.node.id,props.timeline,payload.presentation);
+ return <FilmStage kind={props.node.kind}><GlassText title={payload.title} text={payload.text} seconds={seconds}/></FilmStage>;
+}
 export function ConversationDisplay(props:DisplayRendererProps){
  const {node,clock,timeline,mode,state,updateState}=props,focus=displayFocus(props);
  const payload=node.payload as {title?:string;turns:ConversationTurn[];activeTargetIds?:readonly string[];presentation?:{startTick?:number}};
@@ -47,7 +52,10 @@ export function ConversationDisplay(props:DisplayRendererProps){
  const seconds=Math.max(0,clock.timeSeconds-(payload.presentation?.startTick??0)/48_000);
  const automatic=focused.length?focused[Math.floor(progress*focused.length)]:Math.min(pages.length-1,Math.floor(seconds/8));
  const page=mode==='interactive'&&typeof state.page==='number'?Math.max(0,Math.min(pages.length-1,state.page)):automatic;
- return <FilmStage kind={node.kind}><article className="display-film-conversation"><header><h2><StoryText text={payload.title??''}/></h2><span>{page+1} / {pages.length}</span></header><div>{pages[page].map((turn,index)=><section key={`${turn.id}:${turn.part}`} data-conversation-turn={turn.id} className="rm-panel" style={{marginLeft:index%2?120:0,marginRight:index%2?0:120,opacity:!active||active.id===turn.id?1:.48}}><strong><StoryText text={turn.speaker}/>{turn.parts>1&&<small> {turn.part+1}/{turn.parts}</small>}</strong><p><StoryText text={turn.text}/></p></section>)}</div>{mode==='interactive'&&pages.length>1&&<nav aria-label="对话翻页"><button disabled={page===0} onClick={()=>updateState({page:page-1})}>上一页</button><button disabled={page===pages.length-1} onClick={()=>updateState({page:page+1})}>下一页</button></nav>}</article></FilmStage>;
+ const elapsed=cue?Math.max(0,(clock.tick-cue.startTick)/clock.ticksPerSecond):seconds;
+ const entrySeconds=mode==='interactive'&&typeof state.page==='number'?1.5:cue&&focused.length?elapsed-Math.max(0,focused.indexOf(page))*cue.durationTicks/clock.ticksPerSecond/focused.length:seconds-page*8;
+ const speakers=[...new Set(payload.turns.map(turn=>turn.speaker))];
+ return <FilmStage kind={node.kind}><GlassConversation title={payload.title} turns={pages[page]} speakers={speakers} page={page} pages={pages.length} seconds={seconds} entrySeconds={entrySeconds} activeId={active?.id} progress={focus.progress} interactive={mode==='interactive'} onPage={next=>updateState({page:next})}/></FilmStage>;
 }
 
 

@@ -7,13 +7,13 @@ import type {
 import { parseMaterialAnchor } from "../../../domain/material-anchor.js";
 import {
   deleteMaterialFollowUp,
+  getMaterialFollowUpContext,
   listMaterialFollowUps,
   listRecentMaterialFollowUps,
   replyMaterialFollowUp,
 } from "../../../graph/material-follow-up.js";
 import { createSseStream, sseResponse } from "../../../llm/sse.js";
 import { runWithLlmTraceAsync } from "../../../llm/trace-context.js";
-import { getAggregatedUnitMaterialContext } from "../../../sections/index.js";
 import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { randomUUID } from "node:crypto";
 
@@ -85,13 +85,10 @@ export async function followUpsStream(
       },
     );
   }
-  const materialContext = await getAggregatedUnitMaterialContext(
-    unitId,
-    undefined,
-  );
-  if (!materialContext) {
+  const anchor = parseMaterialAnchor(body.anchor);
+  if (!anchor) {
     return new Response(
-      JSON.stringify({ error: tBackend("error.learning.materialRequired") }),
+      JSON.stringify({ error: tBackend("error.learning.invalidAnchor") }),
       {
         status: 400,
         headers: { "Content-Type": "application/json" },
@@ -99,10 +96,10 @@ export async function followUpsStream(
     );
   }
 
-  const anchor = parseMaterialAnchor(body.anchor);
-  if (!anchor) {
+  const materialContext = await getMaterialFollowUpContext(userId, unitId, anchor);
+  if (!materialContext) {
     return new Response(
-      JSON.stringify({ error: tBackend("error.learning.invalidAnchor") }),
+      JSON.stringify({ error: tBackend("error.learning.materialRequired") }),
       {
         status: 400,
         headers: { "Content-Type": "application/json" },
@@ -158,7 +155,7 @@ export async function followUpsStream(
                 return;
               }
               if (event.type === "thinking") {
-                send({ type: "thinking" });
+                send(event);
                 return;
               }
               if (event.type === "knowledge_activity") {

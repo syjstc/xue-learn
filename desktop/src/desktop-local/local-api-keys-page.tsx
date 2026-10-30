@@ -17,6 +17,8 @@ import {
 import {
   BUILTIN_EMBEDDING_MODEL_ID,
   LOCAL_OWNER_ID,
+  MINIMAX_REASONING_EFFORTS,
+  type MinimaxReasoningEffort,
   customThinkingProtocols,
   localAudioProviderIds,
   localChatProviderIds,
@@ -50,7 +52,12 @@ import {
   type LocalChatThinkingControl,
 } from "./local-provider-catalog.ts";
 import { Switch } from "@/components/ui/switch";
-import { useT, type TranslationKey } from "@xue-learn/core/i18n";
+import {
+  useI18n,
+  useT,
+  type TranslationKey,
+  type UiLocale,
+} from "@xue-learn/core/i18n";
 import { cn } from "@xue-learn/core/utils";
 import { BuiltinEmbeddingDownloadDialog } from "./builtin-embedding-download-dialog.tsx";
 import {
@@ -82,6 +89,30 @@ const providerLabels: Partial<Record<LocalProviderId, string>> = {
   codex: "Codex（ChatGPT 订阅）",
   builtin: "Qwen3 Embedding · Local",
 };
+
+const minimaxAlwaysThinkingHints = {
+  "zh-Hans": "当前模型始终启用推理，API 无法关闭推理。",
+  "zh-Hant": "目前模型一律啟用推理，API 無法關閉推理。",
+  en: "This model always uses reasoning; the API cannot disable it.",
+} satisfies Record<UiLocale, string>;
+
+const minimaxReasoningMessages = {
+  "zh-Hans": {
+    title: "MiniMax 推理强度",
+    hint: "此模型始终启用推理。强度越高，通常思考越充分、耗时越长；默认最高。",
+    levels: ["低 · low", "中 · medium", "高 · high", "很高 · xhigh", "最高 · max"],
+  },
+  "zh-Hant": {
+    title: "MiniMax 推理強度",
+    hint: "此模型一律啟用推理。強度越高，通常思考越充分、耗時越長；預設最高。",
+    levels: ["低 · low", "中 · medium", "高 · high", "很高 · xhigh", "最高 · max"],
+  },
+  en: {
+    title: "MiniMax reasoning effort",
+    hint: "Reasoning is always on. Higher effort generally means deeper thinking and more time. Default: max.",
+    levels: ["low", "medium", "high", "xhigh", "max"],
+  },
+} satisfies Record<UiLocale, { title: string; hint: string; levels: string[] }>;
 
 const vectorStatusLabelKeys = {
   no_chunks: "desktop.runtime.vector.noChunks",
@@ -1267,6 +1298,8 @@ export function LocalApiKeysPage() {
                   currentSelection.model ??
                   "";
                 if (!model.trim()) return;
+                setError(undefined);
+                setBusyProvider(selectedProvider);
                 void fetch("/api/local/ai-models", {
                   method: "PATCH",
                   headers: { "content-type": "application/json" },
@@ -1279,6 +1312,12 @@ export function LocalApiKeysPage() {
                       ...patch,
                     }),
                   }),
+                }).then((response) => {
+                  if (!response.ok) throw new Error(`Model settings update failed (${response.status})`);
+                }).catch((cause: unknown) => {
+                  setError(cause instanceof Error ? cause.message : String(cause));
+                }).finally(() => {
+                  setBusyProvider(undefined);
                 });
               }}
               onDraftChange={(key, value) =>
@@ -1601,7 +1640,29 @@ function VendorThinkingControls({
   disabled: boolean;
   onChange?(patch: Partial<LocalChatThinkingSettings>): void;
 }) {
-  const t = useT();
+  const { t, locale } = useI18n();
+  if (control.kind === "minimax-effort") {
+    const messages = minimaxReasoningMessages[locale];
+    return (
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-medium text-foreground">{messages.title}</p>
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{messages.hint}</p>
+        </div>
+        <select
+          className="native-select max-w-[10rem] shrink-0 rounded-lg border border-border bg-background px-2 py-1.5 text-sm text-foreground disabled:opacity-50"
+          aria-label={messages.title}
+          value={thinking.minimaxReasoningEffort}
+          disabled={disabled}
+          onChange={(event) => onChange?.({ minimaxReasoningEffort: event.target.value as MinimaxReasoningEffort })}
+        >
+          {MINIMAX_REASONING_EFFORTS.map((effort, index) => (
+            <option key={effort} value={effort}>{messages.levels[index]}</option>
+          ))}
+        </select>
+      </div>
+    );
+  }
   const switchHint =
     control.kind === "switch" && control.field === "minimaxThinkingEnabled"
       ? control.configurable
@@ -1610,7 +1671,7 @@ function VendorThinkingControls({
               ? t("settings.llm.customThinkingSuffix")
               : t("settings.llm.minimaxThinkingSuffix")
           }`
-        : t("settings.llm.minimaxThinkingUnsupported", { model })
+        : minimaxAlwaysThinkingHints[locale]
       : control.kind === "switch" && control.field === "deepseekThinkingEnabled"
         ? `${t("settings.llm.deepseekThinkingPrefix")} thinking.type=disabled ${t("settings.llm.deepseekThinkingSuffix")}`
         : control.kind === "switch" && control.field === "openaiThinkingEnabled"
@@ -1671,7 +1732,7 @@ function VendorThinkingControls({
       </div>
       {control.kind === "switch" ? (
         <Switch
-          checked={thinking[control.field]}
+          checked={!control.configurable || thinking[control.field]}
           disabled={disabled || !control.configurable}
           aria-label={ariaLabel}
           onCheckedChange={(enabled) =>

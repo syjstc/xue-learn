@@ -1,15 +1,17 @@
 import type { Env } from "../../../../env.js";
+import type { MinimaxReasoningEffort } from "../../../../../../runtime-contracts/src/local-api.js";
 import type { LlmProviderOptions } from "../../types.js";
 
 export type MinimaxLlmOptions = Pick<
   LlmProviderOptions,
-  "chatModel" | "embeddingModel" | "minimaxThinkingEnabled"
+  "chatModel" | "embeddingModel" | "minimaxThinkingEnabled" | "minimaxReasoningEffort"
 >;
 
 export const MINIMAX_LLM_MODELS = [
   "MiniMax-M2.7-highspeed",
   "MiniMax-M2.7",
   "MiniMax-M3",
+  "MiniMax-M3.1-Flash",
 ] as const;
 
 export const DEFAULT_MINIMAX_CHAT_MODEL = "MiniMax-M3" as const;
@@ -28,12 +30,17 @@ export function defaultMinimaxLlmOptions(_env?: Env): MinimaxLlmOptions {
     chatModel: DEFAULT_MINIMAX_CHAT_MODEL,
     embeddingModel: MINIMAX_EMBEDDING_MODELS[0],
     minimaxThinkingEnabled: false,
+    minimaxReasoningEffort: "max",
   };
 }
 
 /** MiniMax-M3 supports `thinking.type: disabled`; M2.x always emit thinking. */
 export function minimaxThinkingConfigurable(model: string): boolean {
   return /^MiniMax-M3$/i.test(model.trim());
+}
+
+export function minimaxReasoningEffortConfigurable(model: string): boolean {
+  return /^MiniMax-M3\.1-Flash$/i.test(model.trim());
 }
 
 /**
@@ -46,9 +53,13 @@ export function minimaxThinkingConfigurable(model: string): boolean {
 export function minimaxThinkingModelKwargs(
   model: string,
   enabled: boolean,
-  options?: { ignoreModelGate?: boolean },
+  options?: { ignoreModelGate?: boolean; reasoningEffort?: MinimaxReasoningEffort },
 ): Record<string, unknown> {
   const kwargs: Record<string, unknown> = { reasoning_split: true };
+  if (minimaxReasoningEffortConfigurable(model)) {
+    kwargs.reasoning_effort = options?.reasoningEffort ?? "max";
+    return kwargs;
+  }
   if (
     (options?.ignoreModelGate || minimaxThinkingConfigurable(model)) &&
     !enabled
@@ -63,9 +74,10 @@ export function minimaxModelKwargs(
   model: string,
   thinkingEnabled: boolean,
   maxCompletionTokens?: number,
+  reasoningEffort?: MinimaxReasoningEffort,
 ): Record<string, unknown> {
   return {
-    ...minimaxThinkingModelKwargs(model, thinkingEnabled),
+    ...minimaxThinkingModelKwargs(model, thinkingEnabled, { reasoningEffort }),
     ...(maxCompletionTokens
       ? { max_completion_tokens: maxCompletionTokens }
       : {}),

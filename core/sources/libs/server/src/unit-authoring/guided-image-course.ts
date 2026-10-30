@@ -38,6 +38,8 @@ import {
   runWithLlmTraceAsync,
 } from "../llm/trace-context.js";
 import { sanitizeBackendErrorText } from "../observability/backend-error-log.js";
+import { getEnv, getRuntimeEnvironment } from "../env.js";
+import { readStagedGuidedImageCandidate } from "./guided-image-repair-candidate.js";
 
 /** Owned child state lives behind the shared conversation port. No learner
  * session, grading/evidence, or second persistence implementation is involved. */
@@ -195,6 +197,23 @@ async function generateCourseGuidedImageContent(
     },
     ports: {
       generateImage: async (intent, imageSignal, feedback) => {
+        // Explicitly staged local candidates are bound to this exact child
+        // scope, frozen intent and rejected image. They still pass through the
+        // unchanged checkpoint, segmentation, cutout and narration gates.
+        const staged = feedback && getRuntimeEnvironment().XUELEARN_DESKTOP_LOCAL === "1"
+          ? await readStagedGuidedImageCandidate({
+              imageStorageDir: getEnv().IMAGE_STORAGE_DIR,
+              unitId: input.unitId,
+              scopeId,
+              fingerprint: guidedImageFingerprint(intent, persona),
+              rejectedSha256: feedback.image.sha256,
+            })
+          : undefined;
+        if (staged) {
+          const normalized = await normalizeGuidedImage(staged);
+          const saved = await saveGuidedUnitImage(input.unitId, normalized.data);
+          return { src: saved.src, sha256: saved.sha256, width: normalized.width, height: normalized.height };
+        }
         await ensureImageRuntimeConfig();
         assertImageGenerationConfigured();
         const provider = getImageProvider();
@@ -202,14 +221,25 @@ async function generateCourseGuidedImageContent(
           throw new Error(
             "Configure an image provider before using this teacher's image-first lesson",
           );
+        // Edit the exact rejected pixels when supported; other providers keep
+        // the existing feedback-guided redraw and the same quality gate.
+        const referenceImage = feedback && !feedback.redraw && provider.supportsImageEditing
+          ? { data: await imageData(feedback.image), mimeType: "image/png" as const }
+          : undefined;
         const generated = await provider.generateImage({
-          prompt: guidedImagePrompt(intent, feedback?.issues),
+          prompt: guidedImagePrompt(intent, feedback?.issues) + (feedback?.redraw
+            ? "\nPrior edits did not resolve the visible defects. Draw a fresh layout from the frozen intent and corrections, rather than reproducing the failed composition."
+            : ""),
+          ...(referenceImage ? { referenceImage } : {}),
           labelLanguage: resolveGoalContentLanguage(
             intent.language,
             intent.title,
           ),
           aspectRatio: "4:3",
           style: "concept",
+          // Required qualifiers, legends and axis labels are teaching data.
+          // The default short-label-only policy can contradict the intent.
+          textPolicy: "preserve-intent",
           resolution: "2k",
           signal: imageSignal,
         });
@@ -225,12 +255,13 @@ async function generateCourseGuidedImageContent(
       verifyImage: async (image) => {
         await imageData(image);
       },
-      segment: async (intent, image, stageSignal) =>
+      segment: async (intent, image, stageSignal, previousImageIssues) =>
         segmentGuidedImage({
           intent,
           image,
           dataUrl: await dataUrl(image),
           signal: stageSignal,
+          ...(previousImageIssues?.length ? { previousImageIssues } : {}),
         }),
       cut: async (image, segmentation, stageSignal) => {
         const data = await imageData(image);

@@ -1,3 +1,4 @@
+import { createPathProgressReporter } from "../../goal-creation/path-progress.js";
 import { mergeRegenerationAdjustment } from "../../llm/generation-options.js";
 import { createHash, randomUUID } from "node:crypto";
 import { getCurrentLocale, tBackend } from "../../../../common/src/index.js";
@@ -9,10 +10,7 @@ import {
   createGenerationRun,
   failGenerationRun,
 } from "../../generation/run.js";
-import {
-  parseMapPlan,
-  serializeMapPlan,
-} from "../../goals/map-plan.js";
+import { parseMapPlan, serializeMapPlan } from "../../goals/map-plan.js";
 import {
   excludeFoundationScopeFromPlan,
   parseFoundationGoalItems,
@@ -523,45 +521,42 @@ export async function generatePlanForGoal(
         ? "goal.curriculum.plan.deep_blueprint"
         : "goal.curriculum.plan",
       authoringAgent: { userId, goalId },
+      onPathProgress: createPathProgressReporter(ctx.send),
       wrapIdentity: (run) =>
-        usesBlueprintPlanning
-          ? withPlanningActivity(
-              ctx.send,
-              {
-                id: "goal_identity",
-                category: "synthesis",
-                startedMessage: tBackend("status.planning.identity.started"),
-                pulseMessages: [
-                  tBackend("status.planning.identity.pulse1"),
-                  tBackend("status.planning.identity.pulse2"),
-                ],
-                completedMessage: tBackend(
-                  "status.planning.identity.completed",
-                ),
-                pulseIntervalMs: 8_000,
-              },
-              () => withOperationReasoning(true, run),
-            )
-          : run(),
+        withPlanningActivity(
+          ctx.send,
+          {
+            id: "goal_identity",
+            category: "synthesis",
+            startedMessage: tBackend("status.planning.identity.started"),
+            pulseMessages: [
+              tBackend("status.planning.identity.pulse1"),
+              tBackend("status.planning.identity.pulse2"),
+            ],
+            completedMessage: tBackend("status.planning.identity.completed"),
+            pulseIntervalMs: 8_000,
+          },
+          () =>
+            usesBlueprintPlanning ? withOperationReasoning(true, run) : run(),
+        ),
       wrapJourney: (run) =>
-        usesBlueprintPlanning
-          ? withPlanningActivity(
-              ctx.send,
-              {
-                id: "goal_journey",
-                category: "synthesis",
-                startedMessage: tBackend("status.planning.journey.started"),
-                pulseMessages: [
-                  tBackend("status.planning.journey.pulse1"),
-                  tBackend("status.planning.journey.pulse2"),
-                  tBackend("status.planning.journey.pulse3"),
-                ],
-                completedMessage: tBackend("status.planning.journey.completed"),
-                pulseIntervalMs: 8_000,
-              },
-              () => withOperationReasoning(true, run),
-            )
-          : run(),
+        withPlanningActivity(
+          ctx.send,
+          {
+            id: "goal_journey",
+            category: "synthesis",
+            startedMessage: tBackend("status.planning.journey.started"),
+            pulseMessages: [
+              tBackend("status.planning.journey.pulse1"),
+              tBackend("status.planning.journey.pulse2"),
+              tBackend("status.planning.journey.pulse3"),
+            ],
+            completedMessage: tBackend("status.planning.journey.completed"),
+            pulseIntervalMs: 8_000,
+          },
+          () =>
+            usesBlueprintPlanning ? withOperationReasoning(true, run) : run(),
+        ),
       onIdentity: async (identity) => {
         await ctx.send(
           buildPlanningOutlineEvent(
@@ -910,6 +905,7 @@ export async function approveGoalPlan(
           exitCapabilityBriefs: [...modulePlan.exitCapabilityBriefs],
           estimatedUnitCount: modulePlan.estimatedUnitCount,
           unitPlanningBrief: {
+            ...modulePlan.unitPlanningBrief,
             scopeSize: modulePlan.unitPlanningBrief.scopeSize,
             rationale: modulePlan.unitPlanningBrief.rationale,
             progression: [...modulePlan.unitPlanningBrief.progression],

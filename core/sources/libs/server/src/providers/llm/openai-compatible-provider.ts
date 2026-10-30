@@ -1,10 +1,10 @@
 import { ChatOpenAI } from "@langchain/openai";
+import { MiniMaxChatOpenAI } from "./vendors/minimax/chat-model.js";
 import type { Embeddings } from "@langchain/core/embeddings";
 import type { LlmProvider, LlmProviderId } from "./types.js";
 import {
   CHAT_OPENAI_STREAMING_DEFAULTS,
   LLM_REQUEST_TIMEOUT_MS,
-  MINIMAX_CHAT_OPENAI_STREAMING_DEFAULTS,
 } from "./chat-openai-defaults.js";
 import {
   createOpenAiCompatibleStructuredOutputAdapter,
@@ -25,6 +25,7 @@ export type OpenAiCompatibleProviderConfig = {
   modelKwargs?: Record<string, unknown>;
   reasoning?: { effort: "none" | "minimal" | "low" | "medium" | "high" };
   streamUsage?: boolean;
+  preserveMinimaxReasoning?: boolean;
   /**
    * Agent tools often have optional arguments. Leave this false so ChatOpenAI
    * does not reject those schemas under OpenAI strict tool calling.
@@ -54,10 +55,10 @@ export function createOpenAiCompatibleLlmProvider(
         ? { max_completion_tokens: request.maxTokens }
         : {}),
     };
-    return new ChatOpenAI({
-      ...(config.streamUsage === false
-        ? MINIMAX_CHAT_OPENAI_STREAMING_DEFAULTS
-        : CHAT_OPENAI_STREAMING_DEFAULTS),
+    const ChatModel = config.preserveMinimaxReasoning ? MiniMaxChatOpenAI : ChatOpenAI;
+    return new ChatModel({
+      ...CHAT_OPENAI_STREAMING_DEFAULTS,
+      ...(config.streamUsage === undefined ? {} : {streamUsage: config.streamUsage}),
       model: config.model,
       apiKey: config.apiKey,
       timeout: LLM_REQUEST_TIMEOUT_MS,

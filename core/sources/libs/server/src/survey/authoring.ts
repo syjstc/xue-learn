@@ -258,7 +258,9 @@ export const compactSurveyPreviewItemBindingSchema = z.object({
 });
 
 export const compactSurveyPreviewBindingSchema = z.object({
-  items: z.array(compactSurveyPreviewItemBindingSchema),
+  items: z.array(compactSurveyPreviewItemBindingSchema).describe(
+    "At most 8 items with kind=outline, followed by at least one item with kind=question. Merge related teaching scopes to fit the outline limit while preserving the unit's required coverage. Count outline items before committing.",
+  ),
 });
 
 function asJsonObject(value: unknown): Record<string, unknown> | null {
@@ -380,9 +382,7 @@ export function surveyAuthoringItemsSchemaFor(
         context.addIssue({
           code: "custom",
           message:
-            minOutlines === 2
-              ? "SQ requires 2-8 outline items"
-              : "SQ requires 1-8 outline items",
+            `SQ requires ${minOutlines}-8 outline items; received ${outlineCount}. Merge related scopes to fit the limit without dropping required coverage.`,
         });
       }
       if (!items.some((item) => item.kind === "question")) {

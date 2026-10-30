@@ -1,3 +1,4 @@
+import { resolvePathLessonPrerequisites } from "@xue-learn/core/domain";
 import { randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
 import type { PreparedModulePublicationRepository, PublishPreparedModuleInput, PublishPreparedModuleResult, } from "@xue-learn/core/domain";
@@ -23,6 +24,21 @@ function qualifiedTable(em: EntityManager, table: string): string {
     const schema = em.schema ?? em.config?.getSchema();
     const quoted = `"${table.replaceAll('"', '""')}"`;
     return schema ? `"${schema.replaceAll('"', '""')}".${quoted}` : quoted;
+}
+
+export async function reconcilePathPrerequisites(
+    execute: (sql: string, params?: unknown[]) => Promise<unknown>,
+    unitTable: string, moduleTable: string, goalId: string,
+) {
+    const rows = resultRows(await execute(`SELECT u."id", u."title", u."orderIndex", m."unitPlanningBrief"
+        FROM ${unitTable} u JOIN ${moduleTable} m ON m."id"=u."moduleId"
+        WHERE u."goalId"=? AND u."unitKind"='lesson'`, [goalId]));
+    const updates = resolvePathLessonPrerequisites(rows.map((row) => ({
+        id: String(rowValue(row, "id")), title: String(rowValue(row, "title")),
+        orderIndex: Number(rowValue(row, "orderIndex")), unitPlanningBrief: rowValue(row, "unitPlanningBrief"),
+    })));
+    for (const update of updates) await execute(`UPDATE ${unitTable} SET "prerequisites"=? WHERE "id"=? AND "goalId"=?`,
+        [JSON.stringify(update.prerequisites), update.unitId, goalId]);
 }
 /**
  * Transaction-neutral publication of the prepared, pre-navigation module
@@ -77,7 +93,7 @@ export class MikroOrmPreparedModulePublicationRepository implements PreparedModu
                     unit.title,
                     index,
                     unit.difficulty,
-                    JSON.stringify(previousUnitId ? [previousUnitId] : []),
+                    JSON.stringify(input.baseUnitPlanningBrief.pathContract ? [] : previousUnitId ? [previousUnitId] : []),
                     unit.contentSummary,
                     `a_${orderIndex + 1}`,
                     JSON.stringify([]),
@@ -121,6 +137,7 @@ export class MikroOrmPreparedModulePublicationRepository implements PreparedModu
             throw new Error("Module generation lease was superseded");
         }
         const generationVersion = Number(rowValue(updatedRows[0]!, "generationVersion") ?? nextVersion);
+        if (input.baseUnitPlanningBrief.pathContract) await reconcilePathPrerequisites(execute, unitTable, moduleTable, input.goalId);
         return {
             moduleId: input.moduleId,
             published: true,
@@ -134,7 +151,7 @@ export class MikroOrmPreparedModulePublicationRepository implements PreparedModu
         const now = input.publishedAt;
         const moduleTable = qualifiedTable(this.em, "LearningModule");
         const lock = "";
-        const module = resultRows(await execute(`SELECT "generationBuildToken" FROM ${moduleTable} WHERE "id"=? AND "goalId"=?${lock}`, [input.moduleId, input.goalId]))[0];
+        const module = resultRows(await execute(`SELECT "generationBuildToken", "unitPlanningBrief" FROM ${moduleTable} WHERE "id"=? AND "goalId"=?${lock}`, [input.moduleId, input.goalId]))[0];
         if (!module || stringValue(rowValue(module, "generationBuildToken")) !== input.generationBuildToken)
             throw new Error("Module generation lease was superseded");
         const unitTable = qualifiedTable(this.em, "LearningUnit");
@@ -142,7 +159,7 @@ export class MikroOrmPreparedModulePublicationRepository implements PreparedModu
         if (existing.length > 0 && !input.preparedExisting)
             throw new Error("Module retry requires candidate cleanup");
         const entityTable = qualifiedTable(this.em, "CognitiveEntity"), atomTable = qualifiedTable(this.em, "KnowledgeAtom"), constructTable = qualifiedTable(this.em, "CognitiveConstruct"), targetTable = qualifiedTable(this.em, "LearningTarget"), requirementTable = qualifiedTable(this.em, "LearningTargetRequirement"), mappingTable = qualifiedTable(this.em, "ModuleLearningTarget"), relationTable = qualifiedTable(this.em, "CognitiveRelation");
-        const ensureEntity = async (item: any, kind: "atom" | "competency") => { const authority = item.entityAuthority; const found = resultRows(await execute(`SELECT "id" FROM ${entityTable} WHERE "goalId"=? AND "stableKey"=? LIMIT 1`, [input.goalId, authority.stableKey]))[0]; const id = found ? String(rowValue(found, "id")) : randomUUID(); if (found)
+        const ensureEntity = async (item: any, kind: "atom" | "concept" | "skill" | "competency") => { const authority = item.entityAuthority; const found = resultRows(await execute(`SELECT "id", "kind" FROM ${entityTable} WHERE "goalId"=? AND "stableKey"=? LIMIT 1`, [input.goalId, authority.stableKey]))[0]; const id = found ? String(rowValue(found, "id")) : randomUUID(); if (found && rowValue(found, "kind") !== kind) throw new Error("Planned KACOM entity kind changed"); if (found)
             await execute(`UPDATE ${entityTable} SET "title"=?,"description"=?,"status"='active',"updatedAt"=? WHERE "id"=?`, [item.title, item.objective ?? item.rationale, now, id]);
         else
             await execute(`INSERT INTO ${entityTable} ("id","stableKey","scopeKey","kind","scope","goalId","title","description","language","definitionVersion","status","provenance","createdAt","updatedAt") VALUES (?,?,?,?,'goal',?,?,?,?,1,'active',?,?,?)`, [id, authority.stableKey, `goal:${input.goalId}`, kind, input.goalId, item.title, item.objective ?? item.rationale, input.contentLanguage, JSON.stringify(item.provenance ?? {}), now, now]); return id; };
@@ -163,13 +180,18 @@ export class MikroOrmPreparedModulePublicationRepository implements PreparedModu
         }
         const capabilityTargets: any[] = [];
         for (const item of input.capabilities) {
-            const entityId = await ensureEntity(item, "competency");
-            const construct = resultRows(await execute(`SELECT "entityId" FROM ${constructTable} WHERE "entityId"=?`, [entityId]))[0];
+            const kind = item.entityAuthority.kind;
+            const entityId = await ensureEntity(item, kind);
             const criteria = JSON.stringify(item.criteria);
-            if (construct)
-                await execute(`UPDATE ${constructTable} SET "objective"=?,"performanceCriteria"=?,"outputs"=?,"qualityCriteria"=? WHERE "entityId"=?`, [item.objective, criteria, JSON.stringify([item.objective]), criteria, entityId]);
-            else
-                await execute(`INSERT INTO ${constructTable} ("entityId","constructType","objective","performanceCriteria","contextSchema","inputs","outputs","qualityCriteria","compositionStrategy") VALUES (?,'competency',?,?,'{}','[]',?,?,?)`, [entityId, item.objective, criteria, JSON.stringify([item.objective]), criteria, JSON.stringify({ source: "module_exit_capability" })]);
+            if (kind === "atom") {
+                const atom = resultRows(await execute(`SELECT "entityId" FROM ${atomTable} WHERE "entityId"=?`, [entityId]))[0];
+                if (atom) await execute(`UPDATE ${atomTable} SET "statement"=?,"explanation"=?,"assessmentHints"=? WHERE "entityId"=?`, [item.title, item.objective, criteria, entityId]);
+                else await execute(`INSERT INTO ${atomTable} ("entityId","atomType","statement","explanation","boundary","assessmentHints") VALUES (?,'declarative',?,?,'{}',?)`, [entityId, item.title, item.objective, criteria]);
+            } else {
+                const construct = resultRows(await execute(`SELECT "entityId" FROM ${constructTable} WHERE "entityId"=?`, [entityId]))[0];
+                if (construct) await execute(`UPDATE ${constructTable} SET "objective"=?,"performanceCriteria"=?,"outputs"=?,"qualityCriteria"=? WHERE "entityId"=?`, [item.objective, criteria, JSON.stringify([item.objective]), criteria, entityId]);
+                else await execute(`INSERT INTO ${constructTable} ("entityId","constructType","objective","performanceCriteria","contextSchema","inputs","outputs","qualityCriteria","compositionStrategy") VALUES (?,?,?,?,'{}','[]',?,?,?)`, [entityId, kind, item.objective, criteria, JSON.stringify([item.objective]), criteria, JSON.stringify({ source: "module_exit_capability" })]);
+            }
             capabilityTargets.push({ ...item, entityId, targetId: await ensureTarget(item, entityId) });
         }
         await execute(`DELETE FROM ${mappingTable} WHERE "moduleId"=?`, [input.moduleId]);
@@ -184,7 +206,7 @@ export class MikroOrmPreparedModulePublicationRepository implements PreparedModu
             for (const [index, unit] of input.units.entries()) {
                 const id = randomUUID(), key = randomUUID();
                 firstKey ??= key;
-                await execute(`INSERT INTO ${unitTable} ("id","curriculumKey","goalId","moduleId","parentUnitId","unitKind","title","orderIndex","difficulty","contentSummary","planAreaRef","planningOutcomeRefs","moduleCapabilityRefs","moduleMilestoneRole","prerequisites","status","cognitiveModelStatus","requiredForModuleCompletion") VALUES (?,?,?, ?,NULL,'lesson',?,?,?,?,?,?,?,?,?,'available','pending',true)`, [id, key, input.goalId, input.moduleId, unit.title, index, unit.difficulty, unit.contentSummary, `a_${input.orderIndex + 1}`, JSON.stringify([`o_${Math.min(input.orderIndex + 1, Math.max(1, input.mapOutcomeCount))}`]), JSON.stringify(unit.capabilityRefs), unit.milestoneRole, JSON.stringify(previous ? [previous] : [])]);
+                await execute(`INSERT INTO ${unitTable} ("id","curriculumKey","goalId","moduleId","parentUnitId","unitKind","title","orderIndex","difficulty","contentSummary","planAreaRef","planningOutcomeRefs","moduleCapabilityRefs","moduleMilestoneRole","prerequisites","status","cognitiveModelStatus","requiredForModuleCompletion") VALUES (?,?,?, ?,NULL,'lesson',?,?,?,?,?,?,?,?,?,'available','pending',true)`, [id, key, input.goalId, input.moduleId, unit.title, index, unit.difficulty, unit.contentSummary, `a_${input.orderIndex + 1}`, JSON.stringify([`o_${Math.min(input.orderIndex + 1, Math.max(1, input.mapOutcomeCount))}`]), JSON.stringify(unit.capabilityRefs), unit.milestoneRole, JSON.stringify(JSON.stringify(rowValue(module, "unitPlanningBrief") ?? "").includes("pathContract") ? [] : previous ? [previous] : [])]);
                 previous = id;
                 created++;
             }
@@ -199,6 +221,7 @@ export class MikroOrmPreparedModulePublicationRepository implements PreparedModu
                         await execute(`INSERT INTO ${relationTable} ("id","ownerCurriculumKey","sourceEntityId","targetEntityId","relationType","strength","required","rationale","status","introducedModelVersion","createdAt","updatedAt") VALUES (?,?,?,?,'prerequisite',?,?,'Verified entry readiness for the module capability','active',1,?,?)`, [randomUUID(), firstKey, foundation.entityId, capability.entityId, foundation.critical ? 1 : 0.6, foundation.critical, now, now]);
                 }
         await execute(`UPDATE ${moduleTable} SET "generationVersion"="generationVersion"+1,"entryFoundationStatus"=?,"entryFoundationError"='',"generationBuildStartedAt"=?,"generationError"='',"updatedAt"=? WHERE "id"=? AND "generationBuildToken"=?`, [foundationTargets.length ? "ready" : "not_applicable", now, now, input.moduleId, input.generationBuildToken]);
+        await reconcilePathPrerequisites(execute, unitTable, moduleTable, input.goalId);
         return { moduleId: input.moduleId, createdUnitCount: created };
     }
 }

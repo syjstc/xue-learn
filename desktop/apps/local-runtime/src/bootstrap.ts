@@ -56,6 +56,7 @@ import { WorkspaceServiceSessions } from "./workspace-service-sessions.ts";
 import { CourseSourceRepository } from "@cognilearn/desktop-persistence/course-source.repository";
 import {courseTeachingBodyParser} from './course-teaching-ingress.ts';
 import {CourseTeachingContentService} from '@xue-learn/core/server/course-teaching';
+import {ReadingWorkspaceService, readingGenerators} from "@xue-learn/core/server/reading";
 import {ensureUnitSectionPlan, generateUnitSectionMaterial} from '@xue-learn/core/server/sections';
 import { readRawUnitImage } from "@xue-learn/core/server/images/storage";
 
@@ -324,17 +325,21 @@ async function startOwnedLocalRuntime(message: LocalSidecarStartMessage, ownersh
     })};
   const lifecycle = new WorkspaceServiceLifecycle();
   const displayWorkspace = new DisplayWorkspaceService({directory: message.dataPath, ownerUserId: LOCAL_OWNER_ID});
-  const backgroundTaskCount = async () => await migrationRuntime.runInTransaction(() => workspaceBackgroundTaskCount(migrationRuntime.orm.em.getContext(false))) + await displayWorkspace.backgroundTaskCount();
+  const readingWorkspace = new ReadingWorkspaceService({
+    directory: message.dataPath, generators: readingGenerators,
+    readSource: (ownerId, unitId) => courseSourceRepository.readReadingSource({ownerId, unitId}),
+  });
+  const backgroundTaskCount = async () => await migrationRuntime.runInTransaction(() => workspaceBackgroundTaskCount(migrationRuntime.orm.em.getContext(false))) + await displayWorkspace.backgroundTaskCount() + await readingWorkspace.backgroundTaskCount();
   const workspaceServiceContext = {sessions, lifecycle, storageOwnership: {canResetData: extensionPreservation.retainedExtensionTables === 0, hasLegacyExtensions: extensionPreservation.retainedExtensionTables > 0, retainedExtensionTables: extensionPreservation.retainedExtensionTables}, clientPermissionsPath:message.clientPermissionsPath, backgroundTaskCount,
     drain: () => migrationRuntime.runInTransaction(async () => lifecycle.commitDrain({clientSessions:sessions.activeCount,
-      backgroundTasks:await workspaceBackgroundTaskCount(migrationRuntime.orm.em.getContext(false)) + await displayWorkspace.backgroundTaskCount()}))};
+      backgroundTasks:await workspaceBackgroundTaskCount(migrationRuntime.orm.em.getContext(false)) + await displayWorkspace.backgroundTaskCount() + await readingWorkspace.backgroundTaskCount()}))};
   const app = await runStartupPhase("Nest application creation", () =>
     NestFactory.create<NestExpressApplication>(
       DesktopLocalModule.register({
         instanceId: message.instanceId,
         startedAt,
         descriptor,
-      }, courseSourceContext, workspaceServiceContext, createWorkspaceLearningPort(migrationRuntime), displayWorkspace),
+      }, courseSourceContext, workspaceServiceContext, createWorkspaceLearningPort(migrationRuntime), displayWorkspace, readingWorkspace),
       { bufferLogs: true },
     ),
   );

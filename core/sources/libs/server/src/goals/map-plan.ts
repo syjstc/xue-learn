@@ -25,7 +25,7 @@ export function parseMapPlan(json: string): GoalMapPlan | null {
 }
 
 export function serializeMapPlan(plan: GoalMapPlan): string {
-  return JSON.stringify(plan);
+  return JSON.stringify(goalMapPlanSchema.parse(plan));
 }
 
 function formatMajorArea(

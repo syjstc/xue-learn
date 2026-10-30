@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { EntityManager } from "@mikro-orm/core";
-import type { ClaimModuleStructureDraftInput, ModuleStructureDraftProgress, ModuleStructureDraftRecord, ModuleStructureDraftRepository, ModuleStructureDraftStage, PatchModuleStructureDraftInput, UpsertModuleStructureDraftInput, } from "@xue-learn/core/domain/persistence/module-structure-draft-port";
+import type { ClaimModuleStructureDraftInput, CommitModulePathRepairsInput, ModuleStructureDraftProgress, ModuleStructureDraftRecord, ModuleStructureDraftRepository, ModuleStructureDraftStage, PatchModuleStructureDraftInput, UpsertModuleStructureDraftInput, } from "@xue-learn/core/domain/persistence/module-structure-draft-port";
 import { MODULE_STRUCTURE_DRAFT_STAGES } from "@xue-learn/core/domain/persistence/module-structure-draft-port";
 export const GOAL_MODULE_STRUCTURE_DRAFT_PREPARE_EVENT = "goal.module_structure.draft.prepare";
 export const GOAL_MODULE_STRUCTURE_AUDIT_EVENT = "goal.module_structure.audit";
@@ -77,6 +77,32 @@ export function moduleStructureAuditGeneration(drafts: readonly Pick<ModuleStruc
 }
 export class MikroOrmModuleStructureDraftRepository implements ModuleStructureDraftRepository {
     constructor(private readonly em: EntityManager) { }
+    async commitPathRepairs(input: CommitModulePathRepairsInput): Promise<boolean> {
+        if (!input.modules.length || new Set(input.modules.map((module) => module.moduleId)).size !== input.modules.length) return false;
+        return this.em.transactional(async (em) => {
+            const execute = (sql: string, params: unknown[] = []) => em.getConnection().execute(sql, params, undefined, em.getTransactionContext());
+            const goalTable = qualifiedTable(em, "LearningGoal");
+            const moduleTable = qualifiedTable(em, "LearningModule");
+            const draftTable = qualifiedTable(em, "ModuleStructureDraft");
+            const goal = resultRows(await execute(`SELECT g."mapPlanJson" FROM ${goalTable} g
+                JOIN ${qualifiedTable(em, "GoalCreationSession")} s ON s."goalId"=g."id" AND s."userId"=g."userId"
+                WHERE g."id"=? AND s."id"=? AND s."status"='running'`, [input.goalId, input.sessionId]))[0];
+            if (!goal || (String(goal.mapPlanJson) !== input.expectedMapPlanJson && String(goal.mapPlanJson) !== input.mapPlanJson)) return false;
+            for (const module of input.modules) {
+                const draft = resultRows(await execute(`SELECT d."candidateHash" FROM ${draftTable} d
+                    JOIN ${moduleTable} m ON m."id"=d."moduleId" AND m."goalId"=d."goalId"
+                    WHERE d."moduleId"=? AND d."goalId"=? AND d."sessionId"=? AND d."status"='ready_for_audit'
+                    AND NOT EXISTS (SELECT 1 FROM ${qualifiedTable(em, "LearningUnit")} u WHERE u."moduleId"=m."id")`, [module.moduleId, input.goalId, input.sessionId]))[0];
+                if (!draft || draft.candidateHash !== module.expectedCandidateHash) return false;
+            }
+            await execute(`UPDATE ${goalTable} SET "mapPlanJson"=?, "updatedAt"=? WHERE "id"=?`, [input.mapPlanJson, new Date(), input.goalId]);
+            for (const module of input.modules) {
+                await execute(`UPDATE ${moduleTable} SET "plannedOutcomes"=?, "exitCapabilityBriefs"=?, "estimatedUnitCount"=?, "unitPlanningBrief"=? WHERE "id"=? AND "goalId"=?`, [module.plannedOutcomesJson, module.exitCapabilityBriefsJson, module.estimatedUnitCount, module.unitPlanningBriefJson, module.moduleId, input.goalId]);
+            }
+            await execute(`UPDATE ${draftTable} SET "planHash"=? WHERE "goalId"=? AND "sessionId"=?`, [createHash("sha256").update(input.mapPlanJson).digest("hex"), input.goalId, input.sessionId]);
+            return true;
+        });
+    }
     async upsertMany(inputs: readonly UpsertModuleStructureDraftInput[]) {
         if (inputs.length === 0)
             return;

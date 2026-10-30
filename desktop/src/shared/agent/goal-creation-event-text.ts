@@ -28,6 +28,22 @@ export function goalCreationEventText(
   t: Translate,
 ): string | null {
   if (["paused", "pause_requested", "resumed"].includes(type)) return null;
+  if (
+    type === "planning_activity" &&
+    payload.capabilityPath &&
+    typeof payload.capabilityPath === "object"
+  ) {
+    const path = payload.capabilityPath as {
+      moduleTitles?: unknown;
+      unitCount?: unknown;
+    };
+    if (
+      Array.isArray(path.moduleTitles) &&
+      typeof path.unitCount === "number"
+    ) {
+      return `${t("assistant.plan.moduleCount", { count: path.moduleTitles.length })} · ${t("capabilityPath.unitCount", { count: path.unitCount })}`;
+    }
+  }
   if (type === "reasoning_status") {
     if (payload.status === "active") return t("goalCreation.reasoningActive");
     if (payload.status === "requested")

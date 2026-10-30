@@ -1,5 +1,11 @@
 import { LocalAiModelsController } from "./local-ai-models.controller.ts";
 import { getUserSettingsForUser } from "@xue-learn/core/server/user-settings";
+import {beginLlmRequestLog} from "@xue-learn/core/server/llm/logger";
+
+const mockConnectionLogFinish = jest.fn();
+jest.mock("@xue-learn/core/server/llm/logger", () => ({
+  beginLlmRequestLog: jest.fn(async () => ({finish: mockConnectionLogFinish})),
+}));
 
 const refreshLlmRuntimeConfig = jest.fn();
 const saveLlmRuntimeConfig = jest.fn();
@@ -94,6 +100,7 @@ describe("desktop-local AI model settings v2", () => {
       embeddingProvider: "ollama",
       embeddingModel: "bge-m3",
       minimaxThinkingEnabled: false,
+      minimaxReasoningEffort: "max",
       ollamaThinkingEnabled: false,
       deepseekThinkingEnabled: false,
       openaiThinkingEnabled: false,
@@ -135,6 +142,24 @@ describe("desktop-local AI model settings v2", () => {
     delete process.env.CUSTOM_OPENAI_BASE_URL;
     process.env.XUELEARN_LOCAL_EMBEDDING_MODEL_ROOT = "/verified-qwen";
     delete process.env.XUELEARN_LOCAL_EMBEDDING_MODEL_ERROR;
+  });
+
+  it("keeps connection-test usage and TPS in the model log without changing saved selections", async () => {
+    const clock = jest.spyOn(Date, "now");
+    let now = 1000;
+    clock.mockImplementation(() => now += 1000);
+    getLlmProvider.mockReturnValue({getChatModel: () => ({invoke: jest.fn().mockResolvedValue({content: "OK",
+      usage_metadata: {input_tokens: 120, output_tokens: 30, total_tokens: 150}})})});
+    try {
+      const result = await new LocalAiModelsController().testChatConnection({providerId: "minimax", model: "MiniMax-M3.1-Flash"});
+      expect(result.healthy).toBe(true);
+      expect(beginLlmRequestLog).toHaveBeenCalledWith(expect.objectContaining({operation: "local.chat_connection_test",
+        request: expect.objectContaining({provider: "minimax", model: "MiniMax-M3.1-Flash", platformFunded: true})}));
+      expect(mockConnectionLogFinish).toHaveBeenCalledWith(expect.objectContaining({status: "success", response: expect.objectContaining({
+        usage: {input_tokens: 120, output_tokens: 30, total_tokens: 150, input_token_details: undefined, output_token_details: undefined}, outputTps: expect.any(Number),
+      })}));
+      expect(saveLlmRuntimeConfig).not.toHaveBeenCalled();
+    } finally { clock.mockRestore(); }
   });
 
   it("saves and returns a manual image model without changing the chat or image generator", async () => {
@@ -209,6 +234,20 @@ describe("desktop-local AI model settings v2", () => {
       chatModel: "MiniMax-M3",
       minimaxThinkingEnabled: false,
     });
+  });
+
+  it.each(["low", "medium", "high", "xhigh", "max"])("saves Flash reasoning effort %s with its model", async effort => {
+    await new LocalAiModelsController().patchSettings({
+      capability: "chat", providerId: "minimax", model: "MiniMax-M3.1-Flash", minimaxReasoningEffort: effort,
+    });
+    expect(saveLlmRuntimeConfig).toHaveBeenCalledWith({ provider: "minimax", chatModel: "MiniMax-M3.1-Flash", minimaxReasoningEffort: effort });
+  });
+
+  it.each(["none", "minimal", "ultra"])("rejects unsupported Flash reasoning effort %s", async effort => {
+    await expect(new LocalAiModelsController().patchSettings({
+      capability: "chat", providerId: "minimax", model: "MiniMax-M3.1-Flash", minimaxReasoningEffort: effort,
+    })).rejects.toThrow();
+    expect(saveLlmRuntimeConfig).not.toHaveBeenCalled();
   });
 
   it("stores the selected Qwen Audio Plus model for learner chat", async () => {
@@ -366,6 +405,16 @@ describe("desktop-local AI model settings v2", () => {
         code: "ok",
       }),
     );
+  });
+
+  it("uses the saved Flash reasoning effort for a connection test", async () => {
+    const config = await refreshLlmRuntimeConfig();
+    refreshLlmRuntimeConfig.mockResolvedValue({ ...config, minimaxReasoningEffort: "low" });
+    const invoke = jest.fn().mockResolvedValue({ content: "OK" });
+    getLlmProvider.mockReturnValue({ getChatModel: jest.fn().mockReturnValue({ invoke }) });
+    await new LocalAiModelsController().testChatConnection({ providerId: "minimax", model: "MiniMax-M3.1-Flash" });
+    expect(getLlmProvider).toHaveBeenCalledWith({ id: "minimax", model: "MiniMax-M3.1-Flash",
+      options: { chatModel: "MiniMax-M3.1-Flash", minimaxReasoningEffort: "low" } });
   });
 
   it("gives custom endpoints enough completion budget for reasoning models", async () => {

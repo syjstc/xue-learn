@@ -306,6 +306,7 @@ export class MikroOrmUnitSectionPlanRepository implements UnitSectionPlanReposit
         sectionId: string;
         token: string;
         force: boolean;
+        preserveMiniTest?: boolean;
         material: {
             introduction: string;
             blocks: string;
@@ -357,7 +358,7 @@ export class MikroOrmUnitSectionPlanRepository implements UnitSectionPlanReposit
             await this.execute(em, `INSERT INTO ${table(em, "UnitSectionMaterial")} ("id","sectionId","introduction","blocks","keyTakeaways","contextSources","sourceItems","createdAt","updatedAt") VALUES (?,?,?,?,?,?,?${jsonCast},?,?) ON CONFLICT ("sectionId") DO UPDATE SET "introduction"=?,"blocks"=?,"keyTakeaways"=?,"contextSources"=?,"sourceItems"=?${jsonCast},"updatedAt"=?`, [randomUUID(), input.sectionId, input.material.introduction, input.material.blocks, input.material.keyTakeaways, input.material.contextSources, input.material.sourceItemsJson, now, now, input.material.introduction, input.material.blocks, input.material.keyTakeaways, input.material.contextSources, input.material.sourceItemsJson, now]);
             await new MikroOrmMaterialCheckCompletionRepository(em).publishTasks({ userId: input.userId, goalId: input.goalId, unitId: input.unitId, tasks: input.materialCheckTasks });
             await this.execute(em, `UPDATE ${table(em, "LearningUnit")} SET "contentRevision"="contentRevision"+1 WHERE "id"=?`, [input.unitId]);
-            const published = rows(await this.execute(em, `UPDATE ${table(em, "UnitSection")} SET "generationStatus"='ready',"generationError"='',"generationToken"=NULL,"generationStartedAt"=NULL,"testGenerationStatus"='pending',"testGenerationError"='',"testGenerationStartedAt"=NULL,"testGenerationToken"=NULL,"contentRevision"="contentRevision"+1,"updatedAt"=? WHERE "id"=? AND "generationToken"=? RETURNING "contentRevision"`, [now, input.sectionId, input.token]));
+            const published = rows(await this.execute(em, `UPDATE ${table(em, "UnitSection")} SET "generationStatus"='ready',"generationError"='',"generationToken"=NULL,"generationStartedAt"=NULL,"testGenerationStatus"=CASE WHEN ? THEN "testGenerationStatus" ELSE 'pending' END,"testGenerationError"='',"testGenerationStartedAt"=NULL,"testGenerationToken"=NULL,"contentRevision"="contentRevision"+1,"updatedAt"=? WHERE "id"=? AND "generationToken"=? RETURNING "contentRevision"`, [Boolean(input.preserveMiniTest && !input.force), now, input.sectionId, input.token]));
             if (published.length !== 1)
                 throw new Error("Section generation lease was superseded");
             return { contentRevision: numberValue(published[0]!, "contentRevision"), affectedEntityIds: [...affected] };
@@ -372,7 +373,10 @@ export class MikroOrmUnitSectionPlanRepository implements UnitSectionPlanReposit
         blocks: string;
         materialCheckTasks: readonly import("@xue-learn/core/domain").MaterialCheckTaskDefinition[];
     }) { return this.em.transactional(async (em) => { const now = new Date(); const owned = rows(await this.execute(em, `SELECT "id" FROM ${table(em, "MainCourseSection")} WHERE "id"=? AND "testGenerationToken"=? LIMIT 1`, [input.sectionId, input.token])); if (owned.length !== 1)
-        throw new Error("Mini-test generation lease was superseded"); await this.execute(em, `UPDATE ${table(em, "UnitSectionMaterial")} SET "blocks"=?,"updatedAt"=? WHERE "sectionId"=?`, [input.blocks, now, input.sectionId]); await new MikroOrmMaterialCheckCompletionRepository(em).publishTasks({ userId: input.userId, goalId: input.goalId, unitId: input.unitId, tasks: input.materialCheckTasks }); await this.execute(em, `UPDATE ${table(em, "LearningUnit")} SET "contentRevision"="contentRevision"+1 WHERE "id"=?`, [input.unitId]); const published = rows(await this.execute(em, `UPDATE ${table(em, "UnitSection")} SET "testGenerationStatus"='ready',"testGenerationError"='',"testGenerationStartedAt"=NULL,"testGenerationToken"=NULL,"contentRevision"="contentRevision"+1,"updatedAt"=? WHERE "id"=? AND "testGenerationToken"=? RETURNING "contentRevision"`, [now, input.sectionId, input.token])); if (published.length !== 1)
+        throw new Error("Mini-test generation lease was superseded");
+        // A reading-only chapter has no Display material row yet. Persist its
+        // graded checks without changing Display readiness or the reading body.
+        await this.execute(em, `INSERT INTO ${table(em, "UnitSectionMaterial")} ("id","sectionId","blocks","updatedAt") VALUES (?,?,?,?) ON CONFLICT ("sectionId") DO UPDATE SET "blocks"=excluded."blocks","updatedAt"=excluded."updatedAt"`, [randomUUID(), input.sectionId, input.blocks, now]); await new MikroOrmMaterialCheckCompletionRepository(em).publishTasks({ userId: input.userId, goalId: input.goalId, unitId: input.unitId, tasks: input.materialCheckTasks }); await this.execute(em, `UPDATE ${table(em, "LearningUnit")} SET "contentRevision"="contentRevision"+1 WHERE "id"=?`, [input.unitId]); const published = rows(await this.execute(em, `UPDATE ${table(em, "UnitSection")} SET "testGenerationStatus"='ready',"testGenerationError"='',"testGenerationStartedAt"=NULL,"testGenerationToken"=NULL,"contentRevision"="contentRevision"+1,"updatedAt"=? WHERE "id"=? AND "testGenerationToken"=? RETURNING "contentRevision"`, [now, input.sectionId, input.token])); if (published.length !== 1)
         throw new Error("Mini-test generation lease was superseded"); return { contentRevision: numberValue(published[0]!, "contentRevision") }; }); }
     async publishGeneratedDerivation(input: {
         userId: string;
@@ -540,7 +544,7 @@ export class MikroOrmUnitSectionPlanRepository implements UnitSectionPlanReposit
         };
     }
     async findMaterialSource(unitId: string) {
-        const sectionRows = rows(await this.execute(this.em, `SELECT s."requiredForCompletion", s."generationStatus", s."contentKind", s."derivationFormat",
+        const sectionRows = rows(await this.execute(this.em, `SELECT s."id", s."requiredForCompletion", s."generationStatus", s."contentKind", s."derivationFormat",
                 m."introduction", m."blocks", m."keyTakeaways", m."contextSources",
                 m."sectionId" AS "materialSectionId",
                 d."documentJson" AS "derivationJson",
@@ -555,6 +559,7 @@ export class MikroOrmUnitSectionPlanRepository implements UnitSectionPlanReposit
            FROM ${table(this.em, "LearningMaterial")} WHERE "unitId" = ? LIMIT 1`, [unitId]))[0];
         return {
             sections: sectionRows.map((row) => ({
+                id: String(value(row, "id")),
                 requiredForCompletion: value(row, "requiredForCompletion") === true ||
                     Number(value(row, "requiredForCompletion")) === 1,
                 generationStatus: String(value(row, "generationStatus")),

@@ -263,6 +263,9 @@ async function continueAfterFullGoalApproval(
       options,
       session.id,
     );
+    if (goalStateFromCheckpoint(next).mapPlanStatus === "ready") {
+      return interruptForPlanReview(ctx, userId, next, embedded, options.learningSpaceApplication);
+    }
     return { checkpoint: next, completed: false, interrupted: false };
   }
   await ctx.send({ type: "subagent", name: "plan" });
@@ -1818,7 +1821,8 @@ export async function resumeGoalCreation(
     ) {
       const state = goalStateFromCheckpoint(checkpoint);
       if (state.goalId) {
-        await approveGoalPlan(userId, state.goalId, {
+        const resumeAgentic = isAgenticGoalCreation(state) && !state.isSmallCourse;
+        if (!resumeAgentic) await approveGoalPlan(userId, state.goalId, {
           learningGoalPlan: options.learningSpaceApplication?.learningGoalPlan,
           sequentialCurriculumApproval:
             options.learningSpaceApplication?.sequentialCurriculumApproval,
@@ -1827,7 +1831,7 @@ export async function resumeGoalCreation(
         });
         const approvedState = {
           ...state,
-          mapPlanStatus: "approved",
+          mapPlanStatus: resumeAgentic ? "ready" : "approved",
           currentSubagent: "plan" as const,
           currentPhase: "decomposing" as const,
         };
@@ -1861,6 +1865,15 @@ export async function resumeGoalCreation(
           uiPayload: result as Record<string, unknown>,
         });
 
+        if (resumeAgentic) {
+          const session = await requireAgentConversationPersistence()
+            .findGoalCreationSessionByThreadId(ctx.threadId);
+          if (!session) throw new Error("Goal-creation session is missing");
+          const next = await runAgenticPostApproval(
+            ctx, userId, completed, options, session.id, { planConfirmed: true },
+          );
+          return { checkpoint: next, completed: false, interrupted: false };
+        }
         const finalCheckpoint = mergeGoalState(completed, {
           currentPhase: "completed",
         }) as ThreadCheckpoint;

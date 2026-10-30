@@ -195,6 +195,7 @@ function applyModelToRuntime(
       embeddingModel: runtime.embeddingModel,
       embeddingProvider: runtime.embeddingProvider,
       minimaxThinkingEnabled: runtime.minimaxThinkingEnabled,
+      minimaxReasoningEffort: runtime.minimaxReasoningEffort,
       ollamaThinkingEnabled: runtime.ollamaThinkingEnabled,
       deepseekThinkingEnabled: runtime.deepseekThinkingEnabled,
       openaiThinkingEnabled: runtime.openaiThinkingEnabled,

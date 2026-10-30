@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiGet, apiPost, apiRequest } from "@/shared/api";
+import { loadGoalCreationEventPages } from "@/shared/agent/goal-creation-event-pages";
 import type {
   GoalCreationSessionEventsResponse,
   GoalCreationSessionResponse,
@@ -26,11 +27,17 @@ export function useGoalCreationSessionEvents(
   enabled = true,
   polling = true,
 ) {
+  const client = useQueryClient();
+  const queryKey = goalCreationSessionKeys.events(sessionId);
   return useQuery({
-    queryKey: goalCreationSessionKeys.events(sessionId),
+    queryKey,
     queryFn: () =>
-      apiGet<GoalCreationSessionEventsResponse>(
-        `/api/agent/goal-creation-sessions/${encodeURIComponent(sessionId)}/events?after=0`,
+      loadGoalCreationEventPages(
+        (after) =>
+          apiGet<GoalCreationSessionEventsResponse>(
+            `/api/agent/goal-creation-sessions/${encodeURIComponent(sessionId)}/events?after=${after}`,
+          ),
+        client.getQueryData<GoalCreationSessionEventsResponse>(queryKey),
       ),
     enabled: enabled && Boolean(sessionId),
     refetchInterval: enabled && polling ? 2000 : false,

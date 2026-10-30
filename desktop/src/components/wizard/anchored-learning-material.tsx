@@ -57,6 +57,7 @@ function localizeSectionAnchor(
   sectionId: string | undefined,
   anchor: MaterialAnchor,
 ): MaterialAnchor | null {
+  if (anchor.reading) return null;
   if (anchor.sectionId && anchor.sectionId !== sectionId) return null;
   if (
     !anchor.sectionId &&
@@ -215,7 +216,7 @@ export function AnchoredLearningMaterial({
       return;
     }
     const thread = fu.threads.find((item) => item.id === requestedFollowUpId);
-    if (!thread) return;
+    if (!thread || thread.anchor.reading) return;
 
     autoOpenedThreadRef.current = requestedFollowUpId;
     fu.openAnchor(thread.anchor, thread.id);
@@ -300,6 +301,7 @@ export function AnchoredLearningMaterial({
   const blockThreadIds = useMemo(() => {
     const map = new Map<number, string>();
     for (const t of fu.threads) {
+      if (t.anchor.reading) continue;
       if (t.anchor.scope !== "block" || t.anchor.blockIndex == null) continue;
       if (t.anchor.subPath?.startsWith("check")) {
         const localIndex = t.anchor.blockIndex - blockOffset;
@@ -487,7 +489,7 @@ export function AnchoredLearningMaterial({
             inlineChat: {
               discussions: (() => {
                 const records = fu.threads
-                  .filter((thread) => thread.anchor.sectionId === sectionId)
+                  .filter((thread) => !thread.anchor.reading && thread.anchor.sectionId === sectionId)
                   .map((thread) => ({
                     ...thread,
                     anchor: toLocalAnchor(thread.anchor),

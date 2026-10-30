@@ -30,6 +30,7 @@ function mergeCustomOptions(
     embeddingModel: selection?.options?.embeddingModel,
     embeddingProvider: selection?.options?.embeddingProvider,
     minimaxThinkingEnabled: selection?.options?.minimaxThinkingEnabled,
+    minimaxReasoningEffort: selection?.options?.minimaxReasoningEffort,
     ollamaThinkingEnabled: selection?.options?.ollamaThinkingEnabled,
     deepseekThinkingEnabled: selection?.options?.deepseekThinkingEnabled,
     openaiThinkingEnabled: selection?.options?.openaiThinkingEnabled,
@@ -67,7 +68,7 @@ export function createCustomLlmProvider(
     apiKey: env.CUSTOM_OPENAI_API_KEY!,
     baseUrl: env.CUSTOM_OPENAI_BASE_URL!,
     model,
-    streamUsage: protocol !== "minimax",
+    preserveMinimaxReasoning: protocol === "minimax",
     supportsStrictToolCalling: false,
     ...(protocol === "openai"
       ? {

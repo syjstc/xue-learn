@@ -1,5 +1,70 @@
 import type { EntityManager } from "@mikro-orm/core";
+import { DatabaseSync } from "node:sqlite";
 import { MikroOrmUnitSectionPlanRepository } from "./unit-section-plan.repository.ts";
+
+function readingQuizDatabase() {
+  const db = new DatabaseSync(":memory:");
+  db.exec(`
+    CREATE TABLE UnitSection (id TEXT PRIMARY KEY, orderIndex INTEGER DEFAULT 0,
+      contentRevision INTEGER DEFAULT 1, generationStatus TEXT DEFAULT 'pending',
+      generationError TEXT, generationStartedAt TEXT, generationToken TEXT,
+      testGenerationStatus TEXT DEFAULT 'building', testGenerationError TEXT,
+      testGenerationStartedAt TEXT, testGenerationToken TEXT, updatedAt TEXT);
+    CREATE VIEW MainCourseSection AS SELECT * FROM UnitSection;
+    CREATE TABLE UnitSectionMaterial (id TEXT PRIMARY KEY, sectionId TEXT UNIQUE,
+      introduction TEXT DEFAULT '', blocks TEXT DEFAULT '[]', keyTakeaways TEXT DEFAULT '[]',
+      contextSources TEXT DEFAULT '[]', sourceItems TEXT DEFAULT '[]', createdAt TEXT, updatedAt TEXT);
+    CREATE TABLE LearningUnit (id TEXT PRIMARY KEY, contentRevision INTEGER DEFAULT 1);
+    CREATE TABLE LearningTask (goalId TEXT, unitId TEXT, origin TEXT, status TEXT, updatedAt TEXT);
+    INSERT INTO UnitSection (id,testGenerationToken) VALUES ('chapter','quiz-lease');
+    INSERT INTO LearningUnit (id) VALUES ('unit');
+  `);
+  const manager = {
+    getTransactionContext: () => undefined,
+    getConnection: () => ({
+      execute: async (sql: string, params: unknown[] = []) => db.prepare(sql).all(...params.map(value =>
+        value instanceof Date ? value.toISOString() : typeof value === "boolean" ? Number(value) : value,
+      ) as never[]),
+    }),
+    transactional: async (work: (em: EntityManager) => Promise<unknown>) => {
+      db.exec("BEGIN");
+      try { const result = await work(manager as unknown as EntityManager); db.exec("COMMIT"); return result; }
+      catch (error) { db.exec("ROLLBACK"); throw error; }
+    },
+  } as unknown as EntityManager;
+  return {db, repository: new MikroOrmUnitSectionPlanRepository(manager)};
+}
+
+it.each([false, true])("stores a shared reading quiz with or without existing Display (%s)", async existing => {
+  const {db, repository} = readingQuizDatabase();
+  try {
+    if (existing) db.exec(`INSERT INTO UnitSectionMaterial (id,sectionId,introduction) VALUES ('material','chapter','Keep saved introduction')`);
+    await repository.publishGeneratedMiniTest({
+      userId: "owner", goalId: "goal", unitId: "unit", sectionId: "chapter", token: "quiz-lease",
+      blocks: '[{"type":"check","checkId":"shared"}]', materialCheckTasks: [],
+    });
+    expect(db.prepare("SELECT introduction,blocks FROM UnitSectionMaterial").get()).toMatchObject({
+      introduction: existing ? "Keep saved introduction" : "", blocks: '[{"type":"check","checkId":"shared"}]',
+    });
+    expect(db.prepare("SELECT generationStatus,testGenerationStatus,contentRevision FROM UnitSection").get())
+      .toEqual({generationStatus: "pending", testGenerationStatus: "ready", contentRevision: 2});
+  } finally {db.close();}
+});
+
+it("keeps the existing quiz ready when Display is first authored after reading", async () => {
+  const {db, repository} = readingQuizDatabase();
+  try {
+    db.exec(`UPDATE UnitSection SET generationStatus='building',generationToken='display-lease',testGenerationStatus='ready',testGenerationToken=NULL`);
+    await repository.publishGeneratedContent({
+      userId: "owner", goalId: "goal", unitId: "unit", sectionId: "chapter", token: "display-lease",
+      force: false, preserveMiniTest: true,
+      material: {introduction: "Display", blocks: '[{"type":"check","checkId":"shared"}]',
+        keyTakeaways: "[]", contextSources: "[]", sourceItemsJson: "[]"}, materialCheckTasks: [],
+    });
+    expect(db.prepare("SELECT generationStatus,testGenerationStatus FROM UnitSection").get())
+      .toEqual({generationStatus: "ready", testGenerationStatus: "ready"});
+  } finally {db.close();}
+});
 
 describe("MikroOrmUnitSectionPlanRepository", () => {
   it.each([true, false])("fences a teaching regeneration format switch by lease ownership (%s)", async (ownsLease) => {

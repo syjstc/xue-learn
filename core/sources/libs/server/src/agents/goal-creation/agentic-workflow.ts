@@ -19,7 +19,7 @@ const MAX_PLAN_AUTHOR_ATTEMPTS = 2;
 
 const AgenticState = new StateSchema({
   status: z
-    .enum(["author_plan", "persist", "fan_out", "complete", "failed"])
+    .enum(["author_plan", "persist", "review", "fan_out", "complete", "failed"])
     .default("author_plan"),
   error: z.string().default(""),
 });
@@ -34,6 +34,7 @@ export async function runAgenticPostApproval(
   _checkpoint: ThreadCheckpoint,
   options: GoalCreationRunOptions,
   sessionId: string,
+  review: { planConfirmed?: boolean } = {},
 ): Promise<ThreadCheckpoint> {
   const graph = new StateGraph(AgenticState)
     .addNode("author_plan", async () => {
@@ -100,6 +101,12 @@ export async function runAgenticPostApproval(
       if (!state.goalId) {
         return { status: "failed" as const, error: "Missing goalId" };
       }
+      if (!review.planConfirmed && !state.autoApproveWithoutQuestions &&
+          state.mapPlan?.learningPath?.baseline.some((entry) => entry.status === "unknown")) {
+        // The outer orchestrator persists its existing plan-editor interrupt.
+        // No module publication or outbox dispatch occurs before that decision.
+        return { status: "review" as const };
+      }
       await approveGoalPlan(userId, state.goalId, {
         learningGoalPlan: options.learningSpaceApplication?.learningGoalPlan,
         sequentialCurriculumApproval:
@@ -123,7 +130,7 @@ export async function runAgenticPostApproval(
     .addNode("fan_out", async () => {
       await ctx.send({
         type: "phase",
-        phase: "module_shell",
+        phase: "decomposing",
         subagent: "plan",
       });
       await ctx.send({
@@ -154,7 +161,9 @@ export async function runAgenticPostApproval(
     .addConditionalEdges("author_plan", (state) =>
       state.status === "persist" ? "persist" : "fail",
     )
-    .addEdge("persist", "fan_out")
+    .addConditionalEdges("persist", (state) =>
+      state.status === "review" ? END : state.status === "failed" ? "fail" : "fan_out",
+    )
     .addEdge("fan_out", END)
     .addEdge("fail", END);
 

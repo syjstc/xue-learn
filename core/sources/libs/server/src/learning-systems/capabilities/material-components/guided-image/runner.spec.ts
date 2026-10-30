@@ -92,6 +92,46 @@ it("keeps the repair budget bounded across automatic retries and renews it for t
   expect(test.latest().status).toBe("ready");
 });
 
+it("uses one fresh redraw after an exhausted edit grant and preserves the quality gate", async () => {
+  const checkpoint = failedCheckpoint();
+  checkpoint.rejectedImages = [asset("4"), asset("5"), asset("6")].map(image => ({ image, segmentation: rejectedObservation }));
+  checkpoint.imageRepairRetry = { key: "old-request", rejectedImagesOffset: 0 };
+  const test = setup(checkpoint);
+  await runGuidedImageDisplay({ ...test.input, imageRepairRetryKey: "new-request", maxImageRepairs: 3 });
+  expect(test.ports.generateImage).toHaveBeenCalledWith(intent, test.input.signal, {
+    image: asset("2"), issues: rejectedObservation.imageIssues, redraw: true,
+  });
+  expect(test.ports.segment).toHaveBeenCalledWith(intent, asset("3"), test.input.signal, expect.any(Array));
+  expect(test.latest().rejectedImages).toHaveLength(4);
+});
+
+it("uses a fresh redraw at most once in a grant after two rejected edits", async () => {
+  const test = setup();
+  jest.mocked(test.ports.segment).mockResolvedValue(rejectedObservation);
+  await expect(runGuidedImageDisplay({ ...test.input, imageRepairRetryKey: "request-1", maxImageRepairs: 3 })).rejects.toThrow("Image needs review");
+  const requests = jest.mocked(test.ports.generateImage).mock.calls.map(call => call[2]);
+  expect(requests).toHaveLength(4);
+  expect(requests[0]).toBeUndefined();
+  expect(requests.slice(1, 3).every(request => !request?.redraw)).toBe(true);
+  expect(requests[3]?.redraw).toBe(true);
+  expect(test.ports.narrate).not.toHaveBeenCalled();
+});
+
+it("does not repeat a redraw or replenish its budget on an automatic retry", async () => {
+  const checkpoint = failedCheckpoint();
+  checkpoint.rejectedImages = [asset("4"), asset("5"), asset("6")].map(image => ({ image, segmentation: rejectedObservation }));
+  checkpoint.imageRepairRetry = { key: "old-request", rejectedImagesOffset: 0 };
+  const test = setup(checkpoint);
+  jest.mocked(test.ports.segment).mockResolvedValue(rejectedObservation);
+  const input = { ...test.input, imageRepairRetryKey: "new-request", maxImageRepairs: 3 };
+  await expect(runGuidedImageDisplay(input)).rejects.toThrow("Image needs review");
+  const requests = jest.mocked(test.ports.generateImage).mock.calls.map(call => call[2]);
+  expect(requests.map(request => Boolean(request?.redraw))).toEqual([true, false, false]);
+  await expect(runGuidedImageDisplay({ ...input, checkpoint: test.latest() })).rejects.toThrow("Image needs review");
+  expect(test.ports.generateImage).toHaveBeenCalledTimes(3);
+  expect(test.ports.narrate).not.toHaveBeenCalled();
+});
+
 it("resumes a stopped repair from the newly saved image without drawing it twice", async () => {
   const test = setup(failedCheckpoint());
   const controller = new AbortController();
@@ -117,12 +157,54 @@ it("rechecks a stale rejection using the new observation version before spending
   expect(test.latest().observationVersion).toBe("light-matte-v1");
 });
 
-it("reuses accepted pixels, regions and narration when the observation version changes", async () => {
-  const checkpoint = { ...failedCheckpoint(), status: "ready" as const, segmentation: observation, beats };
+it("reuses history-reviewed accepted pixels, regions and narration when the observation version changes", async () => {
+  const checkpoint = { ...failedCheckpoint(), status: "ready" as const, segmentation: observation, beats, repairReviewVersion: 1 as const };
   const test = setup(checkpoint);
   await runGuidedImageDisplay({ ...test.input, observationVersion: "light-matte-v1", imageRepairRetryKey: "request-2" });
   expect(test.ports.generateImage).not.toHaveBeenCalled();
   expect(test.ports.segment).not.toHaveBeenCalled();
   expect(test.ports.narrate).not.toHaveBeenCalled();
   expect(test.latest().image).toEqual(checkpoint.image);
+});
+
+it("carries findings from all rejected images into review, not only the latest edit feedback", async () => {
+  const checkpoint = failedCheckpoint();
+  checkpoint.rejectedImages = [
+    { image: asset("0"), segmentation: { ...observation, imageIssues: ["The green value arrow enters key matching."] } },
+    { image: asset("1"), segmentation: { ...observation, imageIssues: ["Only fifteen of the sixteen cells are drawn."] } },
+  ];
+  const test = setup(checkpoint);
+  await runGuidedImageDisplay({ ...test.input, imageRepairRetryKey: "manual-retry" });
+  expect(test.ports.segment).toHaveBeenCalledWith(intent, asset("3"), test.input.signal, [
+    "The green value arrow enters key matching.",
+    "Only fifteen of the sixteen cells are drawn.",
+    ...rejectedObservation.imageIssues,
+  ]);
+  expect(test.latest().repairReviewVersion).toBe(1);
+});
+
+it("holds a legacy accepted image when prior findings persist, without redrawing or narrating past the budget", async () => {
+  const checkpoint = { ...failedCheckpoint(), status: "ready" as const, segmentation: observation, beats };
+  const test = setup(checkpoint);
+  jest.mocked(test.ports.segment).mockResolvedValue(rejectedObservation);
+  await expect(runGuidedImageDisplay({ ...test.input, maxImageRepairs: 1 })).rejects.toThrow("Image needs review before narration");
+  expect(test.ports.segment).toHaveBeenCalledTimes(1);
+  expect(test.ports.generateImage).not.toHaveBeenCalled();
+  expect(test.ports.narrate).not.toHaveBeenCalled();
+  expect(test.latest().image).toEqual(checkpoint.image);
+  expect(test.latest().beats).toEqual(beats);
+  expect(test.latest().status).toBe("error");
+});
+
+it("audits legacy accepted pixels once and retains their regions and narration when the findings are resolved", async () => {
+  const checkpoint = { ...failedCheckpoint(), status: "ready" as const, segmentation: observation, beats };
+  const test = setup(checkpoint);
+  await runGuidedImageDisplay(test.input);
+  expect(test.ports.segment).toHaveBeenCalledTimes(1);
+  expect(test.latest().segmentation).toEqual(checkpoint.segmentation);
+  expect(test.latest().beats).toEqual(beats);
+  await runGuidedImageDisplay({ ...test.input, checkpoint: test.latest() });
+  expect(test.ports.segment).toHaveBeenCalledTimes(1);
+  expect(test.ports.generateImage).not.toHaveBeenCalled();
+  expect(test.ports.narrate).not.toHaveBeenCalled();
 });

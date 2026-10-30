@@ -4385,6 +4385,18 @@ html[data-desktop-platform="macos"] [data-desktop-titlebar-main] {
   transition: margin-left 280ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* The explorer is hidden below md; release its reserved content space too. */
+@media (max-width: 767px) {
+  html[data-desktop-platform="macos"]
+    [data-workspace-shell]
+    > [data-workspace-content] {
+    margin-left: 0;
+  }
+  html[data-desktop-platform="macos"] [data-desktop-titlebar-main] {
+    margin-left: var(--desktop-window-controls-width);
+  }
+}
+
 html[data-desktop-platform="macos"]
   [data-workspace-shell][data-sidebar-previewed="true"]
   [data-workspace-sidebar] {

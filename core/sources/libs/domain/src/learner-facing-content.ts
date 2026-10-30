@@ -50,6 +50,9 @@ const protocolFields = new Set([
   "latex", "match", "prompt", "composition", "description", "observedDescription",
   "src", "imageUrl", "audioUrl", "layout", "direction", "preset",
   "build", "requirement", "targets",
+  // Formula correspondence stores node IDs for entering/exiting glyphs.
+  // These arrays are renderer references, just like beforeNodeId/afterNodeId.
+  "unmatchedBefore", "unmatchedAfter",
 ]);
 const identityFields = new Set([
   "id", "topicId", "sectionId", "figureId", "partId", "regionId", "beatId",

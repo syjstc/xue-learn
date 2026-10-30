@@ -34,7 +34,7 @@ import {
 import type { LearningSystemSubject } from "../learning-systems/types.js";
 
 export type StreamTokenHandler = (delta: string) => void | Promise<void>;
-export type StreamThinkingHandler = () => void | Promise<void>;
+export type StreamThinkingHandler = (delta?: string) => void | Promise<void>;
 
 /** Stream chat tokens; returns full assembled text. */
 export async function streamChat(
@@ -157,7 +157,7 @@ export async function streamChat(
       if (rawDelta) guard?.push(rawDelta);
       raw += rawDelta;
       if (streamChunk.thinking) {
-        await options.onThinking?.();
+        await options.onThinking?.(streamChunk.thinkingDelta);
       }
       if (streamChunk.delta) {
         await tagFilter.push(streamChunk.delta, {

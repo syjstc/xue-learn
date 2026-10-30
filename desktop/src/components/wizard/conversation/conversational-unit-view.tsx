@@ -74,6 +74,7 @@ import { getAuthUser } from "@/shared/auth";
 import type { LearningMaterialContent } from "@xue-learn/core/schemas";
 import type { UnitSectionManifest } from "@/shared/api";
 import { useImmersiveLearning } from "./use-immersive-learning.ts";
+import { ReadingSectionBody } from "@/features/reading/reading-course-view";
 import {
   ImmersiveLearningPortal,
   ImmersiveEnterFocusButton,
@@ -92,11 +93,13 @@ function CompletedJourneyScene({
   node,
   persona,
   onReturn,
+  bodyMode,
 }: {
   model: UnitWizardModel;
   node: UnitJourneyNode;
   persona: { name: string; avatarSrc?: string };
   onReturn: () => void;
+  bodyMode?: UnitWizardProps["presentationMode"];
 }) {
   const t = useT();
   const section = node.sectionId
@@ -106,7 +109,7 @@ function CompletedJourneyScene({
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!section) {
+    if (!section || (bodyMode === "reading" && isDesktopLocalRuntime() && section.sectionKind === "content")) {
       setContent(null);
       setError("");
       return;
@@ -130,7 +133,7 @@ function CompletedJourneyScene({
     return () => {
       cancelled = true;
     };
-  }, [model.unitId, section?.contentRevision, section?.id]);
+  }, [model.unitId, section?.contentRevision, section?.id, section?.sectionKind, bodyMode]);
 
   if (node.id === "preview" && model.sq) {
     return (
@@ -162,6 +165,13 @@ function CompletedJourneyScene({
   }
 
   if (!section) return null;
+  if (bodyMode === "reading" && isDesktopLocalRuntime() && section.sectionKind === "content") {
+    return <section className="space-y-4 py-4">
+      <ReviewSceneHeader onReturn={onReturn} />
+      <ReadingSectionBody unitId={model.unitId} sectionId={section.id} goalId={model.goalId}
+        onContinue={onReturn} continueLabel={t("learningScene.returnCurrent")} />
+    </section>;
+  }
   if (error) {
     return (
       <section className="mx-auto w-full max-w-[52rem] space-y-4 py-4">
@@ -261,13 +271,17 @@ function contentSectionNumber(
 }
 
 export function ConversationalUnitView({
+  active = true,
   model,
   initialSectionId,
   initialSectionAnchor,
+  bodyMode = "chat",
 }: {
+  active?: boolean;
   model: UnitWizardModel;
   initialSectionId?: UnitWizardProps["initialSectionId"];
   initialSectionAnchor?: UnitWizardProps["initialSectionAnchor"];
+  bodyMode?: UnitWizardProps["presentationMode"];
 }) {
   const t = useT();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -291,6 +305,7 @@ export function ConversationalUnitView({
     workspaceClassName,
     workspaceStyle,
   } = useImmersiveLearning({
+    enabled: active,
     unitId: model.unitId,
     immersiveJourneyOpen,
     onCloseImmersiveJourney: () => setImmersiveJourneyOpen(false),
@@ -368,6 +383,7 @@ export function ConversationalUnitView({
         hasSocratic: model.socraticThreads.length > 0,
         isLearningDone: model.isLearningDone,
         orientationOnly: model.isOverview,
+        readingBody: bodyMode === "reading" && isDesktopLocalRuntime(),
       }),
     [
       model.isLearningDone,
@@ -380,6 +396,7 @@ export function ConversationalUnitView({
       model.structuredTab,
       model.isOverview,
       selectedSectionId,
+      bodyMode,
     ],
   );
   useEffect(() => {
@@ -616,7 +633,7 @@ export function ConversationalUnitView({
             )}
           </Button>
         ) : null}
-        {!focusMode ? (
+        {active && !focusMode ? (
           <ImmersiveEnterFocusButton onEnter={enterFocusMode} />
         ) : null}
       </div>
@@ -625,6 +642,7 @@ export function ConversationalUnitView({
 
   const content = (
     <div
+      data-learning-flow
       data-guided-scene-root="true"
       data-immersive-learning={focusMode ? "true" : undefined}
       data-assistant-sidebar-open={immersiveCompanionOpen ? "true" : undefined}
@@ -687,6 +705,7 @@ export function ConversationalUnitView({
                 node={reviewNode}
                 persona={persona}
                 onReturn={() => setReviewNode(null)}
+                bodyMode={bodyMode}
               />
             ) : labOpen ? (
               <div className="mx-auto w-full max-w-[64rem] py-3 sm:py-5">
@@ -742,6 +761,7 @@ export function ConversationalUnitView({
                   model.structuredTab === "material" ? (
                     <StructuredInputStep
                       model={model}
+                      bodyMode={bodyMode}
                       conversationMode
                       initialSectionId={selectedSectionId}
                       initialSectionAnchor={initialSectionAnchor}
@@ -754,6 +774,7 @@ export function ConversationalUnitView({
                       >
                         <StructuredInputStep
                           model={model}
+                          bodyMode={bodyMode}
                           conversationMode
                           initialSectionId={selectedSectionId}
                           initialSectionAnchor={initialSectionAnchor}
@@ -768,6 +789,7 @@ export function ConversationalUnitView({
                       </ConversationTurn>
                       <StructuredInputStep
                         model={model}
+                        bodyMode={bodyMode}
                         conversationMode
                         initialSectionId={selectedSectionId}
                         initialSectionAnchor={initialSectionAnchor}

@@ -3,6 +3,7 @@ import type {CourseDisplayBlock,MaterialTeachingCueInterval,MusicPlaybackState,G
 import {resolveCodeFigureSpans} from '../../../libs/domain/src/material-cue.js';
 import {classroomCodeSource} from '../../../libs/domain/src/course-code.js';
 import {compareSideObjectId} from '../../../libs/domain/src/compare-block.js';
+import {materialStageFocusIndexes} from '../../../libs/domain/src/material-stage-layout.js';
 import {validatePresentationSvg} from '../../../libs/common/src/presentation-svg.js';
 import {derivationDisplayBinding} from './derivation-sampling.js';
 import type {TeachingDerivationDocumentV1} from '../../../libs/teaching-derivation/src/index.js';
@@ -29,7 +30,18 @@ function materialDisplayNodeInternal(input:unknown,options:MaterialDisplayOption
  if(block.type==='conversation'){const turns=(Array.isArray(block.turns)?block.turns:[]).map((turn,index)=>({id:text(object(turn).id)||`turn-${index}`,speaker:text(object(turn).speaker),text:text(object(turn).text)}));return {...node('general:conversation',{title:text(block.title),turns,...common}),targets:turns.map(turn=>turn.id)};}
  if(block.type==='stage') {
   const figures=Array.isArray(block.figures)?block.figures:[];
-  ancestors.add(input);const children=figures.map((figure,index)=>materialDisplayNodeInternal(figure,{...options,id:`${id}-figure-${index}`},ancestors,depth+1));ancestors.delete(input);
+  const local=(ids:readonly string[]|undefined,index:number)=>ids?.flatMap(target=>{
+   const prefix=`fig:${figures[index]?.id}:`;
+   if(target.startsWith(prefix))return [target.slice(prefix.length)];
+   if(target.startsWith('fig:'))return [];
+   const focused=materialStageFocusIndexes({layout:String(block.layout),figures,targetIds:[target]});
+   return focused.length?focused.includes(index)?['whole']:[]:[target];
+  });
+  ancestors.add(input);const children=figures.map((figure,index)=>materialDisplayNodeInternal(figure,{...options,id:`${id}-figure-${index}`,
+   activeTargetIds:local(options.activeTargetIds,index),previousActiveTargetIds:local(options.previousActiveTargetIds,index),
+   revealedTargetIds:local(options.revealedTargetIds,index),previousRevealedTargetIds:local(options.previousRevealedTargetIds,index),
+   teachingTimeline:options.teachingTimeline?{...options.teachingTimeline,intervals:options.teachingTimeline.intervals.map(interval=>({...interval,targetIds:local(interval.targetIds,index)!}))}:undefined,
+  },ancestors,depth+1));ancestors.delete(input);
   return node('general:composition',{layout:block.layout==='split-v'||block.layout==='stack'?'column':'row'},children);
  }
  if(block.type==='code'){

@@ -75,6 +75,8 @@ import { sectionGenerationProgress } from "./section-generation-progress.js";
 import { refreshUnitCourseKeyPointsSafe } from "../key-points/generate.js";
 import { resolveDerivationFormat } from "./teaching-derivation-format.js";
 import { assertMiniTestGenerationReady } from "./mini-test-generation-gate.js";
+import { readyReadingMaterial } from "../reading/learning-material.js";
+import { getCurrentUserId } from "../user-context.js";
 
 let configuredUnitSectionPlanPersistence: UnitSectionPlanRepository | undefined;
 
@@ -1560,11 +1562,22 @@ function sectionHasReadyTeachingContent(stored: {
   derivation: ReturnType<typeof parseDerivationDocument> | null;
   teachingDerivation?: unknown;
 }) {
-  return Boolean(stored.material || stored.derivation || stored.teachingDerivation);
+  return Boolean(stored.material?.introduction || stored.material?.blocks.length ||
+    stored.material?.keyTakeaways.length || stored.derivation || stored.teachingDerivation);
 }
 
 function emptyLearningMaterial(): LearningMaterialContent {
   return { introduction: "", blocks: [], keyTakeaways: [] };
+}
+
+function isSectionChecksOnly(stored: {introduction: string; blocks: string; keyTakeaways: string} | null) {
+  if (!stored || stored.introduction.trim()) return false;
+  try {
+    const blocks = JSON.parse(stored.blocks), takeaways = JSON.parse(stored.keyTakeaways);
+    return Array.isArray(blocks) && blocks.some(block => block.type === "check") &&
+      !takeaways.length && blocks.every(block => block.type === "check" ||
+        (block.type === "heading" && SECTION_QUESTION_TITLES.has(block.text)));
+  } catch { return false; }
 }
 
 function sectionHasReadyTeachingSource(section: {
@@ -1699,6 +1712,7 @@ async function getStoredUnitSectionContent(
         })
       : null;
     const split = parsedMaterial ? splitSectionMaterial(parsedMaterial) : null;
+    const checksOnly = isSectionChecksOnly(source.material);
     const priorBlockCount = source.priorMaterials.reduce(
       (sum, item) =>
         sum +
@@ -1716,7 +1730,7 @@ async function getStoredUnitSectionContent(
       contentRevision: source.contentRevision,
       blockOffset:
         resolved.kind === "mini_test"
-          ? priorBlockCount + (split?.content.blocks.length ?? 0)
+          ? priorBlockCount + (checksOnly ? 0 : split?.content.blocks.length ?? 0)
           : priorBlockCount,
       contentKind:
         resolved.kind === "mini_test"
@@ -1727,7 +1741,8 @@ async function getStoredUnitSectionContent(
       material:
         resolved.kind === "mini_test"
           ? (split?.test ?? null)
-          : (split?.content ?? null),
+          : !checksOnly && split?.content && (split.content.blocks.length || split.content.introduction || split.content.keyTakeaways.length)
+            ? split.content : null,
       derivation:
         resolved.kind === "mini_test"
           ? null
@@ -1873,7 +1888,7 @@ async function getStoredAggregatedUnitMaterialContext(
     : null;
   if (!portableSource && !client)
     throw new Error("Unit material persistence is not configured");
-  const sections =
+  let sections =
     portableSource?.sections ??
     (await client!.unitSection.findMany({
       where: { unitId },
@@ -1892,6 +1907,26 @@ async function getStoredAggregatedUnitMaterialContext(
       teachingDerivationJson: null,
       material: section.material ?? null,
     }));
+  // Reading and Display share progression. Adapt ready reading to teaching
+  // context without writing it into Display's material or generation status.
+  const owner = getCurrentUserId();
+  const readingMaterials = new Map<string, LearningMaterialContent>();
+  if (portableSource && owner) {
+    sections = await Promise.all(sections.map(async section => {
+      if (sectionHasReadyTeachingSource(section) || !section.id) return section;
+      const reading = await readyReadingMaterial(owner, unitId, section.id);
+      if (!reading) return section;
+      const checks = section.material ? splitSectionMaterial(parseLearningMaterial({
+        introduction: section.material.introduction, sections: section.material.blocks,
+        keyTakeaways: section.material.keyTakeaways,
+      })).test?.blocks ?? [] : [];
+      readingMaterials.set(section.id, {...reading, blocks: [...reading.blocks, ...checks]});
+      return {...section, generationStatus: "ready", material: {
+        introduction: reading.introduction, blocks: JSON.stringify([...reading.blocks, ...checks]),
+        keyTakeaways: JSON.stringify(reading.keyTakeaways), contextSources: section.material?.contextSources ?? "[]",
+      }};
+    }));
+  }
   if (sections.length > 0) {
     if (
       options.requireAll &&
@@ -1914,7 +1949,7 @@ async function getStoredAggregatedUnitMaterialContext(
     );
     if (available.length === 0 && derivationSections.length === 0) return null;
     const materials = available.map((section) =>
-      groupMaterialChecksAtSectionEnd(
+      readingMaterials.get(section.id) ?? groupMaterialChecksAtSectionEnd(
         parseLearningMaterial({
           introduction: section.material!.introduction,
           sections: section.material!.blocks,
@@ -1946,6 +1981,7 @@ async function getStoredAggregatedUnitMaterialContext(
   const legacy = portableSource
     ? portableSource.legacy
     : await client!.learningMaterial.findUnique({ where: { unitId } });
+  const reading = !legacy && owner ? await readyReadingMaterial(owner, unitId, unitId) : null;
   return legacy
     ? {
         material: groupMaterialChecksAtSectionEnd(
@@ -1953,7 +1989,7 @@ async function getStoredAggregatedUnitMaterialContext(
         ),
         contextSources: parseMaterialContextSources(legacy),
       }
-    : null;
+    : reading ? {material: reading, contextSources: []} : null;
 }
 
 export async function getAggregatedUnitMaterialContext(...params: Parameters<typeof getStoredAggregatedUnitMaterialContext>) {
@@ -2023,7 +2059,8 @@ async function generatePortableUnitSectionMiniTest(params: {
   const source = await repository.findGenerationSource(params);
   if (!source) throw new Error("Section not found");
   const section = source.section;
-  if (!source.material) throw new Error("Complete the learning section first");
+  const reading = await readyReadingMaterial(params.userId, params.unitId, params.sectionId);
+  if (!source.material && !reading) throw new Error("Complete the learning section first");
   if (!sectionRecordBoolean(section, "assessmentAfter"))
     throw new Error("This section does not have an assessment checkpoint");
   if (sectionRecordString(section, "testGenerationStatus") === "ready")
@@ -2108,11 +2145,15 @@ async function generatePortableUnitSectionMiniTest(params: {
     });
     if (plans.length === 0)
       throw new Error("This section has no quiz-eligible learning targets");
-    const storedMaterial = parseLearningMaterial({
+    const storedMaterial = source.material ? parseLearningMaterial({
       introduction: source.material.introduction,
       sections: source.material.blocks,
       keyTakeaways: source.material.keyTakeaways,
-    });
+    }) : emptyLearningMaterial();
+    const readingContexts = new Map(await Promise.all(assessmentGroup.map(async item => {
+      const id = sectionRecordString(item, "id");
+      return [id, id === params.sectionId ? reading : await readyReadingMaterial(params.userId, params.unitId, id)];
+    })));
     const teachingMaterial = splitSectionMaterial(storedMaterial).content;
     const assessmentContext: LearningMaterialContent = {
       introduction: assessmentGroup
@@ -2123,8 +2164,9 @@ async function generatePortableUnitSectionMiniTest(params: {
         .join("\n\n"),
       blocks: assessmentGroup.flatMap((item) => {
         const material = item.material as typeof source.material;
-        if (!material) return [];
-        const content = splitSectionMaterial(
+        const readingContext = readingContexts.get(sectionRecordString(item, "id"));
+        if (!material && !readingContext) return [];
+        const content = readingContext ?? splitSectionMaterial(
           parseLearningMaterial({
             introduction: material.introduction,
             sections: material.blocks,
@@ -2236,10 +2278,12 @@ async function generatePortableUnitSectionMiniTest(params: {
       ],
     };
     const allBlocks = source.sections.flatMap((item) => {
+      if (sectionRecordString(item, "id") === params.sectionId) return completeMaterial.blocks;
       const material = item.material as typeof source.material;
       if (
         !material ||
-        sectionRecordString(item, "generationStatus") !== "ready"
+        (sectionRecordString(item, "generationStatus") !== "ready" &&
+          sectionRecordString(item, "testGenerationStatus") !== "ready")
       )
         return [];
       return parseLearningMaterial({
@@ -3003,12 +3047,23 @@ async function generatePortableUnitSectionMaterial(
       },
     );
     narration.observe(generated.material, generated.material.blocks.length);
+    const preserveMiniTest = !stealReadyLease &&
+      sectionRecordString(section, "generationStatus") !== "ready" &&
+      sectionRecordString(section, "testGenerationStatus") === "ready" && Boolean(source.material);
+    if (preserveMiniTest) {
+      const checks = splitSectionMaterial(parseLearningMaterial({
+        introduction: source.material.introduction, sections: source.material.blocks,
+        keyTakeaways: source.material.keyTakeaways,
+      })).test;
+      if (checks) generated.material = {...generated.material, blocks: [...generated.material.blocks, ...checks.blocks]};
+    }
     const orderedMaterials = [
       ...source.sections
         .filter(
           (item) =>
             sectionRecordString(item, "id") !== resolved.id &&
-            sectionRecordString(item, "generationStatus") === "ready" &&
+            (sectionRecordString(item, "generationStatus") === "ready" ||
+              sectionRecordString(item, "testGenerationStatus") === "ready") &&
             item.material,
         )
         .map((item) => {
@@ -3058,6 +3113,7 @@ async function generatePortableUnitSectionMaterial(
       sectionId: resolved.id,
       token,
       force: Boolean(params.force),
+      preserveMiniTest,
       material: {
         introduction: generated.material.introduction,
         blocks: JSON.stringify(generated.material.blocks),
@@ -3856,7 +3912,8 @@ export async function completeUnitSection(params: {
         target.id,
         undefined,
       );
-      if (!sectionHasReadyTeachingContent(stored)) {
+      if (!sectionHasReadyTeachingContent(stored) &&
+          !await readyReadingMaterial(params.userId, params.unitId, target.id)) {
         throw new Error("Section content is not ready");
       }
     }

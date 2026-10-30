@@ -76,6 +76,8 @@ export function buildPlanningOutlineEvent(
       title: module.title,
       objective: module.objective,
       dependsOnPrevious: module.dependsOnPrevious,
+      estimatedUnitCount: plan.learningPath?.modules[index]?.units.length,
+      progression: plan.learningPath?.modules[index]?.units.map((unit) => unit.title),
     })),
   };
 }

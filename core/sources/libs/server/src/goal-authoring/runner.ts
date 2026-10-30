@@ -22,10 +22,12 @@ import { runWithLlmTraceAsync } from "../llm/trace-context.js";
 import {
   appendGoalAuthoringMessage,
   ensureGoalAuthoringSession,
+  findAcceptedGoalAuthoringIdentity,
   loadGoalAuthoringMessages,
   saveGoalAuthoringState,
   seedGoalAuthoringBranch,
 } from "./session.js";
+import { goalPathPartBindingSchema } from "./path-parts.js";
 
 export const GOAL_AUTHORING_OPERATION = "goal.authoring_agent";
 const GOAL_AUTHORING_SYSTEM_PROMPT = `You are XueLearn's durable goal-authoring agent. Continue one learner-confirmed goal from contract through blueprint and module branches. Use exactly one requested commit tool per turn. Treat committed tool results as authoritative, keep module research isolated to its branch, and never reveal private reasoning.`;
@@ -54,8 +56,13 @@ export const goalAuthoringToolCatalog = Object.freeze([
   {
     name: "commit_goal_journey",
     description:
-      "Commit the ordered module journey as modules[] of title, summary, objective, and dependsOnPrevious; do not wrap them or repeat identity fields.",
+      "Commit modules[] summaries and the complete learningPath with KACOM identities, baseline assumptions, goal outcome requirements, every module/unit contract and explicit prerequisite sources. Do not author lesson content or learner mastery.",
     schema: goalCurriculumJourneyBindingSchema,
+  },
+  {
+    name: "commit_goal_path_part",
+    description: "Commit only the requested goal-path part: outline, registry, or one module. Keep this tool across all path turns. Never repeat previously accepted parts or emit the complete path.",
+    schema: goalPathPartBindingSchema,
   },
   {
     name: "commit_module_capabilities",
@@ -138,6 +145,11 @@ export async function seedGoalAuthoringContract(input: {
       branchKind: "main",
     });
   }
+  await saveGoalAuthoringState(session.threadId, {
+    ...session.state,
+    blueprintMessageId: null,
+    checkpoints: {},
+  });
 }
 
 export async function ensureGoalAuthoringTeachingSkillFallback(input: {
@@ -241,7 +253,14 @@ export async function runGoalAuthoringRound<TResult>(input: {
   signal?: AbortSignal;
   meta?: Record<string, unknown>;
   onToken?: (delta: string) => void | Promise<void>;
+  onPartialCandidate?: (candidate: unknown) => void | Promise<void>;
+  /** Reuse an accepted stage within this confirmed goal contract. */
+  checkpointKey?: string;
+  markBlueprint?: boolean;
+  maxRepairAttempts?: number;
+  repairInstruction?: string;
 }) {
+  input.signal?.throwIfAborted();
   const prompt = input.authoringPolicy?.prompt(input.prompt, input.expectedTool) ?? input.prompt;
   const resultSchema = input.authoringPolicy?.schema(input.resultSchema, input.expectedTool) ?? input.resultSchema;
   const session = input.branchId
@@ -254,6 +273,21 @@ export async function runGoalAuthoringRound<TResult>(input: {
         ...(await ensureGoalAuthoringSession(input)),
         messages: [] as LlmMessageRecord[],
       };
+  if (input.checkpointKey) {
+    const checkpoint = session.state.checkpoints?.[input.checkpointKey] ??
+      (input.expectedTool === "commit_goal_identity" && Object.keys(session.state.checkpoints ?? {}).length === 0
+        ? await findAcceptedGoalAuthoringIdentity(session.threadId)
+        : undefined);
+    const cached = checkpoint && resultSchema.safeParse(checkpoint.result);
+    if (checkpoint && cached?.success) {
+      await saveGoalAuthoringState(session.threadId, {
+        ...session.state,
+        checkpoints: { ...session.state.checkpoints, [input.checkpointKey]: checkpoint },
+        ...(input.markBlueprint ? { blueprintMessageId: checkpoint.messageId } : {}),
+      });
+      return cached.data;
+    }
+  }
   const transcript = input.branchId
     ? session.messages
     : await loadGoalAuthoringMessages(session.threadId);
@@ -282,6 +316,8 @@ export async function runGoalAuthoringRound<TResult>(input: {
         toolCatalog: goalAuthoringToolCatalog,
         authoringKind: "goal",
         operation: input.operation,
+        maxRepairAttempts: input.maxRepairAttempts,
+        repairInstruction: input.repairInstruction,
         signal: input.signal,
         meta: {
           ...input.meta,
@@ -290,6 +326,7 @@ export async function runGoalAuthoringRound<TResult>(input: {
           branchId: input.branchId,
         },
         onToken: input.onToken,
+        onPartialCandidate: input.onPartialCandidate,
       }),
   );
   const lastMessageId = await persistRound(
@@ -297,10 +334,18 @@ export async function runGoalAuthoringRound<TResult>(input: {
     input.branchId ? "module" : "main",
     round,
   );
-  if (!input.branchId && input.expectedTool === "commit_goal_journey") {
+  if (!input.branchId && (input.markBlueprint || input.checkpointKey || input.expectedTool === "commit_goal_journey")) {
     await saveGoalAuthoringState(session.threadId, {
       ...session.state,
-      blueprintMessageId: lastMessageId,
+      ...(input.markBlueprint || input.expectedTool === "commit_goal_journey"
+        ? { blueprintMessageId: lastMessageId }
+        : {}),
+      checkpoints: {
+        ...session.state.checkpoints,
+        ...(input.checkpointKey && lastMessageId
+          ? { [input.checkpointKey]: { messageId: lastMessageId, result: round.result } }
+          : {}),
+      },
     });
   }
   return round.result;

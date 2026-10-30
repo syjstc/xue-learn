@@ -3,7 +3,7 @@ import type { LlmProviderOptions } from "../../types.js";
 import { bigmodelThinkingModelKwargs } from "../bigmodel/options.js";
 import { deepseekThinkingModelKwargs } from "../deepseek/options.js";
 import { doubaoThinkingModelKwargs } from "../doubao/options.js";
-import { minimaxThinkingModelKwargs } from "../minimax/options.js";
+import { minimaxThinkingModelKwargs, minimaxReasoningEffortConfigurable } from "../minimax/options.js";
 import { openaiReasoningEffort } from "../openai/options.js";
 import { ollamaThinkingModelKwargs } from "../ollama/options.js";
 import {
@@ -28,6 +28,7 @@ export type CustomLlmOptions = Pick<
   | "embeddingModel"
   | "embeddingProvider"
   | "minimaxThinkingEnabled"
+  | "minimaxReasoningEffort"
   | "ollamaThinkingEnabled"
   | "deepseekThinkingEnabled"
   | "openaiThinkingEnabled"
@@ -69,7 +70,8 @@ export function customThinkingEnabled(options: CustomLlmOptions): boolean {
     case "openai":
       return options.openaiThinkingEnabled === true;
     case "minimax":
-      return options.minimaxThinkingEnabled === true;
+      return minimaxReasoningEffortConfigurable(options.chatModel ?? "") ||
+        options.minimaxThinkingEnabled === true;
     case "deepseek":
       return options.deepseekThinkingEnabled === true;
     case "doubao":
@@ -113,7 +115,7 @@ export function customThinkingModelKwargs(
       return minimaxThinkingModelKwargs(
         model,
         options.minimaxThinkingEnabled ?? false,
-        { ignoreModelGate: true },
+        { ignoreModelGate: true, reasoningEffort: options.minimaxReasoningEffort },
       );
     case "deepseek":
       return deepseekThinkingModelKwargs(

@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import type { Persistence, PersistenceClient } from "../persistence/persistence-compat.js";
 import { ensureGoalCapstoneProject } from "../cognition/goal-capstone.js";
 import { parsePrereqs } from "../domain/unit-status.js";
+import { resolveBoundUnitPath } from "./path-contract.js";
 import {
   generateUnitCognitiveModel,
   type UnitCognitiveModelGenerationParams,
@@ -1299,6 +1300,7 @@ export async function expandUnitCognitiveModel(
       );
       await options.onKnowledgeActivity?.(activity);
     };
+    const pathContract = resolveBoundUnitPath(approvedPlan, initial.module?.title, initial.title);
     const generationParams = {
       userId: initial.goal.userId ?? undefined,
       goalId: initial.goalId,
@@ -1314,7 +1316,8 @@ export async function expandUnitCognitiveModel(
       planningOutcomes: approvedPlan
         ? goalPlanOutcomes(approvedPlan)
         : undefined,
-      planningOutcomeRefs: parsePlanningOutcomeRefs(
+      pathContract,
+      planningOutcomeRefs: pathContract?.planningOutcomeRefs ?? parsePlanningOutcomeRefs(
         initial.planningOutcomeRefs,
       ),
       moduleContext: initial.module
@@ -1441,6 +1444,7 @@ export async function expandUnitCognitiveModel(
           proposalJson: JSON.stringify(generated.proposal),
           externalEntitiesJson: JSON.stringify(generated.externalEntities),
           generationAuditJson: JSON.stringify(generated.proposal.audit),
+          pathEntityKeys: pathContract?.entities.map((entity) => entity.semanticKey),
         })
       : await persistence!.$transaction(async (tx) => {
           await acquireCognitiveModelWriteLock(tx, initial.goalId, unitId);
@@ -1472,6 +1476,7 @@ export async function expandUnitCognitiveModel(
             modelVersion: candidate.version,
             proposal: generated.proposal,
             externalEntities: generated.externalEntities,
+            pathEntityKeys: pathContract?.entities.map((entity) => entity.semanticKey),
           });
           if (initial.module) {
             await tx.unitLearningTarget.updateMany({

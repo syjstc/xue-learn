@@ -1,3 +1,4 @@
+import { projectPathModule } from "../goal-creation/path-module-projection.js";
 // @ts-nocheck -- unbound compatibility implementation; hosted callers use repositories.
 import { createHash, randomUUID } from "node:crypto";
 import type { Persistence, PersistenceClient } from "../persistence/persistence-compat.js";
@@ -944,7 +945,11 @@ export async function processCourseModuleGenerationEvent(params: {
 
   try {
     const existingUnitCount = claimed.existingUnitCount;
-    const preparedMastery = preparedMasteryModule(claimed.unitPlanningBrief);
+    const plannedModule = projectPathModule(
+      claimed.unitPlanningBrief,
+      claimed.goal.contentLanguage || "en",
+    );
+    const preparedMastery = plannedModule ?? preparedMasteryModule(claimed.unitPlanningBrief);
     const moduleTargetCount =
       existingUnitCount > 0 && claimed.goal.learningMode !== "exploration"
         ? claimed.moduleTargetCount
@@ -1056,7 +1061,7 @@ export async function processCourseModuleGenerationEvent(params: {
           teachingSkillBlock: teachingSkill?.promptBlock,
         });
       const explorationStructure =
-        planningMode === "deep"
+        plannedModule ? plannedModule.structure : planningMode === "deep"
           ? await withOperationReasoning(true, generateExplorationStructure)
           : await generateExplorationStructure();
       if (moduleUserId) {

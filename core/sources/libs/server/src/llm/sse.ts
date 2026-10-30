@@ -19,7 +19,7 @@ export type SseEvent =
     }
   | { type: "language"; code: string; label: string }
   | { type: "token"; delta: string }
-  | { type: "thinking" }
+  | { type: "thinking"; delta?: string }
   | {
       type: "reasoning_status";
       status: "requested" | "active" | "unsupported";

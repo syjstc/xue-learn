@@ -45,8 +45,10 @@ type AssistantContentCarrier = {
 export type AssistantStreamChunk = {
   /** User-visible answer text. */
   delta: string;
-  /** Provider emitted reasoning/thinking progress. The text is intentionally hidden. */
+  /** Provider emitted reasoning/thinking progress. */
   thinking: boolean;
+  /** Plain-text provider reasoning, kept separate from the answer. */
+  thinkingDelta?: string;
 };
 
 function isReasoningContentType(type: unknown): boolean {
@@ -58,18 +60,13 @@ function isReasoningContentType(type: unknown): boolean {
 function unknownToText(value: unknown): string {
   if (typeof value === "string") return value;
   if (Array.isArray(value)) {
-    return value
-      .map((item) => {
-        if (typeof item === "string") return item;
-        if (item && typeof item === "object" && "text" in item) {
-          return unknownToText((item as { text?: unknown }).text);
-        }
-        return "";
-      })
-      .join("");
+    return value.map(unknownToText).join("");
   }
-  if (value && typeof value === "object" && "text" in value) {
-    return unknownToText((value as { text?: unknown }).text);
+  if (value && typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    if (typeof record.type === "string" && /redacted|encrypted/i.test(record.type)) return "";
+    return unknownToText(record.text) || unknownToText(record.thinking) ||
+      unknownToText(record.reasoning) || unknownToText(record.summary);
   }
   return "";
 }
@@ -84,7 +81,7 @@ function reasoningTextFromRecord(record?: Record<string, unknown>): string {
     "thinking",
     "thinking_content",
     "thought",
-    "redacted_reasoning",
+    "reasoning_details",
   ];
   for (const key of directKeys) {
     const value = record[key];
@@ -102,28 +99,33 @@ function reasoningTextFromContent(content: unknown): string {
   return content
     .map((part) => {
       if (!part || typeof part !== "object") return "";
-      const typed = part as { type?: unknown; text?: unknown; reasoning?: unknown };
+      const typed = part as { type?: unknown };
       return isReasoningContentType(typed.type)
-        ? unknownToText(typed.text) || unknownToText(typed.reasoning)
+        ? unknownToText(part)
         : "";
     })
     .join("");
 }
 
-/** One streamed assistant chunk — visible text is separate from hidden reasoning progress. */
+/** One streamed assistant chunk — answer and provider reasoning stay separate. */
 export function extractAssistantStreamChunk(
   chunk: AssistantContentCarrier,
 ): AssistantStreamChunk {
   const content = messageContentToString(
     chunk.content as string | Array<{ type?: string; text?: string }>,
   );
-  if (content) return { delta: content, thinking: false };
-
   const reasoning =
     reasoningTextFromContent(chunk.content) ||
     reasoningTextFromRecord(chunk.additional_kwargs) ||
     reasoningTextFromRecord(chunk.response_metadata);
-  return { delta: "", thinking: reasoning.length > 0 };
+  const redacted = Array.isArray(chunk.content) && chunk.content.some(part =>
+    part && typeof part === "object" && /redacted|encrypted/i.test(String(part.type)),
+  );
+  return {
+    delta: content,
+    thinking: reasoning.length > 0 || redacted,
+    ...(reasoning ? { thinkingDelta: reasoning } : {}),
+  };
 }
 
 /** One streamed assistant chunk — user-visible text only. */
@@ -142,11 +144,16 @@ export function extractAssistantText(chunk: AssistantContentCarrier): string {
   return content;
 }
 
-// Retain only enough trailing text to recognize a reasoning tag split across
-// provider chunks. A larger generic tail makes short assistant replies look
-// non-streaming because nothing is emitted until flush().
-const THINKING_OPEN_TAG_TAIL_LENGTH = "<thinking>".length - 1;
-const THINKING_CLOSE_TAG_TAIL_LENGTH = "</redacted_thinking>".length - 1;
+// Hold only an actual possible tag prefix, never ordinary JSON/text. Holding a
+// fixed tail delays a completed item's closing brace until another chunk arrives.
+const THINKING_OPEN_TAGS = ["<think>", "<thinking>"];
+const THINKING_CLOSE_TAGS = ["</think>", "</thinking>", "</redacted_thinking>"];
+function thinkingTagTailLength(text: string, tags: readonly string[]): number {
+  const start = text.lastIndexOf("<");
+  if (start < 0) return 0;
+  const tail = text.slice(start).toLowerCase();
+  return tags.some(tag => tag.startsWith(tail)) ? tail.length : 0;
+}
 
 export class ThinkingTagStreamFilter {
   private buffer = "";
@@ -156,7 +163,7 @@ export class ThinkingTagStreamFilter {
     delta: string,
     handlers: {
       onVisible: (delta: string) => void | Promise<void>;
-      onThinking?: () => void | Promise<void>;
+      onThinking?: (delta?: string) => void | Promise<void>;
     },
   ): Promise<void> | void {
     this.buffer += delta;
@@ -165,7 +172,7 @@ export class ThinkingTagStreamFilter {
 
   flush(handlers: {
     onVisible: (delta: string) => void | Promise<void>;
-    onThinking?: () => void | Promise<void>;
+    onThinking?: (delta?: string) => void | Promise<void>;
   }): Promise<void> | void {
     return this.drain(true, handlers);
   }
@@ -174,7 +181,7 @@ export class ThinkingTagStreamFilter {
     flush: boolean,
     handlers: {
       onVisible: (delta: string) => void | Promise<void>;
-      onThinking?: () => void | Promise<void>;
+      onThinking?: (delta?: string) => void | Promise<void>;
     },
   ): Promise<void> {
     while (this.buffer) {
@@ -183,15 +190,15 @@ export class ThinkingTagStreamFilter {
         if (!close || close.index === undefined) {
           const emitLength = flush
             ? this.buffer.length
-            : Math.max(0, this.buffer.length - THINKING_CLOSE_TAG_TAIL_LENGTH);
+            : this.buffer.length - thinkingTagTailLength(this.buffer, THINKING_CLOSE_TAGS);
           if (emitLength > 0) {
-            await handlers.onThinking?.();
+            await handlers.onThinking?.(this.buffer.slice(0, emitLength));
             this.buffer = this.buffer.slice(emitLength);
             continue;
           }
           break;
         }
-        if (close.index > 0) await handlers.onThinking?.();
+        if (close.index > 0) await handlers.onThinking?.(this.buffer.slice(0, close.index));
         this.buffer = this.buffer.slice(close.index + close[0].length);
         this.inThinking = false;
         continue;
@@ -201,7 +208,7 @@ export class ThinkingTagStreamFilter {
       if (!open || open.index === undefined) {
         const emitLength = flush
           ? this.buffer.length
-          : Math.max(0, this.buffer.length - THINKING_OPEN_TAG_TAIL_LENGTH);
+          : this.buffer.length - thinkingTagTailLength(this.buffer, THINKING_OPEN_TAGS);
         if (emitLength > 0) {
           await handlers.onVisible(this.buffer.slice(0, emitLength));
           this.buffer = this.buffer.slice(emitLength);

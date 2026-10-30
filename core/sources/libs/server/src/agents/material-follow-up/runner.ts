@@ -314,8 +314,8 @@ export async function runMaterialFollowUpAgent(
         role: "assistant",
       });
     };
-    const sendThinking = async () => {
-      await params.send({ type: "thinking" });
+    const sendThinking = async (delta?: string) => {
+      await params.send({ type: "thinking", ...(delta ? { delta } : {}) });
     };
 
     const logHandle = await beginLlmRequestLog({
@@ -345,7 +345,7 @@ export async function runMaterialFollowUpAgent(
         gathered = aiMsg as AIMessageChunk;
         const streamChunk = extractAssistantStreamChunk(gathered);
         if (streamChunk.delta || streamChunk.thinking) {
-          if (streamChunk.thinking) await sendThinking();
+          if (streamChunk.thinking) await sendThinking(streamChunk.thinkingDelta);
           if (streamChunk.delta) {
             await tagFilter.push(streamChunk.delta, {
               onVisible: sendAssistantDelta,
@@ -363,7 +363,7 @@ export async function runMaterialFollowUpAgent(
           const streamChunk = extractAssistantStreamChunk(chunk);
           if (streamChunk.delta || streamChunk.thinking) {
             await logHandle?.recordFirstResponse();
-            if (streamChunk.thinking) await sendThinking();
+            if (streamChunk.thinking) await sendThinking(streamChunk.thinkingDelta);
             if (streamChunk.delta) {
               await tagFilter.push(streamChunk.delta, {
                 onVisible: sendAssistantDelta,

@@ -42,6 +42,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { SelectionFollowUpToolbar } from "../inline-follow-up-popup.tsx";
 import { MaterialIntroductionBlock } from "../material-introduction.tsx";
 import { MaterialBlockRenderer } from "./material-block-renderer.tsx";
+import { AiBlockEditShell } from "./blocks/ai-block-edit.tsx";
 import { Selectable } from "./selectable.tsx";
 import type {
   IllustrationRegenHandlers,
@@ -756,7 +757,15 @@ export function InteractiveMaterialBody({
                         data-block-index={item.blockIndex}
                         className={cn()}
                       >
-                        {content}
+                        <AiBlockEditShell
+                          block={material.blocks[item.blockIndex]!}
+                          blockIndex={item.blockIndex}
+                          unitId={illustrationRegen?.unitId}
+                          blockOffset={illustrationRegen?.blockOffset}
+                          onBlockReplaced={illustrationRegen?.onBlockRegenerated}
+                        >
+                          {content}
+                        </AiBlockEditShell>
                         {assistantFeed?.renderNarrationAudioControl?.(
                           contentKey,
                           item.text,

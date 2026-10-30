@@ -1,4 +1,5 @@
 import {prepareDisplayBuildSnapshot, resolveDisplayBuilds} from "@xue-learn/core/server/display-build";
+import {readingSourceFromCourse} from "@xue-learn/core/server/reading";
 import { createHash, randomUUID } from "node:crypto";
 import type {CourseTeachingReuse} from '@xue-learn/core/server/course-teaching';
 import {adoptUnitImage} from '@xue-learn/core/server/images/storage';
@@ -34,6 +35,10 @@ export class CourseSourceRepository implements CourseSourceReadPort {
   private table(em: EntityManager, name: string) {
     const schema = em.schema ?? em.config?.getSchema();
     return `${schema ? `"${schema.replaceAll('"', '""')}".` : ""}"${name}"`;
+  }
+  async readReadingSource(input: {ownerId: string; unitId: string}) {
+    const course = await this.projection(input);
+    return course ? readingSourceFromCourse(course) : null;
   }
   async readCatalog(input: { workspaceId: string; ownerId: string }) {
     const em = this.em.fork();

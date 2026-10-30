@@ -1,0 +1,37 @@
+{
+  "title": "一次方程与函数图像",
+  "blocks": [
+    {"type":"paragraph","text":"方程描述一个需要满足的条件，函数图像则帮助我们观察变量之间的关系。先阅读这段正文，图示和推导会在后台补齐。"},
+    {"type":"callout","variant":"definition","title":"一次方程","body":"当 $a\\ne0$ 时，方程 $ax+b=0$ 只有一个解。求解的关键是保持等式两边的操作一致。"},
+    {"type":"accordion","title":"为什么可以同时减去同一个数？","body":"等式两边表示相同的数量。两边同时减去 $b$ 后，等量关系仍然成立。"},
+    {"type":"check","question":"方程 $2x+4=0$ 的解是什么？","options":["$x=-2$","$x=2$","$x=4$"],"correctIndex":0,"explanation":"先在两边减去 4，得到 $2x=-4$，再除以 2，得到 $x=-2$。"},
+    {"type":"component_slot","title":"斜率改变时的直线","componentType":"plot","description":"绘制 y=a*x+2，允许调节 a，观察斜率与直线的变化。"},
+    {"type":"component_slot","title":"一次方程的求解步骤","componentType":"derivation","description":"从 ax+b=0 推导 x=-b/a；保留 a 非零这一前提，以及每一步的理由和依赖。"},
+    {"type":"component_slot","title":"等式的两边","componentType":"svg","description":"画出两个相等的方框，说明等式两边保持同一个值。"},
+    {"type":"steps","title":"解方程的三个动作","items":[{"title":"整理等式","body":"把含有未知数的项放在同一侧，常数项放在另一侧。"},{"title":"求出未知数","body":"等式两边除以未知数的系数；先确认这个系数不为零。"},{"title":"代回检验","body":"把结果代回原方程，确认等式左右两边相等。"}]},
+    {"type":"comparison","title":"方程与函数，关注点有何不同？","items":[{"title":"方程：寻找满足条件的值","body":"例如 $2x+4=0$，我们要找到让等式成立的 $x$。"},{"title":"函数：观察变量之间的关系","body":"例如 $y=2x+4$，每选定一个 $x$，就能算出对应的 $y$。"}]},
+    {"type":"concept_grid","title":"两个容易混淆的概念","items":[{"term":"方程的解","definition":"使等式成立的未知数取值，例如 $x=-2$。"},{"term":"图像的零点","definition":"函数图像与横轴交点对应的横坐标，此时 $y=0$。"}]},
+    {"type":"callout","variant":"example","title":"把解代回去","body":"将 $x=-2$ 代入 $2x+4$，得到 $2\\times(-2)+4=0$，所以原等式成立。"},
+    {"type":"callout","variant":"tip","title":"用图像帮助检验","body":"观察直线与横轴的交点，可以直观地检查方程的解。"},
+    {"type":"callout","variant":"warning","title":"先确认除数不为零","body":"当 $a=0$ 时，不能直接使用 $x=-b/a$。这时需要回到原方程单独讨论。"},
+    {"type":"summary","title":"读完后，记住这三点","items":["等式两边要执行相同的合法操作。","除以一个量之前，确认它不为零。","把结果代回原方程，是简单而有效的检验。"]},
+    {"type":"paragraph","text":"即使图示仍在生成，也可以继续读到这里。把求解过程理解为一连串有依据的等价变化，而不只是记住最后的公式。"}
+  ],
+  "plot": {
+    "title":"斜率与直线","functions":[{"expression":"a*x+2","label":"y = ax + 2"}],
+    "xRange":[-4,4],"yRange":[-6,6],"parameters":[{"id":"a","name":"斜率 a","min":-2,"max":2,"step":0.25,"default":1}],
+    "caption":"调整斜率 a，观察直线绕纵轴截点转动。"
+  },
+  "derivation": {
+    "title":"解一次方程","premises":[{"id":"p1","text":"a≠0，$a,b$ 均为实数。数值例：a=2，b=4。"}],
+    "steps":[
+      {"id":"s1","result":"$ax+b=0$（从方程出发）","reason":"从给定方程出发。","dependsOn":["p1"],"relation":"introduce"},
+      {"id":"s2","result":"ax=-b","reason":"等式两边同时减去 b。","dependsOn":["s1"],"relation":"equivalence"},
+      {"id":"s3","result":"$x=-\\\\frac{b}{a}$","reason":"等式两边同时除以 a。","dependsOn":["s2","p1"],"condition":"只有在 $a\\ne0$ 时才可以除以 a。","relation":"equivalence"}
+    ]
+  },
+  "svg":{
+    "svg":"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 640 200\"><rect x=\"40\" y=\"30\" width=\"220\" height=\"130\" rx=\"12\" fill=\"#dbeafe\"/><rect x=\"380\" y=\"30\" width=\"220\" height=\"130\" rx=\"12\" fill=\"#dcfce7\"/><text x=\"150\" y=\"108\" text-anchor=\"middle\" font-size=\"34\" fill=\"#1e293b\">ax + b</text><text x=\"320\" y=\"108\" text-anchor=\"middle\" font-size=\"34\" fill=\"#1e293b\">=</text><text x=\"490\" y=\"108\" text-anchor=\"middle\" font-size=\"34\" fill=\"#1e293b\">0</text></svg>",
+    "caption":"两边表示相同的值，等式才能成立。","alt":"一次方程左右两边的示意图"
+  }
+}

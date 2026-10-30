@@ -8,7 +8,7 @@ import type {CompiledVideoTimelineV1} from '../film/timeline.js';
 
 type Context<T extends RemotionLessonComponent['type']>={component:Extract<RemotionLessonComponent,{type:T}>;motion:LessonMotion;scene:RemotionLessonSceneV1;timeline:CompiledVideoTimelineV1;tick:number};
 /** Shared clock adapter; each domain imports only the boards it implements. */
-export function createAnimatedDisplay<T extends RemotionLessonComponent['type']>(type:T,render:(context:Context<T>)=>React.ReactNode){
+export function createAnimatedDisplay<T extends RemotionLessonComponent['type']>(type:T,render:(context:Context<T>)=>React.ReactNode,options:{fluid?:boolean}={}){
  return function AnimatedDisplay({node,clock,timeline:displayTimeline,resources}:DisplayRendererProps){
   const authored=node.payload as Record<string,unknown>;
   const resource=typeof authored.resourceId==='string'?resources[authored.resourceId]:undefined;
@@ -19,6 +19,6 @@ export function createAnimatedDisplay<T extends RemotionLessonComponent['type']>
   const targets=(payload.activeTargetIds as readonly string[]|undefined)?.map(id=>id.replace(/^code:/,''));
   const motion=targets?{...sampled,targets,progress:typeof payload.progress==='number'?payload.progress:sampled.progress,opacity:(id:string)=>!targets.length||targets.includes(id)?1:.43}:sampled;
   const component={type,props:payload} as Extract<RemotionLessonComponent,{type:T}>;
-  return <FilmStage kind={node.kind}>{render({component,motion,scene,timeline,tick})}</FilmStage>;
+  return <FilmStage kind={node.kind} fluid={options.fluid}>{render({component,motion,scene,timeline,tick})}</FilmStage>;
  };
 }

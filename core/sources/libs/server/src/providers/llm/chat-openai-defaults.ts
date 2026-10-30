@@ -7,9 +7,8 @@ export const LLM_REQUEST_TIMEOUT_MS = 300_000;
  * `streaming: true` keeps completions on the SSE path.
  *
  * `streamUsage: true` sends `stream_options.include_usage` so the final
- * usage chunk can populate LLM-log tokens and tok/s. MiniMax must not use
- * this — it coalesces tool-argument / JSON frames until usage is known,
- * which delays JIT course-material block previews.
+ * usage chunk can populate LLM-log tokens and tok/s. MiniMax's current
+ * OpenAI-compatible API supports the same final usage chunk.
  */
 export const CHAT_OPENAI_STREAMING_DEFAULTS = {
   streaming: true,
@@ -18,5 +17,5 @@ export const CHAT_OPENAI_STREAMING_DEFAULTS = {
 
 export const MINIMAX_CHAT_OPENAI_STREAMING_DEFAULTS = {
   streaming: true,
-  streamUsage: false,
+  streamUsage: true,
 } as const;

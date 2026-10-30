@@ -786,7 +786,9 @@ export function AgentChatWorkspace({
               </p>
             </div>
             <p className="mt-1 line-clamp-2 text-xs leading-5 text-[var(--text-600)]">
-              “{conversation.conversationContext.anchorSnippet}”
+              “{conversation.conversationContext.anchor.reading
+                ? conversation.conversationContext.anchor.selectedText ?? conversation.conversationContext.anchorSnippet
+                : conversation.conversationContext.anchorSnippet}”
             </p>
           </div>
         </div>

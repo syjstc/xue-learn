@@ -59,3 +59,5 @@ export * from "./material-teaching-motion.js";
 export {teachingContentSchema, teachingContentAuthoringSchema, teachingContentOptions, teachingTemplateMusicBlock, teachingTemplateMusicPerformance, TEACHING_TEMPLATE_IDS, teachingTemplateReactionEquation, validateTeachingTemplateContent, type TeachingTemplateId, type TeachingTemplateContent, type TeachingContentProps} from "./material-teaching-content.js";
 
 export * from "./teaching-visual-content.js";
+export * from "./learning-path-contract.js";
+export * from "./path-lesson-prerequisites.js";

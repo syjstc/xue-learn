@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import type { GoalMapPlan } from "@/shared/api";
 import { useT } from "@xue-learn/core/i18n";
-import { GoalPlanStreamCard } from "./goal-plan-stream-card.tsx";
+import { GoalPlanStreamCard } from "./goal-plan-stream-card";
+import { CapabilityPathDetails } from "../goals/capability-path-details";
 
 export function PlanEditorCard({
   plan,
@@ -39,6 +40,16 @@ export function PlanEditorCard({
   return (
     <GoalPlanStreamCard plan={plan} ready>
       <div className="space-y-3">
+        <CapabilityPathDetails
+          plan={plan}
+          disabled={disabled}
+          onMissingFoundation={(title) =>
+            onSubmit({
+              approved: false,
+              feedback: t("capabilityPath.bridgeFeedback", { title }),
+            })
+          }
+        />
         <Card className="border-[var(--border-200)] bg-[var(--bg-50)]/70 py-0">
           <CardContent className="space-y-1.5 py-3">
             <Label htmlFor="contract-ai-instruction">

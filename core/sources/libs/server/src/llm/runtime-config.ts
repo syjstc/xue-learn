@@ -1,5 +1,9 @@
 import { getRuntimeEnvironment } from "../env.js";
 import {
+  minimaxReasoningEffortSchema,
+  type MinimaxReasoningEffort,
+} from "../../../runtime-contracts/src/local-api.js";
+import {
   type EmbeddingProviderId,
   type LlmProviderId,
   embeddingProviderIds,
@@ -28,6 +32,7 @@ export type LlmModelOverrides = {
   embeddingModel?: string;
   embeddingProvider?: EmbeddingProviderId;
   minimaxThinkingEnabled?: boolean;
+  minimaxReasoningEffort?: MinimaxReasoningEffort;
   ollamaThinkingEnabled?: boolean;
   deepseekThinkingEnabled?: boolean;
   openaiThinkingEnabled?: boolean;
@@ -53,6 +58,7 @@ export type LlmRuntimeConfig = {
   embeddingModel: string;
   embeddingProvider: EmbeddingProviderId;
   minimaxThinkingEnabled: boolean;
+  minimaxReasoningEffort: MinimaxReasoningEffort;
   ollamaThinkingEnabled: boolean;
   deepseekThinkingEnabled: boolean;
   openaiThinkingEnabled: boolean;
@@ -75,6 +81,7 @@ export type LlmRuntimeConfig = {
 const DEFAULT_LLM_PROVIDER: LlmProviderId = HOSTED_LLM_PROVIDER;
 /** Hosted thinking stays off. Desktop-local honors saved learner toggles. */
 const DEFAULT_MINIMAX_THINKING = false;
+const DEFAULT_MINIMAX_REASONING_EFFORT = "max" as const;
 const DEFAULT_OLLAMA_THINKING = false;
 const DEFAULT_DEEPSEEK_THINKING = false;
 const DEFAULT_OPENAI_THINKING = false;
@@ -130,6 +137,7 @@ function defaultConfig(): LlmRuntimeConfig {
     chatModel: defaultLlmChatModel(provider),
     ...fixedEmbeddingConfig(),
     minimaxThinkingEnabled: DEFAULT_MINIMAX_THINKING,
+    minimaxReasoningEffort: DEFAULT_MINIMAX_REASONING_EFFORT,
     ollamaThinkingEnabled: DEFAULT_OLLAMA_THINKING,
     deepseekThinkingEnabled: DEFAULT_DEEPSEEK_THINKING,
     openaiThinkingEnabled: DEFAULT_OPENAI_THINKING,
@@ -139,6 +147,19 @@ function defaultConfig(): LlmRuntimeConfig {
     doubaoThinkingMode: DEFAULT_DOUBAO_THINKING_MODE,
     customThinkingProtocol: DEFAULT_CUSTOM_THINKING_PROTOCOL,
   };
+}
+
+function minimaxReasoningEffortFromPreferences(
+  raw: string | null | undefined,
+): MinimaxReasoningEffort {
+  try {
+    const parsed = JSON.parse(raw ?? "{}");
+    const effort = minimaxReasoningEffortSchema.safeParse(parsed?.minimaxReasoningEffort);
+    if (effort.success) return effort.data;
+  } catch {
+    // Invalid preferences use the provider's documented default.
+  }
+  return DEFAULT_MINIMAX_REASONING_EFFORT;
 }
 
 function storedCodexReasoningEffort(
@@ -218,6 +239,7 @@ function thinkingFromRow(
 ): Pick<
   LlmRuntimeConfig,
   | "minimaxThinkingEnabled"
+  | "minimaxReasoningEffort"
   | "ollamaThinkingEnabled"
   | "deepseekThinkingEnabled"
   | "openaiThinkingEnabled"
@@ -231,6 +253,7 @@ function thinkingFromRow(
   if (!isDesktopLocalRuntime()) {
     return {
       minimaxThinkingEnabled: base.minimaxThinkingEnabled,
+      minimaxReasoningEffort: base.minimaxReasoningEffort,
       ollamaThinkingEnabled: base.ollamaThinkingEnabled,
       deepseekThinkingEnabled: base.deepseekThinkingEnabled,
       openaiThinkingEnabled: base.openaiThinkingEnabled,
@@ -244,6 +267,7 @@ function thinkingFromRow(
   return {
     minimaxThinkingEnabled:
       row?.minimaxThinkingEnabled ?? base.minimaxThinkingEnabled,
+    minimaxReasoningEffort: minimaxReasoningEffortFromPreferences(row?.clientPreferencesJson),
     ollamaThinkingEnabled:
       row?.ollamaThinkingEnabled ?? base.ollamaThinkingEnabled,
     deepseekThinkingEnabled:
@@ -342,6 +366,9 @@ export function getLlmModelOverrides(): LlmModelOverrides {
   }
   if (runtime.minimaxThinkingEnabled !== base.minimaxThinkingEnabled) {
     overrides.minimaxThinkingEnabled = runtime.minimaxThinkingEnabled;
+  }
+  if (isDesktopLocalRuntime() && runtime.minimaxReasoningEffort !== base.minimaxReasoningEffort) {
+    overrides.minimaxReasoningEffort = runtime.minimaxReasoningEffort;
   }
   if (runtime.ollamaThinkingEnabled !== base.ollamaThinkingEnabled) {
     overrides.ollamaThinkingEnabled = runtime.ollamaThinkingEnabled;
@@ -454,6 +481,9 @@ export async function saveLlmRuntimeConfig(
     ? {
         minimaxThinkingEnabled:
           patch.minimaxThinkingEnabled ?? current.minimaxThinkingEnabled,
+        minimaxReasoningEffort: minimaxReasoningEffortSchema.parse(
+          patch.minimaxReasoningEffort ?? current.minimaxReasoningEffort,
+        ),
         ollamaThinkingEnabled:
           patch.ollamaThinkingEnabled ?? current.ollamaThinkingEnabled,
         deepseekThinkingEnabled:
@@ -476,6 +506,7 @@ export async function saveLlmRuntimeConfig(
       }
     : {
         minimaxThinkingEnabled: thinkingDefaults.minimaxThinkingEnabled,
+        minimaxReasoningEffort: thinkingDefaults.minimaxReasoningEffort,
         ollamaThinkingEnabled: thinkingDefaults.ollamaThinkingEnabled,
         deepseekThinkingEnabled: thinkingDefaults.deepseekThinkingEnabled,
         openaiThinkingEnabled: thinkingDefaults.openaiThinkingEnabled,
@@ -509,6 +540,12 @@ export async function saveLlmRuntimeConfig(
     }
   })();
   if (isDesktopLocalRuntime()) {
+    if (
+      patch.minimaxReasoningEffort !== undefined ||
+      Object.prototype.hasOwnProperty.call(preferences, "minimaxReasoningEffort")
+    ) {
+      preferences.minimaxReasoningEffort = next.minimaxReasoningEffort;
+    }
     const hasCodexPreference = Object.prototype.hasOwnProperty.call(
       preferences,
       "codexReasoningEffort",

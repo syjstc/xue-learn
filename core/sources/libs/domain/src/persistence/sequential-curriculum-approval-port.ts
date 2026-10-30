@@ -12,6 +12,8 @@ export type SequentialCurriculumUnitPlanningBrief = Readonly<{
   scopeSize: "compact" | "standard" | "large";
   rationale: string;
   progression: readonly string[];
+  /** Immutable planned KACOM contracts; interpreted by the Core authoring owner. */
+  pathContract?: unknown;
 }>;
 
 /** Normalized primitive module contract owned by the sequential curriculum capability. */

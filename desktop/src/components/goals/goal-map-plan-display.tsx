@@ -10,13 +10,18 @@ import {
 import type { GoalMapPlan } from "@xue-learn/core/schemas";
 import { cn } from "@xue-learn/core/utils";
 import { useT } from "@xue-learn/core/i18n";
+import { CapabilityPathDetails } from "./capability-path-details";
 
 export function GoalMapPlanDisplay({
   topicOverview,
   plan,
+  onMissingFoundation,
+  disabled,
 }: {
   topicOverview: string;
   plan: GoalMapPlan;
+  onMissingFoundation?: (title: string) => void;
+  disabled?: boolean;
 }) {
   const t = useT();
   const modules =
@@ -26,26 +31,37 @@ export function GoalMapPlanDisplay({
 
   return (
     <div className="space-y-6">
+      <CapabilityPathDetails
+        plan={plan}
+        onMissingFoundation={onMissingFoundation}
+        disabled={disabled}
+      />
       <Card className="border-[var(--brand-200)] bg-[var(--brand-50)]">
         <CardTitle style={{ fontFamily: "var(--font-display)" }}>
           {t("goalDetail.plan.domainAndMode")}
         </CardTitle>
         <dl className="mt-4 space-y-3 text-sm">
           <div>
-            <dt className="font-medium text-[var(--text-800)]">{t("goalDetail.plan.field")}</dt>
+            <dt className="font-medium text-[var(--text-800)]">
+              {t("goalDetail.plan.field")}
+            </dt>
             <dd className="mt-0.5 text-[var(--text-400)]">
               {plan.domainAnalysis.field} → {plan.domainAnalysis.subdomain}
             </dd>
           </div>
           <div>
-            <dt className="font-medium text-[var(--text-800)]">{t("goalDetail.plan.learningMode")}</dt>
+            <dt className="font-medium text-[var(--text-800)]">
+              {t("goalDetail.plan.learningMode")}
+            </dt>
             <dd className="mt-0.5 text-[var(--text-400)]">
               {LEARNING_MODE_LABELS[plan.domainAnalysis.learningMode]}（
               {DOMAIN_TAG_LABELS[plan.domainAnalysis.domainTag]}）
             </dd>
           </div>
           <div>
-            <dt className="font-medium text-[var(--text-800)]">{t("goalDetail.plan.modeExplanation")}</dt>
+            <dt className="font-medium text-[var(--text-800)]">
+              {t("goalDetail.plan.modeExplanation")}
+            </dt>
             <dd
               className="mt-0.5 leading-relaxed text-[var(--text-400)]"
               style={{ fontFamily: "var(--font-serif)" }}
@@ -83,7 +99,9 @@ export function GoalMapPlanDisplay({
 
       <Card>
         <CardTitle style={{ fontFamily: "var(--font-display)" }}>
-          {modules ? t("goalDetail.plan.sequentialModules") : t("goalDetail.plan.majorAreas")}
+          {modules
+            ? t("goalDetail.plan.sequentialModules")
+            : t("goalDetail.plan.majorAreas")}
         </CardTitle>
         {modules ? (
           <ol className="mt-4 divide-y text-sm">
@@ -152,13 +170,20 @@ export function GoalMapPlanDisplay({
           </CardTitle>
           <dl className="mt-4 space-y-3 text-sm">
             <div>
-              <dt className="font-medium text-[var(--text-800)]">{t("goalDetail.plan.recommendedStructure")}</dt>
+              <dt className="font-medium text-[var(--text-800)]">
+                {t("goalDetail.plan.recommendedStructure")}
+              </dt>
               <dd className="mt-0.5 text-[var(--text-400)]">
-                {t("goalDetail.plan.structureSummary", { depth: plan.mapStructure.recommendedDepth, count: topLevelCount })}
+                {t("goalDetail.plan.structureSummary", {
+                  depth: plan.mapStructure.recommendedDepth,
+                  count: topLevelCount,
+                })}
               </dd>
             </div>
             <div>
-              <dt className="font-medium text-[var(--text-800)]">{t("goalDetail.plan.layeringStrategy")}</dt>
+              <dt className="font-medium text-[var(--text-800)]">
+                {t("goalDetail.plan.layeringStrategy")}
+              </dt>
               <dd
                 className="mt-0.5 leading-relaxed text-[var(--text-400)]"
                 style={{ fontFamily: "var(--font-serif)" }}

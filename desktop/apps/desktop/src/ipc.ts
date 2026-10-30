@@ -24,6 +24,7 @@ import type { WorkspaceCatalog } from "./workspace-catalog.ts";
 import type { PersonalSyncKeyManager } from "./personal-sync-keys.ts";
 import type { FolderPersonalSyncCoordinator } from "./folder-personal-sync-coordinator.ts";
 import type { InteractiveHtmlPlayground } from "./interactive-html-store.ts";
+import {renderReadingPdf} from "./reading-pdf.ts";
 
 export type DesktopIpcDependencies = {
   runtime: RuntimeDescriptor;
@@ -75,6 +76,7 @@ export function registerDesktopIpc(
   dependencies: DesktopIpcDependencies,
 ): () => void {
   const handleChannels = Object.values(DESKTOP_IPC);
+  ipcMain.handle(DESKTOP_IPC.readingPdf, (_event, raw: unknown) => renderReadingPdf(raw));
   ipcMain.handle(DESKTOP_IPC.runtimeDescriptor, () => dependencies.runtime);
   ipcMain.handle(DESKTOP_IPC.sidecarHealth, () => dependencies.getHealth());
   ipcMain.handle(DESKTOP_IPC.sidecarRestart, () => dependencies.restart());

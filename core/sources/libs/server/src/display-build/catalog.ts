@@ -2,6 +2,7 @@ import type { DisplayDocument, DisplayNode, DisplayPluginManifest } from "../../
 import { validateDisplayPayload } from "../../../display/src/validation.js";
 import { getDisplayBuildRuntime } from "./service.js";
 import {isMotionSceneDisplayPayload} from '../../../../src/components/display-plugins/film/motion-scene-schema.js';
+import {readMaterialVisual} from '../../../domain/src/material-visual.js';
 
 let provider: (() => readonly DisplayPluginManifest[] | Promise<readonly DisplayPluginManifest[]>) | undefined;
 export function configureDisplayPluginCatalog(next: typeof provider) { provider = next; }
@@ -16,7 +17,7 @@ export function displayCatalogInstruction(manifests: readonly DisplayPluginManif
   return `Installed display plugin catalog (exact versions, schemas and examples are authoritative):\n${JSON.stringify(catalog)}\n`
     + "Course learning and video export share this exact teaching source. Author complete narration and reusable animation once. For physics:motion-scene, declare both object IDs and stage IDs in node.targets. A cue targeting nodeId/stageId executes that transformation, while nodeId/objectId focuses the object. Supply the same ordered cues in document.timeline for standalone playback and reference their IDs with paragraph cue.timelineCueId; the host synchronizes these to narration without regenerating geometry.\n"
     + "This installed plugin contract supersedes legacy raw display catalogs. New non-image topics use type=display or type=display_build only; raw legacy callout/stage/visual formats are read compatibility data. Compose multiple domains through document.root children/slots. A plugin display can be arbitrarily simple or a complex complete teaching object.\n"
-    + "Use type=display with a version 1 document to compose components from the installed plugins. Declare every required exact plugin version in document.plugins. Stable node IDs and nodeId/target cue identities must refer to existing nodes. Never author build/job fields. For a complex component, use type=display_build with pluginId, pluginVersion, builderId and input matching its builder inputSchema, and cues:[]. The host persists the job and continues other topics immediately; the component agent generates its complete content and narration asynchronously. For music:score or music:teaching components, preserve actual score notes, durations and clips in payload.block; a performance cue uses music:{figureId:node.id,clipId:an existing clip or step ID,repeat?:1..4}. Use short ASCII node IDs for musical figures, declare local focus targets, and never claim a performance without an explicit music action. A derivation is a display within an ordinary section. Keep one continuous derivation in one component, preserve all intermediate steps, and never replace it with a text summary.";
+    + "Use type=display with a version 1 document to compose components from the installed plugins. Node version is a JSON integer, such as 1; plugin lock version is an exact string, such as \"1.0.0\". Use exact catalog kind names. Every array, including children, each slots value, plugins, targets and payload arrays, must use JSON brackets [...], never an {item: ...} wrapper. Declare every required exact plugin version in document.plugins. Stable node IDs and nodeId/target cue identities must refer to existing nodes. Never author build/job fields. For a complex component, use type=display_build with pluginId, pluginVersion, builderId and input matching its builder inputSchema, and cues:[]. The host persists the job and continues other topics immediately; the component agent generates its complete content and narration asynchronously. For music:score or music:teaching components, preserve actual score notes, durations and clips in payload.block; a performance cue uses music:{figureId:node.id,clipId:an existing clip or step ID,repeat?:1..4}. Use short ASCII node IDs for musical figures, declare local focus targets, and never claim a performance without an explicit music action. A derivation is a display within an ordinary section. Keep one continuous derivation in one component, preserve all intermediate steps, and never replace it with a text summary.";
 }
 
 export function authoredDisplayDocumentIssues(document: DisplayDocument, manifests: readonly DisplayPluginManifest[]): string[] {
@@ -32,6 +33,10 @@ export function authoredDisplayDocumentIssues(document: DisplayDocument, manifes
     if (matches.length !== 1) issues.push(`Component must resolve to one installed locked plugin: ${node.kind}@${node.version}`);
     else {
       issues.push(...validateDisplayPayload(node.payload, matches[0]!.payloadSchema));
+      // Match the renderer's semantic guard before publishing and generating
+      // speech, rather than discovering a bad visual during the final export.
+      if (node.kind === 'general:visual' && !readMaterialVisual((node.payload as {block?:unknown})?.block))
+        issues.push(`Invalid semantic visual on ${node.id}: use type=visual, 2–5 uniquely named items, and numeric nonnegative values for bars only`);
       if (node.kind === 'physics:motion-scene') {
         if ((node.payload as Record<string,unknown>)?.presentation !== undefined) issues.push(`Only the host may assign narration sampling on ${node.id}`);
         if (!isMotionSceneDisplayPayload(node.payload)) issues.push(`Invalid advanced animation geometry on ${node.id}`);

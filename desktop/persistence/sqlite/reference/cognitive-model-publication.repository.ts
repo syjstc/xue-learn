@@ -551,7 +551,7 @@ export class MikroOrmCognitiveModelPublicationRepository implements CognitiveMod
                 throw new Error(`Generated entity ${entity.ref} duplicates allowlisted external identity`);
             }
             const stableKey = stringValue(rowValue(previous ?? {}, "stableKey")) ??
-                scopedStableKey(input.curriculumKey, entity.kind, normalizedKey);
+                (input.pathEntityKeys?.includes(normalizedKey) ? `path:${normalizedKey}` : scopedStableKey(input.curriculumKey, entity.kind, normalizedKey));
             const previousProvenance = jsonRecord(rowValue(previous ?? {}, "provenance"));
             const usedBy = new Set(jsonArray<string>(previousProvenance.usedByCurriculumKeys));
             usedBy.add(input.curriculumKey);

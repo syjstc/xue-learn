@@ -13,6 +13,8 @@ import { cn } from "@xue-learn/core/utils";
 
 type UseImmersiveLearningOptions = {
   unitId: string;
+  enabled?: boolean;
+  autoFocus?: boolean;
   immersiveJourneyOpen?: boolean;
   onCloseImmersiveJourney?: () => void;
   referenceOpen?: boolean;
@@ -21,14 +23,16 @@ type UseImmersiveLearningOptions = {
 
 export function useImmersiveLearning({
   unitId,
+  enabled = true,
+  autoFocus = true,
   immersiveJourneyOpen = false,
   onCloseImmersiveJourney,
   referenceOpen = false,
   onCloseReference,
 }: UseImmersiveLearningOptions) {
   const location = useLocation();
-  const [focusMode, setFocusMode] = useState(() =>
-    Boolean(
+  const [focusRequested, setFocusMode] = useState(() =>
+    autoFocus && Boolean(
       (location.state as { preserveImmersiveLearning?: boolean } | null)
         ?.preserveImmersiveLearning ||
       (typeof window !== "undefined" &&
@@ -36,6 +40,7 @@ export function useImmersiveLearning({
         window.matchMedia("(max-width: 700px)").matches),
     ),
   );
+  const focusMode = enabled && focusRequested;
   const [focusModeLeaving, setFocusModeLeaving] = useState(false);
   const exitTimerRef = useRef<number | null>(null);
   const {
@@ -76,10 +81,8 @@ export function useImmersiveLearning({
   );
 
   useEffect(() => {
-    if (!focusMode) {
-      setImmersiveLearningActive(false);
-      return;
-    }
+    // Preserved, inactive course views must not clear another view's focus.
+    if (!focusMode) return;
     setImmersiveLearningActive(true);
     return () => setImmersiveLearningActive(false);
   }, [focusMode, setImmersiveLearningActive]);

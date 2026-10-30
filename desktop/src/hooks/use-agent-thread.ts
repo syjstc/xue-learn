@@ -318,6 +318,7 @@ type AgentThreadResponse = {
     scope: AgentThreadScope;
     status: string;
     stateJson?: string;
+    conversationContext?: AssistantConversationContext;
   };
   messages: AgentMessageRecord[];
   activeRun?: {
@@ -639,7 +640,12 @@ export function useAgentThread(
           if (existing) {
             return prev.map((m) =>
               m.id === assistantMsgId
-                ? { ...m, streaming: true, thinking: true }
+                ? {
+                    ...m,
+                    streaming: true,
+                    thinking: true,
+                    thinkingContent: ((m.thinkingContent ?? "") + (event.delta ?? "")).slice(-12000),
+                  }
                 : m,
             );
           }
@@ -651,6 +657,7 @@ export function useAgentThread(
               content: "",
               streaming: true,
               thinking: true,
+              thinkingContent: (event.delta ?? "").slice(-12000),
             },
           ];
         });
@@ -749,14 +756,14 @@ export function useAgentThread(
           );
           if (alreadyShown) {
             return withoutStalePending.map((m) =>
-              m.id === assistantMsgId ? { ...m, streaming: false } : m,
+              m.id === assistantMsgId ? { ...m, streaming: false, thinking: false } : m,
             );
           }
           // Attach the card to the streamed assistant turn so prose stays visible.
           const host = withoutStalePending.find((m) => m.id === assistantMsgId);
           if (host) {
             return withoutStalePending.map((m) =>
-              m.id === assistantMsgId ? { ...m, streaming: false, toolUi } : m,
+              m.id === assistantMsgId ? { ...m, streaming: false, thinking: false, toolUi } : m,
             );
           }
           return [
@@ -826,6 +833,11 @@ export function useAgentThread(
         }
       }
       if (event.type === "done") {
+        const context = threadId
+          ? queryClient.getQueryData<AgentThreadResponse>(agentQueryKeys.thread(threadId))?.thread.conversationContext
+          : undefined;
+        if (context?.kind === "material_follow_up")
+          void queryClient.invalidateQueries({queryKey: queryKeys.units.followUps(context.unitId)});
         planningActiveRef.current = false;
         goalPlanPhaseRef.current = false;
         setPendingToolUi(null);

@@ -1,4 +1,35 @@
-# Desktop plugin verification — 2026-10-10
+# Desktop plugin verification
+
+## UI extension acceptance — 2026-10-13
+
+SDK 0.3.0 introduces the `ui.extensions@1` contract for lesson-header actions,
+lesson-body actions, inline lesson panels and settings tabs. Video Studio 0.2.11
+declares a contextual body action and a dedicated Video settings view. The final
+immutable package is `../xue-learn-video/release/video-plugin-0.2.11-darwin-arm64-ui-final`.
+
+`pnpm run test:plugins` passed 18 suites / 164 tests. Video's renderer host and
+transport checks passed 2 suites / 10 tests. The SDK, Desktop renderer/main and
+Video renderer/native builds passed; a Node ESM import verified the consumable
+SDK route helper. Package validation retained both view and UI declarations.
+
+`pnpm run verify:plugin-ui` uses a disposable Electron profile, real migrated
+course storage and an existing synthetic Video project. Its report is
+`artifacts/plugin-ui-2026-10-13/report.json`. Eleven checks passed with no page
+errors, covering reading/chat/immersive body actions, direct current-lesson
+navigation, restoration of section/query/fragment, settings deep links across
+startup and reload, native persistence of render concurrency and subtitles,
+mobile settings navigation, disable cleanup/fallback and re-enable. No additional
+editor window or plugin utility process was created. Inline panels use the same
+view loader and have focused renderer coverage; this native run uses Video's
+action and settings tab.
+
+The fixture selects a fictitious local Ollama embedding model so the setup gate
+permits the seeded lesson. No model was downloaded, no paid generation ran, and
+the user's workspace/profile/projects were not changed. The running regular
+profile still had Video 0.2.9 when inspected; applying this release requires the
+new Desktop host and installing/enabling the new package.
+
+## Initial plugin acceptance — 2026-10-10
 
 Verified on macOS arm64, Electron 37.10.3 and Cordis 4.0.0-rc.10.
 

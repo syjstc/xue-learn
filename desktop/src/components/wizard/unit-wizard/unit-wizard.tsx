@@ -17,7 +17,6 @@ import { SocraticStep } from "./steps/socratic-step.tsx";
 import { useUnitWizard } from "./use-unit-wizard.tsx";
 import type { UnitWizardProps } from "./types.ts";
 import { ConversationalUnitView } from "../conversation/conversational-unit-view.tsx";
-import { ReadingUnitView } from "../conversation/reading-unit-view.tsx";
 import { learnerFacingError } from "@/shared/errors/learner-error";
 
 export function UnitWizard(props: UnitWizardProps) {
@@ -168,19 +167,11 @@ export function UnitWizard(props: UnitWizardProps) {
     );
   }
 
-  if (props.presentationMode === "chat") {
-    return (
-      <ConversationalUnitView
-        model={model}
-        initialSectionId={props.initialSectionId}
-        initialSectionAnchor={props.initialSectionAnchor}
-      />
-    );
-  }
-
   return (
-    <ReadingUnitView
+    <ConversationalUnitView
+      active={props.active}
       model={model}
+      bodyMode={props.presentationMode}
       initialSectionId={props.initialSectionId}
       initialSectionAnchor={props.initialSectionAnchor}
     />

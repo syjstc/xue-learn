@@ -15,6 +15,8 @@ export type PublishCognitiveModelExpansionInput = Readonly<{
   proposalJson: string;
   externalEntitiesJson: string;
   generationAuditJson: string;
+  /** Approved goal-scoped KACOM identities; no learner state or evidence. */
+  pathEntityKeys?: readonly string[];
 }>;
 
 export type CognitiveModelPublicationResult = Readonly<{

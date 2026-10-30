@@ -89,6 +89,17 @@ describe("embedded Desktop plugin views", () => {
     expect(() => host.navigate("//other-host.example")).toThrow("local route");
   });
 
+  it("passes contextual routes to the plugin and preserves the learning return position", async () => {
+    const context = { slot: "unit.content.actions" as const, unitId: "unit-a", goalId: "goal-a", returnTo: "/goals/goal-a/units/unit-a?section=section-a#beat-2" };
+    await act(async () => root.render(<DesktopPluginView pluginId="org.example.courses" viewId="catalog" bridge={bridge} loadModule={loadModule} initialPath="/units/unit-a" context={context} />));
+    expect(host.initialPath).toBe("/units/unit-a"); expect(host.context).toEqual(context); expect(Object.isFrozen(host.context)).toBe(true);
+    expect(container.querySelector('a')?.getAttribute('href')).toBe(context.returnTo);
+    const previousHost = host;
+    await act(async () => root.render(<DesktopPluginView pluginId="org.example.courses" viewId="catalog" bridge={bridge} loadModule={loadModule} initialPath="/units/unit-b" context={{ ...context, unitId: "unit-b" }} chrome="none" />));
+    expect(previousHost.signal.aborted).toBe(true); expect(host.context.unitId).toBe("unit-b");
+    expect(container.querySelector('header')).toBeNull(); expect(bridge.openView).toHaveBeenCalledTimes(2);
+  });
+
   it("keeps local state across unrelated plugin changes, then disposes when this plugin stops", async () => {
     await render();
     await act(async () => container.querySelector("button")!.click());

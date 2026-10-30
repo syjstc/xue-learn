@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
+import { projectPathModule } from "./path-module-projection.js";
 import {
   mapPreparedMasteryPublication,
   type CognitiveModelInvalidationRepository,
@@ -21,7 +22,15 @@ import {
   prepareModuleStructureAuthoring,
 } from "../llm/module-curriculum.js";
 import { runGoalAuthoringRound } from "../goal-authoring/runner.js";
-import { parseMapPlan } from "../goals/map-plan.js";
+import { parseMapPlan, serializeMapPlan } from "../goals/map-plan.js";
+import type { GoalMapPlan } from "../llm/schemas.js";
+import { readModulePathContext, pathModuleBrief } from "./learning-path.js";
+import {
+  authorModulePathRepair,
+  mergeModulePathRepairs,
+  pathAuditFindings,
+  readCandidatePathRepair,
+} from "./path-module-repair.js";
 import { getLlmRuntimeConfig } from "../llm/runtime-config.js";
 import { withOperationReasoning } from "../providers/llm/index.js";
 import {
@@ -205,6 +214,7 @@ export async function authorModuleStructureDraft(params: {
   sessionId?: string;
   cacheClass: "cold_seed" | "warm_fanout";
   diagnostics?: string;
+  candidateJson?: string;
   repos: WorkerRepos;
 }): Promise<{ candidate: unknown; hash: string }> {
   const claimed = await params.repos.moduleGenerationLease.loadContext({
@@ -227,6 +237,58 @@ export async function authorModuleStructureDraft(params: {
     claimed.goal.contentLanguage,
     claimed.goal.title,
   );
+  const boundPath = readModulePathContext(claimed.unitPlanningBrief);
+  const findings = pathAuditFindings(params.diagnostics, params.moduleId);
+  if (boundPath && findings.length) {
+    const repair = () => withGoalCreationPlanningActivity(params.sessionId, {
+      id: `module_path_repair:${params.moduleId}`,
+      category: "synthesis",
+      startedMessage: tBackend("status.planning.moduleDraft.started", { title: claimed.title }),
+      pulseMessages: [tBackend("status.planning.moduleAudit.repairing")],
+      completedMessage: tBackend("status.planning.moduleDraft.completed", { title: claimed.title }),
+      pulseIntervalMs: 8_000,
+    }, () => authorModulePathRepair({
+      userId: claimed.goal.userId!,
+      goalId: params.goalId,
+      moduleId: params.moduleId,
+      moduleRef: boundPath.contract.moduleRef,
+      moduleTitle: claimed.title,
+      mapPlanJson: String(claimed.goal.mapPlanJson ?? ""),
+      candidateJson: params.candidateJson ?? "{}",
+      findings,
+      contentLanguage,
+      meta: authoringMeta({ ...params, moduleTitle: claimed.title }),
+    }));
+    const repaired = planningMode === "deep" ? await withOperationReasoning(true, repair) : await repair();
+    const candidate = {
+      kind: claimed.goal.learningMode === "exploration" ? "exploration" as const : "mastery" as const,
+      ...(claimed.goal.learningMode === "exploration" ? {} : { capabilities: repaired.capabilities }),
+      ...repaired.structure,
+      pathRepair: repaired.pathRepair,
+    };
+    return { candidate, hash: hashJson(candidate) };
+  }
+  // Operational failures are retried by replaying the valid contract; only
+  // actionable audit findings trigger a constrained path revision.
+  const pendingRepair = boundPath && params.candidateJson ? readCandidatePathRepair(params.candidateJson) : undefined;
+  if (pendingRepair) {
+    const candidate = JSON.parse(params.candidateJson!);
+    return { candidate, hash: hashJson(candidate) };
+  }
+  const planned = projectPathModule(claimed.unitPlanningBrief, contentLanguage);
+  if (planned) {
+    const candidate = claimed.goal.learningMode === "exploration"
+      ? { kind: "exploration" as const, ...planned.structure }
+      : { kind: "mastery" as const, capabilities: planned.capabilities, ...planned.structure };
+    await emitGoalCreationProgress(params.sessionId, {
+      type: "module_stage",
+      stage: "validating",
+      moduleId: params.moduleId,
+      moduleTitle: claimed.title,
+      message: tBackend("status.planning.path.materialized", { title: claimed.title }),
+    });
+    return { candidate, hash: hashJson(candidate) };
+  }
   const pathContext = await gatherGoalPathContext({
     goalId: claimed.goalId,
     title: claimed.goal.title,
@@ -510,6 +572,7 @@ export async function processModuleStructureDraftPrepareEvent(params: {
       sessionId: payload.sessionId,
       cacheClass: classifyAuthoringCacheClass(payload.reason),
       diagnostics: claimed.attemptCount > 0 ? claimed.issuesJson : undefined,
+      candidateJson: claimed.candidateJson,
       repos: params.repos,
     });
     await drafts.patch({
@@ -538,6 +601,7 @@ export async function processModuleStructureDraftPrepareEvent(params: {
       expectedToken: token,
       status: "failed",
       issuesJson: JSON.stringify([
+        ...pathAuditFindings(claimed.issuesJson, payload.moduleId),
         error instanceof Error ? error.message : String(error),
       ]),
       attemptCount: claimed.attemptCount + 1,
@@ -631,6 +695,42 @@ export async function processModuleStructureAuditEvent(params: {
   );
   const flagged = new Set(audited.findings.map((finding) => finding.moduleId));
   if (audited.passed) {
+    const repairs = rows.flatMap((row) => {
+      const repair = readCandidatePathRepair(row.candidateJson);
+      return repair ? [{ row, repair }] : [];
+    });
+    let repairedPlan: GoalMapPlan | undefined;
+    if (repairs.length) {
+      if (!drafts.commitPathRepairs) throw new Error("The host cannot persist audited capability-path repairs.");
+      const current = await params.repos.moduleGenerationLease.loadContext({ goalId, moduleId: rows[0]!.moduleId, priorEntityLimit: 1 });
+      const expectedMapPlanJson = String(current?.goal.mapPlanJson ?? "");
+      const plan = parseMapPlan(expectedMapPlanJson);
+      if (!plan?.learningPath) throw new Error("The audited repair has no valid owning goal path.");
+      const learningPath = mergeModulePathRepairs(plan.learningPath, repairs.map(({ repair }) => repair));
+      const flaggedRefs = new Set(repairs.map(({ repair }) => repair.module.moduleRef));
+      repairedPlan = {
+        ...plan, learningPath,
+        modules: plan.modules?.map((module, index) => flaggedRefs.has(learningPath.modules[index]!.moduleRef)
+          ? { ...module, ...pathModuleBrief(learningPath, learningPath.modules[index]!) } : module),
+        mapStructure: { ...plan.mapStructure, estimatedLeafUnits: learningPath.modules.reduce((count, module) => count + module.units.length, 0) },
+      };
+      const committed = await drafts.commitPathRepairs({
+        goalId, sessionId, expectedMapPlanJson,
+        mapPlanJson: serializeMapPlan(repairedPlan),
+        modules: repairs.map(({ row, repair }) => {
+          const contract = learningPath.modules.find((module) => module.moduleRef === repair.module.moduleRef)!;
+          const brief = pathModuleBrief(learningPath, contract);
+          return {
+            moduleId: row.moduleId, expectedCandidateHash: row.candidateHash,
+            plannedOutcomesJson: JSON.stringify(brief.plannedOutcomes),
+            exitCapabilityBriefsJson: JSON.stringify(brief.exitCapabilityBriefs),
+            estimatedUnitCount: brief.estimatedUnitCount,
+            unitPlanningBriefJson: JSON.stringify(brief.unitPlanningBrief),
+          };
+        }),
+      });
+      if (!committed) throw retryableError("The capability path or draft changed during audit; re-audit the current revision.");
+    }
     const session =
       await requireAgentConversationPersistence().findGoalCreationSessionByGoalId(
         payload.goalId,
@@ -641,6 +741,7 @@ export async function processModuleStructureAuditEvent(params: {
         session.threadId,
         mergeGoalState(checkpoint, {
           auditStatus: "passed",
+          ...(repairedPlan ? { mapPlan: repairedPlan } : {}),
         }) as ThreadCheckpoint,
       );
     }

@@ -1,5 +1,6 @@
 import type * as React from 'react';
 import type { CourseSourceSnapshotV1 } from '@xue-learn/core/runtime-contracts';
+import { DESKTOP_PLUGIN_UI_SLOTS, isDesktopPluginLocalPath, type DesktopPluginUiContext, type DesktopPluginUiSlot } from './index.js';
 
 /** Published course catalog fields supplied by the selected Desktop workspace. */
 export interface DesktopPluginCourse {
@@ -42,6 +43,9 @@ export interface DesktopPluginRendererHost {
   readonly pluginId: string;
   readonly viewId: string;
   readonly workspaceId: string;
+  /** Initial route inside the plugin's private router, resolved from its declared UI contribution. */
+  readonly initialPath: string;
+  readonly context: Readonly<DesktopPluginUiContext>;
   readonly ui: DesktopPluginUi;
   readonly signal: AbortSignal;
   readonly core: {
@@ -68,6 +72,43 @@ export interface DesktopPluginRendererModule {
   createView(host: DesktopPluginRendererHost): React.ComponentType;
 }
 
-export function desktopPluginViewPath(pluginId: string, viewId: string): string {
-  return `/local/plugins/${encodeURIComponent(pluginId)}/views/${encodeURIComponent(viewId)}`;
+export interface DesktopPluginViewLaunch {
+  initialPath?: string;
+  context?: DesktopPluginUiContext;
+}
+
+export function desktopPluginViewPath(pluginId: string, viewId: string, launch?: DesktopPluginViewLaunch): string {
+  const path = `/local/plugins/${encodeURIComponent(pluginId)}/views/${encodeURIComponent(viewId)}`;
+  if (!launch) return path;
+  const query = new URLSearchParams();
+  if (launch.initialPath && isDesktopPluginLocalPath(launch.initialPath)) query.set('pluginPath', launch.initialPath);
+  for (const [field, value] of Object.entries(launch.context ?? {})) {
+    if (value) query.set(field, value);
+  }
+  const search = query.toString();
+  return search ? `${path}?${search}` : path;
+}
+
+/** Deep links are presentation input; discard malformed paths and unknown context fields. */
+export function desktopPluginViewLaunch(search: string): DesktopPluginViewLaunch {
+  const query = new URLSearchParams(search);
+  const context: DesktopPluginUiContext = {};
+  const slot = query.get('slot');
+  if (DESKTOP_PLUGIN_UI_SLOTS.includes(slot as DesktopPluginUiSlot)) context.slot = slot as DesktopPluginUiSlot;
+  for (const field of ['goalId', 'unitId', 'sectionId'] as const) {
+    const value = query.get(field);
+    if (value && value.length <= 200 && !/[\\/\u0000-\u0020\u007f]/.test(value) && value !== '.' && value !== '..') context[field] = value;
+  }
+  const returnTo = query.get('returnTo');
+  if (isDesktopPluginLocalPath(returnTo)) context.returnTo = returnTo;
+  const path = query.get('pluginPath');
+  return { initialPath: isDesktopPluginLocalPath(path) ? path : '/', context };
+}
+
+export function desktopPluginSettingsTabId(pluginId: string, contributionId: string): string {
+  return `plugin:${pluginId}:${contributionId}`;
+}
+
+export function desktopPluginSettingsPath(pluginId: string, contributionId: string): string {
+  return `/settings?${new URLSearchParams({ tab: desktopPluginSettingsTabId(pluginId, contributionId) })}`;
 }

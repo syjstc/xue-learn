@@ -109,7 +109,7 @@ export type AgentRunContext = {
 
 export type AgentSseEvent =
   | { type: "message"; delta: string; role?: "assistant" }
-  | { type: "thinking" }
+  | { type: "thinking"; delta?: string }
   | {
       type: "reasoning_status";
       status: "requested" | "active" | "unsupported";
@@ -123,6 +123,7 @@ export type AgentSseEvent =
       status: "active" | "complete";
       message: string;
       elapsedSeconds: number;
+      capabilityPath?: { moduleTitles: string[]; unitCount: number };
     }
   | {
       type: "planning_stage";

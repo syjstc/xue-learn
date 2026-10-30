@@ -1544,6 +1544,17 @@ const rawDefinitions: LlmOperationDefinitionInput[] = [
       { requireLearningObjectives: false },
     ),
   },
+  ...["unit.reading", "unit.reading.derivation", "unit.reading.plot", "unit.reading.svg"].map(key => ({
+    key,
+    label: key === "unit.reading" ? "Interactive textbook" : `Textbook ${key.split(".").at(-1)}`,
+    category: "content" as const,
+    defaultReasoning: false,
+    inheritBaseContext: false,
+    contextProfile: profile({
+      eagerViews: [eagerView(BASE_CAPABILITY_VIEW_KEYS.generationPolicy, 500, {required: true, allowStale: true})],
+      maxEagerContextTokens: 500,
+    }),
+  })),
   {
     key: "unit.formal_derivation.author",
     label: "Unit formal derivation author",

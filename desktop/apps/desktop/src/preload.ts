@@ -77,6 +77,10 @@ const bridge = {
     release: (documentId: string) =>
       ipcRenderer.invoke(DESKTOP_IPC.htmlPlaygroundRelease, documentId),
   }),
+  readingPdf: Object.freeze({
+    render: (input: {html: string; layout: "mobile" | "desktop"}) =>
+      ipcRenderer.invoke(DESKTOP_IPC.readingPdf, input),
+  }),
   personalSync: Object.freeze({
     getProgress: () => ipcRenderer.invoke(DESKTOP_IPC.personalSyncProgress),
     connect: (input: PersonalSyncConnectInput) =>

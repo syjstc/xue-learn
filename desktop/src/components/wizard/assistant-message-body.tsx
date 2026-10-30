@@ -2,10 +2,7 @@
 
 import { CitationMarkdownContent } from "@/components/citations/citation-markdown-content";
 import type { ProseMarkdownVariant } from "@xue-learn/core/components/markdown/prose-markdown";
-import {
-  TypingCaret,
-  typingCaretHostClassName,
-} from "@/components/ui/typing-caret";
+import { typingCaretHostClassName } from "@/components/ui/typing-caret";
 import { useLearnerDisplayName } from "@/hooks/api/use-learner-profile";
 import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import { personalizeLearnerText } from "@/shared/domain/learner-text";
@@ -46,6 +43,7 @@ export function AssistantMessageBody({
   sources,
   showCursor,
   thinking: isThinking,
+  thinkingContent,
   onNavigate,
   variant,
 }: {
@@ -53,6 +51,7 @@ export function AssistantMessageBody({
   sources?: ContentSource[];
   showCursor?: boolean;
   thinking?: boolean;
+  thinkingContent?: string;
   onNavigate?: () => void;
   variant?: ProseMarkdownVariant;
 }) {
@@ -67,45 +66,21 @@ export function AssistantMessageBody({
     hadThinkingTag,
   } = parsed;
 
-  const thinkingText = parsedThinking?.trim() ?? "";
+  const thinkingText = thinkingContent?.trim() || parsedThinking?.trim() || "";
   const showThinkingBlock =
-    isThinking ||
+    isThinking || thinkingText.length > 0 ||
     (hadThinkingTag && (thinkingText.length > 0 || !thinkingComplete));
   const showMain = main.length > 0;
-  const collapseThinking =
-    showThinkingBlock &&
-    thinkingComplete &&
-    (showMain || thinkingText.length > 0);
-
-  if (!hadThinkingTag) {
-    if (isThinking && !personalizedContent) {
-      return <ThinkingBlock content="thinking" collapsed={false} loading />;
-    }
-    if (!personalizedContent && showCursor) {
-      return (
-        <p className="mt-1 text-muted-foreground animate-pulse">
-          {t("wizard.assistant.typing")}
-        </p>
-      );
-    }
-    return (
-      <AssistantMarkdown
-        content={personalizedContent}
-        sources={sources}
-        showCursor={showCursor}
-        onNavigate={onNavigate}
-        variant={variant}
-      />
-    );
-  }
+  const thinkingLoading = Boolean(isThinking) || (Boolean(showCursor) && !thinkingComplete);
+  const collapseThinking = Boolean(showThinkingBlock && !thinkingLoading);
 
   return (
     <div className="mt-0.5">
       {showThinkingBlock && (
         <ThinkingBlock
-          content="thinking"
+          content={thinkingText}
           collapsed={collapseThinking}
-          loading={Boolean(isThinking) || !thinkingComplete}
+          loading={thinkingLoading}
         />
       )}
       {showMain ? (
@@ -116,10 +91,8 @@ export function AssistantMessageBody({
           onNavigate={onNavigate}
           variant={variant}
         />
-      ) : (
-        !thinkingComplete && showCursor && <TypingCaret />
-      )}
-      {thinkingComplete && !showMain && showCursor && (
+      ) : null}
+      {!showThinkingBlock && !showMain && showCursor && (
         <p className="mt-1 text-muted-foreground animate-pulse">
           {t("wizard.assistant.typing")}
         </p>

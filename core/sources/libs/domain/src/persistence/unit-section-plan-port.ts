@@ -46,6 +46,8 @@ export type UnitSectionPlanDraft = Readonly<{
 }>;
 
 export type UnitMaterialSource = Readonly<{
+  /** Optional for older hosts; enables reading context without changing stored Display. */
+  id?: string;
   requiredForCompletion: boolean;
   generationStatus: string;
   contentKind?: string;
@@ -187,6 +189,8 @@ export interface UnitSectionPlanRepository {
     sectionId: string;
     token: string;
     force: boolean;
+    /** Keep the shared quiz when Display is first authored after reading. */
+    preserveMiniTest?: boolean;
     material: UnitSectionPublishedMaterial;
     materialCheckTasks: readonly import("./material-check-completion-port.js").MaterialCheckTaskDefinition[];
   }): Promise<{ contentRevision: number; affectedEntityIds: readonly string[] }>;

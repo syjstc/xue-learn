@@ -1,4 +1,5 @@
 import type { Embeddings } from "@langchain/core/embeddings";
+import type { MinimaxReasoningEffort } from "../../../../runtime-contracts/src/local-api.js";
 import type { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import type {
   EmbeddingProviderId,
@@ -38,6 +39,7 @@ export type LlmProviderOptions = {
   embeddingModel?: string;
   embeddingProvider?: EmbeddingProviderId;
   minimaxThinkingEnabled?: boolean;
+  minimaxReasoningEffort?: MinimaxReasoningEffort;
   ollamaThinkingEnabled?: boolean;
   deepseekThinkingEnabled?: boolean;
   openaiThinkingEnabled?: boolean;

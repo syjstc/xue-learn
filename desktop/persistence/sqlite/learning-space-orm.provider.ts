@@ -384,6 +384,7 @@ export class SqliteLearningSpaceOrmProvider extends LearningSpaceOrmProvider imp
         configureModulePromptContextPersistence(this.runtime.repositories.learningUnit);
         configureUnitMapContextPersistence(this.runtime.repositories.unitMapContext);
         configureUnitSessionPersistence(this.runtime.repositories.unitSessionState);
+        configureContentRevisionPersistence(this.runtime.repositories.unitContentRevision);
         configureGenerationRunPersistence(this.runtime.repositories.aiGenerationRun);
         configureGlobalGenerationSettingsPersistence(this.runtime.repositories.globalGenerationSettings);
         configureLlmRoutingPersistence(this.runtime.repositories.llmRouting);

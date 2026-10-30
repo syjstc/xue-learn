@@ -12,6 +12,27 @@ export type LearningMode =
   | "professional_applied"
   | "creative_expression"
   | "mixed";
+export type _Schema1 = string;
+export type _Schema2 = string;
+/**
+ * @minItems 1
+ * @maxItems 7
+ */
+export type _Schema5 =
+  | [_Schema6]
+  | [_Schema6, _Schema6]
+  | [_Schema6, _Schema6, _Schema6]
+  | [_Schema6, _Schema6, _Schema6, _Schema6]
+  | [_Schema6, _Schema6, _Schema6, _Schema6, _Schema6]
+  | [_Schema6, _Schema6, _Schema6, _Schema6, _Schema6, _Schema6]
+  | [_Schema6, _Schema6, _Schema6, _Schema6, _Schema6, _Schema6, _Schema6];
+export type _Schema6 =
+  "memory" | "understanding" | "application" | "transfer" | "fluency" | "stability" | "independence";
+export type _Schema7 = number;
+/**
+ * @maxItems 24
+ */
+export type _Schema3 = _Schema4[];
 
 export interface GoalMapPlan {
   schemaVersion?: 1 | 2;
@@ -53,6 +74,7 @@ export interface GoalMapPlan {
   mapStructure: MapStructure;
   outOfScope?: string[];
   prerequisitesAssumed?: string[];
+  learningPath?: LearningPathContract;
   [k: string]: unknown;
 }
 export interface DomainAnalysis {
@@ -176,6 +198,452 @@ export interface ModuleUnitPlanningBrief {
     | [string, string, string, string, string, string]
     | [string, string, string, string, string, string, string]
     | [string, string, string, string, string, string, string, string];
+  pathContract?: ModulePathContext;
+  [k: string]: unknown;
+}
+export interface ModulePathContext {
+  /**
+   * @minItems 1
+   * @maxItems 240
+   */
+  entities: [_Schema0, ..._Schema0[]];
+  baseline: _Schema3;
+  contract: _Schema11;
+  [k: string]: unknown;
+}
+export interface _Schema0 {
+  semanticKey: _Schema1;
+  kind: "atom" | "concept" | "skill" | "competency";
+  title: _Schema2;
+  description: _Schema2;
+  scope: _Schema2;
+  [k: string]: unknown;
+}
+export interface _Schema4 {
+  entityKey: _Schema1;
+  dimensions: _Schema5;
+  threshold: _Schema7;
+  status: "reported" | "unknown";
+  rationale: _Schema2;
+  [k: string]: unknown;
+}
+export interface _Schema11 {
+  moduleRef: string;
+  /**
+   * @maxItems 16
+   */
+  requires:
+    | []
+    | [_Schema12]
+    | [_Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12, _Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12]
+    | [
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12
+      ]
+    | [
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12
+      ]
+    | [
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12
+      ]
+    | [
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12
+      ]
+    | [
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12
+      ]
+    | [
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12
+      ];
+  /**
+   * @minItems 1
+   * @maxItems 8
+   */
+  provides:
+    | [_Schema9]
+    | [_Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9];
+  assessment: _Schema10;
+  rationale: _Schema2;
+  /**
+   * @minItems 1
+   * @maxItems 20
+   */
+  units:
+    | [_Schema13]
+    | [_Schema13, _Schema13]
+    | [_Schema13, _Schema13, _Schema13]
+    | [_Schema13, _Schema13, _Schema13, _Schema13]
+    | [_Schema13, _Schema13, _Schema13, _Schema13, _Schema13]
+    | [_Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13]
+    | [_Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13]
+    | [_Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13]
+    | [_Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13]
+    | [_Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13, _Schema13]
+    | [
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13
+      ]
+    | [
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13
+      ]
+    | [
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13
+      ]
+    | [
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13
+      ]
+    | [
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13
+      ]
+    | [
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13
+      ]
+    | [
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13
+      ]
+    | [
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13
+      ]
+    | [
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13
+      ]
+    | [
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13,
+        _Schema13
+      ];
+  [k: string]: unknown;
+}
+export interface _Schema12 {
+  entityKey: _Schema1;
+  dimensions: _Schema5;
+  threshold: _Schema7;
+  source: string;
+  rationale: _Schema2;
+  [k: string]: unknown;
+}
+export interface _Schema9 {
+  entityKey: _Schema1;
+  dimensions: _Schema5;
+  threshold: _Schema7;
+  [k: string]: unknown;
+}
+export interface _Schema10 {
+  task: _Schema2;
+  /**
+   * @minItems 1
+   * @maxItems 6
+   */
+  criteria:
+    | [_Schema2]
+    | [_Schema2, _Schema2]
+    | [_Schema2, _Schema2, _Schema2]
+    | [_Schema2, _Schema2, _Schema2, _Schema2]
+    | [_Schema2, _Schema2, _Schema2, _Schema2, _Schema2]
+    | [_Schema2, _Schema2, _Schema2, _Schema2, _Schema2, _Schema2];
+  assistance: "independent" | "light_hint" | "guided";
+  context: "same" | "near" | "far";
+  [k: string]: unknown;
+}
+export interface _Schema13 {
+  unitRef: string;
+  title: _Schema2;
+  summary: _Schema2;
+  difficulty: "easy" | "medium" | "hard";
+  milestoneRole: "introduce" | "practice" | "integrate" | "verify";
+  /**
+   * @maxItems 12
+   */
+  requires:
+    | []
+    | [_Schema12]
+    | [_Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12, _Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12]
+    | [_Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12, _Schema12]
+    | [
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12
+      ]
+    | [
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12,
+        _Schema12
+      ];
+  /**
+   * @minItems 1
+   * @maxItems 8
+   */
+  provides:
+    | [_Schema9]
+    | [_Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9];
+  /**
+   * @minItems 1
+   * @maxItems 4
+   */
+  supports:
+    [_Schema1] | [_Schema1, _Schema1] | [_Schema1, _Schema1, _Schema1] | [_Schema1, _Schema1, _Schema1, _Schema1];
+  assessment: _Schema10;
+  rationale: _Schema2;
   [k: string]: unknown;
 }
 export interface MapStructure {
@@ -183,5 +651,79 @@ export interface MapStructure {
   estimatedLeafUnits: number;
   layeringStrategy: string;
   nestingRationale: string;
+  [k: string]: unknown;
+}
+export interface LearningPathContract {
+  schemaVersion: 1;
+  /**
+   * @minItems 1
+   * @maxItems 240
+   */
+  entities: [_Schema0, ..._Schema0[]];
+  baseline: _Schema3;
+  goal: {
+    /**
+     * @minItems 1
+     * @maxItems 12
+     */
+    outcomes:
+      | [_Schema8]
+      | [_Schema8, _Schema8]
+      | [_Schema8, _Schema8, _Schema8]
+      | [_Schema8, _Schema8, _Schema8, _Schema8]
+      | [_Schema8, _Schema8, _Schema8, _Schema8, _Schema8]
+      | [_Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8]
+      | [_Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8]
+      | [_Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8]
+      | [_Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8]
+      | [_Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8]
+      | [_Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8, _Schema8]
+      | [
+          _Schema8,
+          _Schema8,
+          _Schema8,
+          _Schema8,
+          _Schema8,
+          _Schema8,
+          _Schema8,
+          _Schema8,
+          _Schema8,
+          _Schema8,
+          _Schema8,
+          _Schema8
+        ];
+    assessment: _Schema10;
+    [k: string]: unknown;
+  };
+  /**
+   * @minItems 1
+   * @maxItems 8
+   */
+  modules:
+    | [_Schema11]
+    | [_Schema11, _Schema11]
+    | [_Schema11, _Schema11, _Schema11]
+    | [_Schema11, _Schema11, _Schema11, _Schema11]
+    | [_Schema11, _Schema11, _Schema11, _Schema11, _Schema11]
+    | [_Schema11, _Schema11, _Schema11, _Schema11, _Schema11, _Schema11]
+    | [_Schema11, _Schema11, _Schema11, _Schema11, _Schema11, _Schema11, _Schema11]
+    | [_Schema11, _Schema11, _Schema11, _Schema11, _Schema11, _Schema11, _Schema11, _Schema11];
+  [k: string]: unknown;
+}
+export interface _Schema8 {
+  outcomeRef: string;
+  /**
+   * @minItems 1
+   * @maxItems 8
+   */
+  requires:
+    | [_Schema9]
+    | [_Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9]
+    | [_Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9, _Schema9];
   [k: string]: unknown;
 }

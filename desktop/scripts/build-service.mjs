@@ -310,6 +310,11 @@ function copyLocalRuntimeWasmAssets() {
   if (service !== "local-runtime") return;
   cpSync(join(root, "node_modules/@xue-learn/core/resources/guided-image-refine.py"), join(dirname(outfile), "guided-image-refine.py"));
   const serviceRequire = createRequire(join(root, "package.json"));
+  const katexDirectory = dirname(serviceRequire.resolve("katex/dist/katex.min.css"));
+  const pdfFonts = join(dirname(outfile), "reading-pdf/katex");
+  mkdirSync(pdfFonts, {recursive: true});
+  cpSync(join(katexDirectory, "katex.min.css"), join(pdfFonts, "katex.min.css"));
+  cpSync(join(katexDirectory, "fonts"), join(pdfFonts, "fonts"), {recursive: true});
   cpSync(
     serviceRequire.resolve("web-tree-sitter/tree-sitter.wasm"),
     join(dirname(outfile), "tree-sitter.wasm"),

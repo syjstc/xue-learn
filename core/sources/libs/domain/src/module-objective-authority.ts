@@ -29,6 +29,10 @@ export type ModuleObjectiveCapability = Readonly<{
   cognitiveLevel:
     "remember" | "understand" | "apply" | "analyze" | "evaluate" | "create";
   difficulty: "easy" | "medium" | "hard";
+  /** Planned KACOM identity; absent for legacy independently authored modules. */
+  semanticKey?: string;
+  entityKind?: "atom" | "concept" | "skill" | "competency";
+  threshold?: number;
 }>;
 
 export type ModuleObjectiveUnit = Readonly<{
@@ -44,7 +48,7 @@ export type PreparedModuleObjectiveAuthority = Readonly<{
   coverageRationale: string;
   entities: readonly Readonly<{
     stableKey: string;
-    kind: "atom" | "competency";
+    kind: "atom" | "concept" | "skill" | "competency";
     title: string;
     description: string;
     payload: Record<string, unknown>;
@@ -149,7 +153,9 @@ export function moduleEntryTargetStableKey(
 export function moduleCapabilityEntityStableKey(
   moduleCurriculumKey: string,
   index: number,
+  semanticKey?: string,
 ): string {
+  if (semanticKey) return `path:${semanticKey}`;
   return `module:${required(moduleCurriculumKey, "moduleCurriculumKey")}:capability:${index + 1}`;
 }
 
@@ -175,8 +181,8 @@ export function prepareModuleObjectiveAuthority(input: {
     input.coverageRationale,
     "coverageRationale",
   );
-  if (input.capabilities.length < 3 || input.capabilities.length > 8) {
-    throw new Error("Mastery module must contain 3-8 capabilities");
+  if (input.capabilities.length < 1 || input.capabilities.length > 8) {
+    throw new Error("Mastery module must contain 1-8 capabilities");
   }
   const unitRecords = input.units ?? [];
   if (unitRecords.length < 1 || unitRecords.length > 20) {
@@ -248,13 +254,13 @@ export function prepareModuleObjectiveAuthority(input: {
     },
   }));
   const capabilityEntities = capabilities.map((capability, index) => ({
-    stableKey: moduleCapabilityEntityStableKey(moduleCurriculumKey, index),
-    kind: "competency" as const,
+    stableKey: moduleCapabilityEntityStableKey(moduleCurriculumKey, index, capability.semanticKey),
+    kind: capability.entityKind ?? "competency",
     title: capability.title,
     description: capability.objective,
     payload: {
       source: "module.capabilities",
-      semanticKey: `capability:${index + 1}`,
+      semanticKey: capability.semanticKey ?? `capability:${index + 1}`,
       assessmentCriteria: capability.assessmentCriteria,
       cognitiveLevel: capability.cognitiveLevel,
       difficulty: capability.difficulty,
@@ -305,10 +311,11 @@ export function prepareModuleObjectiveAuthority(input: {
       entityStableKey: moduleCapabilityEntityStableKey(
         moduleCurriculumKey,
         index,
+        capability.semanticKey,
       ),
       dimension,
       required: true,
-      threshold: 0.7,
+      threshold: capability.threshold ?? 0.7,
       gate: capability.criticalCompletionGate,
       weight: 1,
       rationale: capability.criticalCompletionGate
@@ -368,7 +375,7 @@ export function prepareModuleObjectiveAuthority(input: {
     }),
   );
   const relations = foundations.flatMap((foundation, foundationIndex) =>
-    capabilities.map((_capability, capabilityIndex) => ({
+    capabilities.map((capability, capabilityIndex) => ({
       stableKey: `module:${moduleCurriculumKey}:entry:${foundationIndex + 1}:capability:${capabilityIndex + 1}:prerequisite`,
       fromEntityStableKey: moduleEntryEntityStableKey(
         moduleCurriculumKey,
@@ -377,6 +384,7 @@ export function prepareModuleObjectiveAuthority(input: {
       toEntityStableKey: moduleCapabilityEntityStableKey(
         moduleCurriculumKey,
         capabilityIndex,
+        capability.semanticKey,
       ),
       relationType: "prerequisite" as const,
       required: foundation.criticality === "critical",
@@ -544,7 +552,7 @@ export function mapPreparedMasteryPublication(input: {
           source: "module.capabilities" as const,
           moduleCurriculumKey: authority.moduleCurriculumKey,
           ownerCurriculumKey: authority.moduleCurriculumKey,
-          semanticKey: `capability:${index + 1}`,
+          semanticKey: capability.semanticKey ?? `capability:${index + 1}`,
         },
       };
     }),

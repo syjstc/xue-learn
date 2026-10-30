@@ -54,6 +54,7 @@ import type {
   LlmMessageRecord,
 } from "../agents/core/types.js";
 import { runValidatedStructuredGeneration } from "../llm/validated-structured-generation.js";
+import type { StructuredContractMetadata } from "../llm/structured-contract.js";
 import {
   GenerationCancelledError,
   isGenerationCancelled,
@@ -196,7 +197,7 @@ export const unitAuthoringToolCatalog = Object.freeze([
   {
     name: "commit_survey",
     description:
-      "Commit the complete validated Survey outline and guiding questions.",
+      "Commit the complete Survey: at most 8 outline items, followed by at least one guiding question. Merge related outline scopes to fit the limit while preserving the unit's required coverage.",
     schema: compactSurveyPreviewBindingSchema,
   },
   {
@@ -346,6 +347,7 @@ export type DurableAuthoringTool = Readonly<{
   name: string;
   description: string;
   schema: z.ZodTypeAny;
+  normalizeMinimaxArgs?: (args: Record<string, unknown>) => Record<string, unknown>;
 }>;
 
 export type UnitAuthoringToolChoice =
@@ -362,6 +364,13 @@ export function resolveUnitAuthoringToolBinding(
   toolChoice: UnitAuthoringToolChoice;
   toolCatalog: readonly DurableAuthoringTool[];
 } {
+  if (provider === "minimax") {
+    const stageTool = toolCatalog.filter((tool) => tool.name === expectedTool);
+    return {
+      toolChoice: { type: "function", function: { name: expectedTool } },
+      toolCatalog: stageTool.length > 0 ? stageTool : toolCatalog,
+    };
+  }
   if (
     provider === "bigmodel" ||
     qwenRequiresAutoToolChoice({ provider, model: options?.model })
@@ -440,6 +449,13 @@ export type UnitAuthoringRoundResult<TResult> = {
  */
 export const UNIT_AUTHORING_TOOL_CHOICE = "required" as const;
 
+export function unitAuthoringStageToolPrompt(
+  prompt: string,
+  expectedTool: string,
+): string {
+  return `${prompt}\n\nSubmit this stage by calling the native ${expectedTool} function exactly once. Any instruction above to return JSON describes this function's arguments, not an assistant text response. Do not output the artifact as prose, JSON text, or Markdown. Do not call a different stage's commit function.`;
+}
+
 function hintsForAuthoringTool(expectedTool: string) {
   if (expectedTool === "commit_topic_material") return TOPIC_MATERIAL_HINTS;
   if (expectedTool === "commit_section_topics") return SECTION_TOPICS_HINTS;
@@ -453,7 +469,9 @@ export function unitAuthoringValidationRepairPrompt(
   const materialRequirement =
     expectedTool === "commit_section_material"
       ? " Call commit_section_material only — never commit_component_selection, commit_survey, or commit_section_plan. Every heading needs numeric level 2 or 3. Compare left/right must be objects with label and points arrays. The final items array must contain at least 6 content items (for example, one introduction plus five teaching blocks, or six teaching blocks). Preserve usable items from the rejected call, add the missing teaching content, and do not submit an empty or partial array."
-      : expectedTool === "commit_section_topics"
+      : expectedTool === "commit_survey"
+        ? " Call commit_survey only. Keep at most 8 outline items and at least one guiding question in the items array, with outlines before questions. Count outline items before submitting. If the rejected outline is too long, merge related scopes while preserving all required topic coverage; do not drop the excess topics or expand the outline again."
+        : expectedTool === "commit_section_topics"
         ? " Call commit_section_topics only with an optional introduction and unique topic ids plus titles. Do not emit teaching displays yet. Keep at most 8 topics."
         : expectedTool === "commit_topic_material"
           ? " Call commit_topic_material only for the requested topicId. Keep one display (atomic or stage) and as many spoken lecture cues as needed to teach it clearly (for multiple subviews: explain each view and their relationship, not only the labels). Give every display, figure, and code region a short unique id. Every cue needs spoken text and targetIds listing one or more of those ids. Keep learner-facing copy in the goal content language; do not mix languages. Do not rewrite already accepted topics."
@@ -479,6 +497,10 @@ export async function runUnitAuthoringAgentRound<TResult>(input: {
   authoringKind?: "unit" | "goal";
   /** Billing/routing key; defaults to unit.authoring_agent. */
   operation?: string;
+  /** Output budget selected by the owning authoring stage. */
+  contract?: StructuredContractMetadata;
+  maxRepairAttempts?: number;
+  repairInstruction?: string;
   signal?: AbortSignal;
   meta?: Record<string, unknown>;
   onToken?: (delta: string) => void | Promise<void>;
@@ -510,24 +532,25 @@ export async function runUnitAuthoringAgentRound<TResult>(input: {
       mode: "tool-call",
       operation,
       schema: input.resultSchema,
+      contract: input.contract,
       // Material is long and progressively streamed. Give a rejected short
       // commit one additional continuation turn; otherwise a first empty
       // repair can exhaust the round before the model emits the missing items.
       maxRepairAttempts:
-        input.expectedTool === "commit_section_material" ||
+        input.maxRepairAttempts ?? (input.expectedTool === "commit_section_material" ||
         input.expectedTool === "commit_topic_material"
           ? 2
-          : 1,
+          : 1),
       invoke: async ({ attempt, validationError, signal, maxTokens }) => {
         const isRepair = Boolean(validationError);
         const userMessage: LlmMessageRecord = {
           role: "user",
           content: validationError
-            ? unitAuthoringValidationRepairPrompt(
+            ? `${unitAuthoringValidationRepairPrompt(
                 input.expectedTool,
                 validationError,
-              )
-            : input.prompt,
+              )}${input.repairInstruction ? `\n${input.repairInstruction}` : ""}`
+            : unitAuthoringStageToolPrompt(input.prompt, input.expectedTool),
         };
         const requestRecords = [...workingTranscript, userMessage];
         const messages = toUnitAuthoringBaseMessages(requestRecords);
@@ -548,15 +571,15 @@ export async function runUnitAuthoringAgentRound<TResult>(input: {
           toolCatalog,
           { model: route?.model },
         );
-        // Keep a fixed catalog for providers that support forced calling.
-        // BigModel/Qwen get one stage tool + auto; Codex names the current
-        // commit_* so Responses actually forces a function call.
+        // MiniMax receives one named stage tool. BigModel/Qwen use one stage
+        // tool + auto; Codex names the current tool with the durable catalog.
         const runnable = model.bindTools(
           langChainTools(toolBinding.toolCatalog, {
             strict: deepseekStrict,
           }) as never,
           {
             tool_choice: toolBinding.toolChoice,
+            ...(route?.provider === "minimax" ? { parallel_tool_calls: false } : {}),
           } as never,
         );
         const started = Date.now();
@@ -572,6 +595,7 @@ export async function runUnitAuthoringAgentRound<TResult>(input: {
             transcriptMessageCount: workingTranscript.length,
             structuredAttempt: attempt + 1,
             structuredStage: isRepair ? "repair" : "generation",
+            maxTokens,
             ...(input.meta ?? {}),
           },
           setActiveSpan: true,
@@ -586,22 +610,21 @@ export async function runUnitAuthoringAgentRound<TResult>(input: {
           rejection: string,
         ) => {
           const toolCallId = assistantMessage.toolCalls?.[0]?.id;
-          const rejectedTool: LlmMessageRecord = {
-            role: "tool",
-            toolCallId: toolCallId ?? `unit-authoring-rejected-${attempt}`,
-            content: JSON.stringify({
-              status: "rejected",
-              tool: input.expectedTool,
-              error: rejection,
-            }),
-          };
+          const rejectionContent = JSON.stringify({
+            status: "rejected",
+            tool: input.expectedTool,
+            error: rejection,
+          });
+          const rejectionMessage: LlmMessageRecord = toolCallId
+            ? { role: "tool", toolCallId, content: rejectionContent }
+            : { role: "user", content: rejectionContent };
           workingTranscript = [
             ...workingTranscript,
             userMessage,
             assistantMessage,
-            rejectedTool,
+            rejectionMessage,
           ];
-          repairMessages.push(userMessage, assistantMessage, rejectedTool);
+          repairMessages.push(userMessage, assistantMessage, rejectionMessage);
         };
         try {
           await consumeAbortableAuthoringStream(
@@ -757,37 +780,36 @@ export async function runUnitAuthoringAgentRound<TResult>(input: {
             nativeCall.name !== input.expectedTool
           ) {
             const rejection = `${authoringKind} authoring model must call exactly one ${input.expectedTool} tool`;
-            if (nativeCall) {
-              recordRejectedTurn(
-                {
-                  role: "assistant",
-                  content: extractAssistantText(assistant),
-                  toolCalls: [
-                    {
-                      ...nativeCall,
-                      id: assignedToolCallId(nativeCall, 0),
-                    },
-                  ],
-                  ...(reasoningContent(assistant)
-                    ? { reasoningContent: reasoningContent(assistant) }
-                    : {}),
-                },
-                rejection,
-              );
-            }
+            recordRejectedTurn(
+              {
+                role: "assistant",
+                content: extractAssistantText(assistant),
+                ...(nativeCall
+                  ? { toolCalls: [{ ...nativeCall, id: assignedToolCallId(nativeCall, 0) }] }
+                  : {}),
+                ...(reasoningContent(assistant)
+                  ? { reasoningContent: reasoningContent(assistant) }
+                  : {}),
+              },
+              rejection,
+            );
             throw new Error(`failed server validation: ${rejection}`);
           }
+          const prepareArgs = route?.provider === "minimax"
+            ? toolBinding.toolCatalog.find(tool => tool.name === nativeCall.name)?.normalizeMinimaxArgs ?? ((args: Record<string, unknown>) => args)
+            : (args: Record<string, unknown>) => args;
           nativeCall = {
             ...nativeCall,
             // Some OpenAI-compatible streaming adapters expose the complete
             // JSON in tool_call_chunks but assemble final tool_calls with {}.
             // Prefer the observed wire arguments only when they satisfy the
             // authoritative stage schema.
-            args: recoverValidatedStreamedToolArgs(
+            args: prepareArgs(recoverValidatedStreamedToolArgs(
               nativeCall.args,
               argumentBuffer,
               input.resultSchema,
-            ),
+              prepareArgs,
+            )),
           };
           const parsedArgs = input.resultSchema.safeParse(nativeCall.args);
           if (!parsedArgs.success) {

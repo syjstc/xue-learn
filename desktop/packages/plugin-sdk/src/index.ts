@@ -1,6 +1,51 @@
 /** Browser-safe contracts shared by Desktop, plugin workers and management UI. */
 export const DESKTOP_PLUGIN_API_VERSION = 1 as const;
 
+export const DESKTOP_PLUGIN_UI_SLOTS = [
+  'unit.header.actions', 'unit.content.actions', 'unit.content.panels', 'settings.tabs',
+] as const;
+export type DesktopPluginUiSlot = (typeof DESKTOP_PLUGIN_UI_SLOTS)[number];
+export const DESKTOP_PLUGIN_UI_ICONS = ['puzzle', 'video', 'settings', 'book', 'sparkles', 'chart', 'play'] as const;
+export type DesktopPluginUiIcon = (typeof DESKTOP_PLUGIN_UI_ICONS)[number];
+
+/** Presentation context only; the native session remains the authority for workspace access. */
+export interface DesktopPluginUiContext {
+  slot?: DesktopPluginUiSlot;
+  goalId?: string;
+  unitId?: string;
+  sectionId?: string;
+  returnTo?: string;
+}
+
+type UiContributionMeta = {
+  id: string;
+  title: string;
+  description?: string;
+  icon?: DesktopPluginUiIcon;
+  order?: number;
+};
+export type DesktopPluginUiContribution = UiContributionMeta & (
+  | { slot: 'unit.header.actions' | 'unit.content.actions'; command: string; viewId?: never; path?: never }
+  | { slot: DesktopPluginUiSlot; viewId: string; command?: never; path?: string }
+);
+
+export function isDesktopPluginLocalPath(value: unknown): value is string {
+  return typeof value === 'string' && value.length <= 4096 && value.startsWith('/')
+    && !value.startsWith('//') && !/[\\\u0000-\u001f\u007f]/.test(value);
+}
+
+const UI_PATH_FIELDS = ['goalId', 'unitId', 'sectionId', 'returnTo'] as const;
+export function resolveDesktopPluginUiPath(template: string | undefined, context: DesktopPluginUiContext): string | undefined {
+  if (!template) return '/';
+  let missing = false;
+  const path = template.replace(/\{(goalId|unitId|sectionId|returnTo)\}/g, (_match, field: (typeof UI_PATH_FIELDS)[number]) => {
+    const value = context[field];
+    if (!value) missing = true;
+    return encodeURIComponent(value ?? '');
+  });
+  return !missing && !/[{}]/.test(path) && isDesktopPluginLocalPath(path) ? path : undefined;
+}
+
 export type DesktopPluginView = { id: string; title: string } & (
   | { command: string; entry?: never; stylesheet?: never }
   | { entry: string; stylesheet?: string; command?: never }
@@ -28,6 +73,8 @@ export interface DesktopPluginManifest {
   contributes: {
     commands: Array<{ id: string; title: string; hidden?: boolean }>;
     views?: DesktopPluginView[];
+    /** Host-owned placements. View/command references are validated at installation. */
+    ui?: DesktopPluginUiContribution[];
     /** Relative paths to existing display package directories; activation uses a host adapter. */
     displayPackages?: string[];
   };
@@ -156,6 +203,39 @@ export function parseDesktopPluginManifest(input: unknown): DesktopPluginManifes
     return { ...identity, command };
   });
   if (views && new Set(views.map(view => view.id)).size !== views.length) throw new Error('Duplicate plugin view id');
+  if (contribution.ui !== undefined && !Array.isArray(contribution.ui)) throw new Error('Invalid contributes.ui');
+  const ui = (contribution.ui as unknown[] | undefined)?.map((value): DesktopPluginUiContribution => {
+    const item = object(value, 'UI contribution');
+    if (!DESKTOP_PLUGIN_UI_SLOTS.includes(item.slot as DesktopPluginUiSlot)) throw new Error('Unsupported plugin UI slot');
+    const slot = item.slot as DesktopPluginUiSlot;
+    if (item.icon !== undefined && !DESKTOP_PLUGIN_UI_ICONS.includes(item.icon as DesktopPluginUiIcon)) throw new Error('Invalid plugin UI icon');
+    if (item.order !== undefined && (!Number.isSafeInteger(item.order) || Math.abs(Number(item.order)) > 1000)) throw new Error('Invalid plugin UI order');
+    const meta = {
+      id: identifier(item.id, 'UI contribution id'), title: string(item.title, 'UI contribution title', 200),
+      ...(item.description === undefined ? {} : { description: string(item.description, 'UI description', 1000) }),
+      ...(item.icon === undefined ? {} : { icon: item.icon as DesktopPluginUiIcon }),
+      ...(item.order === undefined ? {} : { order: item.order as number }),
+    };
+    if (item.viewId !== undefined) {
+      if (item.command !== undefined) throw new Error('UI contribution must target either a view or a command');
+      const viewId = identifier(item.viewId, 'UI view id');
+      if (!views?.some(view => view.id === viewId && view.entry)) throw new Error(`UI references undeclared embedded view: ${viewId}`);
+      const path = item.path === undefined ? undefined : string(item.path, 'UI path', 2048);
+      if (path !== undefined) {
+        const staticPath = path.replace(/\{(goalId|unitId|sectionId|returnTo)\}/g, 'context');
+        if (!isDesktopPluginLocalPath(staticPath) || /[{}]/.test(staticPath)) throw new Error('Invalid plugin UI path template');
+        if (slot === 'settings.tabs' && /\{(?:goalId|unitId|sectionId)\}/.test(path)) throw new Error('Settings tabs cannot require course context');
+      }
+      return { ...meta, slot, viewId, ...(path === undefined ? {} : { path }) };
+    }
+    if (slot !== 'unit.header.actions' && slot !== 'unit.content.actions') throw new Error('This UI slot requires an embedded view');
+    if (item.path !== undefined) throw new Error('UI command cannot declare a path');
+    const command = identifier(item.command, 'UI command');
+    if (!commands.some(value => value.id === command)) throw new Error(`UI references undeclared command: ${command}`);
+    return { ...meta, slot, command };
+  });
+  if (ui && new Set(ui.map(item => item.id)).size !== ui.length) throw new Error('Duplicate plugin UI contribution id');
+  if (ui?.length && requires['ui.extensions'] !== 1) throw new Error('UI contributions require ui.extensions@1');
   if (contribution.displayPackages !== undefined && !Array.isArray(contribution.displayPackages)) throw new Error('Invalid contributes.displayPackages');
   const displayPackages = (contribution.displayPackages as unknown[] | undefined)?.map(value => relativePath(value, 'display package'));
   if (displayPackages && new Set(displayPackages).size !== displayPackages.length) throw new Error('Duplicate display package');
@@ -185,7 +265,7 @@ export function parseDesktopPluginManifest(input: unknown): DesktopPluginManifes
     version, apiVersion: 1,
     ...(raw.description === undefined ? {} : { description: string(raw.description, 'plugin description', 4000) }),
     ...(runtime ? { runtime } : {}), requires,
-    contributes: { commands, ...(views ? { views } : {}), ...(displayPackages ? { displayPackages } : {}) }, integrity,
+    contributes: { commands, ...(views ? { views } : {}), ...(ui ? { ui } : {}), ...(displayPackages ? { displayPackages } : {}) }, integrity,
   };
 }
 

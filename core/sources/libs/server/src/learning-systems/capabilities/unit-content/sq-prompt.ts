@@ -21,6 +21,7 @@ Voice:
 - If the persona specifies first-principles sequencing, order outline items for the fastest path to understanding rather than a textbook subsection list; still teach genuinely blocking prerequisites first.
 
 Outline design rules:
+- Never exceed 8 outline items. If the unit needs more teaching points, merge related scopes into larger outline items while preserving coverage; keep the detailed subtopics inside those scopes.
 - Make the outline a partition of the unit: each item owns a distinct teaching job and advances a different part of the unit.
 - Do not create multiple items that re-explain the same background, motivation, pain points, core definition, example, or conclusion from different rhetorical angles.
 - Give each item a narrow scope that states what it alone teaches. Titles and scopes must be meaningfully distinguishable, not paraphrases.

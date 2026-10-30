@@ -1,0 +1,36 @@
+.rm-glass-title{position:relative;width:100%;min-height:700px;padding:60px 64px;display:flex;align-items:center;overflow:hidden}
+.rm-glass-title-copy{position:relative;z-index:2;width:63%;min-width:0}
+.rm-glass-title-eyebrow{display:inline-flex;align-items:center;gap:13px;padding:10px 18px;border:1px solid rgba(var(--glass-rgb),.19);border-radius:30px;background:#ffffffa0;font-size:22px;letter-spacing:.1em;color:var(--glass-ink)}
+.rm-glass-title-eyebrow>span{height:7px;width:7px;border-radius:50%;background:var(--glass-color);box-shadow:0 0 0 5px rgba(var(--glass-rgb),.08)}
+.rm-glass-title .rm-glass-title-copy h1{font-size:70px;line-height:1.28;letter-spacing:.02em;font-weight:680;margin:29px 0 22px!important;overflow-wrap:anywhere}
+.rm-glass-title .rm-glass-title-subtitle{font-size:30px;line-height:1.75;color:#7a6f65;max-width:770px;overflow-wrap:anywhere}
+.rm-glass-title .rm-glass-keywords{display:flex;flex-wrap:wrap;gap:14px;margin-top:38px;max-width:780px}
+.rm-glass-keyword{display:inline-flex;align-items:center;gap:13px;max-width:100%;min-width:120px;padding:12px 17px;border:1px solid rgba(var(--glass-rgb),.2);border-radius:15px;background:linear-gradient(125deg,#fffefa,var(--glass-wash));box-shadow:0 8px 22px rgba(var(--glass-rgb),.04);font-size:25px;line-height:1.4;color:var(--glass-ink)}
+.rm-glass-keyword small{font-size:16px;line-height:1;color:var(--glass-color);letter-spacing:.06em}
+.rm-glass-keyword>span{padding:0;border:0;background:none;font-size:inherit;color:inherit;border-radius:0;overflow-wrap:anywhere}
+.rm-glass-keyword>i{display:block;width:5px;height:5px;margin-left:auto;background:var(--glass-color);border-radius:50%;opacity:.5}
+.rm-glass-title-orbits{position:absolute;right:-15px;top:8px;bottom:0;width:600px;opacity:.9;pointer-events:none}
+.rm-glass-title-orbits>svg{position:absolute;width:100%;height:100%}
+.rm-glass-title-emblem{position:absolute;inset:130px 75px 145px}
+.rm-glass-title-satellite{position:absolute;left:30px;top:100px;width:153px;height:153px;padding:8px;border-radius:28px;border:1px solid rgba(var(--glass-rgb),.2);background:linear-gradient(145deg,#ffffffd0,var(--glass-wash));box-shadow:0 18px 40px rgba(var(--glass-rgb),.07)}
+.rm-glass-title-satellite>div{height:100%}
+.rm-glass-title-satellite-gold{left:auto;right:38px;top:auto;bottom:115px;width:130px;height:130px}
+.rm-glass-compare{display:grid;gap:26px;min-height:700px;padding:12px 8px 10px}
+.rm-glass-compare-side{display:flex;flex-direction:column;padding:30px 40px 26px;min-width:0;min-height:0}
+.rm-glass-compare-top{display:flex;align-items:flex-start;justify-content:space-between;height:147px;flex:none}
+.rm-glass-compare-top .rm-glass-badge{height:43px;min-width:51px;font-size:22px}
+.rm-glass-compare-top .rm-glass-emblem{width:166px;height:147px;margin-top:-22px;margin-right:-16px}
+.rm-glass-compare .rm-glass-compare-title{font-size:40px;line-height:1.35;letter-spacing:.035em;font-weight:650;min-height:74px;margin:0 0 22px!important;padding-bottom:23px;border-bottom:1px solid rgba(var(--glass-rgb),.17)}
+.rm-glass-compare-points{display:flex;flex-direction:column;gap:15px;position:relative;z-index:1}
+.rm-glass-compare-point{display:grid;grid-template-columns:31px minmax(0,1fr);align-items:start;gap:18px;padding:13px 15px;margin:0 -15px;border-radius:13px;background:rgba(var(--glass-rgb),calc(var(--point-focus)*.065))}
+.rm-glass-compare-point>span{font-size:17px;line-height:1.7;color:var(--glass-ink);padding-top:5px;font-variant-numeric:tabular-nums;letter-spacing:.06em}
+.rm-glass-compare .rm-glass-compare-point p{margin:0!important;padding:0;border:0;font-size:29px;line-height:1.65;color:#746a61}
+.rm-glass-compare-watermark{position:absolute;right:25px;bottom:41px;font-family:system-ui,sans-serif;font-size:200px;line-height:1;font-weight:180;color:rgba(var(--glass-rgb),.045);pointer-events:none}
+.rm-glass-compare .rm-glass-footline{margin-top:auto;padding-top:23px}
+.rm-glass-compare-dense .rm-glass-compare-side{padding:24px 28px 23px}
+.rm-glass-compare-dense .rm-glass-compare-top{height:116px}
+.rm-glass-compare-dense .rm-glass-compare-top .rm-glass-emblem{width:130px;height:116px}
+.rm-glass-compare-dense .rm-glass-compare-title{font-size:31px;min-height:66px;margin-bottom:15px!important}
+.rm-glass-compare-dense .rm-glass-compare-point p{font-size:25px;line-height:1.6}
+.rm-glass-compare-dense .rm-glass-compare-point{gap:12px;padding-block:9px}
+@media(prefers-reduced-motion:reduce){.rm-glass-title-satellite{transform:none!important}.rm-glass-title-orbits>svg>circle{display:none}}

@@ -1,8 +1,9 @@
 import { Component, useEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
 import { ArrowLeft, LoaderCircle } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useI18n } from "@xue-learn/core/i18n";
-import type { DesktopPluginRendererModule } from "../../../packages/plugin-sdk/src/renderer";
+import { desktopPluginViewLaunch, type DesktopPluginRendererModule, type DesktopPluginViewLaunch } from "../../../packages/plugin-sdk/src/renderer";
+import { isDesktopPluginLocalPath } from "../../../packages/plugin-sdk/src/index";
 import { getDesktopPluginsBridge, type DesktopPluginsBridge } from "./bridge";
 import { createPluginRendererHost } from "./renderer-host";
 import { pluginMessages } from "./messages";
@@ -22,11 +23,15 @@ export function DesktopPluginView({
   viewId,
   bridge = getDesktopPluginsBridge(),
   loadModule = loadPluginModule,
-}: {
+  initialPath = "/",
+  context,
+  chrome = "page",
+}: DesktopPluginViewLaunch & {
   pluginId: string;
   viewId: string;
   bridge?: DesktopPluginsBridge;
   loadModule?: (url: string) => Promise<DesktopPluginRendererModule>;
+  chrome?: "page" | "none";
 }) {
   const { locale } = useI18n();
   const copy = pluginMessages(locale);
@@ -34,6 +39,7 @@ export function DesktopPluginView({
   const [revision, setRevision] = useState(0);
   const currentIdentity = useRef("");
   const [state, setState] = useState<{ title?: string; View?: ComponentType; error?: string; dispose?: () => void }>({});
+  const contextKey = JSON.stringify(context ?? {});
 
   useEffect(() => {
     let live = true;
@@ -104,7 +110,7 @@ export function DesktopPluginView({
         await loaded;
         if (cancelled) { dispose(); return; }
       }
-      const runtime = createPluginRendererHost({ bridge, session, pluginId, viewId, navigate });
+      const runtime = createPluginRendererHost({ bridge, session, pluginId, viewId, navigate, initialPath, context: JSON.parse(contextKey) });
       disposeHost = runtime.dispose;
       const module = await loadModule(session.moduleUrl);
       if (cancelled) { dispose(); return; }
@@ -117,17 +123,17 @@ export function DesktopPluginView({
       if (!cancelled) setState({ error: cause instanceof Error ? cause.message : String(cause) });
     });
     return () => { cancelled = true; dispose(); };
-  }, [bridge, pluginId, viewId, loadModule, navigate, revision, copy.unavailable, copy.viewInactive, copy.viewMissing, copy.viewInvalid, copy.viewStyleFailed]);
+  }, [bridge, pluginId, viewId, loadModule, navigate, revision, initialPath, contextKey, copy.unavailable, copy.viewInactive, copy.viewMissing, copy.viewInvalid, copy.viewStyleFailed]);
 
   const View = state.View;
   return (
     <section className="min-w-0 space-y-4" aria-label={state.title ?? copy.viewTitle}>
-      <header className="flex flex-wrap items-center gap-3">
-        <Link to="/local/plugins" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="size-4" aria-hidden />{copy.backToPlugins}
+      {chrome === "page" && <header className="flex flex-wrap items-center gap-3">
+        <Link to={isDesktopPluginLocalPath(context?.returnTo) ? context.returnTo : "/local/plugins"} className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="size-4" aria-hidden />{context?.returnTo ? copy.backToContent : copy.backToPlugins}
         </Link>
         {state.title && <h1 className="text-lg font-semibold">{state.title}</h1>}
-      </header>
+      </header>}
       {state.error ? (
         <div role="alert" className="space-y-3 rounded-xl border border-destructive/30 bg-destructive/10 p-4">
           <p className="break-words text-sm text-destructive">{state.error}</p>
@@ -149,5 +155,6 @@ export function DesktopPluginView({
 
 export function LocalPluginViewPage() {
   const { pluginId = "", viewId = "" } = useParams();
-  return <DesktopPluginView key={`${pluginId}:${viewId}`} pluginId={pluginId} viewId={viewId} />;
+  const location = useLocation();
+  return <DesktopPluginView key={`${pluginId}:${viewId}`} pluginId={pluginId} viewId={viewId} {...desktopPluginViewLaunch(location.search)} />;
 }

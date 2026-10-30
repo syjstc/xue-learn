@@ -22,6 +22,7 @@ export * as Outbox from "../../libs/server/src/learning-host/outbox/processor.js
 
 export * as LearningSpacePorts from "../../libs/server/src/learning-spaces/orm-runtime-adapter.js";
 export * as TextbookPdf from "../../libs/server/src/export/render-goal-textbook-pdf.js";
+export * as Reading from "../../libs/server/src/reading.js";
 export * as TextbookData from "../../libs/server/src/export/goal-textbook-persistence.js";
 export * as FormalDerivationEvents from "../../libs/server/src/formal-derivation/run-events.js";
 export {migrateUnitLabDefinition} from "../../libs/server/src/unit-lab/migrate.js";

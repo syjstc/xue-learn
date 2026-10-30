@@ -1,4 +1,4 @@
-import { ChatOpenAI } from "@langchain/openai";
+import { MiniMaxChatOpenAI } from "./chat-model.js";
 import type { Env } from "../../../../env.js";
 import type { LlmProvider, LlmProviderSelection } from "../../types.js";
 import {
@@ -32,6 +32,8 @@ function mergeMinimaxOptions(
     minimaxThinkingEnabled:
       selection?.options?.minimaxThinkingEnabled ??
       defaults.minimaxThinkingEnabled,
+    minimaxReasoningEffort:
+      selection?.options?.minimaxReasoningEffort ?? defaults.minimaxReasoningEffort,
   };
 }
 
@@ -42,7 +44,7 @@ export function createMinimaxLlmProvider(
   const options = mergeMinimaxOptions(env, selection);
   const embeddingApiKey = env.MINIMAX_EMBEDDING_API_KEY ?? env.MINIMAX_API_KEY!;
   const createChatModel = (request?: { maxTokens?: number }) =>
-    new ChatOpenAI({
+    new MiniMaxChatOpenAI({
       ...MINIMAX_CHAT_OPENAI_STREAMING_DEFAULTS,
       model: options.chatModel!,
       temperature: 0.7,
@@ -52,6 +54,7 @@ export function createMinimaxLlmProvider(
         options.chatModel!,
         options.minimaxThinkingEnabled ?? false,
         request?.maxTokens,
+        options.minimaxReasoningEffort,
       ),
       configuration: { baseURL: env.MINIMAX_BASE_URL },
     });

@@ -37,7 +37,7 @@ export function ImageBoard({ props, motion, scene, timeline, tick }: {
             width={guided.image.width} height={guided.image.height} style={{maskType: 'alpha'}}>
             <rect width={guided.image.width} height={guided.image.height} fill="white" opacity={guided.frame.backgroundOpacity}/>
             <g fill="white" filter={`url(#${uid}-feather)`}>
-              {guided.frame.highlights.map(({region, opacity}) => <g key={region.id} opacity={opacity}>
+              {guided.frame.highlights.map(({region, opacity}) => <g key={region.id} opacity={opacity} data-region-id={region.id}>
                 {region.polygons.map((polygon, index) => <path key={index} d={imagePolygonPath(polygon, guided.image.width, guided.image.height)} fillRule="evenodd"/>)}</g>)}
             </g>
           </mask>

@@ -26,7 +26,8 @@ describe('Core host capability adapters', () => {
 
   it('uses the selected host session and exposes only the domain result', async () => {
     const dispose = await register();
-    expect(host.versions).toEqual({ 'workspace.courses': 1, 'display.workspace': 1, 'generation.settings': 1, 'learning.preview': 1, 'learning.content': 1 });
+    expect(host.versions).toEqual({ 'ui.extensions': 1, 'workspace.courses': 1, 'display.workspace': 1, 'generation.settings': 1, 'learning.preview': 1, 'learning.content': 1 });
+    expect(await host.invoke('ui.extensions', 'describe', undefined, context())).toEqual({ slots: ['unit.header.actions', 'unit.content.actions', 'unit.content.panels', 'settings.tabs'] });
     const result = await host.invoke('workspace.courses', 'catalog', undefined, context());
     expect(result).toEqual({ content: 'owned result' });
     expect(getSession).toHaveBeenCalledWith('workspace-selected', expect.any(AbortSignal));

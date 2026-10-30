@@ -32,6 +32,8 @@ import { LocalObservabilityController } from "./local-observability.controller.t
 import { LocalTeachingSkillsController } from "./local-teaching-skills.controller.ts";
 import {LocalDisplayWorkspaceController, LOCAL_DISPLAY_WORKSPACE} from "./local-display-workspace.controller.ts";
 import type {DisplayWorkspaceService} from "@xue-learn/core/server/display-workspace";
+import type {ReadingWorkspaceService} from "@xue-learn/core/server/reading";
+import {LocalReadingController, LOCAL_READING_WORKSPACE} from "./local-reading.controller.ts";
 import { LocalAiModelsController } from "./local-ai-models.controller.ts";
 import { LocalResourceSettingsController } from "./local-resource-settings.controller.ts";
 import { LocalGenerationSettingsController } from "./local-generation-settings.controller.ts";
@@ -50,7 +52,7 @@ import { PersonalSyncService } from "@cognilearn/desktop-persistence/personal-sy
  */
 @Module({})
 export class DesktopLocalModule {
-  static register(healthContext: LocalHealthContext, courseSourceContext?: LocalCourseSourceContext, workspaceServiceContext?: LocalWorkspaceServiceContext, workspaceLearningContext?: WorkspaceLearningPort, displayWorkspace?: DisplayWorkspaceService) {
+  static register(healthContext: LocalHealthContext, courseSourceContext?: LocalCourseSourceContext, workspaceServiceContext?: LocalWorkspaceServiceContext, workspaceLearningContext?: WorkspaceLearningPort, displayWorkspace?: DisplayWorkspaceService, readingWorkspace?: ReadingWorkspaceService) {
     return {
       module: DesktopLocalModule,
       imports: [
@@ -99,11 +101,13 @@ export class DesktopLocalModule {
         LocalObservabilityController,
         LocalTeachingSkillsController,
         ...(displayWorkspace ? [LocalDisplayWorkspaceController] : []),
+        ...(readingWorkspace ? [LocalReadingController] : []),
         PersonalSyncController,
       ],
       providers: [
         { provide: LOCAL_HEALTH_CONTEXT, useValue: healthContext },
         ...(displayWorkspace ? [{provide: LOCAL_DISPLAY_WORKSPACE, useValue: displayWorkspace}] : []),
+        ...(readingWorkspace ? [{provide: LOCAL_READING_WORKSPACE, useValue: readingWorkspace}] : []),
         ...(courseSourceContext ? [{ provide: LOCAL_COURSE_SOURCE_CONTEXT, useValue: courseSourceContext }] : []),
         ...(workspaceServiceContext ? [{ provide: LOCAL_WORKSPACE_SERVICE_CONTEXT, useValue: workspaceServiceContext }] : []),
         ...(workspaceLearningContext ? [{provide:LOCAL_WORKSPACE_LEARNING_CONTEXT,useValue:workspaceLearningContext}] : []),

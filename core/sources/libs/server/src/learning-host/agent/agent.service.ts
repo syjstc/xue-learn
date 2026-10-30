@@ -42,8 +42,7 @@ import {
   anchorContextSnippet,
   parseMaterialAnchor,
 } from "../../domain/material-anchor.js";
-import { replyMaterialFollowUp } from "../../graph/material-follow-up.js";
-import { getAggregatedUnitMaterialContext } from "../../sections/index.js";
+import { getMaterialFollowUpContext, replyMaterialFollowUp } from "../../graph/material-follow-up.js";
 import { runWithLlmTraceAsync } from "../../llm/trace-context.js";
 import type {
   AgentPageContext,
@@ -313,13 +312,13 @@ export class AgentService {
       ) {
         throw new ForbiddenException(tBackend("error.goal.unitForbidden"));
       }
-      const materialContext = await getAggregatedUnitMaterialContext(unit.id);
+      const materialContext = await getMaterialFollowUpContext(userId, unit.id, anchor);
       if (!materialContext) {
         throw new ForbiddenException(
           tBackend("error.learning.materialRequired"),
         );
       }
-      const learningLocation = learningTrajectoryEnabled() && conversationContext.learningPosition
+      const learningLocation = !anchor.reading && learningTrajectoryEnabled() && conversationContext.learningPosition
         ? await resolveOwnedLearningPosition(userId, { ...conversationContext.learningPosition, unitId: unit.id })
         : null;
       conversationContext = {
@@ -329,7 +328,7 @@ export class AgentService {
         goalId: unit.goalId,
         unitId: unit.id,
         anchor,
-        anchorSnippet: learningLocation?.position.anchorText || anchorContextSnippet(materialContext.material, anchor),
+        anchorSnippet: materialContext.anchorSnippet ?? (learningLocation?.position.anchorText || anchorContextSnippet(materialContext.material, anchor)),
         contentRevision: unit.contentRevision,
         unitTitle: unit.title,
         goalTitle: unit.goalTitle,
@@ -550,8 +549,8 @@ export class AgentService {
               ac.signal,
             );
             if (conversationContext.kind === "material_follow_up") {
-              const materialContext = await getAggregatedUnitMaterialContext(
-                conversationContext.unitId,
+              const materialContext = await getMaterialFollowUpContext(
+                userId, conversationContext.unitId, conversationContext.anchor,
               );
               if (!materialContext) {
                 throw new Error(tBackend("error.learning.materialRequired"));
@@ -568,7 +567,7 @@ export class AgentService {
                   tBackend("label.agent.currentGoal"),
                 threadId,
                 anchor: conversationContext.anchor,
-                learningPosition: learningTrajectoryEnabled() && effectivePageContext?.learningPosition?.unitId === conversationContext.unitId
+                learningPosition: !conversationContext.anchor.reading && learningTrajectoryEnabled() && effectivePageContext?.learningPosition?.unitId === conversationContext.unitId
                   ? (await resolveOwnedLearningPosition(userId,effectivePageContext.learningPosition)).position
                   : conversationContext.learningPosition,
                 activeVisitId: effectivePageContext?.learningPosition ? effectivePageContext.activeLearningVisitId : conversationContext.activeVisitId,

@@ -52,10 +52,12 @@ import {
 } from "./immersive-learning-chrome.tsx";
 
 export function ReadingUnitView({
+  active = true,
   model,
   initialSectionId,
   initialSectionAnchor,
 }: {
+  active?: boolean;
   model: UnitWizardModel;
   initialSectionId?: UnitWizardProps["initialSectionId"];
   initialSectionAnchor?: UnitWizardProps["initialSectionAnchor"];
@@ -146,6 +148,7 @@ export function ReadingUnitView({
     workspaceClassName,
     workspaceStyle,
   } = useImmersiveLearning({
+    enabled: active,
     unitId: model.unitId,
     immersiveJourneyOpen,
     onCloseImmersiveJourney: () => setImmersiveJourneyOpen(false),
@@ -270,8 +273,8 @@ export function ReadingUnitView({
             }}
           />
 
-          <main className="mx-auto min-w-0 w-full max-w-[68rem] space-y-4 px-0 sm:px-1">
-            {!focusMode ? (
+          <main className={cn("mx-auto min-w-0 w-full space-y-4 px-0 sm:px-1", focusMode ? "max-w-[100rem]" : "max-w-[84rem]")}>
+            {active && !focusMode ? (
               <div className="flex justify-end">
                 <ImmersiveEnterFocusButton onEnter={enterFocusMode} />
               </div>

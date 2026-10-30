@@ -31,7 +31,10 @@ export const builtinDisplayManifests: readonly DisplayPluginManifest[] = [
     component('general:process', 'A directed or cyclic process with sampled progress and per-step explanations.', object(['steps','direction'],{steps:array(item),direction:{enum:['linear','cycle']}})),
     component('general:concept-network', 'A semantic node network with animated connections.', object(['nodes','edges'],{nodes:array(item),edges:array(object(['id','from','to'],{id:string,from:string,to:string,label:string}),0)})),
     teaching('general:teaching'),
-    component('general:visual','A structured semantic visual with deterministic host sampling.',object(['block'],{block:{type:'object'}})),
+    component('general:visual','A structured semantic visual with 2–5 items. Bars require numeric, nonnegative values; other kinds use labels and details only.',object(['block'],{block:object(['type','kind','title','items'],{
+      type:{const:'visual'},id:string,kind:{enum:['process','cycle','layers','bars']},title:{type:'string',minLength:1,maxLength:60},unit:{type:'string',maxLength:12},
+      items:{...array(object(['id','label'],{id:{type:'string',minLength:1},label:{type:'string',minLength:1,maxLength:24},detail:{type:'string',maxLength:60},value:{type:'number',minimum:0}}),2),maxItems:5},
+    })}),[{block:{type:'visual',kind:'bars',title:'Cache memory',unit:'bytes',items:[{id:'request-a',label:'Request A',value:70400},{id:'request-b',label:'Request B',value:131200}]}}]),
   ]),
   pack('math', [
     component('math:formula', 'Animated multi-step equations and synchronized explanation; equations are LaTeX data, not code.', object(['equations','notes'],{equations:array(object(['id','latex'],{id:string,latex:string,label:string})),notes:array(point,0)}),[{equations:[{id:'energy',latex:'E=mc^2',label:'Energy'}],notes:[]}]),

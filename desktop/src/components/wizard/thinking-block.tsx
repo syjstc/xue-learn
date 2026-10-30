@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useT } from "@xue-learn/core/i18n";
 
-/** Compact model reasoning indicator. Provider reasoning text is never shown. */
+/** A small live preview of reasoning actually returned by the provider. */
 export function ThinkingBlock({
   content,
   collapsed,
@@ -14,66 +14,66 @@ export function ThinkingBlock({
   loading?: boolean;
 }) {
   const t = useT();
-  const [expanded, setExpanded] = useState(!collapsed);
+  const contentId = useId();
+  const [view, setView] = useState<"preview" | "full" | "closed">(
+    collapsed ? "closed" : "preview",
+  );
   const scrollRef = useRef<HTMLDivElement>(null);
+  const hasContent = Boolean(content.trim());
 
   useEffect(() => {
-    if (collapsed) setExpanded(false);
+    setView(collapsed ? "closed" : "preview");
   }, [collapsed]);
 
   useEffect(() => {
-    if (!loading) return;
+    if (!loading || view !== "preview") return;
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [content, loading]);
+  }, [content, loading, view]);
 
-  if (!content.trim() && !loading) return null;
-
-  if (collapsed && !expanded) {
-    return (
-      <button
-        type="button"
-        onClick={() => setExpanded(true)}
-        aria-expanded={false}
-        className="mb-1.5 flex items-center gap-1.5 rounded-md border border-border bg-muted px-2 py-1 text-[10px] text-muted-foreground transition-colors hover:bg-muted/70"
-      >
-        <span className="inline-flex gap-0.5" aria-hidden="true">
-          <span className="h-1 w-1 animate-bounce rounded-full bg-current [animation-delay:-0.2s]" />
-          <span className="h-1 w-1 animate-bounce rounded-full bg-current [animation-delay:-0.1s]" />
-          <span className="h-1 w-1 animate-bounce rounded-full bg-current" />
-        </span>
-        <span>{t("wizard.thinking.done")}</span>
-      </button>
-    );
-  }
+  if (!hasContent && !loading) return null;
 
   return (
-    <div className="mb-1.5 rounded-md border border-border bg-muted/90 px-2 py-1.5">
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-[10px] font-medium text-muted-foreground">
+    <div
+      data-thinking-block
+      aria-busy={Boolean(loading)}
+      className="mb-1.5 min-w-0 rounded-lg border border-border/60 bg-muted/50 px-2.5 py-2 text-muted-foreground"
+    >
+      <div className="flex items-center justify-between gap-3 text-[11px]">
+        <span className="inline-flex items-center gap-1.5" role="status">
+          {loading ? (
+            <span className="inline-flex gap-0.5" aria-hidden="true">
+              <span className="h-1 w-1 animate-bounce rounded-full bg-current [animation-delay:-0.2s]" />
+              <span className="h-1 w-1 animate-bounce rounded-full bg-current [animation-delay:-0.1s]" />
+              <span className="h-1 w-1 animate-bounce rounded-full bg-current" />
+            </span>
+          ) : null}
           {loading ? t("wizard.thinking.loading") : t("wizard.thinking.done")}
         </span>
-        {!loading ? (
+        {hasContent ? (
           <button
             type="button"
-            onClick={() => setExpanded(false)}
-            aria-expanded={true}
-            className="text-[10px] text-muted-foreground underline-offset-2 hover:underline"
+            aria-controls={contentId}
+            aria-expanded={view !== "closed"}
+            onClick={() =>
+              setView(view === "full" ? (collapsed ? "closed" : "preview") : "full")
+            }
+            className="shrink-0 rounded px-1 text-[10px] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
           >
-            {t("wizard.thinking.collapse")}
+            {view === "full" ? t("wizard.thinking.collapse") : t("wizard.collapsible.expand")}
           </button>
         ) : null}
       </div>
-      <div
-        ref={scrollRef}
-        className="mt-1 flex items-center gap-1.5 text-muted-foreground"
-      >
-        <span className="inline-flex gap-1" aria-hidden="true">
-          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:-0.2s]" />
-          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:-0.1s]" />
-          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current" />
-        </span>
-      </div>
+      {hasContent && view !== "closed" ? (
+        <div
+          id={contentId}
+          ref={scrollRef}
+          data-thinking-content
+          className={`mt-1 overflow-y-auto whitespace-pre-wrap break-words text-xs leading-5 [overflow-wrap:anywhere] ${view === "full" ? "max-h-48" : "max-h-[3.75rem]"}`}
+        >
+          {content.trim()}
+        </div>
+      ) : null}
     </div>
   );
 }

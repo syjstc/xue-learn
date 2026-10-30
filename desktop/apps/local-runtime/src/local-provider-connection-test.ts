@@ -16,6 +16,9 @@ import {
 import { createEmbeddings } from "@xue-learn/core/server/llm/embeddings";
 import { refreshLlmRuntimeConfig } from "@xue-learn/core/server/llm/runtime-config";
 import { getLlmProvider } from "@xue-learn/core/server/llm/providers";
+import {withExplicitLlmSelection} from "@xue-learn/core/server/providers/llm/explicit-selection-context";
+import {beginLlmRequestLog} from "@xue-learn/core/server/llm/logger";
+import {extractTokenUsage, usageLogFields} from "@xue-learn/core/server/llm/token-usage";
 import { minimaxConnectionTestMaxTokens } from "@xue-learn/core/server/providers/llm/vendors/minimax/options";
 import {
   defaultEmbeddingModel,
@@ -150,28 +153,44 @@ export async function testLocalChatConnection(
   if (providerId !== "ollama" && !hasProviderCredentials(providerId))
     return result("missing_credentials");
   try {
-    const provider = getLlmProvider({
+    const selection = {
       id: providerId,
       model,
-      options: { chatModel: model },
+      options: {
+        chatModel: model,
+        ...(providerId === "minimax"
+          ? { minimaxReasoningEffort: config.minimaxReasoningEffort }
+          : {}),
+      },
+    };
+    return await withExplicitLlmSelection(selection, async () => {
+      const log = await beginLlmRequestLog({operation: "local.chat_connection_test", kind: "chat", label: "connection test",
+        request: {provider: providerId, model, connectionTest: true, platformFunded: true}});
+      try {
+        const response = await getLlmProvider(selection)
+          .getChatModel({
+            maxTokens:
+              providerId === "custom"
+                ? customProviderConnectionTestMaxTokens
+                : providerId === "minimax"
+                  ? minimaxConnectionTestMaxTokens(model)
+                  : 8,
+          })
+          .invoke([new HumanMessage("Connection test. Reply with exactly: OK")], {
+            signal: AbortSignal.timeout(20_000),
+          });
+        const hasContent = typeof response.content === "string"
+          ? response.content.trim().length > 0 : response.content.length > 0;
+        const durationMs = Math.max(0, Date.now() - startedAt);
+        await log?.finish({status: hasContent ? "success" : "error", durationMs,
+          response: {...usageLogFields(extractTokenUsage(response), durationMs), connectionTest: true},
+          ...(!hasContent ? {error: connectionMessages.invalid_response} : {})});
+        return result(hasContent ? "ok" : "invalid_response");
+      } catch (cause) {
+        await log?.finish({status: "error", durationMs: Math.max(0, Date.now() - startedAt), error: connectionErrorDetail(cause)});
+        throw cause;
+      }
     });
-    const response = await provider
-      .getChatModel({
-        maxTokens:
-          providerId === "custom"
-            ? customProviderConnectionTestMaxTokens
-            : providerId === "minimax"
-              ? minimaxConnectionTestMaxTokens(model)
-              : 8,
-      })
-      .invoke([new HumanMessage("Connection test. Reply with exactly: OK")], {
-        signal: AbortSignal.timeout(20_000),
-      });
-    const hasContent =
-      typeof response.content === "string"
-        ? response.content.trim().length > 0
-        : response.content.length > 0;
-    return result(hasContent ? "ok" : "invalid_response");
   } catch (cause) {
     const code = connectionErrorCode(cause);
     const detail = connectionErrorDetail(cause);

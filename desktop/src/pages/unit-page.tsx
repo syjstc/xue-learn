@@ -47,7 +47,8 @@ import {
   FEATURE_SUBDIVIDE_UNIT,
 } from "@xue-learn/core/features";
 import { AiGeneratedNotice } from "@/components/ui/ai-generated-notice";
-import { supportsGoalWebResources } from "@xue-learn/core/client-runtime";
+import { isDesktopLocalRuntime, supportsGoalWebResources } from "@xue-learn/core/client-runtime";
+import { DesktopPluginSlot } from "@/features/plugins/ui-extensions";
 
 function assistantStepLabel(step: string | undefined, fallback: string) {
   return ALL_STEPS.find((item) => item.id === step)?.label ?? fallback;
@@ -57,7 +58,7 @@ export function UnitPage() {
   const t = useT();
   const { goalId = "", unitId = "" } = useParams();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const targetGapFocus = searchParams.get("focus") === "target-gaps";
   const [weakPoints, setWeakPoints] = useState<
     Array<{ title: string; score: number }>
@@ -87,7 +88,25 @@ export function UnitPage() {
   const { data: goalDetail } = useGoal(goalId);
   const learningView = useLearningViewSettings();
   const saveLearningView = useSaveLearningViewSettings();
-  const presentationMode = learningView.data?.mode ?? "chat";
+  const requestedMode = searchParams.get("view");
+  const presentationMode = requestedMode === "reading" ? "reading" :
+    requestedMode === "display" ? "chat" : learningView.data?.mode ?? "chat";
+  const hasReadingBody = isDesktopLocalRuntime();
+  // Migrate old reading links to the chapter shared by the learning journey.
+  useEffect(() => {
+    const readingSection = searchParams.get("readingSection");
+    if (!readingSection) return;
+    const next = new URLSearchParams(searchParams);
+    if (requestedMode === "reading" || !next.has("section")) next.set("section", readingSection);
+    next.delete("readingSection");
+    setSearchParams(next, {replace: true});
+  }, [requestedMode, searchParams, setSearchParams]);
+  const selectMode = (mode: "chat" | "reading") => {
+    const next = new URLSearchParams(searchParams);
+    next.set("view", mode === "chat" ? "display" : "reading");
+    setSearchParams(next, {replace: true});
+    saveLearningView.mutate(mode);
+  };
 
   useAssistantPageContext({
     contextLabel: data?.unit
@@ -173,11 +192,7 @@ export function UnitPage() {
             </h1>
             {unit.contentSummary && !isOverview && (
               <div
-                className={`mt-1 text-sm leading-6 text-[var(--text-500)] ${
-                  presentationMode === "chat"
-                    ? "hidden sm:line-clamp-1 sm:block"
-                    : "line-clamp-2"
-                }`}
+                className="mt-1 hidden text-sm leading-6 text-[var(--text-500)] sm:line-clamp-1 sm:block"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
                 <LlmMarkdownInline content={unit.contentSummary} />
@@ -186,9 +201,7 @@ export function UnitPage() {
             {!isKacomFree &&
             learningTargetsQuery.data?.learningTargets.length ? (
               <p
-                className={`text-xs text-[var(--text-500)] ${
-                  presentationMode === "chat" ? "hidden sm:block" : ""
-                }`}
+                className="hidden text-xs text-[var(--text-500)] sm:block"
               >
                 {t("course.learningTargetCount", {
                   count: learningTargetsQuery.data.learningTargets.length,
@@ -197,6 +210,17 @@ export function UnitPage() {
             ) : null}
           </div>
           <div className="flex shrink-0 flex-wrap items-start gap-1.5 sm:gap-2">
+            {hasReadingBody && <div className="flex gap-1 rounded-lg border border-[var(--border-200)] p-1" role="group" aria-label={t("settings.learningView.title")}>
+              <Button size="sm" variant={presentationMode === "reading" ? "default" : "ghost"}
+                aria-pressed={presentationMode === "reading"} onClick={() => selectMode("reading")}>
+                <BookOpenText aria-hidden />{t("reading.mode")}
+              </Button>
+              <Button size="sm" variant={presentationMode === "chat" ? "default" : "ghost"}
+                aria-pressed={presentationMode === "chat"} onClick={() => selectMode("chat")}>
+                <MessagesSquare aria-hidden />{t("reading.displayMode")}
+              </Button>
+            </div>}
+            <DesktopPluginSlot slot="unit.header.actions" context={{ goalId, unitId }} />
             {showDiagnostic ? (
               diagnosticLocked ? (
                 <span
@@ -242,7 +266,7 @@ export function UnitPage() {
                   value={presentationMode}
                   onValueChange={(value) => {
                     if (value === "chat" || value === "reading") {
-                      saveLearningView.mutate(value);
+                      selectMode(value);
                     }
                   }}
                 >
@@ -305,7 +329,7 @@ export function UnitPage() {
       ) : null}
 
       <LearningTrajectoryPanel unitId={unitId} goalId={goalId} />
-      <UnitWizard
+      {(!hasReadingBody || learningView.data || requestedMode) && <UnitWizard
         key={unitId}
         unitId={unitId}
         goalId={goalId}
@@ -319,10 +343,10 @@ export function UnitPage() {
         onLearningAccessChange={setLearningAccess}
         onCurrentStepChange={setAssistantCurrentStep}
         sections={unit.sections}
-        initialSectionId={searchParams.get("section")}
+        initialSectionId={searchParams.get("section") ?? searchParams.get("readingSection")}
         initialSectionAnchor={searchParams.get("anchor")}
         presentationMode={presentationMode}
-      />
+      />}
 
       {mainlineEnabled("recommendations") ? <MainlineSuggestions unitId={unitId} boundaryKey={`${unitId}:${isUnitLearningDone(unit.status) ? "end" : "start"}`} /> : null}
 

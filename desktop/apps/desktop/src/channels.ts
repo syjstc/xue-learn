@@ -32,4 +32,5 @@ export const DESKTOP_IPC = {
   personalSyncJoinWorkspace: "desktop:v1:personal-sync:join-workspace",
   htmlPlaygroundRegister: "desktop:v1:html-playground:register",
   htmlPlaygroundRelease: "desktop:v1:html-playground:release",
+  readingPdf: "desktop:v1:reading:pdf",
 } as const;

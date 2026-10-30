@@ -20,6 +20,7 @@ import {
 } from "../llm/validation-report.js";
 import { runMergedGenerationContextScope } from "../generation/kernel.js";
 import { z } from "zod";
+import { validateUnitPathContract } from "./path-contract.js";
 import {
   canonicalizeAllowlistedEntityReuse,
   prepareUnitCognitiveModelGeneration,
@@ -1836,13 +1837,43 @@ export async function generatePreparedUnitCognitiveModelTargetFirst(
         signal: params.signal,
       }),
   );
-  const prefixRecovery = await recoverTargetPrefix(
+  let prefixRecovery = await recoverTargetPrefix(
     prefixCandidate,
     allowedExternalRefs,
     params,
     prefixOptions.meta ?? {},
     repairRunner,
   );
+  if (params.pathContract) {
+    const boundSchema = targetPrefixWireSchema(
+      allowedExternalRefs, new Set(params.planningOutcomeRefs ?? []),
+    ).superRefine((value, context) => {
+      try {
+        validateUnitPathContract(targetPrefixToContract(value), prepared.externalEntities, params.pathContract);
+      } catch (error) {
+        context.addIssue({ code: "custom", message: String(error) });
+      }
+    });
+    if (!boundSchema.safeParse(prefixRecovery.value).success) {
+      const [repaired] = await runSinglePositionalRepair({
+        operation: "cognitive_model.unit_generate.target_first.prefix",
+        slots: [{
+          description: `Repair the full prefix to satisfy the approved KACOM contract: ${JSON.stringify(params.pathContract)}. Preserve the semantic keys, kinds and required entry/exit dimensions and thresholds. External aliases: ${JSON.stringify(prepared.externalEntities.map(({ ref, semanticKey, kind }) => ({ ref, semanticKey, kind })))}`,
+          currentValue: prefixRecovery.value,
+          schema: boundSchema,
+          expectedShape: targetPrefixJsonShape(),
+        }],
+        meta: prefixOptions.meta ?? {},
+        topicCategory, signal: params.signal, runner: repairRunner,
+      });
+      prefixRecovery = {
+        ...prefixRecovery,
+        value: boundSchema.parse(normalizeTargetPrefixCandidate(repaired)),
+        repairedValueCount: prefixRecovery.repairedValueCount + 1,
+        issueCategories: [...prefixRecovery.issueCategories, "invalid_value"],
+      };
+    }
+  }
   const normalizedPrefixCandidate =
     normalizeTargetPrefixCandidate(prefixCandidate);
   await patchActiveLlmRecoveryMetadata({
@@ -1874,6 +1905,7 @@ export async function generatePreparedUnitCognitiveModelTargetFirst(
     } as UnitCognitiveModelProposal,
     params,
   );
+  validateUnitPathContract(contract, prepared.externalEntities, params.pathContract);
   const ready = freezeUnitCognitiveModelTargetPrefix(contract);
   await handlers.onTargetsReady?.(ready);
 
@@ -1958,6 +1990,7 @@ export async function generatePreparedUnitCognitiveModelTargetFirst(
   );
   validateUnitCognitiveEntityBudget(proposal, prepared.entityBudget);
   validateExternalEntityReferences(proposal, prepared.externalEntities);
+  validateUnitPathContract(proposal, prepared.externalEntities, params.pathContract);
   return proposal;
 }
 

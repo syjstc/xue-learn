@@ -307,14 +307,17 @@ const moduleCapabilitySchema = z.object({
   title: z.string().trim().min(1),
   objective: z.string().trim().min(1),
   assessmentCriteria: z.array(z.string().trim().min(1)).min(2).max(5),
-  dimensions: z.array(cognitiveDimension).min(1).max(4),
+  dimensions: z.array(cognitiveDimension).min(1).max(7),
   criticalCompletionGate: z.boolean(),
   cognitiveLevel,
   difficulty,
+  semanticKey: z.string().trim().min(1).optional(),
+  entityKind: z.enum(["atom", "concept", "skill", "competency"]).optional(),
+  threshold: z.number().gt(0).max(1).optional(),
 });
 
 export const moduleCapabilityProposalSchema = z.object({
-  capabilities: z.array(moduleCapabilitySchema).min(3).max(8),
+  capabilities: z.array(moduleCapabilitySchema).min(1).max(8),
 });
 
 export const moduleCapabilityProviderResponseSchema = z.object({
@@ -393,7 +396,7 @@ export type ExplorationModuleStructureProposal = z.infer<
   typeof explorationModuleStructureProposalSchema
 >;
 
-const MIN_MODULE_CAPABILITIES = 3;
+const MIN_MODULE_CAPABILITIES = 1;
 const MAX_MODULE_CAPABILITIES = 8;
 const TYPICAL_MODULE_LESSON_GUIDANCE =
   "Match lesson count to this module's actual exit, not a textbook chapter. 1–3 lessons for a narrow milestone (one lesson is valid). Use additional lessons when distinct exit abilities, prerequisite bridges or progressively harder worked applications require them; 4–8 is not a quota or ceiling. Never pad toward 3–8. Never exceed 20. Do not split one proof, identity, or worked derivation into construction/verification/summary lessons; those beats belong in one lesson (a formal_derivation section when the job is a proof, formula derivation, or worked symbolic solution).";

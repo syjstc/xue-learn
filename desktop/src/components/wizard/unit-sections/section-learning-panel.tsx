@@ -70,6 +70,7 @@ import {
   shouldClearSectionContentBeforeGenerate,
   shouldStartSectionGenerateStream,
 } from "@/shared/domain/section-generation-retry";
+import { ReadingSectionBody } from "@/features/reading/reading-course-view";
 
 type SectionContent = {
   sectionId: string;
@@ -177,6 +178,7 @@ export function SectionLearningPanel({
   onAllSectionsCompleted,
   onStopGeneration,
   presentationMode = "reading",
+  bodyMode = "chat",
   miniTestDrafts = {},
   onMiniTestDraftChange,
   onActiveSectionChange,
@@ -202,6 +204,7 @@ export function SectionLearningPanel({
   onAllSectionsCompleted?: () => void;
   onStopGeneration?: () => void | Promise<void>;
   presentationMode?: "chat" | "reading";
+  bodyMode?: "chat" | "reading";
   miniTestDrafts?: Record<string, Record<string, number | number[] | boolean>>;
   onMiniTestDraftChange?: (
     sectionId: string,
@@ -287,6 +290,18 @@ export function SectionLearningPanel({
     requestId: number;
   } | null>(null);
   const active = sections[activeIndex];
+  const readingBody = bodyMode === "reading" && isDesktopLocalRuntime() && active?.sectionKind === "content";
+  const [visitedBodies, setVisitedBodies] = useState({sectionId: active?.id, reading: readingBody, display: !readingBody});
+  useEffect(() => {
+    setVisitedBodies(previous => ({
+      sectionId: active?.id,
+      reading: readingBody || (previous.sectionId === active?.id && previous.reading),
+      display: !readingBody || (previous.sectionId === active?.id && previous.display),
+    }));
+  }, [active?.id, readingBody]);
+  const renderReading = active?.sectionKind === "content" &&
+    (readingBody || (visitedBodies.sectionId === active.id && visitedBodies.reading));
+  const renderDisplay = !readingBody || (visitedBodies.sectionId === active?.id && visitedBodies.display);
   const updateActiveMaterial = useCallback(
     (material: LearningMaterialContent) => {
       setContent((current) =>
@@ -611,7 +626,7 @@ export function SectionLearningPanel({
   }, [active, loadContent, refreshManifest]);
 
   useEffect(() => {
-    if (!active || active.legacy || regenerating) return;
+    if (!active || active.legacy || regenerating || readingBody) return;
     if (sectionLoadRef.current?.sectionId === active.id) return;
     if (active.generationStatus === "failed") {
       if (active.generationError === "生成已停止") {
@@ -665,6 +680,7 @@ export function SectionLearningPanel({
     active?.id,
     loadContent,
     regenerating,
+    readingBody,
     stoppedSectionId,
     t,
   ]);
@@ -677,6 +693,7 @@ export function SectionLearningPanel({
   );
 
   useEffect(() => {
+    if (readingBody) return;
     if (!regenerating) {
       parentRegenerationHandledRef.current = false;
       return;
@@ -716,7 +733,7 @@ export function SectionLearningPanel({
     setContent(null);
     setError("");
     setBusy("generate");
-  }, [active?.generationStatus, regenerating]);
+  }, [active?.generationStatus, regenerating, readingBody]);
 
   useEffect(() => {
     if (!active || active.legacy) return;
@@ -1089,6 +1106,15 @@ export function SectionLearningPanel({
     // The journey remains available for returning to the preceding section.
     return (
       <div className="min-w-0 space-y-8 pb-12">
+        {renderReading && <div hidden={!readingBody} data-course-mode="reading">
+          <ReadingSectionBody key={active.id} unitId={unitId} sectionId={active.id} goalId={goalId} active={readingBody}
+            continuing={busy === "complete"}
+            continueLabel={finishActionLabel}
+            onContinue={() => active.status === "completed" || active.status === "skipped"
+              ? continueFromCompletedSection() : void finish(false)} />
+          {readingBody && error && active.generationStatus !== "failed" && <p role="alert" className="reading-error">{error}</p>}
+        </div>}
+        {renderDisplay && <div hidden={readingBody} data-course-mode="display">
         {verifyingContent ? (
           <div className="mx-auto w-full max-w-[48rem] rounded-xl border border-[var(--brand-200)] bg-[var(--brand-50)] px-4 py-3 text-sm text-[var(--brand-700)]">
             {t("wizard.section.verifyingContent")}
@@ -1290,7 +1316,7 @@ export function SectionLearningPanel({
                   cursor,
                 )
               }
-              audioEligible={chatAudioEligible}
+              audioEligible={chatAudioEligible && !readingBody}
               narrationAssets={narrationAssets}
               onNarrationAsset={(asset) =>
                 setNarrationAssets((current) => [
@@ -1415,6 +1441,7 @@ export function SectionLearningPanel({
             </div>
           </section>
         )}
+        </div>}
       </div>
     );
   }

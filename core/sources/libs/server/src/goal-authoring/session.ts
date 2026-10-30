@@ -10,6 +10,10 @@ const goalAuthoringStateSchema = z.object({
   goalId: z.string().min(1),
   traceId: z.string().uuid(),
   blueprintMessageId: z.string().nullable().default(null),
+  checkpoints: z.record(z.string(), z.object({
+    messageId: z.string(),
+    result: z.unknown(),
+  })).default({}),
 });
 
 export type GoalAuthoringState = z.infer<typeof goalAuthoringStateSchema>;
@@ -29,6 +33,7 @@ function initialState(goalId: string, traceId?: string): GoalAuthoringState {
     goalId,
     traceId: traceId ?? randomUUID(),
     blueprintMessageId: null,
+    checkpoints: {},
   };
 }
 
@@ -87,6 +92,29 @@ export async function loadGoalAuthoringMessages(
         : {}),
     };
   });
+}
+
+/** Adopt a pre-checkpoint identity only from the current confirmed contract. */
+export async function findAcceptedGoalAuthoringIdentity(threadId: string) {
+  const rows = await requireAgentConversationPersistence().listAllMessages(threadId);
+  const boundary = rows.findLastIndex((row) =>
+    row.role === "assistant" && JSON.parse(row.toolCalls || "[]")
+      .some((call: { name: string }) => call.name === "commit_goal_contract"),
+  );
+  for (let index = rows.length - 1; index > boundary; index--) {
+    const row = rows[index]!;
+    if (row.role !== "tool") continue;
+    const result = JSON.parse(row.content || "{}");
+    if (result.status !== "accepted" || result.tool !== "commit_goal_identity") continue;
+    const previous = rows[index - 1];
+    if (previous?.role !== "assistant") continue;
+    const call = JSON.parse(previous.toolCalls || "[]").find(
+      (entry: { id: string; name: string }) =>
+        entry.id === row.toolCallId && entry.name === "commit_goal_identity",
+    );
+    if (call) return { messageId: row.id, result: call.args as unknown };
+  }
+  return undefined;
 }
 
 export async function appendGoalAuthoringMessage(input: {

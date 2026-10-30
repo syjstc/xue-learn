@@ -8,12 +8,13 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import type { DesktopPluginViewSession } from "../../../packages/plugin-sdk/src/index";
-import type { DesktopPluginRendererHost } from "../../../packages/plugin-sdk/src/renderer";
+import type { DesktopPluginRendererHost, DesktopPluginViewLaunch } from "../../../packages/plugin-sdk/src/renderer";
+import { isDesktopPluginLocalPath } from "../../../packages/plugin-sdk/src/index";
 import type { DesktopPluginCourse } from "../../../packages/plugin-sdk/src/renderer";
 import type { CourseSourceSnapshotV1 } from "@xue-learn/core/runtime-contracts";
 import type { DesktopPluginsBridge } from "./bridge";
 
-export function createPluginRendererHost(options: {
+export function createPluginRendererHost(options: DesktopPluginViewLaunch & {
   bridge: DesktopPluginsBridge;
   session: DesktopPluginViewSession;
   pluginId: string;
@@ -43,6 +44,8 @@ export function createPluginRendererHost(options: {
     pluginId: options.pluginId,
     viewId: options.viewId,
     workspaceId: session.workspaceId,
+    initialPath: isDesktopPluginLocalPath(options.initialPath) ? options.initialPath : "/",
+    context: Object.freeze({ ...options.context }),
     signal: controller.signal,
     ui: Object.freeze({ Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input, Badge }),
     core: Object.freeze({
@@ -61,7 +64,7 @@ export function createPluginRendererHost(options: {
     },
     navigate: (path: string) => {
       assertLive();
-      if (!path.startsWith("/") || path.startsWith("//") || path.includes("\\")) throw Error("Plugin navigation requires a local route");
+      if (!isDesktopPluginLocalPath(path)) throw Error("Plugin navigation requires a local route");
       options.navigate(path);
     },
     onDispose: (callback: () => void) => {

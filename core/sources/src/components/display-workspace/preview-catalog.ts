@@ -286,7 +286,7 @@ const builtinExamples: Record<string, readonly DisplayPreviewExample[]> = {
         title: "功与动能",
         body: "合外力做的功，等于物体动能的变化。\n\n速度翻倍时，动能变为原来的四倍。",
       },
-    }),
+    }, {targets: ["definition:detail-1", "definition:detail-2"], cues: [[], ["definition:detail-1"], ["definition:detail-2"], []]}),
   ],
   "general:conversation": [
     example("师生问答", {
@@ -303,7 +303,7 @@ const builtinExamples: Record<string, readonly DisplayPreviewExample[]> = {
           text: "动能与速度的平方成正比，所以变成四倍。",
         },
       ],
-    }),
+    }, {targets: ["question", "answer"], cues: [[], ["question"], ["answer"], []]}),
   ],
   "general:title": [
     example("课程开场", {
@@ -311,10 +311,11 @@ const builtinExamples: Record<string, readonly DisplayPreviewExample[]> = {
       headline: "让知识看得见",
       subtitle: "观察、建模，再用证据验证。",
       keywords: items.map(({ id, label }) => ({ id, label })),
-    }),
+    }, {targets: items.map(item => item.id), cues: [[], ["observe"], ["model"], ["verify"], []]}),
   ],
   "general:cards": [
-    example("三个学习步骤", { title: "从问题到理解", layout: "grid", items }),
+    example("三个学习步骤", { title: "从问题到理解", layout: "grid", items }, {targets: items.map(item => item.id), cues: [[], ["observe"], ["model"], ["verify"], []]}),
+    example("纵向卡片", { title: "从问题到理解", layout: "stack", items }, {targets: items.map(item => item.id), cues: [[], ["observe"], ["model"], ["verify"], []]}),
   ],
   "general:compare": [
     example("两种思考方法", {
@@ -334,10 +335,11 @@ const builtinExamples: Record<string, readonly DisplayPreviewExample[]> = {
           { id: "e", text: "比较初末状态的变化。" },
         ],
       },
-    }),
+    }, {targets: ["force", "energy", "f", "a", "w", "e"], cues: [[], ["force"], ["f"], ["energy"], ["e"], []]}),
   ],
   "general:process": [
-    example("学习流程", { direction: "linear", steps: items }),
+    example("学习流程", { title: "从问题到理解", direction: "linear", steps: items }, {targets: items.map(item => item.id), cues: [[], ["observe"], ["model"], ["verify"], []]}),
+    example("循环流程", { title: "让理解不断完善", direction: "cycle", steps: items }, {targets: items.map(item => item.id), cues: [[], ["observe"], ["model"], ["verify"], []]}),
   ],
   "general:concept-network": [
     example("概念之间的联系", {
@@ -346,7 +348,7 @@ const builtinExamples: Record<string, readonly DisplayPreviewExample[]> = {
         { id: "om", from: "observe", to: "model", label: "提出关系" },
         { id: "mv", from: "model", to: "verify", label: "检验预测" },
       ],
-    }),
+    }, {targets: [...items.map(item => item.id), "om", "mv"], cues: [[], ["observe"], ["om"], ["model"], ["mv"], ["verify"], []]}),
   ],
   "general:teaching": [
     example(
@@ -381,6 +383,11 @@ const builtinExamples: Record<string, readonly DisplayPreviewExample[]> = {
         ],
       },
     }),
+    ...(["layers", "process", "cycle"] as const).map(kind => example(
+      kind === "layers" ? "知识层次" : kind === "process" ? "连续过程" : "循环过程",
+      {block: {type: "visual", id: "learning-flow", kind, title: "从问题到理解", items}},
+      {targets: items.map(item => `visual:learning-flow:${item.id}`), cues: [[], ...items.map(item => [`visual:learning-flow:${item.id}`]), []]},
+    )),
   ],
   "math:formula": [example("功与动能", formula)],
   "math:chart": [
@@ -682,8 +689,18 @@ const builtinExamples: Record<string, readonly DisplayPreviewExample[]> = {
       src: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,
       alt: "弯曲轨迹上的物体与运动方向箭头",
       caption: "观察轨迹与方向",
-      motion: "push-in",
-    }),
+      motion: "still",
+      guidedImage: {
+        sha256: "0".repeat(64), width: 1516, height: 778,
+        segmentation: {geometryVersion: "simple-shapes-v1", missingPartIds: [], imageIssues: [],
+          regions: [
+            {id: "object", label: "运动中的物体", x: 690, y: 290, width: 120, height: 120},
+            {id: "direction", label: "运动方向", x: 810, y: 320, width: 125, height: 60},
+          ].map(({id, label, x, y, width, height}) => ({id, partId: id, label, observedDescription: label,
+            polygons: [{holes: [], outer: [{x: x / 1516, y: y / 778}, {x: (x + width) / 1516, y: y / 778},
+              {x: (x + width) / 1516, y: (y + height) / 778}, {x: x / 1516, y: (y + height) / 778}]}]}))},
+      },
+    }, {targets: ["object", "direction"], cues: [[], ["object"], ["direction"], ["object", "direction"], []]}),
   ],
   "media:lottie": [
     example("信号流", {
@@ -758,7 +775,7 @@ export function createDisplayPreviewDocument(
     durationTicks: Math.round(
       (DISPLAY_PREVIEW_SECONDS * 48000) / sample.cues!.length,
     ),
-    targets: targets.map((target) => `${root.id}/${target}`),
+    targets: targets.length ? targets.map((target) => `${root.id}/${target}`) : [root.id],
   }));
   return {
     ...document,

@@ -1,0 +1,33 @@
+.rm-glass-network{position:relative;width:100%;height:100%;min-width:0;min-height:0}
+.rm-glass-network-links{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.rm-glass-network-position{position:absolute;transform:translate(-50%,-50%);min-width:0;min-height:0}
+.rm-glass-network-node{position:relative;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:22px 25px;border-radius:26px}
+.rm-glass-network-node-top{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:14px}
+.rm-glass-network-node-top .rm-glass-badge{font-size:15px;min-width:34px;height:27px;border-radius:9px;padding-inline:7px}
+.rm-glass-network-node-top>i{display:block;width:7px;height:7px;border-radius:50%;background:var(--glass-color);opacity:calc(.35 + var(--glass-focus)*.5);box-shadow:0 0 0 calc(4px + var(--glass-breathe)*var(--glass-focus)*5px) rgba(var(--glass-rgb),.09)}
+.rm-glass-network-node h3{font-size:28px;line-height:1.35;font-weight:650;letter-spacing:.03em}
+.rm-glass-network-node[data-selected]:before{content:"";position:absolute;inset:4px;border:1px solid rgba(var(--glass-rgb),calc(.12 + var(--glass-breathe)*.2));border-radius:22px;pointer-events:none}
+.rm-glass-network-center{position:absolute;left:23.9%;top:37%;width:190px;height:180px;opacity:.22;pointer-events:none}
+.rm-glass-network-center>div{height:100%}
+.rm-glass-network-detail{position:absolute;left:65.2%;right:8px;top:22px;bottom:14px;display:flex;flex-direction:column;padding:29px 34px}
+.rm-glass-network-detail-top{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.rm-glass-network-detail>.rm-glass-emblem{width:190px;height:155px;flex:none;align-self:center;margin:15px 0 17px}
+.rm-glass-network-detail>.rm-glass-rule{margin-bottom:20px;flex:none}
+.rm-glass-network-detail h3{font-size:37px;line-height:1.35;font-weight:650;letter-spacing:.03em;margin:0 0 18px!important}
+.rm-glass-network-detail p{font-size:28px;line-height:1.8;color:#786e64}
+.rm-glass-network-caption{display:flex;align-items:center;gap:14px;margin-top:23px;padding:16px 18px;border:1px solid rgba(var(--glass-rgb),.16);border-radius:15px;background:#ffffff80;font-size:25px;line-height:1.5;color:var(--glass-ink)}
+.rm-glass-network-caption>span{font-size:28px}
+.rm-glass-network-detail .rm-glass-footline{margin-top:auto}
+.rm-glass-network-dense .rm-glass-network-node{padding:16px 20px;border-radius:22px}
+.rm-glass-network-dense .rm-glass-network-node-top{margin-bottom:10px}
+.rm-glass-network-dense .rm-glass-network-node h3{font-size:23px;line-height:1.3}
+.rm-glass-network-node[data-long]{padding:15px 22px}
+.rm-glass-network-node[data-long] h3{font-size:23px;line-height:1.32}
+.rm-glass-network-dense .rm-glass-network-node[data-long]{padding:11px 14px}
+.rm-glass-network-dense .rm-glass-network-node[data-long] .rm-glass-network-node-top{margin-bottom:5px}
+.rm-glass-network-dense .rm-glass-network-node[data-long] .rm-glass-badge{font-size:13px;height:22px;min-width:29px}
+.rm-glass-network-dense .rm-glass-network-node[data-long] h3{font-size:20px;line-height:1.3}
+.rm-glass-network-readable .rm-glass-network-detail>.rm-glass-emblem{width:110px;height:84px;margin:8px 0 12px}
+.rm-glass-network-readable .rm-glass-network-detail h3{font-size:32px;line-height:1.35;margin-bottom:15px!important}
+.rm-glass-network-readable .rm-glass-network-detail p{font-size:25px;line-height:1.65}
+.rm-glass-network-readable .rm-glass-network-caption{font-size:23px;padding-block:12px;margin-top:18px}

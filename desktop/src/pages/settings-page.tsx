@@ -13,11 +13,11 @@ import { TeachingPersonaSettings } from "@/components/settings/teaching-persona-
 import { ThemeSettingsForm } from "@/components/settings/theme-settings-form";
 import { DesktopShortcutSettings } from "@/components/settings/desktop-shortcut-settings";
 import {
-  LOCAL_SETTINGS_SECTION_IDS,
-  SETTINGS_SECTIONS,
-  resolveSettingsSection,
-  type SettingsSectionId,
-} from "@/components/settings/settings-sections";
+  activeSettingsSection,
+  useSettingsSections,
+} from "@/components/settings/use-settings-sections";
+import { DesktopPluginView } from "@/features/plugins/plugin-view";
+import { resolveDesktopPluginUiPath } from "../../packages/plugin-sdk/src/index";
 import {
   Card,
   CardContent,
@@ -46,7 +46,9 @@ function SettingsCard({
       {hasHeader ? (
         <CardHeader className="border-b border-border/70 pb-4">
           {title ? <CardTitle>{title}</CardTitle> : null}
-          {description ? <CardDescription>{description}</CardDescription> : null}
+          {description ? (
+            <CardDescription>{description}</CardDescription>
+          ) : null}
         </CardHeader>
       ) : null}
       <CardContent>{children}</CardContent>
@@ -89,38 +91,48 @@ function LearningExperienceSettings() {
 export function SettingsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const requestedTab = searchParams.get("tab");
-  const localRuntime = isDesktopLocalRuntime();
-  const visibleSections = localRuntime
-    ? SETTINGS_SECTIONS.filter((section) =>
-        LOCAL_SETTINGS_SECTION_IDS.includes(section.id),
-      )
-    : SETTINGS_SECTIONS;
-  const resolvedSection = resolveSettingsSection(requestedTab);
-  const activeSection = visibleSections.some(
-    (section) => section.id === resolvedSection,
-  )
-    ? resolvedSection
-    : "profile";
+  const { sections: visibleSections, ready, bridge } = useSettingsSections();
+  const activeSection = activeSettingsSection(requestedTab, visibleSections);
   const t = useT();
   const activeMeta =
     visibleSections.find((section) => section.id === activeSection) ??
     visibleSections[0];
 
   useEffect(() => {
-    if (!requestedTab) return;
+    if (!requestedTab || !ready) return;
     if (requestedTab !== activeSection) {
       setSearchParams(
         activeSection === "profile" ? {} : { tab: activeSection },
         { replace: true },
       );
     }
-  }, [activeSection, requestedTab, setSearchParams]);
+  }, [activeSection, requestedTab, ready, setSearchParams]);
 
-  function selectSection(next: SettingsSectionId) {
+  function selectSection(next: string) {
     setSearchParams(next === "profile" ? {} : { tab: next });
   }
 
   function renderContent() {
+    if (!ready && requestedTab?.startsWith("plugin:"))
+      return <p role="status">{t("course.loading")}</p>;
+    const plugin = activeMeta.plugin;
+    if (plugin) {
+      const context = { slot: "settings.tabs" as const, returnTo: "/settings" };
+      return (
+        <DesktopPluginView
+          key={`${plugin.key}:${plugin.revision}`}
+          pluginId={plugin.pluginId}
+          viewId={plugin.contribution.viewId!}
+          initialPath={resolveDesktopPluginUiPath(
+            plugin.contribution.path,
+            context,
+          )}
+          context={context}
+          chrome="none"
+          bridge={bridge}
+        />
+      );
+    }
     switch (activeSection) {
       case "profile":
         return (
@@ -186,7 +198,7 @@ export function SettingsPage() {
           aria-label={t("settings.categoryAria")}
           className="grid grid-cols-2 gap-2"
         >
-          {visibleSections.map(({ id, labelKey, icon: Icon }) => {
+          {visibleSections.map(({ id, title, icon: Icon }) => {
             const active = activeSection === id;
 
             return (
@@ -203,13 +215,13 @@ export function SettingsPage() {
                 )}
               >
                 <Icon className="size-4 shrink-0" aria-hidden="true" />
-                <span>{t(labelKey)}</span>
+                <span>{title}</span>
               </button>
             );
           })}
         </nav>
         <p className="px-1 text-sm leading-6 text-muted-foreground">
-          {t(activeMeta.descriptionKey)}
+          {activeMeta.description}
         </p>
       </div>
 
@@ -217,10 +229,10 @@ export function SettingsPage() {
         {activeSection !== "persona" ? (
           <div>
             <h1 className="sr-only lg:not-sr-only lg:text-2xl lg:font-semibold lg:tracking-tight">
-              {t(activeMeta.labelKey)}
+              {activeMeta.title}
             </h1>
             <p className="mt-1 hidden text-sm text-muted-foreground lg:block">
-              {t(activeMeta.descriptionKey)}
+              {activeMeta.description}
             </p>
           </div>
         ) : null}

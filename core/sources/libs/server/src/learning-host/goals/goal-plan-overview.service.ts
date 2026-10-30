@@ -1,3 +1,4 @@
+import { createPathProgressReporter } from "../../goal-creation/path-progress.js";
 import {
   BadRequestException,
   Inject,
@@ -6,10 +7,7 @@ import {
 } from "@nestjs/common";
 import { getCurrentLocale, tBackend } from "../../../../common/src/index.js";
 import { isDev } from "../../dev.js";
-import {
-  parseMapPlan,
-  serializeMapPlan,
-} from "../../goals/map-plan.js";
+import { parseMapPlan, serializeMapPlan } from "../../goals/map-plan.js";
 import {
   excludeFoundationScopeFromPlan,
   parseFoundationGoalItems,
@@ -25,16 +23,16 @@ import {
   getContentLanguageLabel,
   resolveGoalContentLanguage,
 } from "../../llm/content-language.js";
-import {
-  goalMapPlanSchema,
-  type GoalMapPlan,
-} from "../../llm/schemas.js";
+import { goalMapPlanSchema, type GoalMapPlan } from "../../llm/schemas.js";
 import { planGoalMapStream } from "../../llm/plan-goal-map.js";
 import { goalHasRagDocuments } from "../../rag/retrieve.js";
 import { appendLearnerProfileToPromptOptions } from "../../persona/learner-profile.js";
 import { curriculumModuleMatchesContentLanguage } from "../../goals/normalize-goal-map-plan.js";
 import { persistOverviewCourseShellForGoal } from "../../goals/persist-overview-course.js";
-import { assertFullGoal, refreshDetailedPlanFromMap } from "./goal-map.support.js";
+import {
+  assertFullGoal,
+  refreshDetailedPlanFromMap,
+} from "./goal-map.support.js";
 import { serializeGoalOverviewUnit } from "./goal-serialize.util.js";
 import { isMicroGoal } from "../../domain/goal-kind.js";
 import { createMicroUnitForGoal } from "../../goals/create-micro-unit.js";
@@ -240,6 +238,7 @@ export class GoalPlanOverviewService {
           exitCapabilityBriefs: [...modulePlan.exitCapabilityBriefs],
           estimatedUnitCount: modulePlan.estimatedUnitCount,
           unitPlanningBrief: {
+            ...modulePlan.unitPlanningBrief,
             scopeSize: modulePlan.unitPlanningBrief.scopeSize,
             rationale: modulePlan.unitPlanningBrief.rationale,
             progression: [...modulePlan.unitPlanningBrief.progression],
@@ -547,49 +546,52 @@ export class GoalPlanOverviewService {
                   ? "goal.curriculum.plan.deep_blueprint"
                   : "goal.curriculum.plan",
                 authoringAgent: { userId, goalId },
+                onPathProgress: createPathProgressReporter(ctx.send),
                 wrapIdentity: (run) =>
-                  usesBlueprintPlanning
-                    ? withPlanningActivity(
-                        ctx.send,
-                        {
-                          id: "goal_identity",
-                          category: "synthesis",
-                          startedMessage: tBackend(
-                            "status.planning.identity.started",
-                          ),
-                          pulseMessages: [
-                            tBackend("status.planning.identity.pulse1"),
-                            tBackend("status.planning.identity.pulse2"),
-                          ],
-                          completedMessage: tBackend(
-                            "status.planning.identity.completed",
-                          ),
-                        },
-                        () => withOperationReasoning(true, run),
-                      )
-                    : run(),
+                  withPlanningActivity(
+                    ctx.send,
+                    {
+                      id: "goal_identity",
+                      category: "synthesis",
+                      startedMessage: tBackend(
+                        "status.planning.identity.started",
+                      ),
+                      pulseMessages: [
+                        tBackend("status.planning.identity.pulse1"),
+                        tBackend("status.planning.identity.pulse2"),
+                      ],
+                      completedMessage: tBackend(
+                        "status.planning.identity.completed",
+                      ),
+                    },
+                    () =>
+                      usesBlueprintPlanning
+                        ? withOperationReasoning(true, run)
+                        : run(),
+                  ),
                 wrapJourney: (run) =>
-                  usesBlueprintPlanning
-                    ? withPlanningActivity(
-                        ctx.send,
-                        {
-                          id: "goal_journey",
-                          category: "synthesis",
-                          startedMessage: tBackend(
-                            "status.planning.journey.started",
-                          ),
-                          pulseMessages: [
-                            tBackend("status.planning.journey.pulse1"),
-                            tBackend("status.planning.journey.pulse2"),
-                            tBackend("status.planning.journey.pulse3"),
-                          ],
-                          completedMessage: tBackend(
-                            "status.planning.journey.completed",
-                          ),
-                        },
-                        () => withOperationReasoning(true, run),
-                      )
-                    : run(),
+                  withPlanningActivity(
+                    ctx.send,
+                    {
+                      id: "goal_journey",
+                      category: "synthesis",
+                      startedMessage: tBackend(
+                        "status.planning.journey.started",
+                      ),
+                      pulseMessages: [
+                        tBackend("status.planning.journey.pulse1"),
+                        tBackend("status.planning.journey.pulse2"),
+                        tBackend("status.planning.journey.pulse3"),
+                      ],
+                      completedMessage: tBackend(
+                        "status.planning.journey.completed",
+                      ),
+                    },
+                    () =>
+                      usesBlueprintPlanning
+                        ? withOperationReasoning(true, run)
+                        : run(),
+                  ),
                 onIdentity: async (identity) => {
                   await ctx.send(
                     buildPlanningOutlineEvent(
@@ -662,20 +664,20 @@ export class GoalPlanOverviewService {
             }
             const { title: refinedTitle } = resolveRefinedGoalTitle(
               goal.title,
-              generatedPlan.refinedTitle,
+              plan.refinedTitle,
             );
             const persistPlan = async () => {
-              const mapPlanJson = serializeMapPlan(generatedPlan);
+              const mapPlanJson = serializeMapPlan(plan);
               const result =
                 await this.learningSpaceOrm.learningGoalPlan.publishOwnedPlan({
                   userId,
                   goalId,
                   title: refinedTitle,
-                  topicOverview: generatedPlan.topicOverview,
+                  topicOverview: plan.topicOverview,
                   mapPlanJson,
                   pathSource: gathered.pathSource,
-                  domainTag: generatedPlan.domainAnalysis.domainTag,
-                  topicCategory: generatedPlan.domainAnalysis.topicCategory,
+                  domainTag: plan.domainAnalysis.domainTag,
+                  topicCategory: plan.domainAnalysis.topicCategory,
                 });
               if (result.status === "not_found") {
                 throw new NotFoundException(tBackend("error.goal.notFound"));
