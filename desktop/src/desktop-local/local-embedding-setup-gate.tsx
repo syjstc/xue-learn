@@ -7,10 +7,21 @@ import {
   type EmbeddingModelInstallStatus,
   type LocalAiModelSettings,
 } from "@xue-learn/core/runtime-contracts";
-import { Cloud, Database, Download, LoaderCircle, Puzzle, Server, Shapes } from "lucide-react";
+import {
+  CheckCircle2,
+  Cloud,
+  Database,
+  Download,
+  LoaderCircle,
+  Puzzle,
+  Server,
+  Shapes,
+} from "lucide-react";
 import { useI18n } from "@xue-learn/core/i18n";
 import { pluginMessages } from "@/features/plugins/messages";
 import { getDesktopBridge } from "./runtime.ts";
+import { ProviderQuickSetupCard } from "./provider-quick-setup-card";
+import { chatSetupComplete, quickSetupMessages } from "./quick-setup";
 
 type Choice = "qwen" | "ollama" | "online";
 
@@ -61,15 +72,25 @@ export function LocalEmbeddingSetupGate({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   // Plugin management and local display previews do not require semantic search.
   // Learning routes still require a configured embedding provider.
-  if (pathname === "/local/plugins" || pathname === "/local/display-plugins" || /^\/local\/plugins\/[^/]+\/views\/[^/]+$/.test(pathname)) return children;
+  if (
+    pathname === "/local/api-keys" ||
+    pathname === "/local/plugins" ||
+    pathname === "/local/display-plugins" ||
+    /^\/local\/plugins\/[^/]+\/views\/[^/]+$/.test(pathname)
+  )
+    return children;
   return <RequiredEmbeddingSetupGate>{children}</RequiredEmbeddingSetupGate>;
 }
 
 function RequiredEmbeddingSetupGate({ children }: { children: ReactNode }) {
   const { t, locale } = useI18n();
+  const messages = quickSetupMessages(locale);
   const bridge = useMemo(() => getDesktopBridge(), []);
   const [loading, setLoading] = useState(true);
   const [complete, setComplete] = useState(false);
+  const [chatReady, setChatReady] = useState(false);
+  const [settings, setSettings] = useState<LocalAiModelSettings>();
+  const [statuses, setStatuses] = useState<CredentialStatus[]>([]);
   const [choice, setChoice] = useState<Choice>("qwen");
   const [source, setSource] =
     useState<EmbeddingModelDownloadSource>("modelscope");
@@ -90,6 +111,13 @@ function RequiredEmbeddingSetupGate({ children }: { children: ReactNode }) {
       bridge.embeddingModel.getStatus(),
     ]);
     setModelStatus(nextModelStatus);
+    setSettings(settings);
+    setStatuses(statuses);
+    const codexSignedIn =
+      settings.chatProvider === "codex"
+        ? (await bridge.codexAuth.status()).signedIn
+        : false;
+    setChatReady(chatSetupComplete(settings, statuses, codexSignedIn));
     setComplete(setupComplete(settings, statuses, nextModelStatus));
   }
 
@@ -113,7 +141,9 @@ function RequiredEmbeddingSetupGate({ children }: { children: ReactNode }) {
     if (modelStatus?.state !== "installed" || complete) return;
     // Electron marks the install complete only after the restarted sidecar has
     // selected the verified built-in model and queued its fresh index.
-    setComplete(true);
+    void refresh().catch((cause: unknown) =>
+      setError(cause instanceof Error ? cause.message : String(cause)),
+    );
   }, [complete, modelStatus?.state]);
 
   async function installQwen() {
@@ -121,6 +151,7 @@ function RequiredEmbeddingSetupGate({ children }: { children: ReactNode }) {
     setError(undefined);
     try {
       setModelStatus(await bridge.embeddingModel.install(source));
+      await refresh();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : String(cause));
     } finally {
@@ -180,7 +211,61 @@ function RequiredEmbeddingSetupGate({ children }: { children: ReactNode }) {
       </main>
     );
   }
-  if (complete) return children;
+  if (complete && chatReady) return children;
+
+  if (!chatReady) {
+    return (
+      <main className="min-h-screen bg-[radial-gradient(circle_at_top,var(--course-content-surface-accent),var(--background)_55%)] px-5 py-10 text-foreground sm:py-16">
+        <section className="mx-auto max-w-2xl">
+          <p className="text-sm font-semibold text-primary">
+            {t("desktop.embeddingSetup.firstUse")}
+          </p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+            {messages.title}
+          </h1>
+          <p className="mt-3 max-w-xl text-sm leading-7 text-muted-foreground">
+            {messages.intro}
+          </p>
+          <ol className="my-7 grid grid-cols-2 gap-3 text-sm">
+            {[messages.assistant, messages.knowledge].map((label, index) => (
+              <li
+                key={label}
+                className={`flex items-center gap-2.5 rounded-xl border p-3 ${index === 0 ? "border-primary/30 bg-primary/5 text-primary" : "border-border text-muted-foreground"}`}
+              >
+                <span className="grid size-6 shrink-0 place-items-center rounded-full border text-xs font-semibold">
+                  {index + 1}
+                </span>
+                {label}
+              </li>
+            ))}
+          </ol>
+          <ProviderQuickSetupCard
+            settings={settings}
+            statuses={statuses}
+            onConnected={(next, nextStatuses) => {
+              setSettings(next);
+              setStatuses(nextStatuses);
+              setChatReady(true);
+            }}
+          />
+          <Link
+            to="/local/api-keys"
+            className="mt-5 inline-block text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
+          >
+            {messages.advanced}
+          </Link>
+          {error ? (
+            <p
+              role="alert"
+              className="mt-4 rounded-xl bg-destructive/10 p-3 text-sm text-destructive"
+            >
+              {error}
+            </p>
+          ) : null}
+        </section>
+      </main>
+    );
+  }
 
   const progress = modelStatus
     ? Math.min(
@@ -194,69 +279,92 @@ function RequiredEmbeddingSetupGate({ children }: { children: ReactNode }) {
       <section className="mx-auto max-w-4xl rounded-3xl border border-border bg-card p-6 shadow-xl sm:p-9">
         <div className="max-w-2xl">
           <p className="text-sm font-semibold text-primary">
-            {t("desktop.embeddingSetup.firstUse")}
+            {messages.progress}
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">
-            {t("desktop.embeddingSetup.title")}
+            {messages.knowledge}
           </h1>
           <p className="mt-3 leading-7 text-muted-foreground">
-            {t("desktop.embeddingSetup.description")}
+            {messages.localHint}
           </p>
-          <div className="mt-4 flex flex-wrap gap-2"><Link
-            to="/local/plugins"
-            className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium hover:bg-muted/50"
-          >
-            <Puzzle className="size-4" aria-hidden />
-            {pluginMessages(locale).manage}
-          </Link><Link to="/local/display-plugins" className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium hover:bg-muted/50"><Shapes className="size-4" aria-hidden/>{pluginMessages(locale).displayLink}</Link></div>
+          <p className="mt-4 flex items-center gap-2 text-sm text-[var(--success)]">
+            <CheckCircle2 className="size-4" aria-hidden />
+            {messages.success}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link
+              to="/local/plugins"
+              className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium hover:bg-muted/50"
+            >
+              <Puzzle className="size-4" aria-hidden />
+              {pluginMessages(locale).manage}
+            </Link>
+            <Link
+              to="/local/display-plugins"
+              className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium hover:bg-muted/50"
+            >
+              <Shapes className="size-4" aria-hidden />
+              {pluginMessages(locale).displayLink}
+            </Link>
+          </div>
         </div>
 
-        <div className="mt-7 grid gap-3 md:grid-cols-3">
-          {(
-            [
+        <details className="mt-7 rounded-xl border border-border p-4">
+          <summary className="cursor-pointer text-sm font-medium text-muted-foreground">
+            {messages.otherSearch}
+          </summary>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {(
               [
-                "qwen",
-                Database,
-                t("desktop.embeddingSetup.qwen"),
-                t("desktop.embeddingSetup.qwenHint"),
-              ],
-              [
-                "ollama",
-                Server,
-                "Ollama",
-                t("desktop.embeddingSetup.ollamaHint"),
-              ],
-              [
-                "online",
-                Cloud,
-                t("desktop.embeddingSetup.online"),
-                t("desktop.embeddingSetup.onlineHint"),
-              ],
-            ] as const
-          ).map(([id, Icon, title, description]) => (
-            <button
-              key={id}
-              type="button"
-              className={`rounded-2xl border p-4 text-left transition-colors ${
-                choice === id
-                  ? "border-primary bg-primary/10 ring-1 ring-primary"
-                  : "border-border hover:bg-muted/50"
-              }`}
-              onClick={() => setChoice(id)}
-            >
-              <Icon className="size-5 text-primary" aria-hidden />
-              <strong className="mt-3 block">{title}</strong>
-              <span className="mt-1 block text-sm text-muted-foreground">
-                {description}
-              </span>
-            </button>
-          ))}
-        </div>
+                [
+                  "qwen",
+                  Database,
+                  t("desktop.embeddingSetup.qwen"),
+                  t("desktop.embeddingSetup.qwenHint"),
+                ],
+                [
+                  "ollama",
+                  Server,
+                  "Ollama",
+                  t("desktop.embeddingSetup.ollamaHint"),
+                ],
+                [
+                  "online",
+                  Cloud,
+                  t("desktop.embeddingSetup.online"),
+                  t("desktop.embeddingSetup.onlineHint"),
+                ],
+              ] as const
+            ).map(([id, Icon, title, description]) => (
+              <button
+                key={id}
+                type="button"
+                className={`rounded-2xl border p-4 text-left transition-colors ${
+                  choice === id
+                    ? "border-primary bg-primary/10 ring-1 ring-primary"
+                    : "border-border hover:bg-muted/50"
+                }`}
+                onClick={() => setChoice(id)}
+              >
+                <Icon className="size-5 text-primary" aria-hidden />
+                <strong className="mt-3 block">{title}</strong>
+                <span className="mt-1 block text-sm text-muted-foreground">
+                  {description}
+                </span>
+              </button>
+            ))}
+          </div>
+        </details>
 
         <div className="mt-6 rounded-2xl border border-border bg-background p-5">
           {choice === "qwen" ? (
             <div>
-              <h2 className="font-semibold">Qwen3-Embedding-0.6B Q8</h2>
+              <h2 className="font-semibold">
+                {messages.localTitle}{" "}
+                <span className="ml-2 rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                  {messages.recommended}
+                </span>
+              </h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 {t("desktop.embeddingSetup.qwenSize")}
               </p>

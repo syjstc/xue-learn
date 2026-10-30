@@ -24,8 +24,10 @@ export async function searchLearningPathWithSources(
     maxResults?: number;
     extractTopUrls?: number;
     meta?: Record<string, unknown>;
+    signal?: AbortSignal;
   },
 ): Promise<SearchPayload> {
+  options?.signal?.throwIfAborted();
   const userId =
     typeof options?.meta?.userId === "string"
       ? options.meta.userId
@@ -34,6 +36,7 @@ export async function searchLearningPathWithSources(
     return { context: "", sources: [], sourceContents: {} };
 
   const config = await ensureSearchRuntimeConfig(userId);
+  options?.signal?.throwIfAborted();
   let result: Omit<SearchPayload, "provider">;
   if (config.provider === "doubao") {
     result = await searchLearningPathWithDoubaoSources(query, options);
@@ -42,6 +45,7 @@ export async function searchLearningPathWithSources(
   } else {
     result = await searchLearningPathWithTavilySources(query, options);
   }
+  options?.signal?.throwIfAborted();
   return { ...result, provider: config.provider };
 }
 

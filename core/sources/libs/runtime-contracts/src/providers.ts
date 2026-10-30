@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const localChatProviderIds = [
   "minimax",
+  "qwen",
   "openai",
   "deepseek",
   "fireworks",

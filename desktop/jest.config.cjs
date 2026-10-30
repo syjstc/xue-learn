@@ -2,7 +2,11 @@ module.exports={
   "rootDir": __dirname,
   "testEnvironment": "node",
   "watchman": false,
+  "modulePathIgnorePatterns": ["<rootDir>/apps/desktop/out/", "<rootDir>/apps/desktop/.forge-resources/"],
   "testMatch": [
+    "<rootDir>/src/components/wizard/conversation/assessment-readiness-notice.spec.tsx",
+    "<rootDir>/apps/desktop/src/provider-model-catalog.spec.ts",
+    "<rootDir>/src/desktop-local/provider-quick-setup-card.spec.tsx",
     "<rootDir>/src/components/wizard/assistant-message-body.spec.tsx",
     "<rootDir>/src/components/agent/plan-editor-card.spec.tsx",
     "<rootDir>/src/shared/agent/goal-plan-stream-preview.spec.ts",

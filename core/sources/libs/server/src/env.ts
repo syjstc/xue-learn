@@ -443,10 +443,8 @@ export function hasProviderCredentials(provider: LlmProviderId): boolean {
     case "qwen":
       return Boolean(getRuntimeEnvironment().DASHSCOPE_API_KEY?.trim());
     case "minimax":
-      return Boolean(
-        getRuntimeEnvironment().MINIMAX_API_KEY?.trim() &&
-        getRuntimeEnvironment().MINIMAX_GROUP_ID?.trim(),
-      );
+      // Current OpenAI-compatible chat authenticates with the API key alone.
+      return Boolean(getRuntimeEnvironment().MINIMAX_API_KEY?.trim());
     case "ollama":
       return Boolean(getRuntimeEnvironment().OLLAMA_BASE_URL?.trim());
     default: {

@@ -35,6 +35,7 @@ export function DeepPlanningProgress({
     warning: t("planning.moduleWarning"),
   } as const;
   const activityStatusLabels = {
+    skipped: t("knowledgeActivity.skipped"),
     searching: t("planning.activitySearching"),
     reading: t("planning.activityReading"),
     saving: t("planning.activitySaving"),
@@ -266,7 +267,7 @@ export function DeepPlanningProgress({
                           className="mt-0.5 size-3.5 shrink-0 animate-spin text-[var(--brand-600)] motion-reduce:animate-none"
                           aria-hidden
                         />
-                      ) : activity.status === "error" ? (
+                      ) : activity.status === "error" || activity.status === "skipped" ? (
                         <AlertTriangle
                           className="mt-0.5 size-3.5 shrink-0 text-[var(--warning-600)]"
                           aria-hidden

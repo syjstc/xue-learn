@@ -26,6 +26,8 @@ export function KnowledgeActivityCard({
           ? t("knowledgeActivity.saving")
           : activity.status === "error"
             ? t("knowledgeActivity.error")
+            : activity.status === "skipped"
+              ? t("knowledgeActivity.skipped")
             : activity.mode === "saved_knowledge"
               ? t("knowledgeActivity.savedSummary", {
                   count: sourceCount,
@@ -45,7 +47,7 @@ export function KnowledgeActivityCard({
       <div className="flex items-start gap-2">
         {busy ? (
           <LoaderCircle className="mt-0.5 size-4 shrink-0 animate-spin text-info" />
-        ) : activity.status === "error" ? (
+        ) : activity.status === "error" || activity.status === "skipped" ? (
           <Search className="mt-0.5 size-4 shrink-0 text-warning" />
         ) : (
           <Globe2 className="mt-0.5 size-4 shrink-0 text-info" />
@@ -55,6 +57,11 @@ export function KnowledgeActivityCard({
           <p className="mt-0.5 break-words text-xs text-muted-foreground">
             {activity.query}
           </p>
+          {activity.status === "skipped" ? (
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t(activity.skipReason === "timeout" ? "knowledgeActivity.skippedTimeout" : "knowledgeActivity.skippedUnavailable")}
+            </p>
+          ) : null}
           {retrievedAt || activity.freshUntil ? (
             <p className="mt-1 text-[11px] text-muted-foreground">
               {retrievedAt

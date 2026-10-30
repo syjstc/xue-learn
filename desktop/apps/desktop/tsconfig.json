@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "rootDir": "../..",
     "outDir": "../../dist/apps/desktop",
     "types": ["node", "jest"],

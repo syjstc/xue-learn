@@ -1260,6 +1260,9 @@ export const zhHant = {
   "agenda.settingsDescription": "根據你的每日時間自動安排新學習與複習。",
   "agenda.reminderEnabled": "每日提醒",
   "agenda.reminderOff": "已關閉",
+  "knowledgeActivity.skipped": "已跳過網頁搜尋",
+  "knowledgeActivity.skippedTimeout": "搜尋逾時，已繼續後續流程。將根據現有資訊處理，時效性內容尚未經網頁核實。",
+  "knowledgeActivity.skippedUnavailable": "搜尋未啟用、暫不可用或未找到可用來源，已根據現有資訊繼續後續流程。",
   "knowledgeActivity.searching": "正在搜尋網頁",
   "knowledgeActivity.reading": "正在閱讀搜尋結果",
   "knowledgeActivity.saving": "正在儲存網頁知識",
@@ -3290,6 +3293,9 @@ export const zhHant = {
   "wizard.material.simulator.unknownVariables":
     "公式引用了未定義變量：{variables}",
   "wizard.material.takeawaysTitle": "這一節，記住這些",
+  "wizard.reading.assessmentFailed": "測驗準備未完成，你可以繼續閱讀現有正文，稍後重新準備測驗。",
+  "wizard.reading.assessmentRetry": "重新準備測驗",
+  "wizard.reading.assessmentRetrying": "正在準備測驗…",
   "wizard.reading.assessmentLocked":
     "學習內容已可閱讀；認知模型完成後將自動開放測驗與完成記錄。",
   "wizard.reading.referenceDescription": "隨時查閱預習、正文與學習筆記。",

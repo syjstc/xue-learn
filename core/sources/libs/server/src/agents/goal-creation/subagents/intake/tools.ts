@@ -35,6 +35,7 @@ import {
 } from "./collect-form.js";
 import { patchLearnerProfile } from "../../../../persona/learner-profile.js";
 import { retrieveOrSearchWebKnowledge } from "../../../../search/web-knowledge.js";
+import { runOptionalKnowledgeSearch } from "../../../../search/optional-knowledge.js";
 import type { LearningSpaceGoalCreationApplication } from "../../../../learning-spaces/orm-application-service.js";
 
 const topicSummarySchema = z.object({
@@ -112,7 +113,16 @@ export function createIntakeTools(
           ),
       }),
       handler: async (args, ctx) => {
-        const result = await retrieveOrSearchWebKnowledge({
+        if (getState(ctx).intakeWebSearchAttempted) return {
+          context: "", sources: [], continueWithoutSearch: true,
+          nextStep: "The single optional intake search has already been attempted. Do not search again. Ask the next learner question or show the goal confirmation now.",
+        };
+        patchState(ctx, { intakeWebSearchAttempted: true });
+        const result = await runOptionalKnowledgeSearch({
+          query: args.query,
+          reason: args.reason,
+          onActivity: async (activity) => { await ctx.send({ type: "knowledge_activity", activity }); },
+          lookup: (signal, onActivity) => retrieveOrSearchWebKnowledge({
           userId: ctx.userId,
           query: args.query,
           reason: args.reason,
@@ -120,28 +130,14 @@ export function createIntakeTools(
           forceSearch: true,
           searchPurpose: "answer",
           resultCount: 4,
-          onActivity: async (activity) => {
-            await ctx.send({ type: "knowledge_activity", activity });
-          },
+          extractTopUrls: 0,
+          signal,
+          onActivity,
+          }),
         });
-        if (result.activity.status !== "error") {
-          return {
-            ...result,
-            context: compactIntakeSearchContext(result.context),
-          };
-        }
         return {
           ...result,
-          context: "",
-          sources: [],
-          stale: false,
-          activity: {
-            ...result.activity,
-            sources: [],
-            sourceCount: 0,
-            saved: false,
-            stale: false,
-          },
+          context: compactIntakeSearchContext(result.context),
         };
       },
       renderUi: (_args, result) => {

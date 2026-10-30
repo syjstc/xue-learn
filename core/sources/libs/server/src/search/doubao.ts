@@ -134,6 +134,7 @@ async function runDoubaoSearch(
   operation: string,
   query: string,
   options: {
+    signal?: AbortSignal;
     maxResults: number;
     meta?: Record<string, unknown>;
   },
@@ -158,6 +159,7 @@ async function runDoubaoSearch(
 
   try {
     const response = await fetch(`${getBaseUrl()}${GLOBAL_SEARCH_PATH}`, {
+      signal: options.signal ?? AbortSignal.timeout(20_000),
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -222,6 +224,7 @@ async function runDoubaoSearch(
 export async function searchLearningPathWithDoubaoSources(
   query: string,
   options?: {
+    signal?: AbortSignal;
     purpose?: LearningPathSearchPurpose;
     maxResults?: number;
     meta?: Record<string, unknown>;
@@ -235,6 +238,7 @@ export async function searchLearningPathWithDoubaoSources(
     {
       maxResults: options?.maxResults ?? preset.maxResults,
       meta: options?.meta,
+      signal: options?.signal,
     },
   );
 }

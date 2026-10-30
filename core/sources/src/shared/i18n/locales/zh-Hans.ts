@@ -1259,6 +1259,9 @@ export const zhHans = {
   "agenda.settingsDescription": "根据你的每日时间自动安排新学习与复习。",
   "agenda.reminderEnabled": "每日提醒",
   "agenda.reminderOff": "已关闭",
+  "knowledgeActivity.skipped": "已跳过网页搜索",
+  "knowledgeActivity.skippedTimeout": "搜索超时，已继续后续流程。将根据已有信息处理，时效性内容尚未经过网页核实。",
+  "knowledgeActivity.skippedUnavailable": "搜索未启用、暂不可用或未找到可用来源，已根据已有信息继续后续流程。",
   "knowledgeActivity.searching": "正在搜索网页",
   "knowledgeActivity.reading": "正在阅读搜索结果",
   "knowledgeActivity.saving": "正在保存网页知识",
@@ -3282,6 +3285,9 @@ export const zhHans = {
   "wizard.material.simulator.unknownVariables":
     "公式引用了未定义变量：{variables}",
   "wizard.material.takeawaysTitle": "这一节，记住这些",
+  "wizard.reading.assessmentFailed": "测验准备未完成，你可以继续阅读已有正文，稍后重新准备测验。",
+  "wizard.reading.assessmentRetry": "重新准备测验",
+  "wizard.reading.assessmentRetrying": "正在准备测验…",
   "wizard.reading.assessmentLocked":
     "学习内容已可阅读；认知模型完成后将自动开放测验与完成记录。",
   "wizard.reading.referenceDescription": "随时查阅预习、正文与学习笔记。",

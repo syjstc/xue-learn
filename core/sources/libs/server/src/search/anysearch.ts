@@ -38,6 +38,7 @@ export type AnySearchPayload = {
 };
 
 type SearchRunOptions = {
+  signal?: AbortSignal;
   maxResults: number;
   extractTopUrls?: number;
   meta?: Record<string, unknown>;
@@ -69,6 +70,7 @@ type McpToolCallResult = {
 async function callAnySearchTool(
   toolName: string,
   args: Record<string, unknown>,
+  signal?: AbortSignal,
 ): Promise<McpToolCallResult> {
   const apiKey = getApiKey();
   if (!apiKey) {
@@ -82,6 +84,7 @@ async function callAnySearchTool(
   };
 
   const response = await fetch(ENDPOINT, {
+    signal: signal ?? AbortSignal.timeout(20_000),
     method: "POST",
     headers,
     body: JSON.stringify({
@@ -154,6 +157,7 @@ async function callAnySearchTool(
 async function extractPagesForPrompt(
   urls: string[],
   sourceIndexByUrl?: Map<string, number>,
+  signal?: AbortSignal,
 ): Promise<{
   promptSection: string;
   pages: { url: string; title: string | null; rawContent: string }[];
@@ -167,8 +171,9 @@ async function extractPagesForPrompt(
   const failed: { url: string; error: string }[] = [];
 
   for (const url of urls) {
+    signal?.throwIfAborted();
     try {
-      const { text } = await callAnySearchTool("extract", { url });
+      const { text } = await callAnySearchTool("extract", { url }, signal);
       const page = parseAnySearchExtractMarkdown(text, url);
       if (page.rawContent.trim()) {
         pages.push(page);
@@ -221,10 +226,11 @@ async function runSearchWithSources(
   const started = Date.now();
 
   try {
+    options.signal?.throwIfAborted();
     const { text, requestId } = await callAnySearchTool("search", {
       query,
       max_results: maxResults,
-    });
+    }, options.signal);
     const parsed = parseAnySearchResultsMarkdown(text);
     const results = parsed.results;
     const sourceContents: Record<string, string> = Object.fromEntries(
@@ -248,6 +254,7 @@ async function runSearchWithSources(
       const { promptSection, pages, failed } = await extractPagesForPrompt(
         urls,
         sourceIndexByUrl,
+        options.signal,
       );
       if (promptSection) parts.push(promptSection);
       sources = enrichWebSourcesWithExtract(sources, pages);
@@ -298,6 +305,7 @@ async function runSearchWithSources(
 export async function searchLearningPathWithAnySearchSources(
   query: string,
   options?: {
+    signal?: AbortSignal;
     purpose?: LearningPathSearchPurpose;
     maxResults?: number;
     extractTopUrls?: number;
@@ -313,6 +321,7 @@ export async function searchLearningPathWithAnySearchSources(
       maxResults: options?.maxResults ?? preset.maxResults,
       extractTopUrls: options?.extractTopUrls ?? preset.extractTopUrls,
       meta: options?.meta,
+      signal: options?.signal,
     },
   );
 }

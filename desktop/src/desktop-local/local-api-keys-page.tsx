@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   AudioLines,
   Binary,
@@ -69,6 +70,10 @@ import { queryClient, queryKeys } from "@/shared/api";
 import type { LearningViewSettingsResponse } from "@/hooks/api/use-settings";
 import { emptyCustomChatEndpointsState } from "@xue-learn/core/runtime-contracts";
 import { GuidedImageModelSettingsPanel } from "./guided-image-model-settings.tsx";
+import { ProviderQuickSetupCard } from "./provider-quick-setup-card";
+import { providerSetupMessages } from "./provider-setup-messages";
+import type { ProviderModelCatalog } from "./model-catalog-contract";
+import { chatSetupComplete, quickSetupMessages } from "./quick-setup";
 
 const providerLabels: Partial<Record<LocalProviderId, string>> = {
   custom: "OpenAI-compatible",
@@ -77,7 +82,7 @@ const providerLabels: Partial<Record<LocalProviderId, string>> = {
   minimax: "MiniMax",
   fireworks: "Fireworks",
   doubao: "Doubao",
-  qwen: "Qwen Audio",
+  qwen: "Qwen",
   cartesia: "Cartesia",
   bigmodel: "BigModel",
   custom_embedding: "OpenAI-compatible",
@@ -100,12 +105,24 @@ const minimaxReasoningMessages = {
   "zh-Hans": {
     title: "MiniMax 推理强度",
     hint: "此模型始终启用推理。强度越高，通常思考越充分、耗时越长；默认最高。",
-    levels: ["低 · low", "中 · medium", "高 · high", "很高 · xhigh", "最高 · max"],
+    levels: [
+      "低 · low",
+      "中 · medium",
+      "高 · high",
+      "很高 · xhigh",
+      "最高 · max",
+    ],
   },
   "zh-Hant": {
     title: "MiniMax 推理強度",
     hint: "此模型一律啟用推理。強度越高，通常思考越充分、耗時越長；預設最高。",
-    levels: ["低 · low", "中 · medium", "高 · high", "很高 · xhigh", "最高 · max"],
+    levels: [
+      "低 · low",
+      "中 · medium",
+      "高 · high",
+      "很高 · xhigh",
+      "最高 · max",
+    ],
   },
   en: {
     title: "MiniMax reasoning effort",
@@ -187,9 +204,10 @@ const PROVIDER_TYPES: readonly ProviderTypeDefinition[] = [
     providers: localChatProviderIds,
     credentialFields: {
       custom: ["apiKey", "baseUrl"],
-      minimax: ["apiKey", "groupId"],
+      minimax: ["apiKey"],
       openai: ["apiKey"],
       deepseek: ["apiKey"],
+      qwen: ["apiKey", "baseUrl"],
       fireworks: ["apiKey"],
       doubao: ["apiKey"],
       ollama: [],
@@ -256,7 +274,7 @@ function modelChoices(
   type: ProviderType,
   providerId: LocalProviderId,
 ): readonly string[] {
-  if (type === "search") return [];
+  if (type === "search" || type === "chat") return [];
   return LOCAL_DEFAULT_MODELS[type][providerId] ?? [];
 }
 
@@ -334,6 +352,10 @@ export function requiresBuiltinEmbeddingDownload(
 
 export function LocalApiKeysPage() {
   const t = useT();
+  const { locale } = useI18n();
+  const quick = quickSetupMessages(locale);
+  const [showRecommended, setShowRecommended] = useState(false);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
   const bridge = useMemo(() => getDesktopBridge(), []);
   const [activeTypeId, setActiveTypeId] = useState<ProviderType>("chat");
   const [selectedProviders, setSelectedProviders] = useState<
@@ -642,8 +664,8 @@ export function LocalApiKeysPage() {
       activeType.id,
       savedSelection.provider,
       builtinModelStatus,
-    )
-    && (savedSelection.provider !== "codex" || codexAuth?.signedIn === true)
+    ) &&
+    (savedSelection.provider !== "codex" || codexAuth?.signedIn === true)
       ? savedSelection
       : undefined;
   const codexModelChoices =
@@ -704,8 +726,7 @@ export function LocalApiKeysPage() {
                 ...chatThinkingFromSettings(activeModelSettings),
                 ...(providerId === "codex"
                   ? {
-                      codexReasoningEffort:
-                        codexReasoningEffortForModel,
+                      codexReasoningEffort: codexReasoningEffortForModel,
                     }
                   : {}),
               }
@@ -941,404 +962,528 @@ export function LocalApiKeysPage() {
         </p>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,15rem)_minmax(0,1fr)]">
-        <section aria-labelledby="provider-type-title">
-          <h3
-            id="provider-type-title"
-            className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground"
-          >
-            {t("desktop.apiKeys.chooseType")}
-          </h3>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-1">
-            {PROVIDER_TYPES.map(({ id, labelKey, icon: Icon }) => {
-              const active = id === activeType.id;
-              const featureEnabled = isOptionalFeatureType(id)
-                ? Boolean(getActiveLocalModelSelection(activeModelSettings, id))
-                : false;
-              return (
-                <div
-                  key={id}
-                  className={cn(
-                    "flex items-center gap-2 rounded-xl border px-3 py-3 transition-colors",
-                    active
-                      ? "border-primary bg-[var(--course-content-surface-accent)] text-primary shadow-[inset_0_0_0_1px_var(--primary)]"
-                      : "border-border bg-card text-muted-foreground hover:border-[var(--border-strong)] hover:bg-[var(--surface-elevated)] hover:text-foreground",
-                  )}
-                >
-                  <button
-                    type="button"
-                    aria-pressed={active}
-                    className="flex min-w-0 flex-1 items-center gap-2.5 text-left text-sm font-medium"
-                    onClick={() => setActiveTypeId(id)}
-                  >
-                    <Icon className="size-4 shrink-0" aria-hidden />
-                    {t(labelKey)}
-                  </button>
-                  {isOptionalFeatureType(id) ? (
-                    <Switch
-                      size="sm"
-                      checked={featureEnabled}
-                      disabled={busyFeature === id || Boolean(busyProvider)}
-                      aria-label={t(
-                        id === "image"
-                          ? "desktop.apiKeys.toggleImageFeature"
-                          : "desktop.apiKeys.toggleAudioFeature",
-                      )}
-                      onCheckedChange={(enabled) =>
-                        void toggleOptionalFeature(id, enabled)
-                      }
-                    />
-                  ) : null}
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="min-w-0" aria-labelledby="provider-list-title">
+      {activeModelSettings &&
+      chatSetupComplete(activeModelSettings, statuses, codexAuth?.signedIn) &&
+      !showRecommended ? (
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border bg-card p-5">
           <div>
-            <h3 id="provider-list-title" className="font-semibold">
-              {t("desktop.apiKeys.chooseProvider", {
-                type: t(activeType.labelKey),
-              })}
-            </h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {t("desktop.apiKeys.providerDescription")}
+            <p className="flex items-center gap-2 text-sm font-medium text-[var(--success)]">
+              <CheckCircle2 className="size-4" aria-hidden />
+              {quick.current}
             </p>
-          </div>
-
-          {currentSelection ? (
-            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-[color-mix(in_srgb,var(--success)_28%,var(--border))] bg-[var(--success-soft)] px-4 py-3 text-sm">
-              <span className="inline-flex items-center gap-1.5 font-medium text-[var(--success)]">
-                <CheckCircle2 className="size-4" aria-hidden />
-                {t("desktop.apiKeys.currentlyUsing")}
+            <p className="mt-2 font-semibold">
+              {providerLabels[activeModelSettings.chatProvider] ??
+                activeModelSettings.chatProvider}
+              <span className="ml-2 text-sm font-normal text-muted-foreground">
+                {activeModelSettings.chatModel}
               </span>
-              <strong className="text-foreground">
-                {currentSelection.provider === "custom" &&
-                activeModelSettings?.customChatEndpoints.activeProfileId
-                  ? (activeModelSettings.customChatEndpoints.profiles.find(
-                      (profile) =>
-                        profile.id ===
-                        activeModelSettings.customChatEndpoints.activeProfileId,
-                    )?.name ?? providerLabels.custom)
-                  : (providerLabels[currentSelection.provider] ??
-                    currentSelection.provider)}
-              </strong>
-              {currentSelection.model ? (
-                <code className="rounded-md bg-background px-2 py-0.5 text-xs text-foreground">
-                  {currentSelection.model}
-                </code>
-              ) : null}
-            </div>
-          ) : activeModelSettings && credentialStatusesLoaded ? (
-            <div className="mt-3 flex items-center gap-2 rounded-xl border border-[color-mix(in_srgb,var(--warning)_28%,var(--border))] bg-[var(--warning-soft)] px-4 py-3 text-sm font-medium text-[var(--warning)]">
-              <LockKeyhole className="size-4 shrink-0" aria-hidden />
-              {isOptionalFeatureType(activeType.id) &&
-              !getActiveLocalModelSelection(activeModelSettings, activeType.id)
-                ? t("desktop.apiKeys.featureOff")
-                : t("desktop.apiKeys.currentNotConfigured")}
-            </div>
-          ) : null}
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">{quick.keep}</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              to="/spaces"
+              className="rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"
+            >
+              {quick.continue}
+            </Link>
+            <button
+              type="button"
+              className="text-sm text-primary hover:underline"
+              onClick={() => setShowRecommended(true)}
+            >
+              {quick.replace}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <ProviderQuickSetupCard
+          settings={activeModelSettings}
+          statuses={statuses}
+          onConnected={(settings, nextStatuses) => {
+            setActiveModelSettings(settings);
+            setStatuses(nextStatuses);
+            setSelectedProviders((current) => ({
+              ...current,
+              chat: settings.chatProvider,
+            }));
+            setModelDrafts((current) => ({
+              ...current,
+              [`chat.${settings.chatProvider}`]: settings.chatModel,
+            }));
+            setShowRecommended(false);
+          }}
+        />
+      )}
 
-          {activeType.id === "embedding" && vectorStatus ? (
-            <div className="mt-3 rounded-xl border border-border bg-[var(--surface-elevated)] px-4 py-3 text-sm">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div>
-                  <p className="font-medium text-foreground">
-                    {t("desktop.runtime.vectorHeading", {
-                      status: t(vectorStatusLabelKeys[vectorStatus.status]),
-                    })}
-                  </p>
-                  <p className="mt-1 text-muted-foreground">
-                    {t(vectorStatusDescriptionKeys[vectorStatus.status])}
-                  </p>
-                </div>
-                {vectorStatus.status === "failed" ? (
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 font-medium text-foreground disabled:opacity-50"
-                    disabled={retryingIndex}
-                    onClick={() => void retryEmbeddingIndex()}
-                  >
-                    {retryingIndex ? (
-                      <LoaderCircle
-                        className="size-4 animate-spin"
-                        aria-hidden
-                      />
-                    ) : (
-                      <RefreshCcw className="size-4" aria-hidden />
-                    )}
-                    {t("desktop.runtime.retryIndex")}
-                  </button>
-                ) : null}
-              </div>
-              <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full bg-primary transition-[width]"
-                  style={{
-                    width: `${vectorStatus.lexicalChunks === 0 ? 0 : Math.min(100, (vectorStatus.indexedVectors / vectorStatus.lexicalChunks) * 100)}%`,
-                  }}
-                />
-              </div>
-              <p className="mt-1.5 text-xs text-muted-foreground">
-                {t("desktop.runtime.vectorProgress", {
-                  indexed: vectorStatus.indexedVectors,
-                  total: vectorStatus.lexicalChunks,
-                })}
-              </p>
-              {vectorStatus.error ? (
-                <p className="mt-2 text-xs text-destructive">
-                  {vectorStatus.error}
-                </p>
-              ) : null}
-            </div>
-          ) : null}
+      <section
+        className="rounded-2xl border bg-card p-5"
+        aria-labelledby="optional-features-title"
+      >
+        <h3 id="optional-features-title" className="font-semibold">
+          {quick.optionalTitle}
+        </h3>
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+          {quick.optionalHint}
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {(
+            [
+              ["audio", AudioLines, quick.voice],
+              ["image", ImageIcon, quick.image],
+              ["search", Search, quick.search],
+            ] as const
+          ).map(([type, Icon, label]) => (
+            <button
+              key={type}
+              type="button"
+              onClick={() => {
+                setActiveTypeId(type);
+                setAdvancedOpen(true);
+              }}
+              className="inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm text-muted-foreground hover:border-primary/30 hover:text-foreground"
+            >
+              <Icon className="size-4" aria-hidden />
+              {label}
+            </button>
+          ))}
+        </div>
+      </section>
 
-          <div className="mt-3 flex flex-wrap gap-2" role="list">
-            {activeType.providers
-              .filter((provider) => provider !== "none")
-              .map((providerId) => {
-                const provider = providerId as LocalProviderId;
-                const active = provider === selectedProvider;
-                const inUse = currentSelection?.provider === provider;
-                const ready =
-                  (provider !== "codex" || codexAuth?.signedIn === true) &&
-                  hasRequiredLocalProviderCredentials(
-                    activeType.id,
-                    provider,
-                    statuses,
-                  ) &&
-                  !requiresBuiltinEmbeddingDownload(
-                    activeType.id,
-                    provider,
-                    builtinModelStatus,
-                  );
+      <details
+        className="rounded-2xl border bg-card"
+        open={advancedOpen}
+        onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}
+      >
+        <summary className="cursor-pointer px-5 py-4 text-sm font-semibold text-muted-foreground hover:text-foreground">
+          {quick.advanced}
+        </summary>
+        <div className="grid gap-6 border-t p-5 lg:grid-cols-[minmax(0,15rem)_minmax(0,1fr)]">
+          <section aria-labelledby="provider-type-title">
+            <h3
+              id="provider-type-title"
+              className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground"
+            >
+              {t("desktop.apiKeys.chooseType")}
+            </h3>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-1">
+              {PROVIDER_TYPES.map(({ id, labelKey, icon: Icon }) => {
+                const active = id === activeType.id;
+                const featureEnabled = isOptionalFeatureType(id)
+                  ? Boolean(
+                      getActiveLocalModelSelection(activeModelSettings, id),
+                    )
+                  : false;
                 return (
-                  <button
-                    key={provider}
-                    type="button"
-                    role="listitem"
-                    aria-pressed={active}
+                  <div
+                    key={id}
                     className={cn(
-                      "inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm transition-colors",
+                      "flex items-center gap-2 rounded-xl border px-3 py-3 transition-colors",
                       active
-                        ? "border-primary bg-[var(--course-content-surface-accent)] font-medium text-primary shadow-[inset_0_0_0_1px_var(--primary)]"
-                        : inUse
-                          ? "border-[color-mix(in_srgb,var(--success)_36%,var(--border))] bg-[var(--success-soft)] text-foreground"
-                          : "border-border bg-card text-foreground hover:border-[var(--border-strong)] hover:bg-[var(--surface-elevated)]",
+                        ? "border-primary bg-[var(--course-content-surface-accent)] text-primary shadow-[inset_0_0_0_1px_var(--primary)]"
+                        : "border-border bg-card text-muted-foreground hover:border-[var(--border-strong)] hover:bg-[var(--surface-elevated)] hover:text-foreground",
                     )}
-                    onClick={() => {
-                      setSelectedProviders((current) => ({
-                        ...current,
-                        [activeType.id]: provider,
-                      }));
-                      setModelDrafts((current) => ({
-                        ...current,
-                        [modelDraftKey(activeType.id, provider)]:
-                          current[modelDraftKey(activeType.id, provider)] ??
-                          (provider === "codex"
-                            ? codexModelChoices[0]
-                            : modelChoices(activeType.id, provider)[0]) ??
-                          "",
-                      }));
-                    }}
                   >
-                    {ready ? (
-                      <CheckCircle2
-                        className="size-3.5 text-[var(--success)]"
-                        aria-hidden
+                    <button
+                      type="button"
+                      aria-pressed={active}
+                      className="flex min-w-0 flex-1 items-center gap-2.5 text-left text-sm font-medium"
+                      onClick={() => setActiveTypeId(id)}
+                    >
+                      <Icon className="size-4 shrink-0" aria-hidden />
+                      {t(labelKey)}
+                    </button>
+                    {isOptionalFeatureType(id) ? (
+                      <Switch
+                        size="sm"
+                        checked={featureEnabled}
+                        disabled={busyFeature === id || Boolean(busyProvider)}
+                        aria-label={t(
+                          id === "image"
+                            ? "desktop.apiKeys.toggleImageFeature"
+                            : "desktop.apiKeys.toggleAudioFeature",
+                        )}
+                        onCheckedChange={(enabled) =>
+                          void toggleOptionalFeature(id, enabled)
+                        }
                       />
-                    ) : (
-                      <LockKeyhole
-                        className="size-3.5 text-muted-foreground"
-                        aria-hidden
-                      />
-                    )}
-                    {providerLabels[provider] ?? provider}
-                    {inUse ? (
-                      <span className="rounded-full bg-[var(--success-100)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--success-700)]">
-                        {t("desktop.apiKeys.inUse")}
-                      </span>
                     ) : null}
-                  </button>
+                  </div>
                 );
               })}
-          </div>
-
-          {activeType.id === "chat" &&
-          selectedProvider === "custom" &&
-          activeModelSettings ? (
-            <div className="mt-4">
-              <CustomChatEndpointsPanel
-                settings={activeModelSettings}
-                statuses={statuses}
-                busy={busyProvider === "custom"}
-                onSettingsChange={setActiveModelSettings}
-                onStatusesChange={setStatuses}
-                onBusyChange={(nextBusy) =>
-                  setBusyProvider(nextBusy ? "custom" : undefined)
-                }
-                onError={setError}
-                onNotice={setNotice}
-              />
             </div>
-          ) : (
-            <>
-              {activeType.id === "chat" && selectedProvider === "codex" ? (
-                <CodexAuthPanel
-                  auth={codexAuth}
-                  catalog={codexCatalog}
-                  usage={codexUsage}
-                  busy={codexAuthBusy}
-                  modelId={
-                    modelDrafts[modelDraftKey("chat", "codex")] ??
-                    activeModelSettings?.chatModel ??
-                    codexModelChoices[0] ??
-                    ""
-                  }
-                  reasoningEffort={codexReasoningEffortForModel}
-                  onLogin={() => void startCodexLogin()}
-                  onCancel={() => void cancelCodexLogin()}
-                  onLogout={() => void logoutCodex()}
-                  onRefresh={async () => {
-                    const status = await bridge.codexAuth.status();
-                    setCodexAuth(status);
-                    if (status.signedIn) {
-                      const [catalogResponse, usageResponse] = await Promise.all([
-                        fetch("/api/local/ai-models/codex-models"),
-                        fetch("/api/local/ai-models/codex-usage"),
-                      ]);
-                      if (catalogResponse.ok)
-                        setCodexCatalog(
-                          (await catalogResponse.json()) as CodexModelCatalog,
-                        );
-                      if (usageResponse.ok)
-                        setCodexUsage(
-                          (await usageResponse.json()) as CodexUsage,
-                        );
-                    }
-                  }}
-                  onReasoningEffortChange={(effort) => {
-                    setActiveModelSettings((current) =>
-                      current ? { ...current, codexReasoningEffort: effort } : current,
+          </section>
+
+          <section className="min-w-0" aria-labelledby="provider-list-title">
+            <div>
+              <h3 id="provider-list-title" className="font-semibold">
+                {t("desktop.apiKeys.chooseProvider", {
+                  type: t(activeType.labelKey),
+                })}
+              </h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {t("desktop.apiKeys.providerDescription")}
+              </p>
+            </div>
+
+            {currentSelection ? (
+              <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-[color-mix(in_srgb,var(--success)_28%,var(--border))] bg-[var(--success-soft)] px-4 py-3 text-sm">
+                <span className="inline-flex items-center gap-1.5 font-medium text-[var(--success)]">
+                  <CheckCircle2 className="size-4" aria-hidden />
+                  {t("desktop.apiKeys.currentlyUsing")}
+                </span>
+                <strong className="text-foreground">
+                  {currentSelection.provider === "custom" &&
+                  activeModelSettings?.customChatEndpoints.activeProfileId
+                    ? (activeModelSettings.customChatEndpoints.profiles.find(
+                        (profile) =>
+                          profile.id ===
+                          activeModelSettings.customChatEndpoints
+                            .activeProfileId,
+                      )?.name ?? providerLabels.custom)
+                    : (providerLabels[currentSelection.provider] ??
+                      currentSelection.provider)}
+                </strong>
+                {currentSelection.model ? (
+                  <code className="rounded-md bg-background px-2 py-0.5 text-xs text-foreground">
+                    {currentSelection.model}
+                  </code>
+                ) : null}
+              </div>
+            ) : activeModelSettings && credentialStatusesLoaded ? (
+              <div className="mt-3 flex items-center gap-2 rounded-xl border border-[color-mix(in_srgb,var(--warning)_28%,var(--border))] bg-[var(--warning-soft)] px-4 py-3 text-sm font-medium text-[var(--warning)]">
+                <LockKeyhole className="size-4 shrink-0" aria-hidden />
+                {isOptionalFeatureType(activeType.id) &&
+                !getActiveLocalModelSelection(
+                  activeModelSettings,
+                  activeType.id,
+                )
+                  ? t("desktop.apiKeys.featureOff")
+                  : t("desktop.apiKeys.currentNotConfigured")}
+              </div>
+            ) : null}
+
+            {activeType.id === "embedding" && vectorStatus ? (
+              <div className="mt-3 rounded-xl border border-border bg-[var(--surface-elevated)] px-4 py-3 text-sm">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <p className="font-medium text-foreground">
+                      {t("desktop.runtime.vectorHeading", {
+                        status: t(vectorStatusLabelKeys[vectorStatus.status]),
+                      })}
+                    </p>
+                    <p className="mt-1 text-muted-foreground">
+                      {t(vectorStatusDescriptionKeys[vectorStatus.status])}
+                    </p>
+                  </div>
+                  {vectorStatus.status === "failed" ? (
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 font-medium text-foreground disabled:opacity-50"
+                      disabled={retryingIndex}
+                      onClick={() => void retryEmbeddingIndex()}
+                    >
+                      {retryingIndex ? (
+                        <LoaderCircle
+                          className="size-4 animate-spin"
+                          aria-hidden
+                        />
+                      ) : (
+                        <RefreshCcw className="size-4" aria-hidden />
+                      )}
+                      {t("desktop.runtime.retryIndex")}
+                    </button>
+                  ) : null}
+                </div>
+                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-primary transition-[width]"
+                    style={{
+                      width: `${vectorStatus.lexicalChunks === 0 ? 0 : Math.min(100, (vectorStatus.indexedVectors / vectorStatus.lexicalChunks) * 100)}%`,
+                    }}
+                  />
+                </div>
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  {t("desktop.runtime.vectorProgress", {
+                    indexed: vectorStatus.indexedVectors,
+                    total: vectorStatus.lexicalChunks,
+                  })}
+                </p>
+                {vectorStatus.error ? (
+                  <p className="mt-2 text-xs text-destructive">
+                    {vectorStatus.error}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
+
+            <div className="mt-3 flex flex-wrap gap-2" role="list">
+              {activeType.providers
+                .filter((provider) => provider !== "none")
+                .map((providerId) => {
+                  const provider = providerId as LocalProviderId;
+                  const active = provider === selectedProvider;
+                  const inUse = currentSelection?.provider === provider;
+                  const ready =
+                    (provider !== "codex" || codexAuth?.signedIn === true) &&
+                    hasRequiredLocalProviderCredentials(
+                      activeType.id,
+                      provider,
+                      statuses,
+                    ) &&
+                    !requiresBuiltinEmbeddingDownload(
+                      activeType.id,
+                      provider,
+                      builtinModelStatus,
                     );
-                    const selectedModel =
+                  return (
+                    <button
+                      key={provider}
+                      type="button"
+                      role="listitem"
+                      aria-pressed={active}
+                      className={cn(
+                        "inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm transition-colors",
+                        active
+                          ? "border-primary bg-[var(--course-content-surface-accent)] font-medium text-primary shadow-[inset_0_0_0_1px_var(--primary)]"
+                          : inUse
+                            ? "border-[color-mix(in_srgb,var(--success)_36%,var(--border))] bg-[var(--success-soft)] text-foreground"
+                            : "border-border bg-card text-foreground hover:border-[var(--border-strong)] hover:bg-[var(--surface-elevated)]",
+                      )}
+                      onClick={() => {
+                        setSelectedProviders((current) => ({
+                          ...current,
+                          [activeType.id]: provider,
+                        }));
+                        setModelDrafts((current) => ({
+                          ...current,
+                          [modelDraftKey(activeType.id, provider)]:
+                            current[modelDraftKey(activeType.id, provider)] ??
+                            (provider === "codex"
+                              ? codexModelChoices[0]
+                              : modelChoices(activeType.id, provider)[0]) ??
+                            "",
+                        }));
+                      }}
+                    >
+                      {ready ? (
+                        <CheckCircle2
+                          className="size-3.5 text-[var(--success)]"
+                          aria-hidden
+                        />
+                      ) : (
+                        <LockKeyhole
+                          className="size-3.5 text-muted-foreground"
+                          aria-hidden
+                        />
+                      )}
+                      {providerLabels[provider] ?? provider}
+                      {inUse ? (
+                        <span className="rounded-full bg-[var(--success-100)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--success-700)]">
+                          {t("desktop.apiKeys.inUse")}
+                        </span>
+                      ) : null}
+                    </button>
+                  );
+                })}
+            </div>
+
+            {activeType.id === "chat" &&
+            selectedProvider === "custom" &&
+            activeModelSettings ? (
+              <div className="mt-4">
+                <CustomChatEndpointsPanel
+                  settings={activeModelSettings}
+                  statuses={statuses}
+                  busy={busyProvider === "custom"}
+                  onSettingsChange={setActiveModelSettings}
+                  onStatusesChange={setStatuses}
+                  onBusyChange={(nextBusy) =>
+                    setBusyProvider(nextBusy ? "custom" : undefined)
+                  }
+                  onError={setError}
+                  onNotice={setNotice}
+                />
+              </div>
+            ) : (
+              <>
+                {activeType.id === "chat" && selectedProvider === "codex" ? (
+                  <CodexAuthPanel
+                    auth={codexAuth}
+                    catalog={codexCatalog}
+                    usage={codexUsage}
+                    busy={codexAuthBusy}
+                    modelId={
                       modelDrafts[modelDraftKey("chat", "codex")] ??
                       activeModelSettings?.chatModel ??
                       codexModelChoices[0] ??
+                      ""
+                    }
+                    reasoningEffort={codexReasoningEffortForModel}
+                    onLogin={() => void startCodexLogin()}
+                    onCancel={() => void cancelCodexLogin()}
+                    onLogout={() => void logoutCodex()}
+                    onRefresh={async () => {
+                      const status = await bridge.codexAuth.status();
+                      setCodexAuth(status);
+                      if (status.signedIn) {
+                        const [catalogResponse, usageResponse] =
+                          await Promise.all([
+                            fetch("/api/local/ai-models/codex-models"),
+                            fetch("/api/local/ai-models/codex-usage"),
+                          ]);
+                        if (catalogResponse.ok)
+                          setCodexCatalog(
+                            (await catalogResponse.json()) as CodexModelCatalog,
+                          );
+                        if (usageResponse.ok)
+                          setCodexUsage(
+                            (await usageResponse.json()) as CodexUsage,
+                          );
+                      }
+                    }}
+                    onReasoningEffortChange={(effort) => {
+                      setActiveModelSettings((current) =>
+                        current
+                          ? { ...current, codexReasoningEffort: effort }
+                          : current,
+                      );
+                      const selectedModel =
+                        modelDrafts[modelDraftKey("chat", "codex")] ??
+                        activeModelSettings?.chatModel ??
+                        codexModelChoices[0] ??
+                        "";
+                      if (!selectedModel) return;
+                      void fetch("/api/local/ai-models", {
+                        method: "PATCH",
+                        headers: { "content-type": "application/json" },
+                        body: JSON.stringify({
+                          capability: "chat",
+                          providerId: "codex",
+                          model: selectedModel,
+                          codexReasoningEffort: effort,
+                        }),
+                      });
+                    }}
+                  />
+                ) : null}
+                <ProviderCredentialPanel
+                  key={`${activeType.id}.${selectedProvider}`}
+                  providerId={selectedProvider}
+                  fields={activeType.credentialFields[selectedProvider] ?? []}
+                  capability={activeType.id}
+                  models={
+                    selectedProvider === "codex"
+                      ? codexModelChoices
+                      : modelChoices(activeType.id, selectedProvider)
+                  }
+                  model={
+                    modelDrafts[
+                      modelDraftKey(activeType.id, selectedProvider)
+                    ] ??
+                    (selectedProvider === "codex"
+                      ? codexModelChoices[0]
+                      : modelChoices(activeType.id, selectedProvider)[0]) ??
+                    ""
+                  }
+                  activeModel={
+                    currentSelection?.provider === selectedProvider
+                      ? currentSelection?.model
+                      : undefined
+                  }
+                  isActiveProvider={
+                    currentSelection?.provider === selectedProvider
+                  }
+                  statuses={statuses}
+                  drafts={drafts}
+                  savedFieldValues={{
+                    ...(activeModelSettings?.customBaseUrl
+                      ? { "custom.baseUrl": activeModelSettings.customBaseUrl }
+                      : {}),
+                    ...(activeModelSettings?.customEmbeddingBaseUrl
+                      ? {
+                          "custom_embedding.baseUrl":
+                            activeModelSettings.customEmbeddingBaseUrl,
+                        }
+                      : {}),
+                    ...(activeModelSettings?.qwenBaseUrl
+                      ? { "qwen.baseUrl": activeModelSettings.qwenBaseUrl }
+                      : {}),
+                  }}
+                  busy={busyProvider === selectedProvider}
+                  thinking={chatThinkingFromSettings(activeModelSettings)}
+                  codexSignedIn={codexAuth?.signedIn ?? false}
+                  onThinkingChange={(patch) => {
+                    setActiveModelSettings((current) =>
+                      current ? { ...current, ...patch } : current,
+                    );
+                    if (
+                      activeType.id !== "chat" ||
+                      currentSelection?.provider !== selectedProvider
+                    ) {
+                      return;
+                    }
+                    const model =
+                      modelDrafts[modelDraftKey("chat", selectedProvider)] ??
+                      currentSelection.model ??
                       "";
-                    if (!selectedModel) return;
+                    if (!model.trim()) return;
+                    setError(undefined);
+                    setBusyProvider(selectedProvider);
                     void fetch("/api/local/ai-models", {
                       method: "PATCH",
                       headers: { "content-type": "application/json" },
                       body: JSON.stringify({
                         capability: "chat",
-                        providerId: "codex",
-                        model: selectedModel,
-                        codexReasoningEffort: effort,
+                        providerId: selectedProvider,
+                        model: model.trim(),
+                        ...chatThinkingFromSettings({
+                          ...activeModelSettings,
+                          ...patch,
+                        }),
                       }),
-                    });
+                    })
+                      .then((response) => {
+                        if (!response.ok)
+                          throw new Error(
+                            `Model settings update failed (${response.status})`,
+                          );
+                      })
+                      .catch((cause: unknown) => {
+                        setError(
+                          cause instanceof Error
+                            ? cause.message
+                            : String(cause),
+                        );
+                      })
+                      .finally(() => {
+                        setBusyProvider(undefined);
+                      });
                   }}
+                  onDraftChange={(key, value) =>
+                    setDrafts((current) => ({ ...current, [key]: value }))
+                  }
+                  onModelChange={(value) =>
+                    setModelDrafts((current) => ({
+                      ...current,
+                      [modelDraftKey(activeType.id, selectedProvider)]: value,
+                    }))
+                  }
+                  onSaveConfiguration={saveProviderConfiguration}
+                  onRemove={remove}
                 />
-              ) : null}
-            <ProviderCredentialPanel
-              key={`${activeType.id}.${selectedProvider}`}
-              providerId={selectedProvider}
-              fields={activeType.credentialFields[selectedProvider] ?? []}
-              capability={activeType.id}
-              models={
-                selectedProvider === "codex"
-                  ? codexModelChoices
-                  : modelChoices(activeType.id, selectedProvider)
-              }
-              model={
-                modelDrafts[modelDraftKey(activeType.id, selectedProvider)] ??
-                (selectedProvider === "codex"
-                  ? codexModelChoices[0]
-                  : modelChoices(activeType.id, selectedProvider)[0]) ??
-                ""
-              }
-              activeModel={
-                currentSelection?.provider === selectedProvider
-                  ? currentSelection?.model
-                  : undefined
-              }
-              isActiveProvider={currentSelection?.provider === selectedProvider}
-              statuses={statuses}
-              drafts={drafts}
-              savedFieldValues={{
-                ...(activeModelSettings?.customBaseUrl
-                  ? { "custom.baseUrl": activeModelSettings.customBaseUrl }
-                  : {}),
-                ...(activeModelSettings?.customEmbeddingBaseUrl
-                  ? {
-                      "custom_embedding.baseUrl":
-                        activeModelSettings.customEmbeddingBaseUrl,
-                    }
-                  : {}),
-                ...(activeModelSettings?.qwenBaseUrl
-                  ? { "qwen.baseUrl": activeModelSettings.qwenBaseUrl }
-                  : {}),
-              }}
-              busy={busyProvider === selectedProvider}
-              thinking={chatThinkingFromSettings(activeModelSettings)}
-              codexSignedIn={codexAuth?.signedIn ?? false}
-              onThinkingChange={(patch) => {
-                setActiveModelSettings((current) =>
-                  current ? { ...current, ...patch } : current,
-                );
-                if (
-                  activeType.id !== "chat" ||
-                  currentSelection?.provider !== selectedProvider
-                ) {
-                  return;
-                }
-                const model =
-                  modelDrafts[modelDraftKey("chat", selectedProvider)] ??
-                  currentSelection.model ??
-                  "";
-                if (!model.trim()) return;
-                setError(undefined);
-                setBusyProvider(selectedProvider);
-                void fetch("/api/local/ai-models", {
-                  method: "PATCH",
-                  headers: { "content-type": "application/json" },
-                  body: JSON.stringify({
-                    capability: "chat",
-                    providerId: selectedProvider,
-                    model: model.trim(),
-                    ...chatThinkingFromSettings({
-                      ...activeModelSettings,
-                      ...patch,
-                    }),
-                  }),
-                }).then((response) => {
-                  if (!response.ok) throw new Error(`Model settings update failed (${response.status})`);
-                }).catch((cause: unknown) => {
-                  setError(cause instanceof Error ? cause.message : String(cause));
-                }).finally(() => {
-                  setBusyProvider(undefined);
-                });
-              }}
-              onDraftChange={(key, value) =>
-                setDrafts((current) => ({ ...current, [key]: value }))
-              }
-              onModelChange={(value) =>
-                setModelDrafts((current) => ({
-                  ...current,
-                  [modelDraftKey(activeType.id, selectedProvider)]: value,
-                }))
-              }
-              onSaveConfiguration={saveProviderConfiguration}
-              onRemove={remove}
-            />
-            </>
-          )}
-          {activeType.id === "chat" && activeModelSettings ? (
-            <GuidedImageModelSettingsPanel settings={activeModelSettings} catalog={codexCatalog} onSaved={setActiveModelSettings} />
-          ) : null}
-        </section>
-      </div>
+              </>
+            )}
+            {activeType.id === "chat" && activeModelSettings ? (
+              <GuidedImageModelSettingsPanel
+                settings={activeModelSettings}
+                catalog={codexCatalog}
+                onSaved={setActiveModelSettings}
+              />
+            ) : null}
+          </section>
+        </div>
+      </details>
       <BuiltinEmbeddingDownloadDialog
         open={downloadDialogOpen}
         status={builtinModelStatus}
@@ -1456,7 +1601,11 @@ function CodexAuthPanel({
             <button
               type="button"
               className="rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-foreground"
-              onClick={() => void getDesktopBridge().external.openHttpsUrl(auth.pendingLogin!.verificationUrl)}
+              onClick={() =>
+                void getDesktopBridge().external.openHttpsUrl(
+                  auth.pendingLogin!.verificationUrl,
+                )
+              }
             >
               {t("desktop.apiKeys.codex.openAuth")}
             </button>
@@ -1484,9 +1633,15 @@ function CodexAuthPanel({
             </div>
             <select
               className="native-select max-w-[9rem] rounded-lg border border-border bg-background px-2 py-1.5 text-sm text-foreground"
-              value={availableEfforts.includes(reasoningEffort) ? reasoningEffort : availableEfforts[0] ?? "medium"}
+              value={
+                availableEfforts.includes(reasoningEffort)
+                  ? reasoningEffort
+                  : (availableEfforts[0] ?? "medium")
+              }
               onChange={(event) =>
-                onReasoningEffortChange(event.target.value as CodexReasoningEffort)
+                onReasoningEffortChange(
+                  event.target.value as CodexReasoningEffort,
+                )
               }
             >
               {availableEfforts.map((effort) => (
@@ -1646,18 +1801,29 @@ function VendorThinkingControls({
     return (
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-medium text-foreground">{messages.title}</p>
-          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{messages.hint}</p>
+          <p className="text-sm font-medium text-foreground">
+            {messages.title}
+          </p>
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+            {messages.hint}
+          </p>
         </div>
         <select
           className="native-select max-w-[10rem] shrink-0 rounded-lg border border-border bg-background px-2 py-1.5 text-sm text-foreground disabled:opacity-50"
           aria-label={messages.title}
           value={thinking.minimaxReasoningEffort}
           disabled={disabled}
-          onChange={(event) => onChange?.({ minimaxReasoningEffort: event.target.value as MinimaxReasoningEffort })}
+          onChange={(event) =>
+            onChange?.({
+              minimaxReasoningEffort: event.target
+                .value as MinimaxReasoningEffort,
+            })
+          }
         >
           {MINIMAX_REASONING_EFFORTS.map((effort, index) => (
-            <option key={effort} value={effort}>{messages.levels[index]}</option>
+            <option key={effort} value={effort}>
+              {messages.levels[index]}
+            </option>
           ))}
         </select>
       </div>
@@ -1694,15 +1860,15 @@ function VendorThinkingControls({
                     ? t("settings.llm.customThinkingSuffix")
                     : t("settings.llm.qwenThinkingSuffix")
                 }`
-            : control.kind === "switch"
-              ? `${t("settings.llm.ollamaThinkingPrefix")} think ${t("settings.llm.ollamaThinkingSuffix")}`
-              : control.configurable
-                ? `${t("settings.llm.doubaoThinkingPrefix")} thinking.type ${
-                    control.customEndpoint
-                      ? t("settings.llm.customThinkingSuffix")
-                      : t("settings.llm.doubaoThinkingSuffix")
-                  }`
-                : t("settings.llm.doubaoThinkingUnsupported", { model });
+              : control.kind === "switch"
+                ? `${t("settings.llm.ollamaThinkingPrefix")} think ${t("settings.llm.ollamaThinkingSuffix")}`
+                : control.configurable
+                  ? `${t("settings.llm.doubaoThinkingPrefix")} thinking.type ${
+                      control.customEndpoint
+                        ? t("settings.llm.customThinkingSuffix")
+                        : t("settings.llm.doubaoThinkingSuffix")
+                    }`
+                  : t("settings.llm.doubaoThinkingUnsupported", { model });
   const ariaLabel =
     control.kind === "switch" && control.field === "minimaxThinkingEnabled"
       ? t("settings.llm.minimaxThinkingAria")
@@ -1716,9 +1882,9 @@ function VendorThinkingControls({
             : control.kind === "switch" &&
                 control.field === "qwenThinkingEnabled"
               ? t("settings.llm.qwenThinkingAria")
-            : control.kind === "switch"
-              ? t("settings.llm.ollamaThinkingAria")
-              : t("settings.llm.doubaoThinkingAria");
+              : control.kind === "switch"
+                ? t("settings.llm.ollamaThinkingAria")
+                : t("settings.llm.doubaoThinkingAria");
 
   return (
     <div className="flex items-start justify-between gap-3">
@@ -1990,6 +2156,45 @@ export function ProviderCredentialPanel({
   onRemove(providerId: LocalProviderId, fields: string[]): Promise<void>;
 }) {
   const t = useT();
+  const { locale } = useI18n();
+  const catalogMessages = providerSetupMessages(locale);
+  const [liveCatalog, setLiveCatalog] = useState<ProviderModelCatalog>();
+  const [readingModels, setReadingModels] = useState(false);
+  const [catalogError, setCatalogError] = useState<string>();
+  const modelReadVersion = useRef(0);
+  useEffect(() => {
+    modelReadVersion.current++;
+    setLiveCatalog(undefined);
+    setCatalogError(undefined);
+    setReadingModels(false);
+    return () => { modelReadVersion.current++; };
+  }, [drafts[`${providerId}.apiKey`], drafts[`${providerId}.baseUrl`], savedFieldValues[`${providerId}.baseUrl`]]);
+  const availableModels = capability === "chat" && providerId !== "codex"
+    ? liveCatalog?.models.map((entry) => entry.id) ?? [] : models;
+  async function refreshModels() {
+    const version = ++modelReadVersion.current;
+    setReadingModels(true);
+    setCatalogError(undefined);
+    try {
+      if (!window.xueLearnModelCatalog) throw Error(catalogMessages.restart);
+      const result = await window.xueLearnModelCatalog.list({
+        providerId,
+        apiKey: drafts[`${providerId}.apiKey`]?.trim() || undefined,
+        baseUrl: drafts[`${providerId}.baseUrl`]?.trim() || savedFieldValues[`${providerId}.baseUrl`],
+      });
+      if (version !== modelReadVersion.current) return;
+      setLiveCatalog(result);
+      if (result.code !== "ok") {
+        setCatalogError(result.code === "unsupported" ? catalogMessages.unsupported
+          : result.code === "unauthorized" ? catalogMessages.unauthorized
+          : result.code === "missing_credentials" ? catalogMessages.missing
+          : result.code === "empty" ? catalogMessages.empty : catalogMessages.unavailable);
+      } else if (!result.models.some((entry) => entry.id === model) && result.models[0]) {
+        onModelChange(result.models[0].id);
+      }
+    } catch { if (version === modelReadVersion.current) setCatalogError(catalogMessages.unavailable); }
+    finally { if (version === modelReadVersion.current) setReadingModels(false); }
+  }
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState<
     LocalProviderConnectionResult | LocalCapabilityConnectionResult
@@ -2127,7 +2332,7 @@ export function ProviderCredentialPanel({
                 readOnly
                 aria-readonly="true"
               />
-            ) : providerId === "custom" || models.length === 0 ? (
+            ) : availableModels.length === 0 ? (
               <input
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground outline-none transition-colors focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/25"
                 value={model}
@@ -2160,7 +2365,7 @@ export function ProviderCredentialPanel({
                   onModelChange(event.target.value);
                 }}
               >
-                {models.map((modelName) => (
+                {[...new Set([model, ...availableModels])].filter(Boolean).map((modelName) => (
                   <option key={modelName} value={modelName}>
                     {capability === "audio"
                       ? localAudioModelLabel(modelName)
@@ -2169,6 +2374,16 @@ export function ProviderCredentialPanel({
                 ))}
               </select>
             )}
+            {capability === "chat" && providerId !== "codex" ? (
+              <span className="mt-2 block space-y-1.5">
+                <button type="button" className="text-xs font-medium text-primary disabled:opacity-50"
+                  disabled={readingModels || busy} onClick={() => void refreshModels()}>
+                  {readingModels ? catalogMessages.reading : catalogMessages.refresh}
+                </button>
+                {liveCatalog?.code === "ok" ? <span className="block text-xs">{catalogMessages.catalogSource} · {new Date(liveCatalog.fetchedAt).toLocaleTimeString()}</span> : null}
+                {catalogError ? <span role="status" className="block text-xs text-muted-foreground">{catalogError}</span> : null}
+              </span>
+            ) : null}
           </label>
         ) : null}
         {fields.map((field) => {

@@ -21,6 +21,7 @@ import {
 import { runMergedGenerationContextScope } from "../generation/kernel.js";
 import { z } from "zod";
 import { validateUnitPathContract } from "./path-contract.js";
+import { projectApprovedEntryTargets } from "./path-entry-targets.js";
 import {
   canonicalizeAllowlistedEntityReuse,
   prepareUnitCognitiveModelGeneration,
@@ -265,7 +266,7 @@ export type UnitCognitiveModelTargetsReady = {
 type ExternalEntities =
   PreparedUnitCognitiveModelGeneration["externalEntities"];
 type StructuredOutputRunner = typeof runStructuredOutput;
-type TargetPrefixWire = z.infer<
+export type TargetPrefixWire = z.infer<
   typeof unitCognitiveModelTargetPrefixBindingSchema
 >;
 type TargetSuffixWire = z.infer<
@@ -1845,6 +1846,12 @@ export async function generatePreparedUnitCognitiveModelTargetFirst(
     repairRunner,
   );
   if (params.pathContract) {
+    // The approved plan owns prerequisite identities/dimensions/thresholds.
+    // Keep the strict schema/path checks after this deterministic projection.
+    prefixRecovery = {
+      ...prefixRecovery,
+      value: projectApprovedEntryTargets(prefixRecovery.value, prepared.externalEntities, params.pathContract),
+    };
     const boundSchema = targetPrefixWireSchema(
       allowedExternalRefs, new Set(params.planningOutcomeRefs ?? []),
     ).superRefine((value, context) => {

@@ -70,8 +70,11 @@ const config = {
       ? {
           identity: process.env.MACOS_SIGN_IDENTITY,
           hardenedRuntime: true,
-          entitlements: "entitlements.plist",
-          "entitlements-inherit": "entitlements.plist",
+          // Current osx-sign takes per-file options. The legacy inherit key
+          // leaves Helper (Plugin) without allow-jit on Apple silicon.
+          optionsForFile: () => ({
+            entitlements: join(__dirname, "entitlements.plist"),
+          }),
         }
       : undefined,
     osxNotarize:

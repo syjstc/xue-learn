@@ -1,0 +1,108 @@
+#!/usr/bin/env node
+import { createHash } from "node:crypto";
+import { execFileSync, spawnSync } from "node:child_process";
+import {
+  copyFile,
+  mkdir,
+  readdir,
+  readFile,
+  stat,
+  writeFile,
+} from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+if (process.platform !== "darwin")
+  throw Error("Build Mac installers on macOS.");
+const host = path.join(root, "desktop/apps/desktop");
+const { version } = JSON.parse(
+  await readFile(path.join(host, "package.json"), "utf8"),
+);
+async function find(directory, predicate, depth = 0) {
+  if (depth > 5) return [];
+  const entries = await readdir(directory, { withFileTypes: true }).catch(
+    () => [],
+  );
+  const result = [];
+  for (const entry of entries) {
+    const file = path.join(directory, entry.name);
+    if (predicate(file)) result.push(file);
+    else if (entry.isDirectory())
+      result.push(...(await find(file, predicate, depth + 1)));
+  }
+  return result;
+}
+const apps = await find(path.join(host, "out"), (file) =>
+  file.endsWith(".app"),
+);
+const app = apps.find((file) => file.includes(`darwin-${process.arch}`));
+if (!app)
+  throw Error(
+    `No ${process.arch} app bundle found. Run the Mac make command first.`,
+  );
+execFileSync(
+  process.execPath,
+  [path.join(host, "scripts/audit-packaged-resources.mjs"), app],
+  { stdio: "inherit" },
+);
+const installers = await find(path.join(host, "out/make"), (file) =>
+  file.endsWith(".dmg"),
+);
+const installer = installers.find(
+  (file) =>
+    path.basename(file).includes(version) &&
+    path.basename(file).includes(process.arch),
+);
+if (!installer) throw Error(`No ${version} ${process.arch} DMG found.`);
+const destination = path.join(root, ".release/mac");
+await mkdir(destination, { recursive: true });
+const fileName = `HaoHuiXue-${version}-mac-${process.arch}.dmg`;
+const target = path.join(destination, fileName);
+await copyFile(installer, target);
+const sha256 = createHash("sha256")
+  .update(await readFile(target))
+  .digest("hex");
+const signature = spawnSync("codesign", ["--display", "--verbose=4", app], {
+  encoding: "utf8",
+});
+const details = signature.stderr + signature.stdout;
+const identity = details.match(/^Authority=(.+)$/m)?.[1] ?? null;
+const team = details.match(/^TeamIdentifier=(.+)$/m)?.[1] ?? null;
+const notarized =
+  spawnSync("xcrun", ["stapler", "validate", app], { encoding: "utf8" })
+    .status === 0;
+const signatureVerified = spawnSync("codesign", ["--verify", "--deep", "--strict", app], { encoding: "utf8" }).status === 0;
+const developerIdSigned = signatureVerified && Boolean(
+  identity?.startsWith("Developer ID Application:"),
+);
+const manifest = {
+  product: "好会学 Desktop",
+  version,
+  platform: "darwin",
+  arch: process.arch,
+  file: fileName,
+  bytes: (await stat(target)).size,
+  sha256,
+  developerIdSigned,
+  signatureVerified,
+  notarized,
+  signingTeam: team === "not set" ? null : team,
+  distribution: developerIdSigned && notarized ? "signed" : "internal-preview",
+  setup: {
+    providerSelection: "dropdown",
+    recommendedProvider: "deepseek",
+    modelDiscovery: "live-provider-list",
+    manualFallback: true,
+    optional: ["audio", "image", "search"],
+  },
+};
+await writeFile(
+  path.join(destination, "SHA256SUMS"),
+  `${sha256}  ${fileName}\n`,
+);
+await writeFile(
+  path.join(destination, "release-manifest.json"),
+  JSON.stringify(manifest, null, 2) + "\n",
+);
+console.log(JSON.stringify(manifest, null, 2));

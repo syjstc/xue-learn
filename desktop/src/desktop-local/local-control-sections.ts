@@ -9,12 +9,19 @@ import {
   Cloud,
   Shapes,
   Puzzle,
+  Sparkles,
 } from "lucide-react";
 import type { TranslationKey } from "@xue-learn/core/i18n";
 import { isDev } from "@xue-learn/core/dev";
 import { pluginMessages } from "@/features/plugins/messages";
+import { quickSetupMessages } from "./quick-setup";
 
 export const LOCAL_CONTROL_SECTIONS = [
+  {
+    to: "/local/api-keys",
+    label: (locale: string) => quickSetupMessages(locale).setupLink,
+    icon: Sparkles,
+  },
   {
     to: "/local/plugins",
     label: (locale: string) => pluginMessages(locale).title,
@@ -39,11 +46,6 @@ export const LOCAL_CONTROL_SECTIONS = [
     to: "/local/teaching-skills",
     labelKey: "desktop.deviceSettings.teachingSkills",
     icon: BookOpen,
-  },
-  {
-    to: "/local/api-keys",
-    labelKey: "desktop.deviceSettings.apiKeys",
-    icon: KeyRound,
   },
   {
     to: "/local/token-usage",

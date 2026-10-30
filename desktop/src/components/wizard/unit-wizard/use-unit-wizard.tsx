@@ -372,6 +372,32 @@ export function useUnitWizard({
   );
   const assessmentLocked =
     !isMicro && !isOverview && isAssessmentLocked(learningAccess);
+  const [preparingAssessment, setPreparingAssessment] = useState(false);
+  const assessmentRetryAbort = useRef<AbortController | null>(null);
+  useEffect(() => {
+    setPreparingAssessment(false);
+    return () => { assessmentRetryAbort.current?.abort(); assessmentRetryAbort.current = null; };
+  }, [unitId]);
+  async function retryAssessment() {
+    if (preparingAssessment || assessmentRetryAbort.current) return;
+    const abort = new AbortController();
+    assessmentRetryAbort.current = abort;
+    setPreparingAssessment(true);
+    setError("");
+    try {
+      await consumeSsePost(`/api/units/${encodeURIComponent(unitId)}/learning-targets/expand/stream`, {}, (event) => {
+        if (event.type === "learning_access") setLearningAccess(learningAccessFromEvent(event));
+      }, abort.signal);
+      if (abort.signal.aborted) return;
+      setLearningAccess(parseLearningAccess(await apiGet(`/api/units/${encodeURIComponent(unitId)}/learning-access`)));
+      await queryClient.invalidateQueries({ queryKey: ["units", unitId, "learning-targets"] });
+    } catch (cause) {
+      if (!abort.signal.aborted) setError(cause instanceof Error ? cause.message : String(cause));
+    } finally {
+      if (assessmentRetryAbort.current === abort) assessmentRetryAbort.current = null;
+      if (!abort.signal.aborted) setPreparingAssessment(false);
+    }
+  }
   const activityTab =
     structuredTab === "notes"
       ? "cornell"
@@ -2013,6 +2039,8 @@ export function useUnitWizard({
     sessionBusy,
     learningAccess,
     assessmentLocked,
+    preparingAssessment,
+    retryAssessment,
     hydrated,
     error,
     sq,

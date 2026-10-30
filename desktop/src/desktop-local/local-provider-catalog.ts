@@ -44,6 +44,7 @@ export const LOCAL_DEFAULT_MODELS: Record<
   Record<string, readonly string[]>
 > = {
   chat: {
+    qwen: [],
     minimax: [
       "MiniMax-M3",
       "MiniMax-M3.1-Flash",
@@ -107,7 +108,7 @@ export const LOCAL_PROVIDER_CAPABILITIES: Partial<
   deepseek: ["chat"],
   fireworks: ["chat"],
   doubao: ["chat", "image", "audio"],
-  qwen: ["audio"],
+  qwen: ["chat", "audio"],
   cartesia: ["audio"],
   bigmodel: ["chat"],
   ollama: ["chat", "embedding"],
@@ -117,6 +118,7 @@ export const LOCAL_PROVIDER_CAPABILITIES: Partial<
 };
 
 const LOCAL_CHAT_PROVIDER_LABELS: Record<string, string> = {
+  qwen: "Qwen / 阿里云",
   custom: "OpenAI-compatible",
   openai: "OpenAI",
   deepseek: "DeepSeek",

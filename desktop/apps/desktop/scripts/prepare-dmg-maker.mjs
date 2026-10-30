@@ -10,6 +10,11 @@ const execute = promisify(execFile);
 const desktopRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const workspaceRoot = resolve(desktopRoot, "../..");
 const localRequire = createRequire(join(workspaceRoot, "package.json"));
+// Resolve transitive tools from the packages that own them. pnpm workspaces
+// do not expose every transitive dependency beside Desktop's package.json.
+const rebuildRequire = createRequire(localRequire.resolve("@electron/rebuild/package.json"));
+const dmgRequire = createRequire(localRequire.resolve("@electron-forge/maker-dmg/package.json"));
+const appdmgRequire = createRequire(dmgRequire.resolve("appdmg/package.json"));
 
 export async function prepareDmgMaker() {
   const nodeRoot = resolve(dirname(process.execPath), "..");
@@ -19,7 +24,7 @@ export async function prepareDmgMaker() {
       `Cannot build DMG helper: missing Node header ${nodeHeader}`,
     );
   }
-  const nodeGyp = localRequire.resolve("@electron/node-gyp/bin/node-gyp.js");
+  const nodeGyp = rebuildRequire.resolve("@electron/node-gyp/bin/node-gyp.js");
   const environment = { ...process.env };
   for (const key of Object.keys(environment)) {
     if (/(?:API_KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL)/i.test(key)) {
@@ -35,10 +40,17 @@ export async function prepareDmgMaker() {
   ];
   for (const [packageName, binding] of helpers) {
     const packagePath = dirname(
-      localRequire.resolve(`${packageName}/package.json`),
+      appdmgRequire.resolve(`${packageName}/package.json`),
     );
     const bindingPath = join(packagePath, binding);
-    if (existsSync(bindingPath)) continue;
+    if (existsSync(bindingPath)) {
+      try {
+        await execute(process.execPath, ["-e", "require(process.argv[1])", bindingPath], {env:environment});
+        continue;
+      } catch {
+        // A binding built by a different Node ABI must be rebuilt here.
+      }
+    }
     await execute(process.execPath, [nodeGyp, "rebuild", "--release"], {
       cwd: packagePath,
       env: environment,

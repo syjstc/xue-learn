@@ -4,7 +4,11 @@ import { createRoot, type Root } from "react-dom/client";
 import { LocalEmbeddingSetupGate } from "./local-embedding-setup-gate";
 
 let mockPathname = "/local/plugins";
-const mockGetStatuses = jest.fn().mockResolvedValue([]);
+const mockGetStatuses = jest
+  .fn()
+  .mockResolvedValue([
+    { providerId: "deepseek", configuredFields: ["apiKey"] },
+  ]);
 const mockGetStatus = jest.fn().mockResolvedValue({
   state: "not-installed",
   downloadedBytes: 0,
@@ -60,6 +64,8 @@ describe("plugin management before embedding setup", () => {
     fetchMock = jest.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
+        chatProvider: "deepseek",
+        chatModel: "deepseek-flash",
         embeddingProvider: "builtin",
         embeddingModel: "builtin-model",
       }),
@@ -99,6 +105,23 @@ describe("plugin management before embedding setup", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it("keeps provider settings reachable before any models are configured", async () => {
+    mockPathname = "/local/api-keys";
+    await render();
+    expect(container.querySelector('[data-testid="content"]')).not.toBeNull();
+    expect(mockGetBridge).not.toHaveBeenCalled();
+  });
+
+  it("starts with a provider choice instead of a model download for an unconfigured user", async () => {
+    mockGetStatuses.mockResolvedValueOnce([]);
+    mockPathname = "/spaces";
+    await render();
+    expect(container.textContent).toContain("DeepSeek");
+    expect(container.querySelector('select#quick-provider')).not.toBeNull();
+    expect(container.querySelector('[data-testid="content"]')).toBeNull();
+    expect(container.querySelector('a[href="/local/api-keys"]')).not.toBeNull();
+  });
+
   it.each([
     "/spaces",
     "/local/resources",
@@ -109,7 +132,7 @@ describe("plugin management before embedding setup", () => {
     await render();
     expect(fetchMock).toHaveBeenCalledWith("/api/local/ai-models");
     expect(container.querySelector('[data-testid="content"]')).toBeNull();
-    expect(container.textContent).toContain("desktop.embeddingSetup.title");
+    expect(container.textContent).toContain("Prepare knowledge search");
     expect(
       container.querySelector('a[href="/local/plugins"]')?.textContent,
     ).toBe("Manage desktop plugins");
@@ -125,7 +148,7 @@ describe("plugin management before embedding setup", () => {
     mockPathname = "/spaces";
     await render();
     expect(container.querySelector('[data-testid="content"]')).toBeNull();
-    expect(container.textContent).toContain("desktop.embeddingSetup.title");
+    expect(container.textContent).toContain("Prepare knowledge search");
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });

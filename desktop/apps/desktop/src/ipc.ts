@@ -24,7 +24,13 @@ import type { WorkspaceCatalog } from "./workspace-catalog.ts";
 import type { PersonalSyncKeyManager } from "./personal-sync-keys.ts";
 import type { FolderPersonalSyncCoordinator } from "./folder-personal-sync-coordinator.ts";
 import type { InteractiveHtmlPlayground } from "./interactive-html-store.ts";
-import {renderReadingPdf} from "./reading-pdf.ts";
+import { renderReadingPdf } from "./reading-pdf.ts";
+import {
+  listProviderModels,
+  modelCatalogRequestSchema,
+  providerCredentialsForSave,
+} from "./provider-model-catalog";
+import { customChatProfileCredentialProviderId } from "@xue-learn/core/runtime-contracts";
 
 export type DesktopIpcDependencies = {
   runtime: RuntimeDescriptor;
@@ -76,7 +82,45 @@ export function registerDesktopIpc(
   dependencies: DesktopIpcDependencies,
 ): () => void {
   const handleChannels = Object.values(DESKTOP_IPC);
-  ipcMain.handle(DESKTOP_IPC.readingPdf, (_event, raw: unknown) => renderReadingPdf(raw));
+  ipcMain.handle(DESKTOP_IPC.providerModels, async (_event, raw: unknown) =>
+    listProviderModels(raw, await dependencies.vault.readForSidecar()),
+  );
+  ipcMain.handle(
+    DESKTOP_IPC.providerCredentialSave,
+    async (_event, raw: unknown) => {
+      const input = modelCatalogRequestSchema.parse(raw);
+      if (input.providerId === "codex" || input.providerId === "ollama")
+        return dependencies.vault.getStatuses();
+      const previous = await dependencies.vault.readForSidecar();
+      const custom = input.providerId === "custom";
+      const values = providerCredentialsForSave(input, previous);
+      const target =
+        custom && input.customProfileId
+          ? customChatProfileCredentialProviderId(input.customProfileId)
+          : input.providerId;
+      await dependencies.vault.mutate(
+        credentialMutationSchema.parse({
+          action: "set",
+          providerId: target,
+          values,
+        }),
+      );
+      // Persist a generic endpoint and its active compatibility slot atomically
+      // before a single restart; the renderer may navigate during that restart.
+      if (custom && target !== "custom")
+        await dependencies.vault.cloneProvider(target, "custom");
+      const statuses = await dependencies.vault.getStatuses();
+      setTimeout(
+        () =>
+          void dependencies.afterCredentialMutation().catch(() => undefined),
+        0,
+      );
+      return statuses;
+    },
+  );
+  ipcMain.handle(DESKTOP_IPC.readingPdf, (_event, raw: unknown) =>
+    renderReadingPdf(raw),
+  );
   ipcMain.handle(DESKTOP_IPC.runtimeDescriptor, () => dependencies.runtime);
   ipcMain.handle(DESKTOP_IPC.sidecarHealth, () => dependencies.getHealth());
   ipcMain.handle(DESKTOP_IPC.sidecarRestart, () => dependencies.restart());
@@ -193,7 +237,9 @@ export function registerDesktopIpc(
     const input = workspaceSwitchInputSchema.parse(raw);
     let workspace;
     try {
-      workspace = await dependencies.workspaceCatalog.switchTo(input.workspaceId);
+      workspace = await dependencies.workspaceCatalog.switchTo(
+        input.workspaceId,
+      );
     } catch (error) {
       throw error;
     }

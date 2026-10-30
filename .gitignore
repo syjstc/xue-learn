@@ -6,3 +6,5 @@
 /desktop/artifacts/
 /desktop/vendor/
 .DS_Store
+
+/.release/

@@ -42,6 +42,7 @@ export type TavilySearchPayload = {
 };
 
 type SearchRunOptions = {
+  signal?: AbortSignal;
   maxResults: number;
   searchDepth?: "basic" | "advanced";
   extractTopUrls?: number;
@@ -79,6 +80,7 @@ async function extractPagesForPrompt(
 
   try {
     const response = await tvly.extract(urls, {
+      timeout: 15,
       extractDepth: "advanced",
       format: "markdown",
       query,
@@ -138,7 +140,9 @@ async function runSearchWithSources(
   const started = Date.now();
 
   try {
+    options.signal?.throwIfAborted();
     const response = await tvly.search(query, {
+      timeout: options.signal ? 7 : 20,
       searchDepth,
       maxResults: options.maxResults,
       topic: "general",
@@ -163,6 +167,7 @@ async function runSearchWithSources(
     if (snippetBody) parts.push(snippetBody);
 
     let extractLog: ReturnType<typeof buildTavilyLogResponse>["extract"];
+    options.signal?.throwIfAborted();
     if (extractTopUrls > 0 && results.length > 0) {
       const urls = uniqueUrls(results, extractTopUrls);
       const { promptSection, pages, failed } = await extractPagesForPrompt(
@@ -217,6 +222,7 @@ async function runSearchWithSources(
 export async function searchLearningPathWithSources(
   query: string,
   options?: {
+    signal?: AbortSignal;
     purpose?: LearningPathSearchPurpose;
     maxResults?: number;
     extractTopUrls?: number;
@@ -233,6 +239,7 @@ export async function searchLearningPathWithSources(
       searchDepth: "advanced",
       extractTopUrls: options?.extractTopUrls ?? preset.extractTopUrls,
       meta: options?.meta,
+      signal: options?.signal,
     },
   );
 }

@@ -19,12 +19,12 @@ import { LocalApiKeysPage } from "./local-api-keys-page.tsx";
 import { LocalLlmLogsPage } from "./local-llm-logs-page.tsx";
 import { LocalErrorLogsPage } from "./local-error-logs-page.tsx";
 import { LocalTeachingSkillsPage } from "./local-teaching-skills-page.tsx";
-import {LocalDisplayPluginsPage} from "./local-display-plugins-page.tsx";
+import { LocalDisplayPluginsPage } from "./local-display-plugins-page.tsx";
 import { LocalPluginsPage } from "./local-plugins-page.tsx";
 import { LocalPluginViewPage } from "@/features/plugins/plugin-view";
 import { DesktopPluginUiProvider } from "@/features/plugins/ui-extensions";
-import {DisplayWorkspaceProvider} from "@xue-learn/core/display/workspace";
-import {displayWorkspaceClient} from "@/features/display/workspace";
+import { DisplayWorkspaceProvider } from "@xue-learn/core/display/workspace";
+import { displayWorkspaceClient } from "@/features/display/workspace";
 import { LocalTokenUsagePage } from "./local-token-usage-page.tsx";
 import { LocalMaintenancePage } from "./local-maintenance-page.tsx";
 import { LocalResourceSettingsPage } from "./local-resource-settings-page.tsx";
@@ -56,73 +56,81 @@ function Shell() {
   };
 
   return (
-    <MainlineProvider><WorkspaceShell sidebarViews={LOCAL_SIDEBAR_VIEWS}>
-      <MainWrapper>
-        <LearnerRoutes
-          capabilities={{
-            authentication: false,
-            billing: false,
-            development: false,
-            legal: false,
-            productUpdates: false,
-            publicCatalog: false,
-            sharing: false,
-          }}
-          protect={(element) => element}
-          elements={defineDesktopRouteOverrides({
-            root: (
-              <Navigate to={onboarded ? "/spaces" : "/onboarding"} replace />
-            ),
-            onboarding: onboarded ? (
-              <Navigate to="/spaces" replace />
-            ) : (
-              <OnboardingPage onProfileSaved={refreshProfile} />
-            ),
-            today: onboarded ? (
-              <TodayPage />
-            ) : (
-              <Navigate to="/onboarding" replace />
-            ),
-            "review-session": <ReviewSessionPage />,
-          })}
-          additionalRoutes={
-            <>
-              <Route
-                path="/local-settings"
-                element={<Navigate to="/local/api-keys" replace />}
-              />
-              <Route path="/local" element={<LocalControlLayout />}>
-                <Route index element={<Navigate to="resources" replace />} />
+    <MainlineProvider>
+      <WorkspaceShell sidebarViews={LOCAL_SIDEBAR_VIEWS}>
+        <MainWrapper>
+          <LearnerRoutes
+            capabilities={{
+              authentication: false,
+              billing: false,
+              development: false,
+              legal: false,
+              productUpdates: false,
+              publicCatalog: false,
+              sharing: false,
+            }}
+            protect={(element) => element}
+            elements={defineDesktopRouteOverrides({
+              root: (
+                <Navigate to={onboarded ? "/spaces" : "/onboarding"} replace />
+              ),
+              onboarding: onboarded ? (
+                <Navigate to="/spaces" replace />
+              ) : (
+                <OnboardingPage onProfileSaved={refreshProfile} />
+              ),
+              today: onboarded ? (
+                <TodayPage />
+              ) : (
+                <Navigate to="/onboarding" replace />
+              ),
+              "review-session": <ReviewSessionPage />,
+            })}
+            additionalRoutes={
+              <>
                 <Route
-                  path="resources"
-                  element={<LocalResourceSettingsPage />}
+                  path="/local-settings"
+                  element={<Navigate to="/local/api-keys" replace />}
                 />
-                <Route path="sync" element={<PersonalSyncPage />} />
-                <Route path="plugins" element={<LocalPluginsPage />} />
-                <Route path="plugins/:pluginId/views/:viewId" element={<LocalPluginViewPage />} />
-                <Route path="display-plugins" element={<LocalDisplayPluginsPage />} />
-                <Route
-                  path="teaching-skills"
-                  element={<LocalTeachingSkillsPage />}
-                />
-                <Route path="api-keys" element={<LocalApiKeysPage />} />
-                <Route path="token-usage" element={<LocalTokenUsagePage />} />
-                {isDev() ? (
-                  <>
-                    <Route path="logs/llm" element={<LocalLlmLogsPage />} />
-                    <Route
-                      path="maintenance"
-                      element={<LocalMaintenancePage />}
-                    />
-                  </>
-                ) : null}
-                <Route path="logs/errors" element={<LocalErrorLogsPage />} />
-              </Route>
-            </>
-          }
-        />
-      </MainWrapper>
-    </WorkspaceShell></MainlineProvider>
+                <Route path="/local" element={<LocalControlLayout />}>
+                  <Route index element={<Navigate to="api-keys" replace />} />
+                  <Route
+                    path="resources"
+                    element={<LocalResourceSettingsPage />}
+                  />
+                  <Route path="sync" element={<PersonalSyncPage />} />
+                  <Route path="plugins" element={<LocalPluginsPage />} />
+                  <Route
+                    path="plugins/:pluginId/views/:viewId"
+                    element={<LocalPluginViewPage />}
+                  />
+                  <Route
+                    path="display-plugins"
+                    element={<LocalDisplayPluginsPage />}
+                  />
+                  <Route
+                    path="teaching-skills"
+                    element={<LocalTeachingSkillsPage />}
+                  />
+                  <Route path="api-keys" element={<LocalApiKeysPage />} />
+                  <Route path="token-usage" element={<LocalTokenUsagePage />} />
+                  {isDev() ? (
+                    <>
+                      <Route path="logs/llm" element={<LocalLlmLogsPage />} />
+                      <Route
+                        path="maintenance"
+                        element={<LocalMaintenancePage />}
+                      />
+                    </>
+                  ) : null}
+                  <Route path="logs/errors" element={<LocalErrorLogsPage />} />
+                </Route>
+              </>
+            }
+          />
+        </MainWrapper>
+      </WorkspaceShell>
+    </MainlineProvider>
   );
 }
 
@@ -137,16 +145,20 @@ export function DesktopLocalApp() {
               <TooltipProvider>
                 <DesktopDocumentPreviewProvider>
                   <DesktopPythonEditorProvider>
-                    <DisplayWorkspaceProvider client={displayWorkspaceClient}><AssistantProvider>
-                      <div className="desktop-local-window min-h-screen min-w-0 bg-background antialiased">
-                        <div className="desktop-local-content min-h-0 min-w-0">
-                          <DesktopPluginUiProvider><Shell /></DesktopPluginUiProvider>
+                    <DisplayWorkspaceProvider client={displayWorkspaceClient}>
+                      <AssistantProvider>
+                        <div className="desktop-local-window min-h-screen min-w-0 bg-background antialiased">
+                          <div className="desktop-local-content min-h-0 min-w-0">
+                            <DesktopPluginUiProvider>
+                              <Shell />
+                            </DesktopPluginUiProvider>
+                          </div>
+                          <FloatingActionStack>
+                            <AssistantFab />
+                          </FloatingActionStack>
                         </div>
-                        <FloatingActionStack>
-                          <AssistantFab />
-                        </FloatingActionStack>
-                      </div>
-                    </AssistantProvider></DisplayWorkspaceProvider>
+                      </AssistantProvider>
+                    </DisplayWorkspaceProvider>
                   </DesktopPythonEditorProvider>
                 </DesktopDocumentPreviewProvider>
               </TooltipProvider>

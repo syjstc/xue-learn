@@ -53,6 +53,7 @@ export type GoalCreationState = {
   discoveryQuestions: DiscoveryQuestion[];
   discoveryAnswers: DiscoveryAnswer[];
   discoverySkipped: boolean;
+  intakeWebSearchAttempted?: boolean;
   level: string;
   contentLanguage: string;
   /** Learner-authored messages used only to resolve the automatic language. */

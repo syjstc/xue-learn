@@ -24,6 +24,7 @@ import { StructuredInputStep } from "../unit-wizard/steps/structured-input-step.
 import type { UnitWizardModel } from "../unit-wizard/use-unit-wizard.tsx";
 import type { UnitWizardProps } from "../unit-wizard/types.ts";
 import { learnerFacingError } from "@/shared/errors/learner-error";
+import { AssessmentReadinessNotice } from "./assessment-readiness-notice";
 import {
   ConversationActivity,
   ConversationDivider,
@@ -747,7 +748,7 @@ export function ConversationalUnitView({
               >
                 {model.assessmentLocked && !model.isMicro ? (
                   <ConversationTurn role="system">
-                    {t("learningConversation.assessmentPreparing")}
+                    <AssessmentReadinessNotice model={model} />
                   </ConversationTurn>
                 ) : null}
 

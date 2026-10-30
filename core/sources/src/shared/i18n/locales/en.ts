@@ -1349,6 +1349,9 @@ export const en = {
     "Automatically schedule new learning and reviews based on your daily capacity.",
   "agenda.reminderEnabled": "Daily reminder",
   "agenda.reminderOff": "Off",
+  "knowledgeActivity.skipped": "Web search skipped",
+  "knowledgeActivity.skippedTimeout": "Search timed out. Continuing with the information already available; current web facts have not been verified.",
+  "knowledgeActivity.skippedUnavailable": "Search is unavailable or returned no usable sources. Continuing with the information already available.",
   "knowledgeActivity.searching": "Searching the web",
   "knowledgeActivity.reading": "Reading search results",
   "knowledgeActivity.saving": "Saving web knowledge",
@@ -3438,6 +3441,9 @@ export const en = {
   "wizard.material.simulator.unknownVariables":
     "Unknown variables: {variables}",
   "wizard.material.takeawaysTitle": "Key takeaways",
+  "wizard.reading.assessmentFailed": "Assessment preparation needs another attempt. You can continue reading the existing lesson.",
+  "wizard.reading.assessmentRetry": "Prepare assessment again",
+  "wizard.reading.assessmentRetrying": "Preparing assessment…",
   "wizard.reading.assessmentLocked":
     "The learning content is ready to read. Assessments and completion tracking will unlock when the cognitive model is ready.",
   "wizard.reading.referenceDescription":

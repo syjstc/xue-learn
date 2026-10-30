@@ -76,7 +76,9 @@ export function resolveAssistantCourseDisplay(
         if (matches.length) {
           current = matches[0]!.display;
           targets = matches[0]!.resolved.targetIds;
-          timelineCueId = cue?.timelineCueId;
+          timelineCueId = cue && typeof cue === "object" && "timelineCueId" in cue && typeof cue.timelineCueId === "string"
+            ? cue.timelineCueId
+            : undefined;
         } else {
           current = displays.at(-1);
         }

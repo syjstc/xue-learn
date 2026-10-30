@@ -25,6 +25,7 @@ export type KnowledgeActivityStatus =
   | "reading"
   | "saving"
   | "complete"
+  | "skipped"
   | "error";
 
 export type KnowledgeActivity = {
@@ -41,6 +42,7 @@ export type KnowledgeActivity = {
   saved?: boolean;
   stale?: boolean;
   error?: string;
+  skipReason?: "unavailable" | "timeout";
 };
 
 export function dedupeContentSources(

@@ -6,8 +6,10 @@
     "moduleResolution": "bundler",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
+    "allowImportingTsExtensions": true,
     "types": ["vite/client", "jest"],
     "noEmit": true
   },
-  "include": ["./**/*.ts", "./**/*.tsx", "../vite-env.d.ts"]
+  "include": ["./**/*.ts", "./**/*.tsx", "../vite-env.d.ts"],
+  "exclude": ["./**/*.spec.ts", "./**/*.spec.tsx"]
 }

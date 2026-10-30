@@ -1,4 +1,6 @@
 export const DESKTOP_IPC = {
+  providerModels: "desktop:v1:providers:models",
+  providerCredentialSave: "desktop:v1:providers:save-credentials",
   runtimeDescriptor: "desktop:v1:runtime:get",
   sidecarHealth: "desktop:v1:sidecar:health",
   sidecarRestart: "desktop:v1:sidecar:restart",

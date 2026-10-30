@@ -446,8 +446,11 @@ export async function retrieveOrSearchWebKnowledge(params: {
   exactQueryMinimumSources?: number;
   searchPurpose?: LearningPathSearchPurpose;
   resultCount?: number;
+  extractTopUrls?: number;
+  signal?: AbortSignal;
   onActivity?: KnowledgeActivitySink;
 }): Promise<WebKnowledgeResult> {
+  params.signal?.throwIfAborted();
   const id = randomUUID();
   const query = alignLiveSearchQueryToCurrentYear(params.query);
   const freshnessClass = detectWebKnowledgeFreshness(
@@ -516,6 +519,7 @@ export async function retrieveOrSearchWebKnowledge(params: {
     reason: params.reason,
     goalId: params.goalId,
   };
+  params.signal?.throwIfAborted();
   await emit(params.onActivity, searching);
   if (!(await isWebSearchAvailable(params.userId))) {
     const stale = await retrieveWebKnowledge({
@@ -544,6 +548,8 @@ export async function retrieveOrSearchWebKnowledge(params: {
   try {
     result = await searchLearningPathWithSources(query, {
       purpose: params.searchPurpose ?? "answer",
+      signal: params.signal,
+      extractTopUrls: params.extractTopUrls,
       ...(params.resultCount ? { maxResults: params.resultCount } : {}),
       meta: {
         userId: params.userId,
@@ -552,6 +558,7 @@ export async function retrieveOrSearchWebKnowledge(params: {
       },
     });
   } catch (error) {
+    params.signal?.throwIfAborted();
     console.warn(
       "[web-knowledge] search failed:",
       error instanceof Error ? error.message : error,
@@ -598,6 +605,7 @@ export async function retrieveOrSearchWebKnowledge(params: {
     return { ...stale, activity, stale: stale.sources.length > 0 };
   }
 
+  params.signal?.throwIfAborted();
   let sources = result.sources;
   if (params.goalId) {
     await emit(params.onActivity, {

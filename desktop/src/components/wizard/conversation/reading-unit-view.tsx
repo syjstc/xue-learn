@@ -29,6 +29,7 @@ import {
 import type { UnitWizardModel } from "../unit-wizard/use-unit-wizard.tsx";
 import type { UnitWizardProps } from "../unit-wizard/types.ts";
 import { learnerFacingError } from "@/shared/errors/learner-error";
+import { AssessmentReadinessNotice } from "./assessment-readiness-notice";
 import { StructuredInputStep } from "../unit-wizard/steps/structured-input-step.tsx";
 import { ActiveRecallStep } from "../unit-wizard/steps/active-recall-step.tsx";
 import { FeynmanStep } from "../unit-wizard/steps/feynman-step.tsx";
@@ -280,9 +281,9 @@ export function ReadingUnitView({
               </div>
             ) : null}
             {model.assessmentLocked && !model.isMicro ? (
-              <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
-                {t("wizard.reading.assessmentLocked")}
-              </p>
+              <div className="rounded-lg border border-border bg-muted/40 px-4 py-3 text-muted-foreground">
+                <AssessmentReadinessNotice model={model} />
+              </div>
             ) : null}
             {model.error && !selectedSectionOwnsGenerationError ? (
               <p className="rounded-lg bg-[var(--error-50)] p-3 text-sm text-[var(--error-500)]">
