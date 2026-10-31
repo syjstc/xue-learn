@@ -44,6 +44,7 @@ const sqliteVecLibrary =
     : process.platform === "win32"
       ? "vec0.dll"
       : "vec0.so";
+const betterSqliteNativeTarget = `${process.platform === "linux" && !process.report?.getReport().header.glibcVersionRuntime ? "linuxmusl" : process.platform}-${process.arch}`;
 const sqliteVecPackage = `sqlite-vec-${nativePlatform}-${process.arch}`;
 const sharpNativePackage = `@img/sharp-${sharpPlatform}-${process.arch}`;
 const sharpLibvipsPackage = `@img/sharp-libvips-${sharpPlatform}-${process.arch}`;
@@ -77,7 +78,7 @@ const required = [
   "local-sidecar/fonts/NotoSansSC_400Regular.ttf",
   "local-sidecar/fonts/NotoSansSC_700Bold.ttf",
   "local-sidecar/fonts/NotoSansSC-LICENSE.txt",
-  "local-sidecar/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+  `local-sidecar/node_modules/better-sqlite3/prebuilds/${betterSqliteNativeTarget}.node`,
   `local-sidecar/node_modules/${sqliteVecPackage}/${sqliteVecLibrary}`,
   "local-sidecar/node_modules/node-llama-cpp/package.json",
   `local-sidecar/node_modules/${nodeLlamaNativePackage}/package.json`,
@@ -105,7 +106,7 @@ const required = [
 ];
 
 const nativePaths = new Set([
-  "local-sidecar/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+  `local-sidecar/node_modules/better-sqlite3/prebuilds/${betterSqliteNativeTarget}.node`,
   `local-sidecar/node_modules/${sqliteVecPackage}/${sqliteVecLibrary}`,
   `local-sidecar/node_modules/${nodeLlamaNativePackage}/bins/test/llama-addon.node`,
   `local-sidecar/node_modules/${sharpNativePackage}/lib/sharp-${process.arch}-test.node`,
@@ -178,7 +179,7 @@ describe("packaged resource audit", () => {
     await expect(
       execFileAsync(process.execPath, [auditScript, directory]),
     ).rejects.toMatchObject({
-      stderr: expect.stringContaining("better_sqlite3.node"),
+      stderr: expect.stringContaining("better-sqlite3/prebuilds/"),
     });
   });
 

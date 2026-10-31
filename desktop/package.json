@@ -63,7 +63,7 @@
     "@wasm-fmt/clang-format": "20.1.7",
     "@xue-learn/core": "workspace:*",
     "@xyflow/react": "12.11.0",
-    "better-sqlite3": "12.11.1",
+    "better-sqlite3": "13.0.3",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.4",
     "class-variance-authority": "0.7.1",

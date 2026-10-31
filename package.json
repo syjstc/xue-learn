@@ -34,7 +34,8 @@
       "katex": "0.18.2",
       "image-size": "2.0.4",
       "glob@>=9 <14.0.2": "14.0.2",
-      "minimatch@>=9 <11.0.1": "11.0.3"
+      "minimatch@>=9 <11.0.1": "11.0.3",
+      "better-sqlite3": "13.0.3"
     },
     "patchedDependencies": {
       "appdmg@0.6.6": "patches/appdmg@0.6.6.patch"

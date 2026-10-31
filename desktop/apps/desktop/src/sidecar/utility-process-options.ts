@@ -8,8 +8,8 @@ export function sidecarUtilityProcessForkOptions(
   return {
     serviceName: "XueLearn Local Service",
     stdio: "pipe",
-    // Unsigned better-sqlite3 / sqlite-vec / sharp binaries are rebuilt for
-    // the Electron ABI. macOS library validation SIGKILLs the default Helper
+    // The sidecar loads native SQLite, vector and image modules. macOS
+    // library validation can SIGKILL the default Helper for external binaries
     // when it loads them (exit code 9). Helper (Plugin) is the supported
     // exception for that native sidecar.
     ...(platform === "darwin"

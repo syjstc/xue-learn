@@ -1,12 +1,10 @@
 #!/usr/bin/env node
-import { rebuild } from "@electron/rebuild";
 import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
-import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { auditPackagedResources } from "./audit-packaged-resources.mjs";
+import { auditPackagedResources, betterSqliteNativeTarget } from "./audit-packaged-resources.mjs";
 import { collectLicenseNotices } from "../../../../scripts/collect-license-notices.mjs";
 import { releaseSourceIdentity } from "../../../../scripts/release-source-identity.mjs";
 
@@ -34,9 +32,6 @@ function resolvePackageManifest(fromRequire, name) {
 }
 
 const betterSqliteRoot = packageRoot(localRequire.resolve("better-sqlite3"));
-const requireFromBetterSqlite = createRequire(
-  join(betterSqliteRoot, "package.json"),
-);
 const sharpRoot = packageRoot(localRequire.resolve("sharp"));
 const requireFromSharp = createRequire(join(sharpRoot, "package.json"));
 const resvgRoot = packageRoot(localRequire.resolve("@resvg/resvg-js"));
@@ -82,11 +77,6 @@ const resources = [
   [
     packageRoot(localRequire.resolve("@mikro-orm/migrations")),
     "@mikro-orm/migrations",
-  ],
-  [packageRoot(requireFromBetterSqlite.resolve("bindings")), "bindings"],
-  [
-    packageRoot(requireFromBetterSqlite.resolve("file-uri-to-path")),
-    "file-uri-to-path",
   ],
   [packageRoot(localRequire.resolve("sqlite-vec")), "sqlite-vec"],
   [sqliteVecNativeRoot, sqliteVecNativeName],
@@ -135,7 +125,7 @@ function collectPackageClosure(
   collected.set(root, entry);
   const requireFromPackage = createRequire(join(root, "package.json"));
   for (const dependency of [
-    ...Object.keys(manifest.dependencies ?? {}),
+    ...Object.keys(manifest.name === "better-sqlite3" ? {} : manifest.dependencies ?? {}),
     ...Object.keys(manifest.optionalDependencies ?? {}),
   ]) {
     try {
@@ -253,7 +243,7 @@ export async function stageElectronResources() {
     `${JSON.stringify(
       {
         name: "@xue-learn/packaged-local-sidecar",
-        version: "0.0.0",
+        version: localRequire("./apps/desktop/package.json").version,
         private: true,
         dependencies: {
           "better-sqlite3": localRequire("better-sqlite3/package.json").version,
@@ -285,42 +275,8 @@ export async function stageElectronResources() {
       2,
     )}\n`,
   );
-  // node-gyp's verbose diagnostics include its complete inherited environment.
-  // Keep rebuild output useful without exposing provider credentials in CI/E2E
-  // logs when a native compile fails.
-  const rebuildEnvironment = new Map();
-  for (const key of Object.keys(process.env)) {
-    if (!/(?:API_KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL)/i.test(key)) continue;
-    rebuildEnvironment.set(key, process.env[key]);
-    delete process.env[key];
-  }
-  const previousLogLevel = process.env.npm_config_loglevel;
-  const previousDevDir = process.env.npm_config_devdir;
-  const previousCache = process.env.npm_config_cache;
-  const electronGypDirectory = join(tmpdir(), "xuelearn-electron-gyp");
-  process.env.npm_config_loglevel = "error";
-  process.env.npm_config_devdir = electronGypDirectory;
-  process.env.npm_config_cache = join(tmpdir(), "xuelearn-electron-npm-cache");
-  try {
-    await rebuild({
-      buildPath: stagedSidecarRoot,
-      electronVersion: localRequire("electron/package.json").version,
-      arch: process.arch,
-      onlyModules: ["better-sqlite3"],
-      force: true,
-    });
-  } finally {
-    if (previousLogLevel === undefined) delete process.env.npm_config_loglevel;
-    else process.env.npm_config_loglevel = previousLogLevel;
-    if (previousDevDir === undefined) delete process.env.npm_config_devdir;
-    else process.env.npm_config_devdir = previousDevDir;
-    if (previousCache === undefined) delete process.env.npm_config_cache;
-    else process.env.npm_config_cache = previousCache;
-    for (const [key, value] of rebuildEnvironment) {
-      if (value === undefined) delete process.env[key];
-      else process.env[key] = value;
-    }
-  }
+  // better-sqlite3 13 ships Node-API binaries shared by Node and Electron.
+  // Keep the target prebuild; do not rebuild a V8-specific addon for Electron.
   await pruneStagedReleasePayload(stagedResourcesRoot);
   await collectLicenseNotices(join(stagedResourcesRoot, "licenses"));
   await writeFile(join(stagedResourcesRoot, "build-info.json"), JSON.stringify({
@@ -356,6 +312,11 @@ export async function pruneStagedReleasePayload(resourcesRoot) {
   );
   await rm(join(sqliteRoot, "deps"), { recursive: true, force: true });
   await rm(join(sqliteRoot, "src"), { recursive: true, force: true });
+  await rm(join(sqliteRoot, "build"), { recursive: true, force: true });
+  for (const file of await readdir(join(sqliteRoot, "prebuilds"))) {
+    if (file !== `${betterSqliteNativeTarget}.node`)
+      await rm(join(sqliteRoot, "prebuilds", file), { recursive: true, force: true });
+  }
   // The reviewed native llama.cpp binary is staged separately. Its C/C++
   // source tree is build-time input and must not inflate the desktop runtime.
   await rm(

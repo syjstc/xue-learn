@@ -15,3 +15,5 @@ These three package instances are not staged as runtime dependencies in the Mac 
 `appdmg@0.6.6` expects the old callback form of `image-size`. The reviewed [compatibility patch](../patches/appdmg@0.6.6.patch) reads the background bytes and calls the current `imageSize` API so the DMG build can use patched `image-size@2.0.4`. The patch is part of pnpm's integrity-checked lockfile. `simple-git`, `tar`, `tmp`, `multer`, KaTeX and modern glob/minimatch dependencies are also pinned to patched versions through workspace overrides.
 
 The release resource audit and actual package inspection remain necessary: a lockfile alone does not prove which dependencies and notices are in a binary.
+
+Desktop and its ORM use `better-sqlite3@13.0.3` through the same override. Packaging keeps the target platform's Node-API prebuild and excludes other platform binaries and build intermediates. This avoids the V8 API incompatibility in the previous binding when packaging Electron 45. The native SQLite and vector-extension smoke test runs in the actual Electron runtime.

@@ -6,6 +6,8 @@ import { pathToFileURL } from "node:url";
 const nativePlatform =
   process.platform === "win32" ? "windows" : process.platform;
 const sharpPlatform = process.platform === "win32" ? "win32" : process.platform;
+export const betterSqliteNativeTarget = `${process.platform === "linux" && !process.report?.getReport().header.glibcVersionRuntime ? "linuxmusl" : process.platform}-${process.arch}`;
+const betterSqliteNativeResource = `local-sidecar/node_modules/better-sqlite3/prebuilds/${betterSqliteNativeTarget}.node`;
 const sqliteVecPackage = `sqlite-vec-${nativePlatform}-${process.arch}`;
 const sharpNativePackage = `@img/sharp-${sharpPlatform}-${process.arch}`;
 const sharpLibvipsPackage = `@img/sharp-libvips-${sharpPlatform}-${process.arch}`;
@@ -44,7 +46,7 @@ export const REQUIRED_PACKAGED_RESOURCES = [
   "local-sidecar/fonts/NotoSansSC_400Regular.ttf",
   "local-sidecar/fonts/NotoSansSC_700Bold.ttf",
   "local-sidecar/fonts/NotoSansSC-LICENSE.txt",
-  "local-sidecar/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+  betterSqliteNativeResource,
   `local-sidecar/node_modules/${sqliteVecPackage}/${sqliteVecLibrary}`,
   "local-sidecar/node_modules/node-llama-cpp/package.json",
   `local-sidecar/node_modules/${nodeLlamaNativePackage}/package.json`,
@@ -81,6 +83,7 @@ export const FORBIDDEN_PACKAGED_PATHS = [
   "local-sidecar/persistence-reference.js.map",
   "local-sidecar/node_modules/better-sqlite3/deps",
   "local-sidecar/node_modules/better-sqlite3/src",
+  "local-sidecar/node_modules/better-sqlite3/build",
   "local-sidecar/node_modules/node-llama-cpp/llama/gitRelease.bundle",
 ];
 
@@ -187,7 +190,7 @@ export async function auditPackagedResources(input) {
     }
   }
   for (const relativePath of [
-    "local-sidecar/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+    betterSqliteNativeResource,
     `local-sidecar/node_modules/${sqliteVecPackage}/${sqliteVecLibrary}`,
     ...nativeFiles.map((path) => relative(resourcesRoot, path)),
   ]) {
