@@ -1,6 +1,6 @@
 {
   "name": "@xue-learn/core",
-  "version": "0.3.45",
+  "version": "0.3.46",
   "description": "Reusable XueLearn learning rules, services, displays, contracts and workspace SDK",
   "type": "module",
   "license": "MIT",
@@ -650,7 +650,7 @@
     "express": "5.2.1",
     "highlight.js": "11.11.1",
     "jsonrepair": "3.15.0",
-    "katex": "0.17.0",
+    "katex": "0.18.2",
     "lottie-web": "5.13.0",
     "lucide-react": "1.17.0",
     "mammoth": "1.12.0",
@@ -658,8 +658,8 @@
     "parse5": "4.0.0",
     "pdf-lib": "1.17.1",
     "pdf-parse": "2.4.5",
-    "pdf-to-img": "6.2.0",
-    "pdfjs-dist": "5.4.296",
+    "pdf-to-img": "7.0.1",
+    "pdfjs-dist": "6.4.299",
     "pino": "9.14.0",
     "pino-http": "10.5.0",
     "playwright": "1.60.0",
@@ -667,12 +667,12 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-markdown": "10.1.0",
-    "react-router-dom": "7.17.0",
+    "react-router-dom": "7.18.5",
     "reflect-metadata": "0.2.2",
     "remark-gfm": "4.0.1",
     "remark-math": "6.0.0",
     "rxjs": "7.8.2",
-    "sharp": "0.35.1",
+    "sharp": "0.35.5",
     "tailwind-merge": "3.6.0",
     "tesseract.js": "7.0.0",
     "three": "0.185.1",
@@ -683,7 +683,7 @@
     "vexflow": "4.2.5",
     "web-tree-sitter": "0.20.8",
     "word-extractor": "1.0.4",
-    "zod": "4.4.3"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@swc/core": "1.15.43",
@@ -1080,5 +1080,13 @@
         "types/libs/server/src/course-teaching/index.d.ts"
       ]
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/syjstc/xue-learn.git",
+    "directory": "core"
+  },
+  "bugs": {
+    "url": "https://github.com/syjstc/xue-learn/issues"
   }
 }

@@ -32,5 +32,4 @@ Validation:
 
 The browser acceptance run checks every built-in example at early/middle/late
 frames, URL history, search, categories, playback, declarative imports, disabled
-previews, and 390px layouts. Reports and screenshots live in
-`artifacts/display-plugin-library-2026-10-13/`.
+previews, and 390px layouts. Generate reports in a local ignored output directory.

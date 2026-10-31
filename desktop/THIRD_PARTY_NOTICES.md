@@ -6,6 +6,11 @@ the notices and license files applicable to the components you redistribute.
 
 ## Included asset notice
 
+- `src/styles/shadcn.css` is the stylesheet from `shadcn@4.11.0`, copyright
+  2023 shadcn, under MIT. Its full license is preserved in
+  `third-party/shadcn-LICENSE.md` and in the application license bundle. The
+  build uses this stylesheet without installing the unrelated shadcn CLI.
+
 - `public/lab-assets/kenney-furniture-kit/desk.glb`: Kenney Furniture Kit, licensed
   under CC0. The original `public/lab-assets/kenney-furniture-kit/License.txt` and
   the asset's `public/lab-assets/ASSETS.md` are included in the source repository.
@@ -21,9 +26,7 @@ When distributing an application, preserve the applicable notices for its actual
 dependency set, including the licenses supplied with Electron/Chromium/Node and
 the font packages. A dependency name here is not a replacement for its license.
 
-The files `public/next.svg` and `public/vercel.svg` contain third-party product
-marks; they are not XueLearn brand assets and this project grants no rights in
-those marks. Other images and audio without an accompanying license are not
+Other images and audio without an accompanying license are not
 relicensed by the code's MIT grant; see [LICENSING.md](LICENSING.md).
 
 This file identifies the preserved asset notice and where to find dependency

@@ -1,6 +1,6 @@
 {
   "name": "@xue-learn/desktop-host",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "main": "dist/main.js",
   "scripts": {
@@ -11,17 +11,22 @@
     "make": "pnpm --dir ../.. run desktop:build && node scripts/run-electron-forge.mjs make",
     "audit:package": "node scripts/audit-packaged-resources.mjs out",
     "test": "jest --config jest.config.ts",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.forge.json --noEmit"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^7.11.2",
-    "@electron-forge/maker-deb": "^7.11.2",
-    "@electron-forge/maker-dmg": "^7.11.2",
-    "@electron-forge/maker-squirrel": "^7.11.2",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.11.2",
-    "@electron/rebuild": "^3.7.2",
-    "electron": "^37.2.3",
+    "@electron-forge/cli": "8.0.1",
+    "@electron-forge/maker-deb": "8.0.1",
+    "@electron-forge/maker-dmg": "8.0.1",
+    "@electron-forge/maker-squirrel": "8.0.1",
+    "@electron-forge/plugin-auto-unpack-natives": "8.0.1",
+    "@electron/rebuild": "4.2.1",
+    "electron": "45.2.1",
     "esbuild": "^0.28.1"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "description": "好会学 · AI-guided personal learning",
+  "author": {
+    "name": "XueLearn",
+    "email": "contact@xue-learn.com"
+  }
 }

@@ -4,10 +4,17 @@
     "allowImportingTsExtensions": true,
     "rootDir": "../..",
     "outDir": "../../dist/apps/desktop",
-    "types": ["node", "jest"],
+    "types": [
+      "node",
+      "jest"
+    ],
     "module": "commonjs",
     "moduleResolution": "node"
   },
-  "include": ["src/**/*.ts", "forge.config.ts", "*.config.ts"],
-  "exclude": ["src/**/*.spec.ts"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts"
+  ]
 }

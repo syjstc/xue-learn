@@ -1,7 +1,7 @@
 {
-  "name": "xue-learn-public",
+  "name": "xue-learn",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.3.1",
   "packageManager": "pnpm@9.15.9",
   "scripts": {
     "setup": "pnpm install --frozen-lockfile",
@@ -10,11 +10,44 @@
     "check:desktop-core": "pnpm --dir desktop run check:core",
     "build:desktop": "pnpm --dir desktop run build",
     "test:desktop": "pnpm --dir desktop test",
-    "check": "pnpm run build:core && pnpm run test:core && pnpm run test:desktop && pnpm --dir desktop run build:desktop-renderer && pnpm --dir desktop run local-runtime:build",
+    "check": "pnpm run check:source && pnpm run test:mac-release && pnpm run build:core && pnpm run test:core && pnpm run test:desktop && pnpm run check:renderer && pnpm run check:main && pnpm --dir desktop run build:desktop-renderer && pnpm --dir desktop run local-runtime:build",
     "dev": "node scripts/dev.mjs",
     "build:mac": "node scripts/build-mac-release.mjs",
     "test:mac-release": "node --test scripts/mac-release.test.mjs",
     "check:renderer": "pnpm --dir desktop exec tsc --noEmit -p src/desktop-local/tsconfig.json",
-    "check:main": "pnpm --dir desktop exec tsc --noEmit -p apps/desktop/tsconfig.json"
+    "check:main": "pnpm --dir desktop exec tsc --noEmit -p apps/desktop/tsconfig.json && pnpm --dir desktop exec tsc --noEmit -p apps/desktop/tsconfig.forge.json",
+    "check:source": "node scripts/check-public-source.mjs",
+    "check:secrets": "node scripts/scan-secrets.mjs",
+    "check:security": "pnpm run check:source && pnpm run check:secrets && pnpm audit --audit-level high"
+  },
+  "license": "MIT",
+  "description": "好会学 · AI-guided personal learning with XueLearn Core and Desktop",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "pnpm": {
+    "overrides": {
+      "multer": "2.5.0",
+      "tar": "7.5.22",
+      "tmp": "0.2.7",
+      "simple-git": "4.0.2",
+      "katex": "0.18.2",
+      "image-size": "2.0.4",
+      "glob@>=9 <14.0.2": "14.0.2",
+      "minimatch@>=9 <11.0.1": "11.0.3"
+    },
+    "patchedDependencies": {
+      "appdmg@0.6.6": "patches/appdmg@0.6.6.patch"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/syjstc/xue-learn.git"
+  },
+  "bugs": {
+    "url": "https://github.com/syjstc/xue-learn/issues"
+  },
+  "devDependencies": {
+    "yaml": "2.9.1"
   }
 }

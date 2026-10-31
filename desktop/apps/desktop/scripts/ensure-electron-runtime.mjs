@@ -68,8 +68,7 @@ export async function ensureElectronRuntime() {
     ".tools/electron-cache",
   );
   if (process.platform === "darwin") {
-    // extract-zip in Electron 37 can leave an unresolved extraction under Node 26.
-    // Keep Electron's downloader/checksums, and use macOS's native ZIP extractor.
+    // Keep Electron's downloader/checksums and use macOS's native ZIP extractor.
     const electronRequire = createRequire(join(electronRoot, "package.json"));
     const { downloadArtifact } = electronRequire("@electron/get");
     const archive = await downloadArtifact({

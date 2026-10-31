@@ -1,6 +1,7 @@
 /node_modules/
 .tools/
 .entry-check-*/
+.export-check-*/
 /dist/
 /types/
 /coverage/

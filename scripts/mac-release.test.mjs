@@ -3,11 +3,50 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { createRequire } from "node:module";
+import { execFileSync } from "node:child_process";
 import {
   macNotaryArguments,
   assertTrustedMacRelease,
+  assertReleaseVersions,
 } from "./mac-release-config.mjs";
+
+test("release packaging rejects preview labels and mismatched app versions", () => {
+  assert.doesNotThrow(() => assertReleaseVersions(["0.3.1", "0.3.1", "0.3.1"]));
+  assert.throws(() => assertReleaseVersions(["0.3.1", "0.3.0"]), /must match/);
+  assert.throws(() => assertReleaseVersions(["0.3.1-preview.1"]), /stable/);
+  assert.throws(() => assertReleaseVersions([]), /stable/);
+});
 import { loadPackagingEnv } from "../desktop/apps/desktop/src/load-packaging-env.ts";
+import { assertReleaseSourceIdentity } from "./release-source-identity.mjs";
+
+test("release export refuses stale builds or uncommitted source", () => {
+  const identity = { sourceCommit: "commit", sourceTreeSha256: "digest", sourceDirty: false };
+  assert.doesNotThrow(() => assertReleaseSourceIdentity(identity, identity));
+  assert.throws(() => assertReleaseSourceIdentity({ ...identity, sourceDirty: true }, identity), /clean committed/);
+  assert.throws(() => assertReleaseSourceIdentity(identity, { ...identity, sourceDirty: true }), /clean committed/);
+  assert.throws(() => assertReleaseSourceIdentity({ ...identity, sourceCommit: "other" }, identity), /different source/);
+  assert.throws(() => assertReleaseSourceIdentity({ ...identity, sourceTreeSha256: "other" }, identity), /different source/);
+});
+
+test("DMG parser handles the real background and rejects the zero-length ICNS entry without hanging", () => {
+  const require = createRequire(new URL("../desktop/package.json", import.meta.url));
+  const maker = createRequire(require.resolve("@electron-forge/maker-dmg"));
+  const installer = createRequire(maker.resolve("electron-installer-dmg"));
+  const appdmg = installer.resolve("appdmg");
+  const background = new URL("../desktop/apps/desktop/assets/dmg-background-zh-Hans.png", import.meta.url).pathname;
+  execFileSync(process.execPath, ["--input-type=module", "-e", `
+    import { createRequire } from 'node:module';
+    import { readFileSync } from 'node:fs';
+    import assert from 'node:assert/strict';
+    const { imageSize } = createRequire(process.argv[1])('image-size');
+    const size = imageSize(readFileSync(process.argv[2]));
+    assert.equal(size.width, 660); assert.equal(size.height, 430);
+    const hostile = Buffer.alloc(16);
+    hostile.write('icns'); hostile.writeUInt32BE(16, 4); hostile.write('icp4', 8);
+    assert.throws(() => imageSize(hostile));
+  `, appdmg, background], { timeout: 2000 });
+});
 
 test("requires notarization credentials before packaging and supports existing Apple credentials", () => {
   assert.throws(() => macNotaryArguments({}), /require Apple notarization/);
@@ -35,6 +74,7 @@ test("requires notarization credentials before packaging and supports existing A
   );
 });
 for (const missing of [
+  "hardenedFuses",
   "developerIdSigned",
   "signatureVerified",
   "notarized",
@@ -45,6 +85,7 @@ for (const missing of [
 ])
   test(`refuses to export when ${missing} is false`, () => {
     const ready = {
+      hardenedFuses: true,
       developerIdSigned: true,
       signatureVerified: true,
       notarized: true,

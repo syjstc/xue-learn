@@ -132,6 +132,7 @@ async function main() {
     throw Error("Build Mac releases on macOS.");
   if (Number(process.versions.node.split(".")[0]) !== 24)
     throw Error("Use Node.js 24 LTS from .nvmrc for Mac packaging.");
+  await run(process.execPath, ["scripts/check-public-source.mjs"]);
   loadPackagingEnv({ cwd: host });
   if (!process.env.MACOS_SIGN_IDENTITY)
     throw Error(
@@ -157,6 +158,9 @@ async function main() {
     host,
     `out/XueLearn-darwin-${process.arch}/XueLearn.app`,
   );
+  const builtVersion = await run("plutil", ["-extract", "CFBundleShortVersionString", "raw", "-o", "-", path.join(app, "Contents/Info.plist")], true);
+  if (builtVersion.stdout.trim() !== version)
+    throw Error("The built application version does not match the release version.");
   await run("codesign", ["--verify", "--deep", "--strict", app]);
   const details = await run(
     "codesign",
@@ -176,7 +180,7 @@ async function main() {
     await run("ditto", ["-c", "-k", "--keepParent", app, zip]);
   }
   const application = await notarize(zip, app, "app.json", auth);
-  const dmg = path.join(host, `out/make/好会学-${version}-${process.arch}.dmg`);
+  const dmg = path.join(host, `out/make/dmg/${process.arch}/好会学-${version}-${process.arch}.dmg`);
   const previous = await jsonFile("dmg.json");
   const pending =
     reuse &&

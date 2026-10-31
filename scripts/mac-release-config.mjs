@@ -1,5 +1,12 @@
 import { basename } from "node:path";
 
+export function assertReleaseVersions(versions) {
+  if (!versions.length || !versions.every(version => /^\d+\.\d+\.\d+$/.test(version)))
+    throw Error("Release versions must be stable major.minor.patch values.");
+  if (!versions.every(version => version === versions[0]))
+    throw Error("Workspace, Desktop and host release versions must match.");
+}
+
 export function macNotaryArguments(env) {
   if (env.APPLE_NOTARY_KEYCHAIN_PROFILE)
     return ["--keychain-profile", env.APPLE_NOTARY_KEYCHAIN_PROFILE];
@@ -33,6 +40,7 @@ export function macNotaryArguments(env) {
 
 export function assertTrustedMacRelease(status) {
   for (const field of [
+    "hardenedFuses",
     "developerIdSigned",
     "signatureVerified",
     "notarized",

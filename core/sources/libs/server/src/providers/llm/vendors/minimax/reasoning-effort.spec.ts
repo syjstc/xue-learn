@@ -8,6 +8,9 @@ import {createCustomLlmProvider} from "../custom/provider.js";
 import {extractTokenUsage, usageLogFields} from "../../../../llm/token-usage.js";
 import {createOpenAiCompatibleLlmProvider} from "../../openai-compatible-provider.js";
 
+// This suite starts a real HTTP transport; leave room for a cold SDK load on CI.
+jest.setTimeout(15_000);
+
 describe("MiniMax Flash reasoning effort on the wire", () => {
   let server: Server;
   let env: Env;
@@ -43,7 +46,10 @@ describe("MiniMax Flash reasoning effort on the wire", () => {
     const port = (server.address() as { port: number }).port;
     env = { MINIMAX_API_KEY: "fixture", MINIMAX_GROUP_ID: "fixture", MINIMAX_BASE_URL: `http://127.0.0.1:${port}/v1` } as Env;
   });
-  afterAll(async () => { await new Promise<void>(resolve => server.close(() => resolve())); });
+  afterAll(async () => {
+    server.closeAllConnections();
+    await new Promise<void>(resolve => server.close(() => resolve()));
+  });
 
   it.each(MINIMAX_REASONING_EFFORTS)("sends %s at the request root without disabling Flash thinking", async effort => {
     const provider = createMinimaxLlmProvider(env, { id: "minimax", model: "MiniMax-M3.1-Flash",

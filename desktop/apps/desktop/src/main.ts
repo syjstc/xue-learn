@@ -39,6 +39,7 @@ import { EmbeddingModelManager } from "./embedding-model-manager.ts";
 import { activateInstalledBuiltinEmbedding } from "./embedding-model-activation.ts";
 import {
   installSessionSecurity,
+  isTrustedDesktopSender,
   lockWindowNavigation,
   sidecarHandoffUrl,
 } from "./security.ts";
@@ -390,13 +391,8 @@ async function bootstrap(): Promise<void> {
     views: pluginViews,
     getWorkspaceId: () => workspaceCatalog.activeWorkspaceId,
     isQuitting: () => quitAdmissionPaused || quitRequested,
-    isTrustedSender: event => Boolean(mainWindow && !mainWindow.isDestroyed()
-      && event.sender === mainWindow.webContents
-      && event.senderFrame === mainWindow.webContents.mainFrame
-      && [supervisor.getHealth().baseUrl, developmentRendererOrigin].some(origin => {
-        try { return origin && new URL(event.senderFrame!.url).origin === new URL(origin).origin; }
-        catch { return false; }
-      })),
+    isTrustedSender: event => isTrustedDesktopSender(event, mainWindow,
+      [supervisor.getHealth().baseUrl, developmentRendererOrigin]),
   });
   // A broken extension or registry must not prevent the learning application from starting.
   await pluginManager.restoreEnabled().catch(() => {
@@ -452,6 +448,8 @@ async function bootstrap(): Promise<void> {
   );
   installInteractiveHtmlProtocol(session.defaultSession, htmlPlayground);
   removeIpcHandlers = registerDesktopIpc({
+    isTrustedSender: event => isTrustedDesktopSender(event, mainWindow,
+      [supervisor.getHealth().baseUrl, developmentRendererOrigin]),
     runtime,
     getHealth: () => supervisor.getHealth(),
     restart: restartActiveWorkspace,

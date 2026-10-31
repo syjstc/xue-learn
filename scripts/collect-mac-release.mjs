@@ -12,6 +12,11 @@ import {
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { assertTrustedMacRelease } from "./mac-release-config.mjs";
+import { releaseSourceIdentity, assertReleaseSourceIdentity } from "./release-source-identity.mjs";
+import { createRequire } from "node:module";
+
+const desktopRequire = createRequire(new URL("../desktop/package.json", import.meta.url));
+const { getCurrentFuseWire, FuseV1Options, FuseState } = desktopRequire("@electron/fuses");
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 if (process.platform !== "darwin")
@@ -47,6 +52,16 @@ execFileSync(
   [path.join(host, "scripts/audit-packaged-resources.mjs"), app],
   { stdio: "inherit" },
 );
+const builtVersion = execFileSync("plutil", ["-extract", "CFBundleShortVersionString", "raw", "-o", "-", path.join(app, "Contents/Info.plist")], { encoding: "utf8" }).trim();
+if (builtVersion !== version) throw Error("The built application has a different release version.");
+const source = JSON.parse(await readFile(path.join(app, "Contents/Resources/build-info.json"), "utf8"));
+assertReleaseSourceIdentity(source, await releaseSourceIdentity());
+const fuses = await getCurrentFuseWire(app);
+const hardenedFuses = [FuseV1Options.RunAsNode, FuseV1Options.EnableNodeOptionsEnvironmentVariable,
+  FuseV1Options.EnableNodeCliInspectArguments, FuseV1Options.GrantFileProtocolExtraPrivileges]
+  .every(option => fuses[option] === FuseState.DISABLE) &&
+  [FuseV1Options.EnableEmbeddedAsarIntegrityValidation, FuseV1Options.OnlyLoadAppFromAsar]
+  .every(option => fuses[option] === FuseState.ENABLE);
 const installers = await find(path.join(host, "out/make"), (file) =>
   file.endsWith(".dmg"),
 );
@@ -112,6 +127,7 @@ const installerGatekeeperAccepted =
     { encoding: "utf8" },
   ).status === 0;
 assertTrustedMacRelease({
+  hardenedFuses,
   developerIdSigned,
   signatureVerified,
   notarized,
@@ -122,6 +138,8 @@ assertTrustedMacRelease({
 });
 await copyFile(installer, target);
 const manifest = {
+  ...source,
+  hardenedFuses,
   product: "好会学 Desktop",
   version,
   platform: "darwin",

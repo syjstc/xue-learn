@@ -2,6 +2,8 @@ import { MakerDMG } from "@electron-forge/maker-dmg";
 import { MakerDeb } from "@electron-forge/maker-deb";
 import { MakerSquirrel } from "@electron-forge/maker-squirrel";
 import { AutoUnpackNativesPlugin } from "@electron-forge/plugin-auto-unpack-natives";
+import { FusesPlugin } from "@electron-forge/plugin-fuses";
+import { FuseVersion, FuseV1Options } from "@electron/fuses";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { loadPackagingEnv } from "./src/load-packaging-env";
@@ -51,6 +53,8 @@ const config = {
     extraResource: [
       stagedSidecarRoot,
       stagedRendererRoot,
+      join(stagedResourcesRoot, "licenses"),
+      join(stagedResourcesRoot, "build-info.json"),
       ...(process.platform === "darwin"
         ? [
             join(macosLocalizationsRoot, "en.lproj"),
@@ -139,14 +143,22 @@ const config = {
                 name: "xuelearn",
                 productName: "XueLearn",
                 genericName: "AI learning assistant",
-                description: "Private AI-guided learning assistant",
+                description: "AI-guided personal learning with reading, interactive lessons and practice",
                 maintainer: "XueLearn",
                 homepage: "https://xuelearn.app",
                 icon: join(__dirname, "assets/icon-local.png"),
               },
             }),
           ],
-  plugins: [new AutoUnpackNativesPlugin({})],
+  plugins: [new AutoUnpackNativesPlugin({}), new FusesPlugin({
+    version: FuseVersion.V1,
+    [FuseV1Options.RunAsNode]: false,
+    [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
+    [FuseV1Options.EnableNodeCliInspectArguments]: false,
+    [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
+    [FuseV1Options.OnlyLoadAppFromAsar]: true,
+    [FuseV1Options.GrantFileProtocolExtraPrivileges]: false,
+  })],
   hooks: {
     preStart: stageElectronResources,
     prePackage: stageElectronResources,

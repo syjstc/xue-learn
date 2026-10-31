@@ -7,6 +7,8 @@ import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { auditPackagedResources } from "./audit-packaged-resources.mjs";
+import { collectLicenseNotices } from "../../../../scripts/collect-license-notices.mjs";
+import { releaseSourceIdentity } from "../../../../scripts/release-source-identity.mjs";
 
 const desktopRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 const workspaceRoot = join(desktopRoot, "../..");
@@ -14,9 +16,6 @@ export const stagedResourcesRoot = join(desktopRoot, ".forge-resources");
 export const stagedSidecarRoot = join(stagedResourcesRoot, "local-sidecar");
 export const stagedRendererRoot = join(stagedResourcesRoot, "desktop-renderer");
 const localRequire = createRequire(join(workspaceRoot, "package.json"));
-const electronRebuildConstants = localRequire(
-  "@electron/rebuild/lib/constants.js",
-);
 
 function packageRoot(entryPoint) {
   let candidate = dirname(realpathSync(entryPoint));
@@ -298,15 +297,10 @@ export async function stageElectronResources() {
   const previousLogLevel = process.env.npm_config_loglevel;
   const previousDevDir = process.env.npm_config_devdir;
   const previousCache = process.env.npm_config_cache;
-  const previousElectronGypDirectory =
-    electronRebuildConstants.ELECTRON_GYP_DIR;
   const electronGypDirectory = join(tmpdir(), "xuelearn-electron-gyp");
   process.env.npm_config_loglevel = "error";
   process.env.npm_config_devdir = electronGypDirectory;
   process.env.npm_config_cache = join(tmpdir(), "xuelearn-electron-npm-cache");
-  // @electron/rebuild passes its module-level directory directly to node-gyp,
-  // which otherwise ignores npm_config_devdir and writes under ~/.electron-gyp.
-  electronRebuildConstants.ELECTRON_GYP_DIR = electronGypDirectory;
   try {
     await rebuild({
       buildPath: stagedSidecarRoot,
@@ -322,13 +316,19 @@ export async function stageElectronResources() {
     else process.env.npm_config_devdir = previousDevDir;
     if (previousCache === undefined) delete process.env.npm_config_cache;
     else process.env.npm_config_cache = previousCache;
-    electronRebuildConstants.ELECTRON_GYP_DIR = previousElectronGypDirectory;
     for (const [key, value] of rebuildEnvironment) {
       if (value === undefined) delete process.env[key];
       else process.env[key] = value;
     }
   }
   await pruneStagedReleasePayload(stagedResourcesRoot);
+  await collectLicenseNotices(join(stagedResourcesRoot, "licenses"));
+  await writeFile(join(stagedResourcesRoot, "build-info.json"), JSON.stringify({
+    ...await releaseSourceIdentity(),
+    version: localRequire("./apps/desktop/package.json").version,
+    coreVersion: localRequire("@xue-learn/core/package.json").version,
+    electronVersion: localRequire("electron/package.json").version,
+  }, null, 2) + "\n");
   await auditPackagedResources(stagedResourcesRoot);
   const stagedNodeLlama = await import(
     pathToFileURL(

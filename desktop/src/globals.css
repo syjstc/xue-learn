@@ -1,7 +1,7 @@
 @import "./components/course-display/course-callout.css";
 @import "tailwindcss" source(".");
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import "./styles/shadcn.css";
 @import "katex/dist/katex.min.css";
 @import "./shared/design-tokens.css";
 @import "./components/course-display/course-board.css";

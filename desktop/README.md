@@ -47,18 +47,15 @@ exercises the real Electron host and optional Video package in disposable profil
 
 ## Build an installer
 
-```sh
-pnpm run check
-pnpm --dir desktop/apps/desktop run make
-```
+For a signed and notarized Mac installer, follow the [Mac release guide](../docs/mac-release.md) and run `pnpm run build:mac` from the repository root. It rebuilds the workspace, stages runtime resources and license notices, and verifies the application and DMG before exporting the installer.
 
-`make` rebuilds Core and Desktop, stages the local service and native dependencies, then creates the host platform's installer under `apps/desktop/out/`. Signing, notarization and installation checks on another machine are release steps; a successful source build alone does not verify an installer.
+The host's `make` command can create an installer for local development on the current platform. A source build or unsigned development package does not establish release acceptance on another machine.
 
 ## Update Core
 
 Core and Desktop change in the same Git commit. Desktop automatically builds and uses the current workspace Core; no archive pin or matching Core version bump is needed. An installed application receives Core changes when a new Desktop build is released.
 
-See [public distribution and Core update steps](docs/operations/public-desktop-product.md) for the complete workflow and the files that must be committed together. [Core API verification](docs/core-api-verification.md) records the existing source tests and build verification scope.
+See [public distribution and Core update steps](docs/operations/public-desktop-product.md) for the workflow and files that must be committed together. Run the current workspace checks to verify a change.
 
 ## License
 

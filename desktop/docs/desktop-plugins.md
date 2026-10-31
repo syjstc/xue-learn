@@ -28,8 +28,7 @@ This implementation uses **Cordis 4.0.0-rc.10** for host service registration an
 plugin lifecycles. Desktop supplies package validation, embedded view mounting,
 host or worker runtimes, workspace binding, IPC and the management UI.
 
-See [verification scope and native acceptance](desktop-plugin-verification.md)
-for the tested builds, lifecycle checks and remaining release validation.
+See [the security model](../../SECURITY.md) before installing executable plugins.
 
 ## Install, enable, update and remove
 

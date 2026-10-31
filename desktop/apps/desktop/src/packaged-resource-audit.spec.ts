@@ -63,6 +63,10 @@ const nodeLlamaNativePackage =
     ? `@node-llama-cpp/mac-${process.arch}${process.arch === "arm64" ? "-metal" : ""}`
     : `@node-llama-cpp/${process.platform === "win32" ? "win" : process.platform}-${process.arch}`;
 const required = [
+  "licenses/LICENSE.txt",
+  "licenses/LICENSING.md",
+  "licenses/THIRD_PARTY_LICENSES.txt",
+  "licenses/desktop-LICENSE-BRAND",
   "local-sidecar/main.js",
   "local-sidecar/tree-sitter.wasm",
   "local-sidecar/teaching-skills/builtin/general-teaching/SKILL.md",
@@ -224,6 +228,15 @@ describe("packaged resource audit", () => {
     await mkdir(join(resources,"desktop-renderer/live2d"));
     await expect(execFileAsync(process.execPath,[auditScript,directory])).rejects.toMatchObject({
       stderr:expect.stringContaining("unexpected desktop-renderer/live2d"),
+    });
+  });
+
+  it.each(["local-sidecar/.env.packaging", "local-sidecar/credentials.v1.enc.json", "desktop-renderer/learner.sqlite", "local-sidecar/AuthKey_example.p8"])("rejects accidental private payload %s", async (file) => {
+    const resources = join(directory, "XueLearn.app", "Contents", "Resources");
+    await writeAuditFixture(resources);
+    await writeFile(join(resources, file), "private fixture");
+    await expect(execFileAsync(process.execPath, [auditScript, directory])).rejects.toMatchObject({
+      stderr: expect.stringContaining(`unexpected ${file}`),
     });
   });
 });

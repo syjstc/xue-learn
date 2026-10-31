@@ -30,6 +30,10 @@ const sqliteVecLibrary =
       ? "vec0.dll"
       : "vec0.so";
 export const REQUIRED_PACKAGED_RESOURCES = [
+  "licenses/LICENSE.txt",
+  "licenses/LICENSING.md",
+  "licenses/THIRD_PARTY_LICENSES.txt",
+  "licenses/desktop-LICENSE-BRAND",
   "local-sidecar/main.js",
   "local-sidecar/tree-sitter.wasm",
   "local-sidecar/teaching-skills/builtin/general-teaching/SKILL.md",
@@ -282,6 +286,12 @@ async function findForbiddenDebugAssets(root) {
     }
     for (const entry of entries) {
       const full = join(directory, entry.name);
+      if (/^(?:\.git|\.cache|\.release|\.DS_Store|credentials\.v1\.enc\.json|workspace-catalog\.v1\.json)$/.test(entry.name) ||
+          /^\.env(?:\.|$)/.test(entry.name) ||
+          /\.(?:p8|p12|pfx|pem|key|mobileprovision|sqlite3?|db)(?:-(?:wal|shm|journal))?$/i.test(entry.name)) {
+        extra.push(relative(root, full));
+        continue;
+      }
       if (entry.isDirectory()) {
         await visit(full);
         continue;

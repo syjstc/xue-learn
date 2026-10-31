@@ -1,0 +1,31 @@
+--- a/lib/appdmg.js
++++ b/lib/appdmg.js
+@@ -6,7 +6,7 @@
+ 
+ const async = require('async')
+ const DSStore = require('ds-store')
+-const sizeOf = require('image-size')
++const { imageSize: sizeOf } = require('image-size')
+ const validator = require('is-my-json-valid')
+ const parseColor = require('parse-color')
+ 
+@@ -286,11 +286,15 @@
+   pipeline.addStep('Reading background dimensions', function (next) {
+     if (!global.opts.background) return next.skip()
+ 
+-    sizeOf(resolvePath(global.opts.background), function (err, value) {
++    fs.readFile(resolvePath(global.opts.background), function (err, buffer) {
+       if (err) return next(err)
+-
+-      global.bkgsize = [value.width, value.height]
+-      next(null)
++      try {
++        const value = sizeOf(buffer)
++        global.bkgsize = [value.width, value.height]
++        next(null)
++      } catch (error) {
++        next(error)
++      }
+     })
+   })
+ 

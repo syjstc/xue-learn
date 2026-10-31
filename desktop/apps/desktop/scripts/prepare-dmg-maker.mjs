@@ -12,9 +12,10 @@ const workspaceRoot = resolve(desktopRoot, "../..");
 const localRequire = createRequire(join(workspaceRoot, "package.json"));
 // Resolve transitive tools from the packages that own them. pnpm workspaces
 // do not expose every transitive dependency beside Desktop's package.json.
-const rebuildRequire = createRequire(localRequire.resolve("@electron/rebuild/package.json"));
-const dmgRequire = createRequire(localRequire.resolve("@electron-forge/maker-dmg/package.json"));
-const appdmgRequire = createRequire(dmgRequire.resolve("appdmg/package.json"));
+const rebuildRequire = createRequire(localRequire.resolve("@electron/rebuild"));
+const dmgRequire = createRequire(localRequire.resolve("@electron-forge/maker-dmg"));
+const installerRequire = createRequire(dmgRequire.resolve("electron-installer-dmg"));
+const appdmgRequire = createRequire(installerRequire.resolve("appdmg"));
 
 export async function prepareDmgMaker() {
   const nodeRoot = resolve(dirname(process.execPath), "..");
@@ -24,7 +25,7 @@ export async function prepareDmgMaker() {
       `Cannot build DMG helper: missing Node header ${nodeHeader}`,
     );
   }
-  const nodeGyp = rebuildRequire.resolve("@electron/node-gyp/bin/node-gyp.js");
+  const nodeGyp = rebuildRequire.resolve("node-gyp/bin/node-gyp.js");
   const environment = { ...process.env };
   for (const key of Object.keys(environment)) {
     if (/(?:API_KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL)/i.test(key)) {

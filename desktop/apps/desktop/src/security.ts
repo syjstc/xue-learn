@@ -1,4 +1,4 @@
-import type { BrowserWindow, Session } from "electron";
+import type { BrowserWindow, IpcMainInvokeEvent, Session } from "electron";
 import {
   classifyPersonalSyncLeaseRequest,
   type PersonalSyncLeaseTarget,
@@ -33,6 +33,21 @@ export function isExactLoopbackOrigin(candidate: string, baseUrl: string): boole
   } catch {
     return false;
   }
+}
+
+/** Native capabilities are available only to the app window's local main frame. */
+export function isTrustedDesktopSender(
+  event: IpcMainInvokeEvent,
+  window: BrowserWindow | null,
+  allowedOrigins: readonly (string | null | undefined)[],
+): boolean {
+  if (!window || window.isDestroyed()) return false;
+  if (event.sender !== window.webContents) return false;
+  if (!event.senderFrame || event.senderFrame !== window.webContents.mainFrame)
+    return false;
+  return allowedOrigins.some(
+    (origin) => origin && isExactLoopbackOrigin(event.senderFrame!.url, origin),
+  );
 }
 
 export function withSessionAuthorization(
