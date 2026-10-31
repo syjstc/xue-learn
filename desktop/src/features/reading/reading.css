@@ -24,6 +24,8 @@
 .reading-status { font-size: 13px; color: var(--text-500); }
 .reading-pdf-layout { font-size: 13px; padding: 7px; border: 1px solid var(--border-200); border-radius: 7px; background: var(--bg-50); }
 .reading-paper { max-width: var(--reading-page-width); min-width: 0; margin: 0 auto; padding: var(--reading-page-padding); background: var(--bg-50); border: 1px solid var(--border-200); border-radius: 16px; line-height: 1.85; font-size: 18px; overflow-wrap: anywhere; }
+::highlight(reading-follow-up) { background-color: rgb(250 204 21 / 0.45); text-decoration: underline solid rgb(245 158 11 / 0.95) 2px; }
+.dark ::highlight(reading-follow-up) { background-color: rgb(245 158 11 / 0.4); text-decoration-color: rgb(251 191 36 / 0.9); }
 /* Keep every text block on the same reading column. Only visual components
    may use the wider page, including in focus mode. */
 .reading-paper > h1, .reading-block:not([data-reading-block-type="component_slot"]), .reading-derivation, .reading-empty, .reading-paper > .reading-loading { max-width: var(--reading-prose-width); margin-inline: auto; }

@@ -7,6 +7,7 @@ import {materialStageFocusIndexes, type CourseDisplayBlock} from "@xue-learn/cor
 import type {CourseBoardPlayback} from "@/components/course-display/course-chat-board";
 import {useBoardFocusVisibility} from "@/components/course-display/use-board-focus-visibility";
 import "./chat-display.css";
+import "./display-theme.css";
 
 const EMPTY_TARGETS: readonly string[] = [];
 const FPS = 60;
@@ -36,19 +37,48 @@ function projectStageCues(document: DisplayDocument, block: unknown, targets: re
   }))}};
 }
 
-function useChatStageFocus(root: RefObject<HTMLDivElement | null>, block: unknown, targets: readonly string[], enabled: boolean) {
+function useChatStageFocus(root: RefObject<HTMLDivElement | null>, block: unknown, targets: readonly string[], enabled: boolean, playbackKey?: string) {
   const stage = stageBlock(block);
-  const key = enabled && stage ? targets.join("\n") : "";
+  const document = useMemo(() => {
+    if (!enabled || !block || typeof block !== "object" || (block as {type?: unknown}).type !== "display") return;
+    try { return materialDisplayDocument(block); } catch { return; }
+  }, [block, enabled]);
+  const key = enabled ? `${playbackKey ?? ""}:${targets.join("\n")}` : "";
   useLayoutEffect(() => {
     const host = root.current;
-    if (!host || !stage || !enabled) return;
-    const focused = materialStageFocusIndexes({layout: String(stage.layout), figures: stage.figures as CourseDisplayBlock[], targetIds: targets});
+    if (!host || !enabled) return;
+    const focused = stage ? materialStageFocusIndexes({layout: String(stage.layout), figures: stage.figures as CourseDisplayBlock[], targetIds: targets}) : [];
+    const compositions: DisplayNode[] = [];
+    const visited = new Set<DisplayNode>();
+    const childrenOf = (node: DisplayNode): DisplayNode[] => [
+      ...(Array.isArray(node.children) ? node.children : []),
+      ...(node.slots && typeof node.slots === "object" ? Object.values(node.slots).filter(Array.isArray).flat() : []),
+    ];
+    const visit = (node: DisplayNode, depth = 0) => {
+      if (!node || typeof node !== "object" || depth > 64 || visited.has(node) || visited.size >= 10_000) return;
+      visited.add(node);
+      if (node.kind === "general:composition") compositions.push(node);
+      childrenOf(node).forEach(child => visit(child, depth + 1));
+    };
+    if (document) visit(document.root);
+    const matches = new Map<DisplayNode, boolean>();
+    const addressed = (node: DisplayNode): boolean => {
+      if (!visited.has(node)) return false;
+      if (matches.has(node)) return matches.get(node)!;
+      matches.set(node, false);
+      const match = targets.some(target => target === node.id || target.startsWith(`${node.id}/`)) ||
+        childrenOf(node).some(addressed);
+      matches.set(node, match);
+      return match;
+    };
     const update = () => {
-      const composition = host.querySelector(".display-film-composition");
-      if (!composition) return;
-      [...composition.children].forEach((child, index) => {
-        child.setAttribute("data-stage-index", String(index));
-        child.setAttribute("data-focused", String(focused.includes(index)));
+      host.querySelectorAll(".display-film-composition").forEach((composition, compositionIndex) => {
+        if (stage && compositionIndex > 0) return;
+        [...composition.children].forEach((child, index) => {
+          const node = compositions[compositionIndex]?.children?.[index];
+          child.setAttribute("data-stage-index", String(index));
+          child.setAttribute("data-focused", String(stage ? focused.includes(index) : Boolean(node && addressed(node))));
+        });
       });
     };
     update();
@@ -56,7 +86,7 @@ function useChatStageFocus(root: RefObject<HTMLDivElement | null>, block: unknow
     const observer = new MutationObserver(update);
     observer.observe(host, {childList: true, subtree: true});
     return () => observer.disconnect();
-  }, [root, block, key, enabled]);
+  }, [root, block, document, key, enabled]);
   useBoardFocusVisibility(root, key);
 }
 function displayNodes(root: unknown): DisplayNode[] {
@@ -168,7 +198,7 @@ export function DisplayBlockHost({block, id, activeTargetIds = EMPTY_TARGETS, pl
   const identity = id ?? (block && typeof block === "object" && typeof (block as {id?: unknown}).id === "string" ? (block as {id: string}).id : "material-display");
   const motion = useCueProgress(identity, activeTargetIds, playback?.animate ?? false, playback?.cueId);
   const root = useRef<HTMLDivElement>(null);
-  useChatStageFocus(root, block, activeTargetIds, Boolean(playback));
+  useChatStageFocus(root, block, activeTargetIds, Boolean(playback), playback?.key);
   const adapted = useMemo(() => {
     try {
       const document = materialDisplayDocument(block, {id, ...(activeTargetIds.length || playback ? {activeTargetIds, previousActiveTargetIds: motion.previous, revealedTargetIds: playback?.revealedTargetIds, progress: motion.progress} : {})});

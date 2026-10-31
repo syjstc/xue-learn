@@ -5,7 +5,7 @@ import {createDisplayClock, type DisplayDocument, type DisplayNode} from '@xue-l
 import {DisplayBlockHost, DisplayDocumentHost, estimateDisplayDuration} from '../features/display/display-block-host';
 import {useDerivationMotion} from '../features/teaching-derivation/use-derivation-motion';
 
-const mockSurface = jest.fn((_props: unknown) => null);
+const mockSurface = jest.fn((_props: unknown): React.ReactNode => null);
 jest.mock('@xue-learn/core/display/workspace', () => ({WorkspaceDisplaySurface: (props: unknown) => mockSurface(props)}));
 const makeDocument = (durationTicks?: number): DisplayDocument => ({version: 1, id: 'lesson', root: {id: 'text', kind: 'general:text', version: 1, payload: {text: 'Hello'}}, plugins: [{id: 'org.xuelearn.display.general', version: '1.0.0'}], ticksPerSecond: 48_000, durationTicks});
 
@@ -20,7 +20,7 @@ describe('shared display learning host', () => {
     jest.spyOn(window, 'cancelAnimationFrame').mockImplementation(id => {frames.delete(id);});
     Object.defineProperty(window, 'matchMedia', {configurable: true, value: jest.fn(() => ({matches: false, addEventListener() {}, removeEventListener() {}}))});
     (globalThis as any).ResizeObserver = class {observe() {} disconnect() {}};
-    mockSurface.mockClear();
+    mockSurface.mockReset();
   });
   afterEach(async () => {await act(async () => root.unmount()); container.remove(); jest.restoreAllMocks(); delete (globalThis as {IS_REACT_ACT_ENVIRONMENT?: boolean}).IS_REACT_ACT_ENVIRONMENT;});
   const advance = async (milliseconds: number) => {now += milliseconds; const queued = [...frames.values()]; frames.clear(); await act(async () => {for (const callback of queued) callback(now);});};
@@ -142,6 +142,67 @@ describe('shared display learning host', () => {
     await act(async () => render(['fig:right-card:detail-1']));
     expect(latest().document.root.children![0].payload).toMatchObject({activeTargetIds: [], previousActiveTargetIds: ['whole']});
     expect(latest().document.root.children![1].payload).toMatchObject({activeTargetIds: ['detail-1'], previousActiveTargetIds: []});
+  });
+
+  it('follows a portable composition cue past an earlier lit board and back on replay', async () => {
+    const source = {...makeDocument(), root: {id: 'boards', kind: 'general:composition', version: 1, payload: {layout: 'column'}, children: [
+      {id: 'setup', kind: 'computing:code', version: 1, payload: {code: 'cargo new demo'}},
+      {id: 'input', kind: 'general:callout', version: 1, payload: {text: 'Keep the file in the project root'}},
+    ]}};
+    const block = {type: 'display', document: source};
+    mockSurface.mockImplementation(() => <div className="display-film-composition">
+      <div><span data-lp-lit="true">Setup</span></div><div>Input</div>
+    </div>);
+    const render = (target: string, key = target) => root.render(<div className="course-conversation-board" style={{overflowY: 'auto'}}>
+      <DisplayBlockHost block={block} activeTargetIds={[target]} playback={{animate: false, key}}/>
+    </div>);
+    await act(async () => render('setup/whole'));
+    const board = container.firstElementChild as HTMLElement;
+    Object.defineProperties(board, {clientHeight: {value: 400}, scrollHeight: {value: 1000}});
+    board.getBoundingClientRect = () => ({top: 0, bottom: 400} as DOMRect);
+    const panels = [...container.querySelectorAll<HTMLElement>('.display-film-composition > div')];
+    panels.forEach((panel, index) => {panel.getBoundingClientRect = () => ({top: 20 + index * 600 - board.scrollTop, bottom: 320 + index * 600 - board.scrollTop, height: 300} as DOMRect);});
+    await advance(0);
+    expect(board.scrollTop).toBe(8);
+    await act(async () => render('input/whole'));
+    await advance(0);
+    expect(panels.map(panel => panel.dataset.focused)).toEqual(['false', 'true']);
+    expect(board.scrollTop).toBe(608);
+    await act(async () => render('setup/whole', 'replay'));
+    await advance(0);
+    expect(board.scrollTop).toBe(8);
+  });
+
+  it('reveals an asynchronously mounted cue and yields to manual browsing until replay', async () => {
+    const source = {...makeDocument(), root: {id: 'boards', kind: 'general:composition', version: 1, payload: {layout: 'column'}, children: [
+      {id: 'setup', kind: 'general:text', version: 1, payload: {text: 'Setup'}},
+      {id: 'input', kind: 'general:text', version: 1, payload: {text: 'Input'}},
+    ]}};
+    const block = {type: 'display', document: source};
+    let ready = false;
+    mockSurface.mockImplementation(() => ready ? <div className="display-film-composition"><div>Setup</div><div>Input</div></div> : null);
+    const render = (key = 'input') => root.render(<div className="course-conversation-board" style={{overflowY: 'auto'}}>
+      <DisplayBlockHost block={block} activeTargetIds={['input/whole']} playback={{animate: false, key}}/>
+    </div>);
+    await act(async () => render());
+    const board = container.firstElementChild as HTMLElement;
+    Object.defineProperties(board, {clientHeight: {value: 400}, scrollHeight: {value: 1000}});
+    board.getBoundingClientRect = () => ({top: 0, bottom: 400} as DOMRect);
+    ready = true;
+    await act(async () => render());
+    const panel = container.querySelectorAll<HTMLElement>('.display-film-composition > div')[1];
+    panel.getBoundingClientRect = () => ({top: 620 - board.scrollTop, bottom: 920 - board.scrollTop, height: 300} as DOMRect);
+    await advance(0);
+    expect(panel.dataset.focused).toBe('true');
+    expect(board.scrollTop).toBe(608);
+    board.dispatchEvent(new Event('wheel'));
+    board.scrollTop = 0;
+    await act(async () => {panel.append(document.createElement('span'));});
+    await advance(0);
+    expect(board.scrollTop).toBe(0);
+    await act(async () => render('replay-input'));
+    await advance(0);
+    expect(board.scrollTop).toBe(608);
   });
 
   it('animates backward derivation navigation from the displayed step', async () => {

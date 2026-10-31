@@ -39,6 +39,7 @@ import type {
 import { withSqComponentSelection } from "../../llm/sq-preview-dsl.js";
 import type { EvaluableOperation, OperationExecutionContext } from "./types.js";
 import { registerOperationAdapter } from "./registry.js";
+import { retryOverloadedAuthoring } from "./authoring-provider-retry.js";
 import {
   artifactContextSeedSchema,
   hashArtifactContext,
@@ -230,8 +231,9 @@ export async function executeLearningMaterialAuthoring(
         contextInvocation: round.invocation,
         signal: context.signal,
         authorItems: input.authoringAgent
-            ? ({ prompt, resultSchema, onToken, onPartial, signal }) =>
-                runSectionMaterialAuthoringAgent({
+            ? ({ prompt, resultSchema, onToken, onPartial, signal }) => {
+                const agent = input.authoringAgent!;
+                const run = () => runSectionMaterialAuthoringAgent({
                   ...input.authoringAgent!,
                   imageRepairRetryKey,
                   prompt,
@@ -240,7 +242,13 @@ export async function executeLearningMaterialAuthoring(
                   onPartial,
                   signal,
                   meta: input.meta,
-                })
+                });
+                // Explicit rewrites/forced replacement cannot safely resume
+                // partial commits as ordinary authoring does.
+                return agent.force || agent.rewriteTopicId || typeof agent.rewriteTopicIndex === "number"
+                  ? run()
+                  : retryOverloadedAuthoring(run, { signal });
+              }
             : undefined,
         onToken: async (token) => {
           await context.events.emit({

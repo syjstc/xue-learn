@@ -9,7 +9,8 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import type { MainlineDecision } from "@xue-learn/core/domain";
 import { apiGet } from "@/shared/api";
-import { useGoal } from "@/hooks/api";
+import { useGoal, useLearnerDisplayName } from "@/hooks/api";
+import { personalizeLearnerText } from "@/shared/domain/learner-text";
 import { useT } from "@xue-learn/core/i18n";
 import { Button } from "@xue-learn/core/ui/button";
 import { ApiErrorNotice } from "@/components/ui/api-error-notice";
@@ -23,6 +24,7 @@ export function MainlinePlanPage() {
     t = useT();
   const mainline = useMainline(),
     goal = useGoal(goalId);
+  const learnerName = useLearnerDisplayName();
   const continued = params.get("continue") === "1",
     plan = params.get("view") === "plan";
   const restored = useRef("");
@@ -105,7 +107,10 @@ export function MainlinePlanPage() {
           {value.title}
         </h1>
         {value.topicOverview ? (
-          <LlmMarkdown content={value.topicOverview} variant="muted" />
+          <LlmMarkdown
+            content={personalizeLearnerText(value.topicOverview, learnerName)}
+            variant="muted"
+          />
         ) : null}
         {intent.startingLevel || intent.targetLevel ? (
           <p className="text-sm text-muted-foreground">

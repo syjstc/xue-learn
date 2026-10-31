@@ -17,6 +17,7 @@ import { SelectionFollowUpToolbar } from "@/components/wizard/inline-follow-up-p
 import {ReadingFigure} from "./reading-figure";
 import {ReadingDerivationPresentation} from "./reading-derivation-presentation";
 import {useReadingFollowUp} from "./use-reading-follow-up";
+import {useReadingAutoGeneration} from "./use-reading-auto-generation";
 import "./reading.css";
 
 const busy = (status?: string) => status === "pending" || status === "running";
@@ -210,7 +211,12 @@ export function ReadingSectionBody({unitId, sectionId, goalId, active = true, on
     },
     onSuccess: () => client.invalidateQueries({queryKey}),
   });
-  const bodyBusy = busy(reading?.status);
+  useReadingAutoGeneration({
+    active, loaded: query.isSuccess && !query.isFetching,
+    pending: mutate.isPending, unitId, section,
+    generate: () => mutate.mutate({generate: true}),
+  });
+  const bodyBusy = busy(reading?.status) || (!reading && mutate.isPending);
   const currentDocument = reading?.document;
   const canContinue = reading?.status === "ready";
   const selection = useReadingFollowUp({unitId, sectionId, goalId,

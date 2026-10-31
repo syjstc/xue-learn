@@ -3,6 +3,7 @@ import {supportsMaterialFollowUps} from "@xue-learn/core/client-runtime";
 import {anchorId, type MaterialAnchor} from "@xue-learn/core/shared/domain/material-anchor";
 import {useAssistant} from "@/components/agent/assistant-provider";
 import {useMaterialFollowUps} from "@/hooks/use-material-follow-ups";
+import {observeReadingFollowUpHighlights} from "./reading-follow-up-highlight";
 
 /** Reading owns its quotes and document versions; Display block offsets do not apply. */
 export function useReadingFollowUp({unitId, sectionId, goalId, documentId, enabled}: {
@@ -11,6 +12,7 @@ export function useReadingFollowUp({unitId, sectionId, goalId, documentId, enabl
   const containerRef = useRef<HTMLElement>(null);
   const rangeRef = useRef<Range | null>(null);
   const [anchor, setAnchor] = useState<MaterialAnchor | null>(null);
+  const [pendingAnchor, setPendingAnchor] = useState<MaterialAnchor | null>(null);
   const ownerId = useId();
   const {openUnitFollowUp, closeUnitFollowUp} = useAssistant();
   const available = enabled && Boolean(documentId) && supportsMaterialFollowUps();
@@ -26,8 +28,22 @@ export function useReadingFollowUp({unitId, sectionId, goalId, documentId, enabl
 
   useEffect(() => {
     clear();
+    setPendingAnchor(null);
     return () => closeUnitFollowUp(ownerId);
   }, [unitId, sectionId, documentId, available, clear, closeUnitFollowUp, ownerId]);
+
+  useEffect(() => {
+    if (pendingAnchor && threads.some(thread => anchorId(thread.anchor) === anchorId(pendingAnchor)))
+      setPendingAnchor(null);
+  }, [threads, pendingAnchor]);
+
+  useEffect(() => {
+    const root = containerRef.current;
+    if (!available || !root) return;
+    const anchors = [...threads.map(thread => thread.anchor), ...(pendingAnchor ? [pendingAnchor] : [])]
+      .filter(anchor => anchor.sectionId === sectionId && anchor.reading?.documentId === documentId);
+    return observeReadingFollowUpHighlights(root, anchors);
+  }, [available, sectionId, documentId, threads, pendingAnchor]);
 
   useEffect(() => {
     if (!available || !documentId) return;
@@ -59,7 +75,7 @@ export function useReadingFollowUp({unitId, sectionId, goalId, documentId, enabl
         scope: "block", sectionId, reading: {documentId, blockId},
         blockKey: `reading:${documentId}:${blockId}`,
         subPath: "text.selection", selectedText: text,
-        textRange: {start: offset, end: offset + selection.toString().length},
+        textRange: {start: offset, end: offset + range.toString().length},
       });
     };
     const schedule = () => {
@@ -92,6 +108,7 @@ export function useReadingFollowUp({unitId, sectionId, goalId, documentId, enabl
   const ask = useCallback(() => {
     if (!available || !anchor) return;
     const existing = threads.find(thread => anchorId(thread.anchor) === anchorId(anchor));
+    setPendingAnchor(anchor);
     openUnitFollowUp(unitId, ownerId, {goalId: goalId ?? "", anchor, threadId: existing?.id});
     clear();
   }, [available, anchor, threads, openUnitFollowUp, unitId, ownerId, goalId, clear]);

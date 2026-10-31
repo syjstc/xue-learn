@@ -23,6 +23,7 @@ import {
   generatableComplexInteractiveBlockTypeSchema,
   interactiveBlockSchema,
   MAX_GENERATED_LEARNING_MATERIAL_BLOCKS,
+  MAX_GENERATED_LEARNING_MATERIAL_ITEMS,
   microTopicScopeSchema,
   microUnitResultSchema,
   quizQuestionSchema,
@@ -762,7 +763,7 @@ export function createMaterialGenerationJitItemsSchema(params: {
     z
       .array(materialGenerationJitItemSchema)
       .min(1)
-      .max(132)
+      .max(MAX_GENERATED_LEARNING_MATERIAL_ITEMS)
       .superRefine((items, ctx) => {
       const introductions = items.flatMap((item, index) =>
         item.kind === "introduction" ? [index] : [],

@@ -397,6 +397,9 @@ export function InteractiveMaterialBody({
         ? messageReplay
         : null;
     const focusedTurnIndex = replay?.turnIndex ?? visibleTurnCount - 1;
+    const captionTurnIndex = visibleTurns.filter(({ turn, turnIndex }) =>
+      turn.kind !== "display" && turnIndex >= presentation.topicStart && turnIndex <= focusedTurnIndex,
+    ).at(-1)?.turnIndex;
     const focusedPresentation = replay
       ? resolveAssistantCourseDisplay(
           displayMaterial,
@@ -864,6 +867,7 @@ export function InteractiveMaterialBody({
       <CourseConversationLayout
         identity={focusedPresentation.key}
         topicIdentity={`topic:${presentation.topicStart}`}
+        narrationIdentity={captionTurnIndex}
         controls={assistantFeed?.controls}
         chat={
           followUp?.inlineChat
@@ -922,6 +926,7 @@ export function InteractiveMaterialBody({
             .map(({ turnIndex }) => (
               <div
                 key={turnIndex}
+                data-course-caption-current={turnIndex === captionTurnIndex || undefined}
                 data-course-narration-for={
                   presentation.displayGroups.find((group) =>
                     group.narrationTurnIndices.includes(turnIndex),

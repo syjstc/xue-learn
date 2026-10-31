@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { setTimeout as delay } from "node:timers/promises";
+import { displayBuildRetryReason } from "../../../../display-build/retry.js";
 import type {
   GuidedImageAsset,
   GuidedImageBeat,
@@ -106,6 +107,8 @@ export function runGuidedImageDisplay(input: {
   imageRepairRetryKey?: string;
   /** Re-observe rejected legacy checkpoints when the model's image input changes. */
   observationVersion?: string;
+  /** Injectable delay for deterministic retry tests. */
+  retryWait?: (milliseconds: number, signal: AbortSignal) => Promise<void>;
 }): Promise<GuidedImageDisplay> {
   const intent = guidedImageIntentSchema.parse(input.intent);
   const fingerprint = guidedImageFingerprint(intent, input.persona);
@@ -153,6 +156,7 @@ export function runGuidedImageDisplay(input: {
       await save({ phase: next, status: "running", retryAfter: undefined });
     };
     const call = async <T>(work: () => Promise<T>): Promise<T> => {
+      let transientAttempt = 0;
       for (;;) {
         input.signal.throwIfAborted();
         try {
@@ -160,18 +164,21 @@ export function runGuidedImageDisplay(input: {
         } catch (error) {
           const message =
             error instanceof Error ? error.message : String(error);
-          if (
-            input.signal.aborted ||
-            !/\b429\b|Throttling[.:]|rate_limit_exceeded|rate.?limit/i.test(
-              message,
-            )
-          )
-            throw error;
+          if (input.signal.aborted) throw error;
+          const rateLimited = /\b429\b|Throttling[.:]|rate_limit_exceeded|rate.?limit/i.test(message);
+          const reason = displayBuildRetryReason(message);
+          const delays = reason === "connection" ? [10_000, 20_000, 45_000] : [15_000, 45_000, 90_000];
+          if (!rateLimited && (!reason || transientAttempt >= delays.length)) throw error;
+          // Rate limiting retains its existing retry policy. Known connection
+          // and overload errors get a bounded retry within this same image
+          // checkpoint, without spending an image-quality redraw attempt.
+          const milliseconds = rateLimited ? 5_000 : delays[transientAttempt++]!;
           await save({
             status: "waiting",
-            retryAfter: new Date(Date.now() + 5000).toISOString(),
+            retryAfter: new Date(Date.now() + milliseconds).toISOString(),
           });
-          await delay(5000, undefined, { signal: input.signal });
+          if (input.retryWait) await input.retryWait(milliseconds, input.signal);
+          else await delay(milliseconds, undefined, { signal: input.signal });
           await save({ status: "running", retryAfter: undefined });
         }
       }

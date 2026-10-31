@@ -2398,7 +2398,14 @@ export const learningMaterialSchema = z.preprocess(
   }),
 );
 
-export const MAX_GENERATED_LEARNING_MATERIAL_BLOCKS = 120;
+// A section can contain eight independently accepted topics. Image-first
+// topics commonly have 12–18 frozen narration beats each, plus headings and
+// figures. The old 120-block limit rejected those valid sections only after
+// their costly images and narration had already been accepted.
+export const MAX_GENERATED_LEARNING_MATERIAL_BLOCKS = 256;
+// The wire envelope also carries an optional introduction and takeaways.
+// Keep this allowance aligned with the block budget in every validation path.
+export const MAX_GENERATED_LEARNING_MATERIAL_ITEMS = MAX_GENERATED_LEARNING_MATERIAL_BLOCKS + 12;
 
 /**
  * Authoritative output validation for newly generated material. It performs no

@@ -1,0 +1,96 @@
+/* Interactive lessons inherit the app palette. Film/export artwork keeps its
+ * authored palette outside this host, including photographs and illustrations. */
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage {
+  --rm-stage: var(--ds-canvas) !important;
+  --rm-ink: var(--ds-ink) !important;
+  --rm-muted: var(--ds-muted) !important;
+  --rm-accent: var(--ds-primary) !important;
+  --rm-accent-text: var(--ds-primary-dark) !important;
+  --rm-accent-soft: var(--ds-primary-soft) !important;
+  --rm-border: var(--ds-border) !important;
+  --rm-surface: var(--ds-surface) !important;
+  --rm-inset: var(--ds-surface-inset) !important;
+  --rm-compare: var(--ds-info) !important;
+  --rm-shadow: color-mix(in srgb, var(--ds-ink) 7%, transparent) !important;
+  --lp-ink: var(--ds-ink) !important;
+  color-scheme: inherit;
+}
+.desktop-display-host[data-display-presentation="chat"] .xue-display-runtime {
+  color: var(--ds-ink);
+}
+.desktop-display-host[data-display-presentation="chat"] .rm-glass-tone {
+  --glass-ink: color-mix(in srgb, var(--glass-color) 50%, var(--rm-ink)) !important;
+  --glass-tint: color-mix(in srgb, var(--glass-color) 22%, var(--rm-surface)) !important;
+  --glass-wash: color-mix(in srgb, var(--glass-color) 6%, var(--rm-surface)) !important;
+}
+.desktop-display-host[data-display-presentation="chat"] .rm-concept-card {
+  --card-ink: color-mix(in srgb, var(--card-color) 50%, var(--rm-ink)) !important;
+  --card-tint: color-mix(in srgb, var(--card-color) 22%, var(--rm-surface)) !important;
+  --card-wash: color-mix(in srgb, var(--card-color) 6%, var(--rm-surface)) !important;
+}
+.desktop-display-host[data-display-presentation="chat"] :is(.rm-glass-surface, .rm-concept-card-surface) {
+  background: linear-gradient(145deg, var(--rm-surface), var(--rm-inset));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--rm-ink) 5%, transparent), 0 12px 32px var(--rm-shadow);
+}
+.desktop-display-host[data-display-presentation="chat"] .rm-glass-surface::after {
+  border-color: color-mix(in srgb, var(--rm-ink) 8%, transparent);
+}
+.desktop-display-host[data-display-presentation="chat"] :is(
+  .rm-glass-badge, .rm-glass-title-eyebrow, .rm-glass-keyword,
+  .rm-glass-title-satellite, .rm-glass-network-caption,
+  .rm-glass-dialogue-avatar, .rm-glass-dialogue nav button,
+  .rm-concept-card .rm-card-topline small
+) {
+  background: var(--rm-surface);
+}
+.desktop-display-host[data-display-presentation="chat"] :is(
+  .rm-glass-text-copy p, .rm-glass-dialogue-turn p,
+  .rm-glass-title .rm-glass-title-subtitle,
+  .rm-glass-compare .rm-glass-compare-point p,
+  .rm-glass-process-detail p, .rm-glass-network-detail p,
+  .rm-concept-card .rm-card-copy p
+) {
+  color: var(--rm-muted);
+}
+/* Neutral paint in older SVG diagrams follows the host; semantic accents and
+ * authored image pixels keep their original colors. */
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg :is(text:not([fill]), [fill="#3E3632" i]) {
+  fill: var(--rm-ink);
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg [fill="#7A6F65" i] {
+  fill: var(--rm-muted);
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg [fill="#FAF7F4" i] {
+  fill: var(--rm-surface);
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg [fill="#F5F0EB" i] {
+  fill: var(--rm-stage);
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg [fill="#EDE7E0" i] {
+  fill: var(--rm-inset);
+}
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg [stroke="#DDD5CB" i] {
+  stroke: var(--rm-border);
+}
+.desktop-display-host[data-display-presentation="chat"] .lp-code-board :is(.hljs-variable, .hljs-template-variable, .hljs-attribute) {
+  color: var(--rm-accent-text);
+}
+.desktop-display-host[data-display-presentation="chat"] .lp-code-board :is(.hljs-type, .hljs-class .hljs-title) {
+  color: var(--rm-compare);
+}
+.desktop-display-host[data-display-presentation="chat"] .lp-code-board :is(.hljs-meta, .hljs-regexp, .hljs-link) {
+  color: var(--rm-muted);
+}
+.desktop-display-host[data-display-presentation="chat"] .xue-display-placeholder {
+  color: var(--ds-ink);
+  background: var(--ds-surface);
+  border-color: var(--ds-border);
+}
+.desktop-display-host[data-display-presentation="chat"] .xue-display-placeholder-symbol {
+  color: var(--ds-primary);
+}
+.desktop-display-host[data-display-presentation="chat"] .xue-display-placeholder button {
+  color: var(--ds-ink);
+  background: var(--ds-surface-inset);
+  border-color: var(--ds-border);
+}

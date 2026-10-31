@@ -66,6 +66,44 @@ function setup(checkpoint?: GuidedImageCheckpoint) {
   };
 }
 
+it("retries a transient image-provider disconnect without consuming quality redraws", async () => {
+  const test = setup();
+  jest.mocked(test.ports.generateImage)
+    .mockRejectedValueOnce(new Error("terminated"))
+    .mockRejectedValueOnce(new Error("ECONNRESET"))
+    .mockResolvedValueOnce(asset("3"));
+  const delays: number[] = [];
+  const result = await runGuidedImageDisplay({ ...test.input, retryWait: async (ms) => { delays.push(ms); } });
+  expect(result.image).toEqual(asset("3"));
+  expect(delays).toEqual([10_000, 20_000]);
+  expect(test.ports.generateImage).toHaveBeenCalledTimes(3);
+  expect(test.latest().rejectedImages ?? []).toHaveLength(0);
+  expect(test.latest().status).toBe("ready");
+});
+
+it("bounds transient retries and never retries an unrelated content failure", async () => {
+  const disconnected = setup();
+  jest.mocked(disconnected.ports.generateImage).mockRejectedValue(new Error("terminated"));
+  const waits: number[] = [];
+  await expect(runGuidedImageDisplay({ ...disconnected.input, runId: "disconnect-limit", retryWait: async (ms) => { waits.push(ms); } })).rejects.toThrow("terminated");
+  expect(waits).toEqual([10_000, 20_000, 45_000]);
+  expect(disconnected.ports.generateImage).toHaveBeenCalledTimes(4);
+  const contentFailure = setup();
+  jest.mocked(contentFailure.ports.generateImage).mockRejectedValue(new Error("Invalid illustration composition"));
+  await expect(runGuidedImageDisplay({ ...contentFailure.input, runId: "content-failure", retryWait: async () => { throw new Error("unexpected retry"); } })).rejects.toThrow("Invalid illustration composition");
+  expect(contentFailure.ports.generateImage).toHaveBeenCalledTimes(1);
+});
+
+it("honors cancellation during a transient retry", async () => {
+  const test = setup();
+  const controller = new AbortController();
+  jest.mocked(test.ports.generateImage).mockRejectedValue(new Error("terminated"));
+  await expect(runGuidedImageDisplay({ ...test.input, runId: "disconnect-abort", signal: controller.signal,
+    retryWait: async () => { controller.abort(new Error("cancelled")); },
+  })).rejects.toThrow("cancelled");
+  expect(test.ports.generateImage).toHaveBeenCalledTimes(1);
+});
+
 it("repairs an exhausted checkpoint on a new request and retains its rejection feedback", async () => {
   const test = setup(failedCheckpoint());
   const result = await runGuidedImageDisplay({ ...test.input, imageRepairRetryKey: "request-1" });

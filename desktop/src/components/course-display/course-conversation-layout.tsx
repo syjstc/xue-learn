@@ -8,8 +8,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@xue-learn/core/ui/sheet";
-import { useT } from "@xue-learn/core/i18n";
-import { ArrowUp, Maximize2, Minimize2, Square, X } from "lucide-react";
+import { useI18n } from "@xue-learn/core/i18n";
+import { ArrowUp, Columns2, Maximize2, Minimize2, Rows2, Square, X } from "lucide-react";
 import {
   useEffect,
   useId,
@@ -20,9 +20,18 @@ import {
 } from "react";
 import "./course-conversation-layout.css";
 
+type PresentationLayout = "split" | "subtitles";
+const LAYOUT_STORAGE_KEY = "xue-learn.learningDisplay.layout";
+const layoutMessages = {
+  "zh-Hans": { label: "演示布局", split: "左右布局", subtitles: "上下布局" },
+  "zh-Hant": { label: "演示佈局", split: "左右佈局", subtitles: "上下佈局" },
+  en: { label: "Presentation layout", split: "Side by side", subtitles: "Top and bottom" },
+};
+
 export function CourseConversationLayout({
   identity,
   topicIdentity,
+  narrationIdentity,
   heading,
   display,
   persona,
@@ -32,6 +41,7 @@ export function CourseConversationLayout({
 }: {
   identity: string;
   topicIdentity?: string;
+  narrationIdentity?: number;
   heading?: ReactNode;
   display?: ReactNode;
   persona: { name: string; avatarSrc: string };
@@ -48,7 +58,17 @@ export function CourseConversationLayout({
     onSend: (message: string) => Promise<boolean>;
   };
 }) {
-  const t = useT();
+  const { t, locale } = useI18n();
+  const labels = layoutMessages[locale];
+  const [layout, setLayout] = useState<PresentationLayout>(() => {
+    try { return localStorage.getItem(LAYOUT_STORAGE_KEY) === "subtitles" ? "subtitles" : "split"; }
+    catch { return "split"; }
+  });
+  const chooseLayout = (next: PresentationLayout) => {
+    setLayout(next);
+    try { localStorage.setItem(LAYOUT_STORAGE_KEY, next); }
+    catch { /* The current layout remains usable without persistent storage. */ }
+  };
   const inputId = useId();
   const [draft, setDraft] = useState("");
   const composer = useRef<HTMLTextAreaElement>(null);
@@ -61,6 +81,9 @@ export function CourseConversationLayout({
       `[data-course-display-key="${CSS.escape(identity)}"]`,
     );
     if (!target || !board.current) return;
+    // The host reveals the exact cue inside a composition. A competing scroll
+    // to the group's top would undo that focus.
+    if (target.querySelector('[data-focused="true"], [data-lp-lit="true"]')) return;
     const root = board.current;
     root.scrollTo({
       top:
@@ -71,20 +94,22 @@ export function CourseConversationLayout({
         ? "auto"
         : "smooth",
     });
-  }, [identity]);
+  }, [identity, layout]);
   useEffect(() => {
     const root = board.current;
     if (!root) return;
-    const measure = () =>
+    const measure = () => {
+      const minimum = layout === "subtitles" && window.matchMedia("(min-width: 701px)").matches ? 1 : 280;
       root.style.setProperty(
         "--course-board-height",
-        `${Math.max(280, root.clientHeight - 16)}px`,
+        `${Math.max(minimum, root.clientHeight - 16)}px`,
       );
+    };
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(root);
     return () => observer.disconnect();
-  }, []);
+  }, [layout]);
   const following = useRef(true);
   const submitting = useRef(false);
   const [expanded, setExpanded] = useState(false);
@@ -92,6 +117,21 @@ export function CourseConversationLayout({
   const [keyboardInset, setKeyboardInset] = useState(0);
   const expandButton = useRef<HTMLButtonElement>(null);
   const hasDisplay = Boolean(display);
+  const subtitles = layout === "subtitles" && hasDisplay;
+
+  useEffect(() => {
+    const root = transcript.current;
+    if (!root || !subtitles) return;
+    // Keep the live line in the short caption strip as speech reveals text.
+    const followCaption = () => {
+      if (following.current) root.scrollTop = root.scrollHeight;
+    };
+    following.current = true;
+    root.scrollTop = 0;
+    const observer = new MutationObserver(followCaption);
+    observer.observe(root, { childList: true, characterData: true, subtree: true });
+    return () => observer.disconnect();
+  }, [subtitles, narrationIdentity]);
 
   useEffect(() => {
     following.current = true;
@@ -118,12 +158,12 @@ export function CourseConversationLayout({
   }, [chat?.messages, chat?.activeDiscussionId]);
   useEffect(() => {
     if (!chat?.selection) return;
-    if (window.matchMedia?.("(max-width: 700px)").matches) {
+    if (subtitles || window.matchMedia?.("(max-width: 700px)").matches) {
       setAskOpen(true);
     } else {
       composer.current?.focus({ preventScroll: true });
     }
-  }, [chat?.selection?.nonce]);
+  }, [chat?.selection?.nonce, subtitles]);
   useEffect(() => {
     if (!askOpen) return;
     const frame = requestAnimationFrame(() =>
@@ -252,17 +292,29 @@ export function CourseConversationLayout({
     <section
       className="course-conversation"
       data-has-footer={controls || chat ? "true" : undefined}
+      data-layout={layout}
     >
       <div
         className="course-conversation-frame"
         data-expanded={expanded || undefined}
       >
-        <div className="course-conversation-heading">
-          {heading ?? <span>{t("learningDisplay.lesson")}</span>}
+        <div className="course-conversation-header">
+          <div className="course-conversation-heading">
+            {heading ?? <span>{t("learningDisplay.lesson")}</span>}
+          </div>
+          <div className="course-conversation-layout-switch" role="group" aria-label={labels.label}>
+            <button type="button" aria-pressed={layout === "split"} onClick={() => chooseLayout("split")}>
+              <Columns2 size={16} aria-hidden /><span>{labels.split}</span>
+            </button>
+            <button type="button" aria-pressed={layout === "subtitles"} onClick={() => chooseLayout("subtitles")}>
+              <Rows2 size={16} aria-hidden /><span>{labels.subtitles}</span>
+            </button>
+          </div>
         </div>
         <div
           className="course-conversation-panes"
           data-has-display={hasDisplay}
+          data-layout={layout}
         >
           {/* Keep the lane mounted so changing from prose to a display can interpolate. */}
           <div

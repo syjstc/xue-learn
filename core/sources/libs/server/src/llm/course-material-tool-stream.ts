@@ -2,6 +2,7 @@ import type { StreamTokenHandler } from "./chat-stream.js";
 import { z } from "zod";
 import {
   MAX_GENERATED_LEARNING_MATERIAL_BLOCKS,
+  MAX_GENERATED_LEARNING_MATERIAL_ITEMS,
   strictLearningMaterialSchema,
   type InteractiveBlock,
 } from "./schemas.js";
@@ -629,7 +630,7 @@ For the provider-native envelope, return one growing items array of plain JSON o
                   droppedCount: items.length - normalized.length,
                 };
               },
-              maxItems: 132,
+              maxItems: MAX_GENERATED_LEARNING_MATERIAL_ITEMS,
               missingItems: ({ validItems, sourceItems }) => {
                 const repairs = [];
                 const sourceRecords = sourceItems.flatMap((item) =>
