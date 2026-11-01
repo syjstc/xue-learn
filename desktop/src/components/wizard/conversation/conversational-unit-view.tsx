@@ -1,4 +1,5 @@
 "use client";
+import { translateCurrent } from "@xue-learn/core/i18n";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -43,7 +44,10 @@ import { ScenarioTheaterCard } from "../scenario-theater.tsx";
 import { UnitLabCard } from "../unit-lab.tsx";
 import { useTeachingPersonas } from "@/hooks/api/use-teaching-personas";
 import { teachingPersonaAvatarSrc } from "@/shared/teaching-persona-avatar";
-import { isChatAudioFeatureEnabled, FEATURE_FEYNMAN } from "@xue-learn/core/features";
+import {
+  isChatAudioFeatureEnabled,
+  FEATURE_FEYNMAN,
+} from "@xue-learn/core/features";
 import { Button } from "@xue-learn/core/ui/button";
 import {
   Dialog,
@@ -110,7 +114,12 @@ function CompletedJourneyScene({
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!section || (bodyMode === "reading" && isDesktopLocalRuntime() && section.sectionKind === "content")) {
+    if (
+      !section ||
+      (bodyMode === "reading" &&
+        isDesktopLocalRuntime() &&
+        section.sectionKind === "content")
+    ) {
       setContent(null);
       setError("");
       return;
@@ -128,13 +137,23 @@ function CompletedJourneyScene({
       })
       .catch((cause) => {
         if (!cancelled) {
-          setError(cause instanceof Error ? cause.message : "无法载入回看内容");
+          setError(
+            cause instanceof Error
+              ? cause.message
+              : translateCurrent("desktop.copy.couldNotLoadTheReplay"),
+          );
         }
       });
     return () => {
       cancelled = true;
     };
-  }, [model.unitId, section?.contentRevision, section?.id, section?.sectionKind, bodyMode]);
+  }, [
+    model.unitId,
+    section?.contentRevision,
+    section?.id,
+    section?.sectionKind,
+    bodyMode,
+  ]);
 
   if (node.id === "preview" && model.sq) {
     return (
@@ -166,12 +185,23 @@ function CompletedJourneyScene({
   }
 
   if (!section) return null;
-  if (bodyMode === "reading" && isDesktopLocalRuntime() && section.sectionKind === "content") {
-    return <section className="space-y-4 py-4">
-      <ReviewSceneHeader onReturn={onReturn} />
-      <ReadingSectionBody unitId={model.unitId} sectionId={section.id} goalId={model.goalId}
-        onContinue={onReturn} continueLabel={t("learningScene.returnCurrent")} />
-    </section>;
+  if (
+    bodyMode === "reading" &&
+    isDesktopLocalRuntime() &&
+    section.sectionKind === "content"
+  ) {
+    return (
+      <section className="space-y-4 py-4">
+        <ReviewSceneHeader onReturn={onReturn} />
+        <ReadingSectionBody
+          unitId={model.unitId}
+          sectionId={section.id}
+          goalId={model.goalId}
+          onContinue={onReturn}
+          continueLabel={t("learningScene.returnCurrent")}
+        />
+      </section>
+    );
   }
   if (error) {
     return (
@@ -624,7 +654,15 @@ export function ConversationalUnitView({
             variant="ghost"
             disabled={saveChatAudio.isPending}
             aria-pressed={chatAudioEnabled}
-            aria-label={chatAudioEnabled ? "关闭语音讲解" : "开启语音讲解"}
+            aria-label={
+              chatAudioEnabled
+                ? t(
+                    "desktop.ui.conversationalUnitView.turnOffSpokenExplanations",
+                  )
+                : t(
+                    "desktop.ui.conversationalUnitView.turnOnSpokenExplanations",
+                  )
+            }
             onClick={() => saveChatAudio.mutate(!chatAudioEnabled)}
           >
             {chatAudioEnabled ? (

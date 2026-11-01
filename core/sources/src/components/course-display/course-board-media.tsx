@@ -1,17 +1,39 @@
+import { countVariant, useT } from "../../shared/i18n/index.js";
 import { MusicDisplay } from "./music-display.js";
 import { MusicTeachingDisplay } from "./music-teaching-display.js";
 import { readMusicTeaching } from "../../../libs/domain/src/index.js";
 import { readMaterialMusic } from "../../../libs/domain/src/index.js";
 import { GuidedImageDisplay } from "./guided-image-display.js";
 import type { GuidedImageDisplay as GuidedDisplay } from "../../../libs/domain/src/index.js";
-import { isStructuredTextBoard, StructuredTextBoard } from "./structured-text-board.js";
+import {
+  isStructuredTextBoard,
+  StructuredTextBoard,
+} from "./structured-text-board.js";
 import { useTextBoardFit } from "./use-text-board-fit.js";
 import { useLayoutEffect, useRef, useState } from "react";
 import { Code2, Image as ImageIcon } from "lucide-react";
 import { cn } from "../../shared/utils.js";
 import { withAigcImageVersion } from "../../shared/aigc.js";
 import { fitSvgElementViewBox } from "../../shared/course-svg/fit-svg-element-view-box.js";
-import { blockFigureId, codeBoardParts, type ClassroomCodeLineBox, type MaterialCodePart, classroomCodeLanguage, classroomCodeLanguageLabel, classroomCodeSource, computeClassroomCodeScrollOffset, CLASSROOM_CODE_MAX_VISIBLE_LINES, clampClassroomCodeVisibleLines, fitClassroomCode, fitCourseSvgViewBox, isClassroomTextBoardLanguage, materialCueCodeRegionLit, resolveCodeFigureSpans, normalizeCourseSvgTextPaint, type CourseDisplayBlock } from "../../../libs/domain/src/index.js";
+import {
+  blockFigureId,
+  codeBoardParts,
+  type ClassroomCodeLineBox,
+  type MaterialCodePart,
+  classroomCodeLanguage,
+  classroomCodeLanguageLabel,
+  classroomCodeSource,
+  computeClassroomCodeScrollOffset,
+  CLASSROOM_CODE_MAX_VISIBLE_LINES,
+  clampClassroomCodeVisibleLines,
+  fitClassroomCode,
+  fitCourseSvgViewBox,
+  isClassroomTextBoardLanguage,
+  materialCueCodeRegionLit,
+  resolveCodeFigureSpans,
+  normalizeCourseSvgTextPaint,
+  type CourseDisplayBlock,
+} from "../../../libs/domain/src/index.js";
 import type { CourseDisplayScene } from "../../../libs/domain/src/index.js";
 import { validatePresentationSvg as validateVideoSvg } from "../../../libs/common/src/presentation-svg.js";
 import { HighlightedCode } from "../markdown/highlighted-code.js";
@@ -333,6 +355,7 @@ export function StageCodeBoard({
   beatEnter?: number;
   contentSized?: boolean;
 }) {
+  const t = useT();
   const boardRef = useRef<HTMLDivElement>(null);
   const [capacity, setCapacity] = useState(CLASSROOM_CODE_MAX_VISIBLE_LINES);
   const [layout, setLayout] = useState<MeasuredClassroomCodeLayout>();
@@ -424,7 +447,9 @@ export function StageCodeBoard({
   const maxScrollOffset = measuredLayout
     ? Math.max(0, measuredLayout.contentHeight - measuredLayout.viewportHeight)
     : 0;
-  const hasOverflow = measuredLayout ? maxScrollOffset > 0.5 : !contentSized && fit.overflow;
+  const hasOverflow = measuredLayout
+    ? maxScrollOffset > 0.5
+    : !contentSized && fit.overflow;
 
   // In clocked mode (export / tick evaluation), interpolate deterministically
   // across the beat enter window. In interactive studio mode, use the measured
@@ -512,7 +537,10 @@ export function StageCodeBoard({
       const viewportH = Math.max(
         32,
         contentSized
-          ? Math.min(sourceElement.scrollHeight, pane.clientHeight - headerH - boardBorderH - 24)
+          ? Math.min(
+              sourceElement.scrollHeight,
+              pane.clientHeight - headerH - boardBorderH - 24,
+            )
           : pane.clientHeight - headerH - boardBorderH,
       );
       const sourceStyle = getComputedStyle(sourceElement);
@@ -526,7 +554,9 @@ export function StageCodeBoard({
         ),
       );
       const scrollRect = scroll.getBoundingClientRect();
-      const canvasScale = scroll.offsetWidth ? scrollRect.width / scroll.offsetWidth : 1;
+      const canvasScale = scroll.offsetWidth
+        ? scrollRect.width / scroll.offsetWidth
+        : 1;
       const lineBoxes = lines.map((line) => {
         const rect = line.getBoundingClientRect();
         return {
@@ -588,7 +618,9 @@ export function StageCodeBoard({
         hasOverflow ? "is-fill" : "is-fitted",
       )}
       style={{
-        ...(contentSized ? { ["--lp-code-viewport-height" as string]: "auto" } : {}),
+        ...(contentSized
+          ? { ["--lp-code-viewport-height" as string]: "auto" }
+          : {}),
         ...(measuredLayout
           ? {
               ["--lp-code-row-height" as string]: `${measuredLayout.rowHeight}px`,
@@ -622,10 +654,16 @@ export function StageCodeBoard({
             {hasOverflow ? (
               <span className="lp-code-range-pill">
                 {visibleRange.startLine}–{visibleRange.endLine} /{" "}
-                {fit.totalLines} 行
+                {t(`display.code.lines.${countVariant(fit.totalLines)}`, {
+                  count: fit.totalLines,
+                })}
               </span>
             ) : (
-              <span className="lp-code-range-pill">{fit.totalLines} 行</span>
+              <span className="lp-code-range-pill">
+                {t(`display.code.lines.${countVariant(fit.totalLines)}`, {
+                  count: fit.totalLines,
+                })}
+              </span>
             )}
           </div>
         </div>
@@ -647,7 +685,17 @@ export function StageCodeBoard({
               <StructuredTextBoard
                 parts={boardParts}
                 hasCued={hasCued}
-                isLit={(part) => lineCueEnabled && Boolean(part.id && materialCueCodeRegionLit(activeTargetIds, part.id, figureId))}
+                isLit={(part) =>
+                  lineCueEnabled &&
+                  Boolean(
+                    part.id &&
+                    materialCueCodeRegionLit(
+                      activeTargetIds,
+                      part.id,
+                      figureId,
+                    ),
+                  )
+                }
               />
             ) : isTextBoard ? (
               <div className="lp-text-board-parts">
@@ -747,12 +795,29 @@ export function CourseMediaScene(props: {
   nested?: boolean;
   interactive?: boolean;
 }) {
+  const t = useT();
   const music = readMaterialMusic(props.mediaBlock);
   const teachingMusic = readMusicTeaching(props.mediaBlock);
-  if (teachingMusic) return <MusicTeachingDisplay block={teachingMusic} activeTargetIds={props.activeTargetIds} interactive={props.interactive !== false} />;
-  if (music) return <MusicDisplay block={music} activeTargetIds={props.activeTargetIds} interactive={props.interactive !== false} />;
-  const guidedImage = props.mediaBlock?.type === "illustration"
-    ? props.mediaBlock.guidedImage as GuidedDisplay | undefined : undefined;
+  if (teachingMusic)
+    return (
+      <MusicTeachingDisplay
+        block={teachingMusic}
+        activeTargetIds={props.activeTargetIds}
+        interactive={props.interactive !== false}
+      />
+    );
+  if (music)
+    return (
+      <MusicDisplay
+        block={music}
+        activeTargetIds={props.activeTargetIds}
+        interactive={props.interactive !== false}
+      />
+    );
+  const guidedImage =
+    props.mediaBlock?.type === "illustration"
+      ? (props.mediaBlock.guidedImage as GuidedDisplay | undefined)
+      : undefined;
   const isCode = props.scene.slots.mediaKind === "code";
   const svgMarkup = staticSvgMarkup(props.mediaBlock);
   const imageUrl = svgMarkup ? null : staticIllustrationUrl(props.mediaBlock);
@@ -766,7 +831,9 @@ export function CourseMediaScene(props: {
         isVisual && "is-visual",
         showCode && "is-code",
       )}
-      data-lp-target={showCode || guidedImage || props.nested ? undefined : "media"}
+      data-lp-target={
+        showCode || guidedImage || props.nested ? undefined : "media"
+      }
     >
       <div
         className={cn(
@@ -813,7 +880,11 @@ export function CourseMediaScene(props: {
             ) : (
               <ImageIcon aria-hidden="true" />
             )}
-            <span>{isCode ? "代码演示" : "视觉讲解"}</span>
+            <span>
+              {isCode
+                ? t("display.ui.codeDemonstration")
+                : t("display.ui.visualExplanation")}
+            </span>
           </>
         )}
       </div>

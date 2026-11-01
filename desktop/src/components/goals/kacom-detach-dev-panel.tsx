@@ -1,3 +1,4 @@
+import { translateCurrent } from "@xue-learn/core/i18n";
 import { Button } from "@xue-learn/core/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { DevTag } from "@/components/dev/dev-tag";
@@ -25,10 +26,13 @@ export function KacomDetachDevPanel({ goalId }: { goalId: string }) {
 
   async function handleDetach() {
     const confirmed = await confirm({
-      title: "解除 KACOM（仅开发环境）",
-      description:
-        "这会把目标切换为探索模式。已有 KACOM 快照、目标和证据会保留，但不再参与当前学习、议程或全局学习状态。",
-      confirmLabel: "解除 KACOM",
+      title: translateCurrent("desktop.copy.detachKacomDevelopmentOnly"),
+      description: translateCurrent(
+        "desktop.copy.thisSwitchesTheGoalToExplorationModeExistingKacomSnapshots",
+      ),
+      confirmLabel: translateCurrent(
+        "desktop.ui.kacomDetachDevPanel.detachKacom",
+      ),
       variant: "destructive",
     });
     if (!confirmed) return;
@@ -36,13 +40,18 @@ export function KacomDetachDevPanel({ goalId }: { goalId: string }) {
     try {
       await detachKacom.mutateAsync(goalId);
       await alert({
-        title: "已解除 KACOM",
-        description: "该目标现在按探索模式运行；历史 KACOM 数据仍被保留。",
+        title: translateCurrent("desktop.copy.kacomDetached"),
+        description: translateCurrent(
+          "desktop.copy.thisGoalNowUsesExplorationModeHistoricalKacomDataIs",
+        ),
       });
     } catch (error) {
       await alert({
-        title: "解除失败",
-        description: error instanceof Error ? error.message : "请稍后重试。",
+        title: translateCurrent("desktop.copy.couldNotDetach"),
+        description:
+          error instanceof Error
+            ? error.message
+            : translateCurrent("desktop.copy.tryAgainLater"),
       });
     }
   }
@@ -64,7 +73,9 @@ export function KacomDetachDevPanel({ goalId }: { goalId: string }) {
           disabled={detachKacom.isPending}
           onClick={() => void handleDetach()}
         >
-          {detachKacom.isPending ? "解除中…" : "解除 KACOM"}
+          {detachKacom.isPending
+            ? t("desktop.ui.kacomDetachDevPanel.detaching")
+            : t("desktop.ui.kacomDetachDevPanel.detachKacom")}
         </Button>
       </CardContent>
     </Card>

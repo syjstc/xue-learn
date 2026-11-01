@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@xue-learn/core/i18n";
 
 import { Button } from "@xue-learn/core/ui/button";
 
@@ -11,6 +12,7 @@ export function AiGenStopButton({
   disabled?: boolean;
   className?: string;
 }) {
+  const t = useT();
   return (
     <Button
       type="button"
@@ -20,7 +22,7 @@ export function AiGenStopButton({
       disabled={disabled}
       onClick={() => void onStop()}
     >
-      停止
+      {t("goalCreation.stop")}
     </Button>
   );
 }

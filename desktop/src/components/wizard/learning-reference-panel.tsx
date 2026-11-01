@@ -1,6 +1,10 @@
 "use client";
+import { useT } from "@xue-learn/core/i18n";
 
-import type { LearningMaterialContent, SqPreview } from "@xue-learn/core/schemas";
+import type {
+  LearningMaterialContent,
+  SqPreview,
+} from "@xue-learn/core/schemas";
 import type { ContentSource } from "@xue-learn/core/shared/types/content-sources";
 import { AnchoredLearningMaterial } from "./anchored-learning-material.tsx";
 import {
@@ -29,28 +33,33 @@ export function LearningReferencePanel({
   className?: string;
   onMaterialChange?: (material: LearningMaterialContent) => void;
 }) {
+  const t = useT();
   if (!sq && !material && !cornell) return null;
 
   return (
     <aside
       className={`rounded-xl border border-border/80 bg-card shadow-sm ${className}`}
-      aria-label="学习资料"
+      aria-label={t("goalDocuments.title")}
     >
       <div className="border-b border-border/60 px-4 py-3">
-        <h2 className="text-sm font-semibold text-foreground">学习资料</h2>
+        <h2 className="text-sm font-semibold text-foreground">
+          {t("goalDocuments.title")}
+        </h2>
         <p className="mt-0.5 text-[11px] text-muted-foreground">
-          练习时可随时查阅正文与笔记
+          {t(
+            "desktop.ui.learningReferencePanel.referToLessonContentAndNotesWhile",
+          )}
         </p>
       </div>
       <div className="max-h-[calc(100vh-10rem)] space-y-0.5 overflow-y-auto p-2">
         {sq && (
-          <ReferenceSection title="预习">
+          <ReferenceSection title={t("learningJourney.preview")}>
             <SqReferenceContent sq={sq} compact />
           </ReferenceSection>
         )}
 
         {material && (
-          <ReferenceSection title="学习正文">
+          <ReferenceSection title={t("wizard.steps.structured.materialTitle")}>
             <AnchoredLearningMaterial
               unitId={unitId}
               sectionId="legacy-material"
@@ -64,7 +73,7 @@ export function LearningReferencePanel({
         )}
 
         {cornell && (
-          <ReferenceSection title="学习笔记">
+          <ReferenceSection title={t("learningJourney.notes")}>
             <CornellReferenceContent cornell={cornell} compact />
           </ReferenceSection>
         )}

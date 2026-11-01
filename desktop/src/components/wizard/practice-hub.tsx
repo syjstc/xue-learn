@@ -1,3 +1,4 @@
+import { useT, translateCurrent } from "@xue-learn/core/i18n";
 import type { ReactNode } from "react";
 import { UnderlineTab, UnderlineTabList } from "@/components/ui/underline-tabs";
 
@@ -12,11 +13,6 @@ type PracticeHubProps = {
   showFlashcards?: boolean;
 };
 
-const TABS: { id: PracticeTab; label: string }[] = [
-  { id: "quiz", label: "测验" },
-  { id: "flashcards", label: "闪卡" },
-];
-
 export function PracticeHub({
   activeTab,
   onTabChange,
@@ -24,6 +20,21 @@ export function PracticeHub({
   quiz,
   showFlashcards = true,
 }: PracticeHubProps) {
+  useT();
+  const TABS: { id: PracticeTab; label: string }[] = [
+    {
+      id: "quiz",
+      get label() {
+        return translateCurrent("cognitiveMap.evidence.quiz");
+      },
+    },
+    {
+      id: "flashcards",
+      get label() {
+        return translateCurrent("cognitiveMap.evidence.flashcard");
+      },
+    },
+  ];
   const tabs = showFlashcards
     ? TABS
     : TABS.filter((tab) => tab.id !== "flashcards");

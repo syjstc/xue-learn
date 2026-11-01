@@ -1,3 +1,4 @@
+import { useT } from "../../shared/i18n/index.js";
 import React, {createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode} from "react";
 import {createDisplayCatalog, createDisplayRuntime, displayPluginKey, validateDisplayDocument, type DisplayDocument, type DisplayNode, type DisplayPluginManifest, type DisplayRuntime} from "../../../libs/display/src/index.js";
 import {createBrowserDisplayResourceResolver, DisplayPlaceholder, DisplayRuntimeSurface, type DisplayRenderer, type DisplayRuntimeSurfaceProps} from "../display-runtime/index.js";
@@ -6,7 +7,7 @@ import {DISPLAY_PLUGINS_ENDPOINT, type DisplayPluginRecord, type DisplayWorkspac
 
 export function createWorkspaceDisplayRuntime(): DisplayRuntime<DisplayRenderer> {
   return createDisplayRuntime<DisplayRenderer>({catalog: createDisplayCatalog(builtinDisplayManifests),
-    resolveModule: async manifest => (await import("../display-plugins/index.js")).loadBuiltinDisplayModule(manifest),
+    resolveModule: async (manifest ) => (await import("../display-plugins/index.js")).loadBuiltinDisplayModule(manifest),
     resolveResource: createBrowserDisplayResourceResolver()});
 }
 type WorkspaceContext = {
@@ -35,11 +36,13 @@ function useOwnedDisplayRuntime(suppliedRuntime?: DisplayRuntime<DisplayRenderer
   return runtime;
 }
 
-export function DisplayWorkspaceProvider({children, client, runtime: suppliedRuntime}: {children: ReactNode; client?: DisplayWorkspaceClient; runtime?: DisplayRuntime<DisplayRenderer>}) {
+export function DisplayWorkspaceProvider({children, client, runtime: suppliedRuntime}: {children: ReactNode; client?: DisplayWorkspaceClient; runtime?: DisplayRuntime<DisplayRenderer>;
+}) {
   const runtime = useOwnedDisplayRuntime(suppliedRuntime);
   const [ready, setReady] = useState(!client);
   const [error, setError] = useState<string>();
-  const installed = useRef<{runtime: DisplayRuntime<DisplayRenderer>; entries: Map<string, {manifest: DisplayPluginManifest; dispose: () => void}>} | undefined>(undefined);
+  const installed = useRef<| {runtime: DisplayRuntime<DisplayRenderer>; entries: Map<string, {manifest: DisplayPluginManifest; dispose: () => void}>;
+      } | undefined>(undefined);
   const epoch = useRef(0);
   const refresh = useCallback(async () => {
     const request = ++epoch.current;
@@ -48,11 +51,11 @@ export function DisplayWorkspaceProvider({children, client, runtime: suppliedRun
       const packages = await client.get<readonly DisplayPluginRecord[]>(DISPLAY_PLUGINS_ENDPOINT);
       if (request !== epoch.current) return;
       if (!Array.isArray(packages)) throw new Error("Display plugin response must be a list");
-      const manifests = packages.filter(item => !item.builtin).map(item => item.manifest);
+      const manifests = packages.filter((item ) => !item.builtin).map((item ) => item.manifest);
       // Validate the complete replacement before touching the live registry.
       const previous = installed.current?.runtime === runtime ? installed.current.entries : new Map<string, {manifest: DisplayPluginManifest; dispose: () => void}>();
-      createDisplayCatalog([...runtime.catalog.list().filter(manifest => !previous.has(displayPluginKey(manifest.id, manifest.version))), ...manifests]);
-      const next = new Map(manifests.map(manifest => [displayPluginKey(manifest.id, manifest.version), manifest]));
+      createDisplayCatalog([...runtime.catalog.list().filter((manifest ) => !previous.has(displayPluginKey(manifest.id, manifest.version))), ...manifests]);
+      const next = new Map(manifests.map((manifest ) => [displayPluginKey(manifest.id, manifest.version), manifest]));
       for (const [key, entry] of previous) if (!next.has(key) || JSON.stringify(next.get(key)) !== JSON.stringify(entry.manifest)) {entry.dispose(); previous.delete(key);}
       for (const [key, manifest] of next) if (!previous.has(key)) previous.set(key, {manifest, dispose: runtime.catalog.register(manifest)});
       installed.current = {runtime, entries: previous};
@@ -65,7 +68,7 @@ export function DisplayWorkspaceProvider({children, client, runtime: suppliedRun
   }, [client, runtime]);
   useEffect(() => {
     setReady(!client); void refresh().catch(() => {});
-    return () => {epoch.current++; installed.current?.entries.forEach(entry => entry.dispose()); installed.current = undefined;};
+    return () => {epoch.current++; installed.current?.entries.forEach((entry ) => entry.dispose()); installed.current = undefined;};
   }, [refresh, client]);
   const context = useMemo(() => ({runtime, client, ready, error, refresh}), [runtime, client, ready, error, refresh]);
   return <Context.Provider value={context}>{children}</Context.Provider>;
@@ -99,10 +102,14 @@ function nodes(root: unknown): DisplayNode[] {
 
 /** A pending document is projected from durable jobs. The renderer never starts a
  * generation task, and a projection cannot replace a different source revision. */
-export function WorkspaceDisplaySurface(props: Omit<DisplayRuntimeSurfaceProps, "runtime"> & {runtime?: DisplayRuntime<DisplayRenderer>; onDocumentResolved?: (document: DisplayDocument) => void}) {
+export function WorkspaceDisplaySurface(props: Omit<DisplayRuntimeSurfaceProps, "runtime"> & {runtime?: DisplayRuntime<DisplayRenderer>; onDocumentResolved?: (document: DisplayDocument) => void;
+  }) {
+  const t = useT();
   const workspace = useDisplayWorkspace();
-  const [projected, setProjected] = useState<{source: DisplayDocument; document: DisplayDocument}>();
-  const [projectionError, setProjectionError] = useState<{source: DisplayDocument; message: string}>();
+  const [projected, setProjected] = useState<{source: DisplayDocument; document: DisplayDocument;
+  }>();
+  const [projectionError, setProjectionError] = useState<{source: DisplayDocument; message: string;
+  }>();
   const [refreshKey, setRefreshKey] = useState(0);
   const source = props.document;
   const currentSource = useRef(source);
@@ -114,7 +121,7 @@ export function WorkspaceDisplaySurface(props: Omit<DisplayRuntimeSurfaceProps, 
   const notifyResolved = useRef(props.onDocumentResolved);
   notifyResolved.current = props.onDocumentResolved;
   useEffect(() => {if (!sourceIssues.length) notifyResolved.current?.(document);}, [document, sourceIssues]);
-  const sourceJobs = useMemo(() => sourceIssues.length ? [] : nodes(source?.root).filter(node => node.build && node.build.status !== "ready"), [source, sourceIssues]);
+  const sourceJobs = useMemo(() => sourceIssues.length ? [] : nodes(source?.root).filter((node ) => node.build && node.build.status !== "ready"), [source, sourceIssues]);
   useEffect(() => {
     const epoch = ++projectionEpoch.current;
     if (!workspace.client || !sourceJobs.length) return () => {projectionEpoch.current++;};
@@ -124,15 +131,17 @@ export function WorkspaceDisplaySurface(props: Omit<DisplayRuntimeSurfaceProps, 
         const next = await workspace.client!.post<DisplayDocument>("/api/local/display-builds/resolve", {document: source});
         if (cancelled || projectionEpoch.current !== epoch || currentSource.current !== source) return;
         const issues = validateDisplayDocument(next);
-        if (issues.length || next.id !== source.id || next.root.id !== source.root.id) throw new Error("展示构建返回了不匹配的内容。");
-        const nextNodes = new Map(nodes(next.root).map(node => [node.id, node]));
+        if (issues.length || next.id !== source.id || next.root.id !== source.root.id) throw new Error(t("display.ui.theDisplayBuildReturnedMismatchedContent"));
+        const nextNodes = new Map(nodes(next.root).map((node ) => [node.id, node]));
         for (const original of sourceJobs) {
           const nextNode = nextNodes.get(original.id);
           const ref = nextNode?.build;
-          if (!nextNode || !ref || nextNode.kind !== original.kind || nextNode.version !== original.version || ref.jobId !== original.build!.jobId || ref.sourceHash !== original.build!.sourceHash || ref.revision !== original.build!.revision) throw new Error("展示输入已改变，忽略旧构建结果。");
+          if (!nextNode || !ref || nextNode.kind !== original.kind || nextNode.version !== original.version || ref.jobId !== original.build!.jobId || ref.sourceHash !== original.build!.sourceHash || ref.revision !== original.build!.revision) throw new Error(t(
+                "display.ui.displayInputChangedTheOutdatedBuildResultWasIgnored",
+              ));
         }
         setProjected({source, document: next}); setProjectionError(undefined);
-        if (nodes(next.root).some(node => node.build && ["pending", "running"].includes(node.build.status))) timer = setTimeout(poll, 1500);
+        if (nodes(next.root).some((node ) => node.build && ["pending", "running"].includes(node.build.status))) timer = setTimeout(poll, 1500);
       } catch (failure) {
         if (cancelled || projectionEpoch.current !== epoch || currentSource.current !== source) return;
         setProjectionError({source, message: failure instanceof Error ? failure.message : String(failure)});
@@ -142,23 +151,63 @@ export function WorkspaceDisplaySurface(props: Omit<DisplayRuntimeSurfaceProps, 
     void poll();
     return () => {cancelled = true; projectionEpoch.current++; clearTimeout(timer);};
   }, [workspace.client, source, sourceJobs, refreshKey]);
-  if (!workspace.ready) return <DisplayPlaceholder failure={{reason: "loading", message: "正在加载工作区展示插件"}}/>;
-  return <div className="workspace-display-host">
+  if (!workspace.ready) return (
+      <DisplayPlaceholder failure={{reason: "loading", message: t("display.ui.loadingWorkspaceDisplayPlugins")}}/>);
+  return (
+    <div className="workspace-display-host">
     <DisplayRuntimeSurface {...props} document={document} runtime={props.runtime ?? workspace.runtime} fallback={props.fallback ?? ((failure, retry) => {
-      const node = nodes(document?.root).find(candidate => candidate.id === failure.nodeId);
+      const node = nodes(document?.root).find((candidate ) => candidate.id === failure.nodeId);
       const retryBuild = failure.reason === "build-failed" && node?.build && workspace.client;
-      return <DisplayPlaceholder failure={failure} onRetry={props.mode === "video" ? undefined : () => {
+      return (
+              <DisplayPlaceholder failure={failure} onRetry={props.mode === "video" ? undefined : () => {
         const epoch = projectionEpoch.current;
         const isCurrent = () => projectionEpoch.current === epoch && currentSource.current === source;
         if (retryBuild) {
           const jobId = node!.build!.jobId;
           if (retryRequests.current.has(jobId)) return;
           retryRequests.current.add(jobId);
-          void workspace.client!.post(`/api/local/display-builds/${encodeURIComponent(jobId)}/retry`, {}).then(() => {if (isCurrent()) setRefreshKey(key => key + 1);})
-            .catch(error => {if (isCurrent()) setProjectionError({source, message: String(error?.message ?? error)});}).finally(() => retryRequests.current.delete(jobId));
-        } else {void workspace.refresh().then(() => {if (isCurrent()) retry();}).catch(error => {if (isCurrent()) setProjectionError({source, message: String(error?.message ?? error)});});}
-      }}/>;
-    })}/>
-    {projectionError?.source === source && props.mode !== "video" ? <p role="status" className="workspace-display-status">展示内容更新失败：{projectionError.message}</p> : null}
-  </div>;
+          void workspace.client!.post(`/api/local/display-builds/${encodeURIComponent(jobId)}/retry`,
+                              {},
+                            )
+                            .then(() => {
+                              if (isCurrent()) setRefreshKey((key) => key + 1);
+                            })
+                            .catch((error) => {
+                              if (isCurrent())
+                                setProjectionError({
+                                  source,
+                                  message: String(error?.message ?? error),
+                                });
+                            })
+                            .finally(() => retryRequests.current.delete(jobId));
+                        } else {
+                          void workspace
+                            .refresh()
+                            .then(() => {
+                              if (isCurrent()) retry();
+                            })
+                            .catch((error) => {
+                              if (isCurrent())
+                                setProjectionError({
+                                  source,
+                                  message: String(error?.message ?? error),
+                                });
+                            });
+                        }
+                      }
+                }
+              />
+            );
+          })
+        }
+      />
+      {projectionError?.source === source && props.mode !== "video" ? (
+        <p role="status" className="workspace-display-status">
+          {t("display.workspace.updateError", {
+            error: projectionError.message,
+          })}
+        </p>
+      ) : null}
+    </div>
+  );
 }

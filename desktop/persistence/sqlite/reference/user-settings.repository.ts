@@ -63,14 +63,24 @@ export class MikroOrmUserSettingsRepository implements UserSettingsRepository {
   }
 
   async upsert(input: UpsertUserSettingsInput): Promise<UserSettingsRecord> {
+    const patch = input.patch ?? {};
     const entity = await this.em.upsert(
       UserSettingsEntity,
       {
         user: this.userReference(input.userId),
-        ...(input.patch ?? {}),
+        // Old SQLite libraries still have a Chinese column default. Use the
+        // system language for new rows without overwriting an existing choice.
+        uiLocale: "system",
+        ...patch,
         updatedAt: new Date(),
       },
-      { onConflictFields: ["user"] },
+      {
+        onConflictFields: ["user"],
+        onConflictMergeFields: [
+          ...Object.keys(patch),
+          "updatedAt",
+        ] as (keyof UserSettingsEntity)[],
+      },
     );
     await this.em.flush();
     return toRecord(entity);

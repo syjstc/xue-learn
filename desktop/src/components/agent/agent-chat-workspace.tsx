@@ -1,4 +1,5 @@
 "use client";
+import { getCurrentUiLocale, translateCurrent } from "@xue-learn/core/i18n";
 
 import {
   AgentChat,
@@ -57,8 +58,16 @@ import {
 } from "react";
 
 const EMPTY_HINTS: Record<AgentThreadScope, string> = {
-  global: "问我学习目标、复习安排，或者说「新建目标」",
-  goal_creation: "例如：我想在 3 个月内学会 Python 数据分析",
+  get global() {
+    return translateCurrent(
+      "desktop.copy.askAboutYourLearningGoalsOrReviewsOrSayCreate",
+    );
+  },
+  get goal_creation() {
+    return translateCurrent(
+      "desktop.copy.forExampleIWantToLearnPythonDataAnalysisIn",
+    );
+  },
   goal: "",
   unit: "",
 };
@@ -68,7 +77,7 @@ const FALLBACK_AVATAR_CODE = "xiaohui_female";
 function formatThreadTime(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat(getCurrentUiLocale(), {
     month: "short",
     day: "numeric",
     hour: "2-digit",
@@ -78,7 +87,7 @@ function formatThreadTime(value: string) {
 
 function threadPreview(content: string) {
   const text = content.trim().replace(/\s+/g, " ");
-  return text || "新对话";
+  return text || translateCurrent("desktop.copy.newConversation");
 }
 
 export function AgentChatWorkspace({
@@ -223,7 +232,11 @@ export function AgentChatWorkspace({
       })
       .catch((error) => {
         conversation.setBootstrapError(
-          error instanceof Error ? error.message : "无法创建追问对话",
+          error instanceof Error
+            ? error.message
+            : translateCurrent(
+                "desktop.copy.couldNotStartAFollowUpConversation",
+              ),
         );
       });
   }, [
@@ -310,12 +323,16 @@ export function AgentChatWorkspace({
                 extracted.results
                   .map((item) => item.error)
                   .filter(Boolean)
-                  .join("；") || "无法读取 URL",
+                  .join("；") ||
+                  translateCurrent("desktop.copy.couldNotReadTheUrl"),
               );
             }
             const urlErrors = extracted.results
               .filter((item) => item.status === "error")
-              .map((item) => `${item.url}：${item.error || "读取失败"}`);
+              .map(
+                (item) =>
+                  `${item.url}：${item.error || translateCurrent("desktop.copy.couldNotRead")}`,
+              );
             const urlWarnings = extracted.results
               .filter((item) => item.status === "success" && item.warning)
               .map((item) => `${item.title || item.url}：${item.warning}`);
@@ -352,7 +369,10 @@ export function AgentChatWorkspace({
             analysis.refinedTitle?.trim() ||
             analysis.topic.trim();
           const message = !topic?.trim()
-            ? `我想学习：${seed}（基于上传资料「${analysis.filenames.join("、")}」）`
+            ? t("desktop.i18n.learnFromMaterials", {
+                topic: seed,
+                files: analysis.filenames.join(", "),
+              })
             : seed;
           setBootstrapStatusRef.current(
             isSmallCourse
@@ -373,7 +393,11 @@ export function AgentChatWorkspace({
       } catch (error) {
         if (!isActive()) return;
         setBootstrapErrorRef.current(
-          error instanceof Error ? error.message : "无法从资料创建学习目标",
+          error instanceof Error
+            ? error.message
+            : translateCurrent(
+                "desktop.copy.couldNotCreateALearningGoalFromTheseMaterials",
+              ),
         );
       } finally {
         if (!isActive()) return;
@@ -406,12 +430,19 @@ export function AgentChatWorkspace({
           t("assistant.workspace.connectingAssistant"),
         );
         await sendMessageRef.current(
-          `我想把轻课「${expand.unitTitle}」扩展为完整学习目标「${expand.goalTitle}」。请先问我 1-3 个问题，了解我的学习范围、重点方向和已有基础，再帮我扩展。`,
+          t("desktop.i18n.expandMicroCourse", {
+            unit: expand.unitTitle,
+            goal: expand.goalTitle,
+          }),
         );
       } catch (error) {
         if (!isActive()) return;
         setBootstrapErrorRef.current(
-          error instanceof Error ? error.message : "无法启动轻课扩展对话",
+          error instanceof Error
+            ? error.message
+            : translateCurrent(
+                "desktop.copy.couldNotStartTheMicroCourseExpansionConversation",
+              ),
         );
       } finally {
         if (!isActive()) return;
@@ -653,17 +684,19 @@ export function AgentChatWorkspace({
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-[var(--brand-600)]">
-                AI 目标规划
+                {t("desktop.ui.agentChatWorkspace.aiLearningPlanner")}
               </p>
               <h1 className="mt-1 text-2xl font-semibold leading-8 text-text-primary">
-                描述你的学习目标
+                {t("desktop.ui.agentChatWorkspace.describeWhatYouWantToLearn")}
               </h1>
               <p className="mt-1 text-sm text-text-secondary">
-                与 AI 对话完成目标设定、学习规划与学习地图生成。
+                {t(
+                  "desktop.ui.agentChatWorkspace.workWithYourAssistantToDefineA",
+                )}
               </p>
             </div>
             <div className="rounded-lg border border-[var(--course-content-border-accent)] bg-[var(--course-content-surface-accent)] px-3 py-2 text-xs font-medium text-primary">
-              新目标
+              {t("desktop.ui.agentChatWorkspace.newGoal")}
             </div>
           </div>
         </div>
@@ -786,9 +819,12 @@ export function AgentChatWorkspace({
               </p>
             </div>
             <p className="mt-1 line-clamp-2 text-xs leading-5 text-[var(--text-600)]">
-              “{conversation.conversationContext.anchor.reading
-                ? conversation.conversationContext.anchor.selectedText ?? conversation.conversationContext.anchorSnippet
-                : conversation.conversationContext.anchorSnippet}”
+              “
+              {conversation.conversationContext.anchor.reading
+                ? (conversation.conversationContext.anchor.selectedText ??
+                  conversation.conversationContext.anchorSnippet)
+                : conversation.conversationContext.anchorSnippet}
+              ”
             </p>
           </div>
         </div>
@@ -930,7 +966,11 @@ export function AgentChatWorkspace({
                       <span className="mt-0.5 block truncate text-xs text-[var(--text-400)]">
                         {thread.conversationContext?.kind ===
                         "material_follow_up"
-                          ? `追问 · ${thread.conversationContext.unitTitle ?? "学习内容"} · `
+                          ? t("desktop.i18n.followUpThread", {
+                              title:
+                                thread.conversationContext.unitTitle ??
+                                t("course.learningContent"),
+                            })
                           : ""}
                         {formatThreadTime(
                           latest?.createdAt ?? thread.updatedAt,

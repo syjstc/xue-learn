@@ -1,5 +1,6 @@
+import { translateCurrent } from "@xue-learn/core/i18n";
 import { mainlineEnabled } from "@/features/learning-mainline/enabled";
-"use client";
+("use client");
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SseEvent } from "@/shared/llm/sse";
@@ -31,7 +32,10 @@ import {
   resolveNextLessonUnitInModule,
   resolveUnitHierarchy,
 } from "@/shared/domain/unit-tree-build";
-import type { LearningMaterialContent, SqPreview } from "@xue-learn/core/schemas";
+import type {
+  LearningMaterialContent,
+  SqPreview,
+} from "@xue-learn/core/schemas";
 import {
   FEATURE_FEYNMAN,
   postQuizNextStep,
@@ -229,10 +233,18 @@ export function useUnitWizard({
   const { data: goal } = useGoal(goalId);
   const isMicro = goal ? isMicroGoal(goal) : false;
   const isOverview = isOverviewUnitKind(unitKind);
-  const hasKacom = !isMicro && !isOverview && goal?.learningMode !== "exploration";
+  const hasKacom =
+    !isMicro && !isOverview && goal?.learningMode !== "exploration";
   const wizardSteps = isOverview
-    ? STEPS.filter((item) => item.id === "structured_input" || item.id === "complete")
+    ? STEPS.filter(
+        (item) => item.id === "structured_input" || item.id === "complete",
+      )
     : STEPS;
+  const localizedSteps = wizardSteps.map((item) => ({
+    ...item,
+    label: t(item.label),
+    hint: item.hint ? t(item.hint) : "",
+  }));
   const unitHierarchy = useMemo(
     () => (goal ? resolveUnitHierarchy(goal, unitId) : undefined),
     [goal, unitId],
@@ -251,44 +263,50 @@ export function useUnitWizard({
     return resolveNextLessonUnit(mapUnits, unitId);
   }, [currentModule, goal, unitId]);
   const completeReturn = useMemo(() => {
-    if (mainlineEnabled() && !isMicro) return { path: `/goals/${goalId}?continue=1`, label: t("mainline.continue"), overviewPath: `/goals/${goalId}?view=plan`, overviewLabel: t("mainline.plan") };
+    if (mainlineEnabled() && !isMicro)
+      return {
+        path: `/goals/${goalId}?continue=1`,
+        label: t("mainline.continue"),
+        overviewPath: `/goals/${goalId}?view=plan`,
+        overviewLabel: t("mainline.plan"),
+      };
     if (isOverview) {
       return {
         path: `/goals/${goalId}`,
-        label: "返回学习旅程",
+        label: translateCurrent("desktop.copy.backToLearningJourney"),
         overviewPath: `/goals/${goalId}`,
-        overviewLabel: "查看学习旅程",
+        overviewLabel: translateCurrent("desktop.copy.viewLearningJourney"),
       };
     }
     if (isMicro) {
       return {
         path: "/goals",
-        label: "返回目标列表",
+        label: translateCurrent("desktop.copy.backToGoals"),
         overviewPath: "/goals",
-        overviewLabel: "查看目标列表",
+        overviewLabel: translateCurrent("desktop.copy.viewGoals"),
       };
     }
     if (nextUnit) {
       return {
         path: `/goals/${goalId}/units/${nextUnit.id}`,
-        label: "学习下个单元",
+        label: translateCurrent("assessment.diagnostic.nextUnit"),
         overviewPath: `/goals/${goalId}`,
-        overviewLabel: "查看学习旅程",
+        overviewLabel: translateCurrent("desktop.copy.viewLearningJourney"),
       };
     }
     if (currentModule) {
       return {
         path: `/goals/${goalId}/modules/${currentModule.id}`,
-        label: "返回模块",
+        label: translateCurrent("uiChrome.goalLayout.backModule"),
         overviewPath: `/goals/${goalId}`,
-        overviewLabel: "查看学习旅程",
+        overviewLabel: translateCurrent("desktop.copy.viewLearningJourney"),
       };
     }
     return {
       path: `/goals/${goalId}`,
-      label: "返回学习旅程",
+      label: translateCurrent("desktop.copy.backToLearningJourney"),
       overviewPath: `/goals/${goalId}`,
-      overviewLabel: "查看学习旅程",
+      overviewLabel: translateCurrent("desktop.copy.viewLearningJourney"),
     };
   }, [currentModule, goalId, isMicro, isOverview, nextUnit, t]);
   const { confirm } = useConfirm();
@@ -376,7 +394,10 @@ export function useUnitWizard({
   const assessmentRetryAbort = useRef<AbortController | null>(null);
   useEffect(() => {
     setPreparingAssessment(false);
-    return () => { assessmentRetryAbort.current?.abort(); assessmentRetryAbort.current = null; };
+    return () => {
+      assessmentRetryAbort.current?.abort();
+      assessmentRetryAbort.current = null;
+    };
   }, [unitId]);
   async function retryAssessment() {
     if (preparingAssessment || assessmentRetryAbort.current) return;
@@ -385,16 +406,32 @@ export function useUnitWizard({
     setPreparingAssessment(true);
     setError("");
     try {
-      await consumeSsePost(`/api/units/${encodeURIComponent(unitId)}/learning-targets/expand/stream`, {}, (event) => {
-        if (event.type === "learning_access") setLearningAccess(learningAccessFromEvent(event));
-      }, abort.signal);
+      await consumeSsePost(
+        `/api/units/${encodeURIComponent(unitId)}/learning-targets/expand/stream`,
+        {},
+        (event) => {
+          if (event.type === "learning_access")
+            setLearningAccess(learningAccessFromEvent(event));
+        },
+        abort.signal,
+      );
       if (abort.signal.aborted) return;
-      setLearningAccess(parseLearningAccess(await apiGet(`/api/units/${encodeURIComponent(unitId)}/learning-access`)));
-      await queryClient.invalidateQueries({ queryKey: ["units", unitId, "learning-targets"] });
+      setLearningAccess(
+        parseLearningAccess(
+          await apiGet(
+            `/api/units/${encodeURIComponent(unitId)}/learning-access`,
+          ),
+        ),
+      );
+      await queryClient.invalidateQueries({
+        queryKey: ["units", unitId, "learning-targets"],
+      });
     } catch (cause) {
-      if (!abort.signal.aborted) setError(cause instanceof Error ? cause.message : String(cause));
+      if (!abort.signal.aborted)
+        setError(cause instanceof Error ? cause.message : String(cause));
     } finally {
-      if (assessmentRetryAbort.current === abort) assessmentRetryAbort.current = null;
+      if (assessmentRetryAbort.current === abort)
+        assessmentRetryAbort.current = null;
       if (!abort.signal.aborted) setPreparingAssessment(false);
     }
   }
@@ -744,7 +781,11 @@ export function useUnitWizard({
         // the failed response simply did not hydrate.
         if (!cancelled) {
           setSessionHydrationFailed(true);
-          setError(e instanceof Error ? e.message : "学习会话加载失败");
+          setError(
+            e instanceof Error
+              ? e.message
+              : translateCurrent("desktop.copy.couldNotLoadTheLearningSession"),
+          );
           setHydrated(true);
         }
         return;
@@ -783,13 +824,17 @@ export function useUnitWizard({
           // failed content read as an empty Survey and regenerate it, because
           // regeneration also invalidates an already prepared theater.
           setSessionHydrationFailed(true);
-          setError(e instanceof Error ? e.message : "学习内容加载失败");
+          setError(
+            e instanceof Error
+              ? e.message
+              : translateCurrent("desktop.copy.couldNotLoadLearningContent"),
+          );
         }
       }
       if (cancelled) return;
 
       const sub = isOverview
-        ? ((data.structuredSubStep as StructuredSubStep) || "material")
+        ? (data.structuredSubStep as StructuredSubStep) || "material"
         : (data.structuredSubStep as StructuredSubStep) || "sq";
       let nextStep = (data.currentStep as Step) || "structured_input";
       if (isOverview && nextStep !== "complete") {
@@ -863,7 +908,7 @@ export function useUnitWizard({
         setSocraticThreads([
           {
             id: "legacy",
-            label: "薄弱点修正",
+            label: translateCurrent("desktop.copy.workOnAWeakPoint"),
             source: "general",
             messages: [
               {
@@ -912,7 +957,11 @@ export function useUnitWizard({
         "finish_socratic",
       ].includes(action)
     ) {
-      setError("认知模型仍在准备，阅读不受影响；测验稍后开放。");
+      setError(
+        translateCurrent(
+          "desktop.copy.theLearningModelIsStillBeingPreparedYouCanKeep",
+        ),
+      );
       return null;
     }
     setError("");
@@ -977,7 +1026,11 @@ export function useUnitWizard({
       captureRecallProgress(data);
       return data as SessionActionResponse;
     } catch (e) {
-      setError(e instanceof Error ? e.message : "未知错误");
+      setError(
+        e instanceof Error
+          ? e.message
+          : translateCurrent("desktop.copy.unknownError"),
+      );
       return null;
     } finally {
       finishStreamOperation(operation, ctx);
@@ -1003,7 +1056,11 @@ export function useUnitWizard({
         "complete",
       ].includes(action)
     ) {
-      setError("认知模型仍在准备，阅读不受影响；测验稍后开放。");
+      setError(
+        translateCurrent(
+          "desktop.copy.theLearningModelIsStillBeingPreparedYouCanKeep",
+        ),
+      );
       return null;
     }
     if (STREAM_ACTIONS.has(action)) {
@@ -1037,7 +1094,11 @@ export function useUnitWizard({
       }
       return data;
     } catch (e) {
-      setError(e instanceof Error ? e.message : "未知错误");
+      setError(
+        e instanceof Error
+          ? e.message
+          : translateCurrent("desktop.copy.unknownError"),
+      );
       return null;
     } finally {
       setSessionLoading(false);
@@ -1078,7 +1139,11 @@ export function useUnitWizard({
       })
       .catch((e) => {
         if (!stale) {
-          setError(e instanceof Error ? e.message : "重连失败");
+          setError(
+            e instanceof Error
+              ? e.message
+              : translateCurrent("desktop.copy.couldNotReconnect"),
+          );
         }
       })
       .finally(() => {
@@ -1145,7 +1210,13 @@ export function useUnitWizard({
         } catch {
           // Preserve the original stream error when reconciliation also fails.
         }
-        setError(e instanceof Error ? e.message : "极速轻课生成重连失败");
+        setError(
+          e instanceof Error
+            ? e.message
+            : translateCurrent(
+                "desktop.copy.couldNotReconnectToMicroCourseGeneration",
+              ),
+        );
       }
     })();
     return () => {
@@ -1162,7 +1233,11 @@ export function useUnitWizard({
     answer: number | number[] | boolean;
   }): Promise<MaterialCheckResult | null> {
     if (assessmentLocked) {
-      setError("认知模型仍在准备，正文可继续阅读；验证记录稍后开放。");
+      setError(
+        translateCurrent(
+          "desktop.copy.theLearningModelIsStillBeingPreparedYouCanKeep2",
+        ),
+      );
       return null;
     }
     try {
@@ -1181,7 +1256,13 @@ export function useUnitWizard({
       }
       return result;
     } catch (e) {
-      setError(e instanceof Error ? e.message : "正文互动验证失败");
+      setError(
+        e instanceof Error
+          ? e.message
+          : translateCurrent(
+              "desktop.copy.couldNotVerifyTheReadingInteraction",
+            ),
+      );
       return null;
     }
   }
@@ -1191,7 +1272,11 @@ export function useUnitWizard({
     answers: Record<string, number | number[] | boolean>;
   }): Promise<{ score: number; results: MaterialCheckResult[] } | null> {
     if (assessmentLocked) {
-      setError("认知模型仍在准备，测验稍后开放。");
+      setError(
+        translateCurrent(
+          "desktop.copy.theLearningModelIsStillBeingPreparedQuizzesWillBe",
+        ),
+      );
       return null;
     }
     try {
@@ -1217,7 +1302,11 @@ export function useUnitWizard({
       }
       return result;
     } catch (e) {
-      setError(e instanceof Error ? e.message : "小节测验提交失败");
+      setError(
+        e instanceof Error
+          ? e.message
+          : translateCurrent("wizard.section.quizSubmitFailed"),
+      );
       return null;
     }
   }
@@ -1273,15 +1362,15 @@ export function useUnitWizard({
     const hasSectionPlan = sections.some((section) => !section.legacy);
     if (isLearningDone) {
       const ok = await confirm({
-        title: "重新生成预习",
-        description: RESET_REGEN_CONFIRM_SQ,
+        title: translateCurrent("desktop.copy.regeneratePreview"),
+        description: t(RESET_REGEN_CONFIRM_SQ),
         variant: "destructive",
       });
       if (!ok) return;
     } else if (material || cornell || hasSectionPlan) {
       const ok = await confirm({
-        title: "重新生成预习",
-        description: REGEN_CONFIRM_SQ_WITH_CONTENT,
+        title: translateCurrent("desktop.copy.regeneratePreview"),
+        description: t(REGEN_CONFIRM_SQ_WITH_CONTENT),
         variant: "destructive",
       });
       if (!ok) return;
@@ -1311,17 +1400,19 @@ export function useUnitWizard({
     const hasSectionPlan = sections.some((section) => !section.legacy);
     if (isLearningDone) {
       const ok = await confirm({
-        title: "重新生成正文",
-        description: RESET_REGEN_CONFIRM_MATERIAL,
+        title: translateCurrent("desktop.copy.regenerateLessonContent"),
+        description: t(RESET_REGEN_CONFIRM_MATERIAL),
         variant: "destructive",
       });
       if (!ok) return;
     } else if (cornell || hasSectionPlan) {
       const ok = await confirm({
-        title: "重新生成正文",
+        title: translateCurrent("desktop.copy.regenerateLessonContent"),
         description: hasSectionPlan
-          ? REGEN_CONFIRM_MATERIAL_WITH_SECTIONS
-          : "重新生成学习正文将删除已有学习笔记，确定继续吗？",
+          ? t(REGEN_CONFIRM_MATERIAL_WITH_SECTIONS)
+          : translateCurrent(
+              "desktop.copy.regeneratingTheLessonContentWillDeleteExistingLearningNotesContinue",
+            ),
         variant: "destructive",
       });
       if (!ok) return;
@@ -1332,8 +1423,7 @@ export function useUnitWizard({
   async function finishMaterialReading() {
     if (isOverview) {
       const section =
-        sections.find((item) => item.sectionKind === "content") ??
-        sections[0];
+        sections.find((item) => item.sectionKind === "content") ?? sections[0];
       if (
         section &&
         section.status !== "completed" &&
@@ -1428,8 +1518,7 @@ export function useUnitWizard({
             ...lab,
             recommended: lab.recommended ?? prev?.recommended ?? false,
             recommendation: lab.recommendation ?? prev?.recommendation ?? "",
-            generationError:
-              lab.generationError || prev?.generationError || "",
+            generationError: lab.generationError || prev?.generationError || "",
           };
         }
         return next;
@@ -1549,8 +1638,8 @@ export function useUnitWizard({
   async function generateCornellNotes() {
     if (isLearningDone) {
       const ok = await confirm({
-        title: "重新生成笔记",
-        description: RESET_REGEN_CONFIRM_CORNELL,
+        title: translateCurrent("desktop.copy.regenerateNotes"),
+        description: t(RESET_REGEN_CONFIRM_CORNELL),
         variant: "destructive",
       });
       if (!ok) return;
@@ -1663,7 +1752,11 @@ export function useUnitWizard({
       }
     } catch (e) {
       if (!ac.signal.aborted) {
-        setError(e instanceof Error ? e.message : "题目解析失败");
+        setError(
+          e instanceof Error
+            ? e.message
+            : translateCurrent("desktop.copy.couldNotAnalyzeTheQuestion"),
+        );
       }
       setQuizExplainByIndex((prev) => {
         const next = { ...prev };
@@ -1704,7 +1797,11 @@ export function useUnitWizard({
     options?: { optimisticUserAnswer?: string },
   ): Promise<SessionActionResponse | null> {
     if (assessmentLocked) {
-      setError("认知模型仍在准备，引导修正稍后开放。");
+      setError(
+        translateCurrent(
+          "desktop.copy.theLearningModelIsStillBeingPreparedGuidedCorrectionsWill",
+        ),
+      );
       return null;
     }
     socraticAbortRef.current?.abort();
@@ -1775,7 +1872,11 @@ export function useUnitWizard({
           ),
         );
       }
-      setError(e instanceof Error ? e.message : "未知错误");
+      setError(
+        e instanceof Error
+          ? e.message
+          : translateCurrent("desktop.copy.unknownError"),
+      );
       return null;
     } finally {
       setSessionLoading(false);
@@ -1815,7 +1916,11 @@ export function useUnitWizard({
 
   async function goToStep(target: SessionNavStep) {
     if (assessmentLocked && target !== "structured_input") {
-      setError("认知模型仍在准备，测验与完成记录稍后开放。");
+      setError(
+        translateCurrent(
+          "desktop.copy.theLearningModelIsStillBeingPreparedQuizzesAndCompletion",
+        ),
+      );
       return;
     }
     // Heal stale in-session state: complete UI can render before isLearningDone flips.
@@ -1865,7 +1970,11 @@ export function useUnitWizard({
           materialSources?: unknown;
         }>(`/api/units/${unitId}/content`);
         if (!content.material) {
-          setError("学习内容仍在准备，请稍后重试。");
+          setError(
+            translateCurrent(
+              "desktop.copy.learningContentIsStillBeingPreparedTryAgainLater",
+            ),
+          );
           return;
         }
         setMaterial(content.material);
@@ -1873,7 +1982,11 @@ export function useUnitWizard({
           setMaterialSources(content.materialSources as ContentSource[]);
         }
       } catch (cause) {
-        setError(cause instanceof Error ? cause.message : "学习内容载入失败");
+        setError(
+          cause instanceof Error
+            ? cause.message
+            : translateCurrent("desktop.copy.couldNotLoadLearningContent2"),
+        );
         return;
       }
     }
@@ -2133,7 +2246,7 @@ export function useUnitWizard({
     renderSqGenBox,
     renderNotesGenBox,
     renderQuizGenBox,
-    STEPS: wizardSteps,
+    STEPS: localizedSteps,
   };
 }
 

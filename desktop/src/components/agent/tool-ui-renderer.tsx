@@ -1,5 +1,9 @@
-import { LearningBranchCard, LearningReturnSuggestion } from "@/features/learning-trajectory/branch-card";
-"use client";
+import { translateCurrent } from "@xue-learn/core/i18n";
+import {
+  LearningBranchCard,
+  LearningReturnSuggestion,
+} from "@/features/learning-trajectory/branch-card";
+("use client");
 
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
@@ -913,8 +917,15 @@ export function ToolUiRenderer({
   const locked = Boolean(submitted && Object.keys(submitted).length > 0);
   const readOnly = disabled || locked;
 
-  if (uiKind === "learning_branch" && typeof args.branchId === "string") return <LearningBranchCard branchId={args.branchId} />;
-  if (uiKind === "learning_return_suggestion") return <LearningReturnSuggestion unitId={String(args.unitId ?? "")} reason={String(args.reason ?? "")} />;
+  if (uiKind === "learning_branch" && typeof args.branchId === "string")
+    return <LearningBranchCard branchId={args.branchId} />;
+  if (uiKind === "learning_return_suggestion")
+    return (
+      <LearningReturnSuggestion
+        unitId={String(args.unitId ?? "")}
+        reason={String(args.reason ?? "")}
+      />
+    );
   if (uiKind === "math_scene") {
     const scene = args.scene as MathScene | undefined;
     return scene?.type === "math_scene" ? (
@@ -930,7 +941,9 @@ export function ToolUiRenderer({
     if (block?.type === "interactive_html") {
       return (
         <InteractiveHtmlBlock
-          block={block as Extract<InteractiveBlock, { type: "interactive_html" }>}
+          block={
+            block as Extract<InteractiveBlock, { type: "interactive_html" }>
+          }
           compact
         />
       );
@@ -991,14 +1004,18 @@ export function ToolUiRenderer({
     const savedAnswer = textInputAnswerFromSubmitted(submitted);
     return (
       <div className="rounded-xl border border-[var(--border-200)] bg-[var(--bg-50)] p-3 text-sm text-muted-foreground">
-        <p>{String(args.question ?? "请补充说明")}</p>
+        <p>
+          {String(
+            args.question ?? t("desktop.ui.toolUiRenderer.pleaseAddMoreDetail"),
+          )}
+        </p>
         {savedAnswer ? (
           <p className="mt-2 rounded-lg border border-[var(--course-content-border-accent)] bg-[var(--course-content-surface-accent)] px-2.5 py-1.5 text-sm text-foreground">
             {savedAnswer}
           </p>
         ) : (
           <p className="mt-1 text-xs text-muted-foreground">
-            也可在下方输入框直接回复
+            {t("desktop.ui.toolUiRenderer.youCanAlsoReplyInTheMessage")}
           </p>
         )}
       </div>
@@ -1020,7 +1037,7 @@ export function ToolUiRenderer({
         ) : null}
         <div className="flex flex-wrap gap-2">
           {actions.map((action, index) => {
-            const label = action.label ?? "打开";
+            const label = action.label ?? translateCurrent("desktop.copy.open");
             const selected = isActionButtonSelected(action, submitted);
             const className = cn(
               "inline-flex min-h-9 items-center justify-center rounded-lg px-3 py-2 text-sm font-semibold transition",
@@ -1092,7 +1109,10 @@ export function ToolUiRenderer({
               answerKind: "single_choice",
               choices: clarificationChoices.length
                 ? clarificationChoices
-                : ["不确定", "你看着办"],
+                : [
+                    translateCurrent("assistant.discovery.unsure"),
+                    translateCurrent("assistant.discovery.decideForMe"),
+                  ],
             },
           ]
         : [];
@@ -1188,11 +1208,15 @@ export function ToolUiRenderer({
   }
 
   if (uiKind === "micro_course_created") {
-    const title = String(args.title ?? "轻课");
+    const title = String(
+      args.title ?? translateCurrent("sharedGoal.microCourse"),
+    );
     const href = typeof args.href === "string" ? args.href : "";
     return (
       <div className="rounded-xl border border-[var(--border-200)] bg-[var(--bg-50)] p-3 text-sm shadow-sm">
-        <p className="font-semibold text-foreground">已创建轻课</p>
+        <p className="font-semibold text-foreground">
+          {t("desktop.ui.toolUiRenderer.shortCourseCreated")}
+        </p>
         <p className="mt-1 text-muted-foreground">「{title}」</p>
         {href ? (
           <Link
@@ -1200,7 +1224,7 @@ export function ToolUiRenderer({
             className="mt-2 inline-flex min-h-9 items-center justify-center rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:brightness-95"
             onClick={() => onNavigate?.()}
           >
-            查看轻课
+            {t("desktop.ui.toolUiRenderer.openShortCourse")}
           </Link>
         ) : null}
       </div>

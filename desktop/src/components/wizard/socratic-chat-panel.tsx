@@ -75,10 +75,11 @@ function QuestionReference({
   question: string;
   mistakeHint?: string;
 }) {
+  const t = useT();
   return (
     <div className="mb-3 shrink-0 rounded-lg border border-[var(--border-200)] bg-[var(--bg-100)] px-3 py-2.5">
       <p className="text-[10px] font-medium uppercase tracking-wide text-[var(--text-400)]">
-        原题
+        {t("desktop.ui.socraticChatPanel.originalQuestion")}
       </p>
       <div className="mt-1 text-sm leading-relaxed text-[var(--text-800)]">
         <LlmMarkdownInline content={question} />
@@ -108,13 +109,17 @@ function EmptyChatPrompt({
       ) : (
         <>
           <p className="text-sm text-[var(--text-800)]">
-            点击「开始引导修正」生成首个问题
+            {t(
+              "desktop.ui.socraticChatPanel.selectStartGuidedReviewToPrepareThe",
+            )}
           </p>
           <p className="max-w-[16rem] text-xs text-[var(--text-400)]">
-            AI 会通过引导提问帮你自己发现误区，而不是直接给答案
+            {t(
+              "desktop.ui.socraticChatPanel.yourAssistantWillAskQuestionsToHelp",
+            )}
           </p>
           <Button onClick={onStart} size="sm">
-            开始引导修正
+            {t("desktop.ui.socraticChatPanel.startGuidedReview")}
           </Button>
         </>
       )}
@@ -240,7 +245,7 @@ export function SocraticChatPanel({
                   : "text-sm font-semibold text-[var(--text-800)]"
               }
             >
-              引导修正
+              {t("learningJourney.correction")}
             </h3>
             <p
               className={
@@ -249,13 +254,15 @@ export function SocraticChatPanel({
                   : "mt-0.5 text-[11px] text-[var(--text-400)]"
               }
             >
-              每道错题一条对话，选择后开始引导式修正
+              {t(
+                "desktop.ui.socraticChatPanel.eachMissedQuestionHasItsOwnConversation",
+              )}
             </p>
           </div>
           <div className="flex w-full min-w-0 items-center gap-2 sm:w-auto">
             {threads.length > 0 && (
               <span className="shrink-0 text-[11px] tabular-nums text-[var(--text-400)]">
-                {doneCount}/{threads.length} 已完成
+                {doneCount}/{threads.length} {t("spaces.completed")}
               </span>
             )}
             <SocraticThreadDrawer
@@ -282,7 +289,7 @@ export function SocraticChatPanel({
               aria-hidden
             />
             <p className="text-sm text-[var(--text-400)]">
-              从错题列表选择一道题开始修正
+              {t("desktop.ui.socraticChatPanel.selectAMissedQuestionToReview")}
             </p>
             <SocraticThreadDrawer
               threads={threads}
@@ -301,7 +308,9 @@ export function SocraticChatPanel({
             ) : (
               <p className="mb-2 shrink-0 text-xs font-medium text-[var(--brand-700)]">
                 {activeThread.label}
-                {activeThread.done ? " · 已完成" : ""}
+                {activeThread.done
+                  ? t("desktop.ui.socraticChatPanel.completed")
+                  : ""}
               </p>
             )}
 
@@ -361,8 +370,12 @@ export function SocraticChatPanel({
                   {activeThread.done ? (
                     <p className="text-xs text-[var(--text-400)]">
                       {nextIncompleteThread
-                        ? "本题修正完成。点击下一题后再继续。"
-                        : "所有错题均已修正。点击继续进入下一阶段。"}
+                        ? t(
+                            "desktop.ui.socraticChatPanel.thisReviewIsCompleteSelectNextQuestion",
+                          )
+                        : t(
+                            "desktop.ui.socraticChatPanel.youHaveReviewedEveryMissedQuestionSelect",
+                          )}
                     </p>
                   ) : (
                     <textarea
@@ -370,7 +383,9 @@ export function SocraticChatPanel({
                       rows={3}
                       value={draft}
                       onChange={(e) => setDraft(e.target.value)}
-                      placeholder="写下你的思考…"
+                      placeholder={t(
+                        "desktop.ui.socraticChatPanel.writeYourThoughts",
+                      )}
                       disabled={!canReply || sending}
                     />
                   )}
@@ -389,14 +404,18 @@ export function SocraticChatPanel({
                           sending
                         }
                       >
-                        {nextIncompleteThread ? "下一题" : "继续"}
+                        {nextIncompleteThread
+                          ? t("assistant.discovery.next")
+                          : t("spaces.resume")}
                       </Button>
                     ) : (
                       <Button
                         onClick={handleSend}
                         disabled={!canReply || sending || !draft.trim()}
                       >
-                        {sending ? "提交中…" : "回答"}
+                        {sending
+                          ? t("sharedGoal.share.submitting")
+                          : t("desktop.ui.socraticChatPanel.answer")}
                       </Button>
                     )}
                     {!activeThread.done && (

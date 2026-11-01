@@ -1,6 +1,6 @@
 {
   "name": "@xue-learn/core",
-  "version": "0.3.46",
+  "version": "0.3.47",
   "description": "Reusable XueLearn learning rules, services, displays, contracts and workspace SDK",
   "type": "module",
   "license": "MIT",

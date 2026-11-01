@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@xue-learn/core/i18n";
 
 import { Link } from "react-router-dom";
 import { Button } from "@xue-learn/core/ui/button";
@@ -25,6 +26,7 @@ export function CompleteStep({
   completeReturn,
   preserveImmersive = false,
 }: Props) {
+  const t = useT();
   return (
     <div className="space-y-4 rounded-xl border border-[var(--brand-200)] bg-gradient-to-br from-[var(--brand-50)] to-[var(--bg-50)] p-6">
       <div className="flex items-start gap-3">
@@ -45,20 +47,26 @@ export function CompleteStep({
         </div>
         <div className="min-w-0">
           <h2 className="text-lg font-semibold text-[var(--text-800)]">
-            {isMicro ? "本节轻课学习完成" : "本单元学习完成"}
+            {isMicro
+              ? t("desktop.ui.completeStep.shortCourseComplete")
+              : t("desktop.ui.completeStep.unitComplete")}
           </h2>
           <p className="mt-1 text-sm text-[var(--text-500)]">
             {isMicro
-              ? "学习进度已保存，系统将安排间隔复习。"
-              : "学习进度已保存，系统将安排间隔复习。"}
+              ? t(
+                  "desktop.ui.completeStep.yourProgressIsSavedSpacedReviewsWill",
+                )
+              : t(
+                  "desktop.ui.completeStep.yourProgressIsSavedSpacedReviewsWill",
+                )}
             {unitStatus === "completed_needs_reinforcement" &&
-              " 本单元标记为需巩固，建议多复习几次。"}
+              t("desktop.ui.completeStep.thisUnitNeedsMorePracticeRevisitIt")}
           </p>
         </div>
       </div>
       {hasReference && (
         <p className="rounded-lg bg-[var(--bg-200)] px-3 py-2 text-xs text-[var(--text-600)]">
-          右侧可查阅本单元的正文与笔记。
+          {t("desktop.ui.completeStep.theLessonContentAndNotesAreAvailable")}
         </p>
       )}
       <div className="grid grid-cols-2 gap-2 pt-1">
@@ -68,7 +76,7 @@ export function CompleteStep({
           onClick={() => void goToStep("active_recall")}
           disabled={sessionBusy}
         >
-          再次练习
+          {t("desktop.ui.completeStep.practiceAgain")}
         </Button>
         <Link
           to={completeReturn.path}

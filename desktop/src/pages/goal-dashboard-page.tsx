@@ -1,3 +1,4 @@
+import { translateCurrent } from "@xue-learn/core/i18n";
 import { MainlinePlanPage } from "@/features/learning-mainline/plan-page";
 import { mainlineEnabled } from "@/features/learning-mainline/enabled";
 import { useSearchParams } from "react-router-dom";
@@ -29,19 +30,23 @@ import { supportsGoalWebResources } from "@xue-learn/core/client-runtime";
 function overviewCourseStatusLabel(status?: string) {
   switch (status) {
     case "pending":
-      return "生成中";
+      return translateCurrent("desktop.i18n.overviewGenerating");
     case "failed":
-      return "准备失败";
+      return translateCurrent("desktop.i18n.overviewFailed");
     case "ready":
-      return "已就绪";
+      return translateCurrent("desktop.i18n.overviewReady");
     default:
-      return "未开始";
+      return translateCurrent("desktop.i18n.overviewIdle");
   }
 }
 
 export function GoalDashboardPage() {
   const [params] = useSearchParams();
-  return mainlineEnabled() && params.get("view") !== "catalog" ? <MainlinePlanPage /> : <LegacyGoalDashboardPage />;
+  return mainlineEnabled() && params.get("view") !== "catalog" ? (
+    <MainlinePlanPage />
+  ) : (
+    <LegacyGoalDashboardPage />
+  );
 }
 
 function LegacyGoalDashboardPage() {
@@ -58,13 +63,17 @@ function LegacyGoalDashboardPage() {
     return error ? (
       <ApiErrorNotice
         error={error}
-        fallback="暂时无法加载目标，请稍后再试。"
+        fallback={t(
+          "desktop.ui.goalDashboardPage.couldNotLoadThisGoalPleaseTry",
+        )}
         onRetry={() => {
           void refetch();
         }}
       />
     ) : (
-      <p className="text-[var(--text-400)]">加载目标…</p>
+      <p className="text-[var(--text-400)]">
+        {t("desktop.ui.goalDashboardPage.loadingGoal")}
+      </p>
     );
   }
 
@@ -137,10 +146,10 @@ function LegacyGoalDashboardPage() {
 
   const pathBadge =
     goal.pathSource === "rag"
-      ? "基于你的资料"
+      ? translateCurrent("desktop.i18n.pathFromMaterials")
       : goal.pathSource === "search"
-        ? "基于网络权威路径"
-        : "通用学习路径";
+        ? translateCurrent("desktop.copy.basedOnTrustedWebSources")
+        : translateCurrent("desktop.i18n.pathGeneral");
 
   const hasOverview =
     goal.overviewCourseStatus === "ready" || Boolean(goal.overviewCourse);
@@ -162,7 +171,8 @@ function LegacyGoalDashboardPage() {
               <>
                 <span className="text-[var(--border-400)]">·</span>
                 <span>
-                  总览：{overviewCourseStatusLabel(goal.overviewCourseStatus)}
+                  {t("desktop.ui.goalDashboardPage.overview")}
+                  {overviewCourseStatusLabel(goal.overviewCourseStatus)}
                 </span>
               </>
             )}
@@ -174,7 +184,9 @@ function LegacyGoalDashboardPage() {
             <Link to={`/goals/${goalId}/overview`}>
               <Button variant="outline" size="sm" className="rounded-lg">
                 <BookOpen className="mr-1.5 size-3.5" />
-                {hasOverview ? "查看总览" : "开始总览"}
+                {hasOverview
+                  ? t("desktop.ui.goalDashboardPage.viewOverview")
+                  : t("desktop.ui.goalDashboardPage.startOverview")}
               </Button>
             </Link>
           )}
@@ -182,7 +194,7 @@ function LegacyGoalDashboardPage() {
             <Link to={`/goals/${goalId}/units/${resumeUnit.id}`}>
               <Button size="sm" className="rounded-lg">
                 <Play className="mr-1.5 size-3.5" />
-                {lastLearnedUnit ? "继续学习" : "开始学习"}
+                {lastLearnedUnit ? t("spaces.continue") : t("mainline.start")}
               </Button>
             </Link>
           )}
@@ -195,8 +207,8 @@ function LegacyGoalDashboardPage() {
               >
                 <Button variant="outline" size="sm" className="rounded-lg">
                   {resumeGoalUnit.status === "in_progress"
-                    ? "验证学习目标"
-                    : "测试跳过"}
+                    ? t("desktop.ui.goalDashboardPage.checkLearningGoals")
+                    : t("diagnostic.validateTargets")}
                 </Button>
               </Link>
             )}
@@ -256,13 +268,15 @@ function LegacyGoalDashboardPage() {
             className="text-base"
             style={{ fontFamily: "var(--font-sans)" }}
           >
-            学习路径
+            {t("goals.learningPath")}
           </CardTitle>
           <p
             className="mt-1 text-sm text-[var(--text-400)]"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            默认展示前两层；需要时再逐层展开，避免深层路径一次铺满页面。
+            {t(
+              "desktop.ui.goalDashboardPage.theFirstTwoLevelsAreShownInitially",
+            )}
           </p>
         </div>
         <div className="p-5 pt-3">

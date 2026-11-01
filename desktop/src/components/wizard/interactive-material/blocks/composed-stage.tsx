@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@xue-learn/core/i18n";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
@@ -38,6 +39,7 @@ export function ComposedStageBlock({
     captions: readonly MaterialFigureCaption[],
   ) => ReactNode;
 }) {
+  const t = useT();
   const layout: MaterialStageLayout = isMaterialStageLayout(block.layout)
     ? block.layout
     : "stack";
@@ -103,7 +105,7 @@ export function ComposedStageBlock({
           className="material-stage-reset"
           onClick={() => setManualFocusIndexes([])}
         >
-          显示全部
+          {t("desktop.ui.composedStage.showAll")}
         </button>
       ) : null}
       <div className="material-stage-layout">
@@ -127,7 +129,9 @@ export function ComposedStageBlock({
                 <button
                   type="button"
                   className="material-stage-focus"
-                  aria-label={`聚焦第 ${index + 1} 个子视图`}
+                  aria-label={t("desktop.i18n.focusSubview", {
+                    number: index + 1,
+                  })}
                   aria-pressed={item.focused}
                   onClick={() =>
                     setManualFocusIndexes((current) =>
@@ -137,7 +141,9 @@ export function ComposedStageBlock({
                     )
                   }
                 >
-                  {item.focused ? "取消聚焦" : "聚焦"}
+                  {item.focused
+                    ? t("desktop.ui.composedStage.clearFocus")
+                    : t("desktop.ui.composedStage.focus")}
                 </button>
               ) : null}
               {renderFigure(

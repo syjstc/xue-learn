@@ -107,6 +107,7 @@ module.exports={
     "<rootDir>/persistence/sqlite/reference/unit-session.repository.spec.ts",
     "<rootDir>/persistence/sqlite/reference/unit-structured-cleanup.repository.spec.ts",
     "<rootDir>/persistence/sqlite/reference/user-settings.repository.spec.ts",
+    "<rootDir>/persistence/sqlite/reference/user-settings.locale.spec.ts",
     "<rootDir>/persistence/sqlite/workspace-learning.spec.ts",
     "<rootDir>/persistence/sqlite/workspace-retention.spec.ts",
     "<rootDir>/tests/core-host/libs/server/src/course-source/course-source.repository.spec.ts",

@@ -56,12 +56,32 @@ export const STREAM_START_STATUS: Record<string, TranslationKey> = {
   prepare_unit_lab: "learningJourney.labPreparing",
 };
 
-export const ALL_STEPS: { id: Step; label: string; hint?: string }[] = [
-  { id: "structured_input", label: "学习输入", hint: "阅读与预习" },
-  { id: "active_recall", label: "主动回忆", hint: "测验检验" },
-  { id: "feynman", label: "输出检验", hint: "用自己的话解释" },
-  { id: "socratic", label: "引导修正", hint: "AI 纠错补漏" },
-  { id: "complete", label: "完成", hint: "" },
+export const ALL_STEPS: {
+  id: Step;
+  label: TranslationKey;
+  hint?: TranslationKey | "";
+}[] = [
+  {
+    id: "structured_input",
+    label: "desktop.wizard.learningInput",
+    hint: "desktop.wizard.readingAndPreview",
+  },
+  {
+    id: "active_recall",
+    label: "learningJourney.recall",
+    hint: "desktop.wizard.checkWithAQuiz",
+  },
+  {
+    id: "feynman",
+    label: "learningConversation.outputCheck",
+    hint: "desktop.wizard.explainInYourOwnWords",
+  },
+  {
+    id: "socratic",
+    label: "learningJourney.correction",
+    hint: "desktop.wizard.aiGuidedCorrections",
+  },
+  { id: "complete", label: "learningJourney.complete", hint: "" },
 ];
 
 export const STEPS = FEATURE_FEYNMAN
@@ -69,15 +89,15 @@ export const STEPS = FEATURE_FEYNMAN
   : ALL_STEPS.filter((s) => s.id !== "feynman");
 
 export const RESET_REGEN_CONFIRM_SQ =
-  "本单元已完成学习。重新生成预习将重置掌握状态、测验记录、复习计划，并删除已有学习小节、正文与笔记。确定继续吗？";
+  "desktop.wizard.thisUnitIsCompleteRegeneratingThePreviewWillResetMasteryQuizRecords";
 export const RESET_REGEN_CONFIRM_MATERIAL =
-  "本单元已完成学习。重新生成正文将重置掌握状态、测验记录、复习计划，并删除已有学习小节内容与笔记。确定继续吗？";
+  "desktop.wizard.thisUnitIsCompleteRegeneratingLessonContentWillResetMasteryQuizRecords";
 export const RESET_REGEN_CONFIRM_CORNELL =
-  "本单元已完成学习。重新生成笔记将重置掌握状态、测验记录与复习计划。确定继续吗？";
+  "desktop.wizard.thisUnitIsCompleteRegeneratingNotesWillResetMasteryQuizRecordsAnd";
 export const REGEN_CONFIRM_SQ_WITH_CONTENT =
-  "重新生成预习将删除已生成的学习小节、正文与学习笔记，确定继续吗？";
+  "desktop.wizard.regeneratingThePreviewWillDeleteGeneratedSectionsLessonContentAndLearningNotes";
 export const REGEN_CONFIRM_MATERIAL_WITH_SECTIONS =
-  "重新生成正文将清空各学习小节内容与进度，并删除已有学习笔记，确定继续吗？";
+  "desktop.wizard.regeneratingLessonContentWillClearSectionContentAndProgressAndDeleteExisting";
 
 export const MIN_MATERIAL_PARTIAL_BLOCKS = 1;
 

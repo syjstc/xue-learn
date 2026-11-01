@@ -1,3 +1,4 @@
+import { useT } from "../../shared/i18n/index.js";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   createDisplayClock,
@@ -14,7 +15,12 @@ import { DISPLAY_PREVIEW_FPS } from "./preview-catalog.js";
 function sampleTeaching(node: DisplayNode, frame: number): DisplayNode {
   return {
     ...node,
-    payload: ["general:teaching", "math:teaching", "music:teaching", "physics:teaching"].includes(node.kind)
+    payload: [
+      "general:teaching",
+      "math:teaching",
+      "music:teaching",
+      "physics:teaching",
+    ].includes(node.kind)
       ? {
           ...(node.payload as object),
           artFrame: (frame * 60) / DISPLAY_PREVIEW_FPS,
@@ -43,6 +49,7 @@ export function DisplayPluginPreview({
   runtime: DisplayRuntime<DisplayRenderer>;
   poster?: boolean;
 }) {
+  const t = useT();
   const host = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(!poster);
   const [frame, setFrame] = useState(DISPLAY_PREVIEW_FPS * 5);
@@ -127,7 +134,9 @@ export function DisplayPluginPreview({
             mode={poster ? "video" : "interactive"}
           />
         ) : (
-          <span className="display-plugin-preview-loading">正在准备预览…</span>
+          <span className="display-plugin-preview-loading">
+            {t("display.ui.preparingPreview")}
+          </span>
         )}
       </div>
       {!poster && (
@@ -135,17 +144,21 @@ export function DisplayPluginPreview({
           <button
             type="button"
             className="display-plugin-primary"
-            aria-label={playing ? "暂停预览" : "播放预览"}
+            aria-label={
+              playing
+                ? t("display.ui.pausePreview")
+                : t("display.ui.playPreview")
+            }
             onClick={() => {
               if (!playing && frame >= duration - 1) setFrame(0);
               setPlaying((value) => !value);
             }}
           >
-            {playing ? "Ⅱ 暂停" : "▷ 播放"}
+            {playing ? t("display.ui.pause2") : t("display.ui.play2")}
           </button>
           <button
             type="button"
-            aria-label="从头预览"
+            aria-label={t("display.ui.previewFromTheStart")}
             onClick={() => {
               setPlaying(false);
               setFrame(0);
@@ -158,8 +171,10 @@ export function DisplayPluginPreview({
             min={0}
             max={duration - 1}
             value={frame}
-            aria-label="预览进度"
-            aria-valuetext={`${seconds.toFixed(1)} 秒`}
+            aria-label={t("display.ui.previewProgress")}
+            aria-valuetext={t("display.preview.seconds", {
+              seconds: seconds.toFixed(1),
+            })}
             onChange={(event) => {
               setPlaying(false);
               setFrame(Number(event.target.value));

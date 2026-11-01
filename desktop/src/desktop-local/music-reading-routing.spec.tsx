@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { CourseBoardContent } from "@xue-learn/core/display/course-board-content";
 import { I18nProvider } from "@xue-learn/core/i18n";
-import type {CourseDisplayBlock} from "@xue-learn/core/domain/course-display";
+import type { CourseDisplayBlock } from "@xue-learn/core/domain/course-display";
 import samples from "@/shared/dev/music-teaching.json";
 import legacy from "@xue-learn/core/fixtures/music-integration/topic.json";
 
@@ -24,7 +24,7 @@ function render(
     throw new Error("Music re-entered the reading fallback");
   });
   const html = renderToStaticMarkup(
-    <I18nProvider>
+    <I18nProvider initialLocalePreference="zh-Hans">
       <CourseBoardContent
         mode={mode}
         scene={{

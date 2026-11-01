@@ -2,7 +2,6 @@ import { GenerationCancelledError } from "@/shared/generation/errors";
 import type { SseEvent } from "@/shared/llm/sse";
 import { getUserFacingApiErrorMessage } from "@/shared/api/user-facing-error";
 
-
 const MAX_SSE_EVENT_BYTES = 1024 * 1024;
 const MAX_SSE_BUFFER_BYTES = 2 * 1024 * 1024;
 
@@ -25,7 +24,7 @@ export async function consumeSseResponse(
     throw new Error(message);
   }
   const reader = res.body?.getReader();
-  if (!reader) throw new Error("无响应流");
+  if (!reader) throw new Error(translateCurrent("desktop.i18n.streamMissing"));
 
   const decoder = new TextDecoder();
   let buffer = "";
@@ -35,7 +34,7 @@ export async function consumeSseResponse(
   const consumeBlock = (block: string) => {
     if (!block || block.startsWith(":")) return;
     if (block.length > MAX_SSE_EVENT_BYTES) {
-      throw new Error("流式响应中的单个事件过大");
+      throw new Error(translateCurrent("desktop.i18n.streamEventTooLarge"));
     }
     const data: string[] = [];
     let id: number | undefined;
@@ -57,8 +56,7 @@ export async function consumeSseResponse(
     try {
       event = JSON.parse(raw) as SseEvent;
     } catch {
-      const preview = raw.slice(0, 120).replace(/\s+/g, " ");
-      throw new Error(`无法解析流式响应事件: ${preview}`);
+      throw new Error(translateCurrent("desktop.i18n.streamInvalid"));
     }
     onEvent(event, id);
     if (event.type === "cancelled") {
@@ -85,7 +83,7 @@ export async function consumeSseResponse(
       buffer += decoder.decode(value, { stream: true });
       buffer = buffer.replace(/\r\n/g, "\n");
       if (buffer.length > MAX_SSE_BUFFER_BYTES) {
-        throw new Error("流式响应缓冲区过大");
+        throw new Error(translateCurrent("desktop.i18n.streamBufferTooLarge"));
       }
       const blocks = buffer.split("\n\n");
       buffer = blocks.pop() ?? "";
@@ -97,7 +95,8 @@ export async function consumeSseResponse(
     reader.releaseLock();
   }
   if (!reachedTerminalEvent) {
-    throw new Error("流式响应在完成事件前意外中断，请重试");
+    throw new Error(translateCurrent("desktop.i18n.streamInterrupted"));
   }
   return lastDone;
 }
+import { translateCurrent } from "@xue-learn/core/i18n";

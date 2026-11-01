@@ -31,6 +31,7 @@ jest.mock("react-router-dom", () => ({
   ),
 }));
 jest.mock("@xue-learn/core/i18n", () => ({
+  ...jest.requireActual("@xue-learn/core/i18n"),
   useI18n: () => ({ t: (key: string) => key, locale: "en" }),
 }));
 jest.mock("@xue-learn/core/runtime-contracts", () => ({
@@ -117,7 +118,7 @@ describe("plugin management before embedding setup", () => {
     mockPathname = "/spaces";
     await render();
     expect(container.textContent).toContain("DeepSeek");
-    expect(container.querySelector('select#quick-provider')).not.toBeNull();
+    expect(container.querySelector("select#quick-provider")).not.toBeNull();
     expect(container.querySelector('[data-testid="content"]')).toBeNull();
     expect(container.querySelector('a[href="/local/api-keys"]')).not.toBeNull();
   });

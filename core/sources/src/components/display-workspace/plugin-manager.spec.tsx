@@ -1,5 +1,6 @@
 /** @jest-environment jsdom */
 import React, { StrictMode, act } from "react";
+import { I18nProvider } from "../../shared/i18n/index.js";
 import { createRoot, type Root } from "react-dom/client";
 import { builtinDisplayManifests } from "../display-plugins/catalog.js";
 import {
@@ -16,6 +17,10 @@ jest.mock("./plugin-preview.js", () => ({
 }));
 
 let container: HTMLDivElement, root: Root;
+const renderRoot = (node: React.ReactNode) =>
+  root.render(
+    <I18nProvider initialLocalePreference="zh-Hans">{node}</I18nProvider>,
+  );
 const records: DisplayPluginRecord[] = builtinDisplayManifests.map(
   (manifest) => ({ manifest, builtin: true, enabled: true, sha256: "hash" }),
 );
@@ -45,7 +50,7 @@ afterEach(async () => {
 
 test("library cards enter previews and navigation reaches all components", async () => {
   await act(async () =>
-    root.render(
+    renderRoot(
       <StrictMode>
         <DisplayPluginManager client={client} />
       </StrictMode>,
@@ -73,7 +78,7 @@ test("library cards enter previews and navigation reaches all components", async
 });
 
 test("search uses readable component names and filters can be cleared", async () => {
-  await act(async () => root.render(<DisplayPluginManager client={client} />));
+  await act(async () => renderRoot(<DisplayPluginManager client={client} />));
   const input = container.querySelector(
     'input[type="search"]',
   ) as HTMLInputElement;
@@ -107,7 +112,7 @@ test("controlled selection follows the host and reports the versioned next compo
     componentVersion: component.version,
   };
   await act(async () =>
-    root.render(
+    renderRoot(
       <DisplayPluginManager
         client={client}
         selection={selection}
@@ -128,7 +133,7 @@ test("controlled selection follows the host and reports the versioned next compo
     kind: "math:chart",
   });
   await act(async () =>
-    root.render(
+    renderRoot(
       <DisplayPluginManager
         client={client}
         selection={null}

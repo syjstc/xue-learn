@@ -251,7 +251,11 @@ export function GoalFoundationsPage() {
                 })
               }
             >
-              {createGoal.isPending ? "正在创建…" : "创建基础补充目标"}
+              {createGoal.isPending
+                ? t("desktop.ui.goalFoundationsPage.creating")
+                : t(
+                    "desktop.ui.goalFoundationsPage.createAPrerequisiteLearningGoal",
+                  )}
             </Button>
           </Card>
         )}

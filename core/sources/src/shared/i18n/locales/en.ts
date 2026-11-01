@@ -1,13 +1,16 @@
 export const en = {
   "capabilityPath.title": "Capability path",
-  "capabilityPath.checked": "Path checked · {modules} modules · {units} lessons",
-  "capabilityPath.conditional": "This route depends on the entry assumptions below. Mastery needs evidence from practice; lesson content is prepared when needed.",
+  "capabilityPath.checked":
+    "Path checked · {modules} modules · {units} lessons",
+  "capabilityPath.conditional":
+    "This route depends on the entry assumptions below. Mastery needs evidence from practice; lesson content is prepared when needed.",
   "capabilityPath.baseline": "Check the entry assumptions",
   "capabilityPath.entryFoundation": "Entry foundation",
   "capabilityPath.reported": "Self-reported · not yet assessed",
   "capabilityPath.unknown": "Not yet confirmed",
   "capabilityPath.needBridge": "I need help with this",
-  "capabilityPath.bridgeFeedback": "I do not yet know \"{title}\". Remove this entry assumption and add the smallest sufficient bridge lessons before it is first required. Recheck the complete KACOM path and keep the other confirmed goals.",
+  "capabilityPath.bridgeFeedback":
+    'I do not yet know "{title}". Remove this entry assumption and add the smallest sufficient bridge lessons before it is first required. Recheck the complete KACOM path and keep the other confirmed goals.',
   "capabilityPath.unitCount": "{count} lessons",
   "capabilityPath.requires": "Requires:",
   "capabilityPath.provides": "Builds:",
@@ -35,7 +38,8 @@ export const en = {
   "reading.readableFigure": "Readable size",
   "reading.zoomIn": "Zoom in",
   "reading.zoomOut": "Zoom out",
-  "reading.figureNavigation": "The whole figure is shown by default. Zoom in for details, or use focus mode for more reading space.",
+  "reading.figureNavigation":
+    "The whole figure is shown by default. Zoom in for details, or use focus mode for more reading space.",
   "reading.displayMode": "Display",
   "reading.check": "Quick check",
   "reading.correct": "Correct",
@@ -48,7 +52,8 @@ export const en = {
   "reading.dependsOn": "Uses",
   "reading.retryComponent": "Retry component",
   "reading.componentPending": "Preparing this component. You can keep reading.",
-  "reading.componentFailed": "This component is unavailable. The rest of the chapter is ready to read.",
+  "reading.componentFailed":
+    "This component is unavailable. The rest of the chapter is ready to read.",
   "reading.componentAbout": "About this component",
   "reading.loading": "Loading reading content…",
   "reading.retry": "Retry",
@@ -66,10 +71,12 @@ export const en = {
   "reading.pdfMobile": "Phone",
   "reading.pdfDesktop": "A4",
   "reading.exportFailed": "PDF export failed. Please try again.",
-  "reading.empty": "Generate a chapter to read on your phone. Text appears first; figures and derivations are prepared in the background.",
+  "reading.empty":
+    "Generate a chapter to read on your phone. Text appears first; figures and derivations are prepared in the background.",
   "reading.legacy": "Previously saved content",
   "presentationPreview.title": "Classroom presentations",
-  "presentationPreview.description": "Steps, comparisons and focus follow the narration. Pause or seek at any point.",
+  "presentationPreview.description":
+    "Steps, comparisons and focus follow the narration. Pause or seek at any point.",
   "presentationPreview.choose": "Choose a presentation",
   "presentationPreview.classroom": "Classroom view",
   "presentationPreview.reading": "Reading view",
@@ -79,23 +86,31 @@ export const en = {
   "presentationPreview.pause": "Pause",
   "presentationPreview.progress": "Playback progress",
   "presentationPreview.seconds": "{current} / {total} s",
-  "presentationPreview.note": "Cross-subject component samples · Shared classroom and reading components · Preview without narration audio",
+  "presentationPreview.note":
+    "Cross-subject component samples · Shared classroom and reading components · Preview without narration audio",
   "desktop.videoProduction.title": "Video production",
   "desktop.videoProduction.enqueue": "Export lesson video",
-  "desktop.videoProduction.unavailable": "Video production requires the desktop development app. Restart desktop dev to load the bridge.",
-  "desktop.videoProduction.description": "Create the preview, prepare each section’s teaching content including derivations and music, then arrange shots, generate narration and export a 1080p video.",
+  "desktop.videoProduction.unavailable":
+    "Video production requires the desktop development app. Restart desktop dev to load the bridge.",
+  "desktop.videoProduction.description":
+    "Create the preview, prepare each section’s teaching content including derivations and music, then arrange shots, generate narration and export a 1080p video.",
   "desktop.videoProduction.directory": "Output folder",
   "desktop.videoProduction.clearCompleted": "Clear completed jobs",
-  "desktop.videoProduction.clearCompletedHint": "Removes completed jobs from this list. Exported videos and covers stay on disk.",
+  "desktop.videoProduction.clearCompletedHint":
+    "Removes completed jobs from this list. Exported videos and covers stay on disk.",
   "desktop.videoProduction.cancel": "Remove job",
-  "desktop.videoProduction.cancelHint": "Stop and remove this task. Exported files and saved authoring progress are kept for a later export.",
-  "desktop.videoProduction.lanes": "Multiple lessons can prepare content at once. Each lesson arranges its shots after its content is ready. Narration and video have separate queues, and progress is saved for retries.",
-  "desktop.videoProduction.recovery": "Runs in the desktop background. Refreshing keeps progress; interrupted service connections resume automatically. Reopening the app resumes unfinished jobs.",
+  "desktop.videoProduction.cancelHint":
+    "Stop and remove this task. Exported files and saved authoring progress are kept for a later export.",
+  "desktop.videoProduction.lanes":
+    "Multiple lessons can prepare content at once. Each lesson arranges its shots after its content is ready. Narration and video have separate queues, and progress is saved for retries.",
+  "desktop.videoProduction.recovery":
+    "Runs in the desktop background. Refreshing keeps progress; interrupted service connections resume automatically. Reopening the app resumes unfinished jobs.",
   "desktop.videoProduction.destination": "New jobs save to:",
   "desktop.videoProduction.count": "{total} jobs · {pending} unfinished",
   "desktop.videoProduction.openCourses": "Open courses",
   "desktop.videoProduction.loading": "Loading saved jobs…",
-  "desktop.videoProduction.empty": "Open a unit and choose “Export lesson video” to start. You can add multiple units.",
+  "desktop.videoProduction.empty":
+    "Open a unit and choose “Export lesson video” to start. You can add multiple units.",
   "desktop.videoProduction.stages": "Production stages",
   "desktop.videoProduction.retry": "Resume",
   "desktop.videoProduction.reveal": "Show files",
@@ -122,8 +137,10 @@ export const en = {
   "mainline.catalog": "View full course",
   "mainline.preparing": "Preparing",
   "mainline.nextTopic": "Up next: {title}",
-  "mainline.noNext": "You have reached the end of the current material. Revisit the course or choose another goal.",
-  "mainline.wait": "The next step is being prepared. Continue here when it is ready.",
+  "mainline.noNext":
+    "You have reached the end of the current material. Revisit the course or choose another goal.",
+  "mainline.wait":
+    "The next step is being prepared. Continue here when it is ready.",
   "mainline.finished": "Completed",
   "mainline.currentStage": "Current stage",
   "mainline.planned": "Planned",
@@ -132,14 +149,16 @@ export const en = {
   "mainline.newLearning": "Suggest new content for this goal",
   "mainline.reviews": "Remind me to review learned content",
   "mainline.adjust": "Adjust learning direction",
-  "mainline.saveError": "Your position could not be saved. Retry before continuing.",
+  "mainline.saveError":
+    "Your position could not be saved. Retry before continuing.",
   "mainline.loadError": "The learning plan could not be loaded. Please retry.",
   "mainline.reviewSuggestion": "A review you can try",
   "mainline.accept": "Start review",
   "mainline.later": "Later",
   "mainline.today": "Not today",
   "mainline.footprints": "Learning history",
-  "mainline.footprintsDescription": "Actual learning segments. Reading positions do not indicate mastery.",
+  "mainline.footprintsDescription":
+    "Actual learning segments. Reading positions do not indicate mastery.",
   "mainline.open": "Revisit",
   "mainline.kind.lesson": "Learning",
   "mainline.kind.supplement": "Supplement",
@@ -153,7 +172,8 @@ export const en = {
   "trajectory.purpose.interest": "Explore an interest",
   "trajectory.dismissed": "Supplement removed; your conversation is preserved",
   "trajectory.preparing": "Preparing; start learning when it is ready",
-  "trajectory.generationFailed": "This supplement could not be prepared. Your lesson and conversation are still available.",
+  "trajectory.generationFailed":
+    "This supplement could not be prepared. Your lesson and conversation are still available.",
   "trajectory.cancelled": "Generation stopped",
   "trajectory.savedForLater": "Saved for later",
   "trajectory.start": "Start learning",
@@ -162,16 +182,20 @@ export const en = {
   "trajectory.cancel": "Stop generating",
   "trajectory.later": "Later",
   "trajectory.dismiss": "Remove supplement",
-  "trajectory.goalProposalHint": "Add this as a planned goal in a Learning Space. The full course will start only when you activate it.",
+  "trajectory.goalProposalHint":
+    "Add this as a planned goal in a Learning Space. The full course will start only when you activate it.",
   "trajectory.destination": "Learning Space",
   "trajectory.needSpace": "Create a Learning Space before adding this goal.",
   "trajectory.confirmGoal": "Add planned goal",
-  "trajectory.useReturnEntry": "You can return using the button at the top at any time",
+  "trajectory.useReturnEntry":
+    "You can return using the button at the top at any time",
   "trajectory.footprints": "Learning trail",
   "trajectory.continueSupplement": "Continue supplement",
   "trajectory.settings": "Learning guidance settings",
-  "trajectory.preference.autoSaveSupplements": "Let AI save small supplements automatically",
-  "trajectory.preference.proactiveGuidance": "Receive proactive learning suggestions",
+  "trajectory.preference.autoSaveSupplements":
+    "Let AI save small supplements automatically",
+  "trajectory.preference.proactiveGuidance":
+    "Receive proactive learning suggestions",
   "trajectory.event.question": "Asked a question",
   "trajectory.event.suggestion": "AI suggestion",
   "trajectory.event.entered": "Started a supplement",
@@ -183,20 +207,27 @@ export const en = {
   "trajectory.event.deferred": "Saved for later",
   "trajectory.event.dismissed": "Removed a supplement",
   "trajectory.viewQuestion": "View question",
-  "trajectory.empty": "Your questions, supplements, and returns will appear here.",
+  "trajectory.empty":
+    "Your questions, supplements, and returns will appear here.",
   "trajectory.more": "Earlier activity",
   "trajectory.return": "Return to lesson",
-  "trajectory.canReturn": "When this feels sufficient, return to your original question. You can also keep asking.",
+  "trajectory.canReturn":
+    "When this feels sufficient, return to your original question. You can also keep asking.",
   "trajectory.studying": "Learning supplement",
-  "trajectory.resumeHint": "Continue where you left off or go back to your lesson.",
-  "trajectory.contentUnavailable": "This supplement is unavailable. You can still return to the lesson.",
-  "trajectory.enoughHint": "You can return as soon as you feel ready to continue. No test is required.",
+  "trajectory.resumeHint":
+    "Continue where you left off or go back to your lesson.",
+  "trajectory.contentUnavailable":
+    "This supplement is unavailable. You can still return to the lesson.",
+  "trajectory.enoughHint":
+    "You can return as soon as you feel ready to continue. No test is required.",
   "trajectory.understood": "I understand",
-  "trajectory.needAnotherExplanation": "I do not understand this yet. Could you explain it another way?",
+  "trajectory.needAnotherExplanation":
+    "I do not understand this yet. Could you explain it another way?",
   "trajectory.ask": "Ask more",
   "trajectory.pause": "Pause and return",
   "trajectory.nearby": "Related supplements",
-  "trajectory.positionAdjusted": "The content has changed. You are back near the corresponding topic.",
+  "trajectory.positionAdjusted":
+    "The content has changed. You are back near the corresponding topic.",
   "trajectory.askClassroom": "Pause and ask",
   "trajectory.bridge": "You explored “{title}”. Now return to: {returnGoal}",
   "trajectory.close": "Dismiss",
@@ -319,7 +350,8 @@ export const en = {
     "Ask about the exact sentence you selected",
   "landing.followup.benefit.error":
     "Get a clear, on-the-spot explanation when you get a quiz wrong",
-  "landing.followup.benefit.history": "Useful explanations remain in your follow-up history",
+  "landing.followup.benefit.history":
+    "Useful explanations remain in your follow-up history",
   "landing.scenario.choice.rush":
     "Promise the date, then compress testing time",
   "landing.scenario.choice.scope":
@@ -735,6 +767,7 @@ export const en = {
   "theme.appearanceDescription":
     "Choose light, dark, or match your system setting.",
   "i18n.uiLanguage": "Interface language",
+  "i18n.systemLanguage": "Match system language",
   "i18n.uiLanguageDescription":
     "Translates app controls and navigation. Generated learning content keeps its own language setting.",
   "nav.home": "Home",
@@ -979,11 +1012,13 @@ export const en = {
   "teachingDerivation.viewMode": "Derivation reading mode",
   "teachingDerivation.focusedView": "Guided explanation",
   "teachingDerivation.completeView": "Complete derivation",
-  "teachingDerivation.fullContext": "Show all premises, reasoning and reference formulas",
+  "teachingDerivation.fullContext":
+    "Show all premises, reasoning and reference formulas",
   "teachingDerivation.previousCue": "Previous sentence",
   "teachingDerivation.nextCue": "Next sentence",
   "teachingDerivation.cueProgress": "Explanation {current} / {total}",
-  "teachingDerivation.visualUnavailable": "The saved source for this visual is missing. Regenerate this explanation.",
+  "teachingDerivation.visualUnavailable":
+    "The saved source for this visual is missing. Regenerate this explanation.",
   "teachingDerivation.references": "References for this step",
   "teachingDerivation.relation.introduce": "Starting point",
   "teachingDerivation.relation.equivalence": "Equivalent transformation",
@@ -1350,8 +1385,10 @@ export const en = {
   "agenda.reminderEnabled": "Daily reminder",
   "agenda.reminderOff": "Off",
   "knowledgeActivity.skipped": "Web search skipped",
-  "knowledgeActivity.skippedTimeout": "Search timed out. Continuing with the information already available; current web facts have not been verified.",
-  "knowledgeActivity.skippedUnavailable": "Search is unavailable or returned no usable sources. Continuing with the information already available.",
+  "knowledgeActivity.skippedTimeout":
+    "Search timed out. Continuing with the information already available; current web facts have not been verified.",
+  "knowledgeActivity.skippedUnavailable":
+    "Search is unavailable or returned no usable sources. Continuing with the information already available.",
   "knowledgeActivity.searching": "Searching the web",
   "knowledgeActivity.reading": "Reading search results",
   "knowledgeActivity.saving": "Saving web knowledge",
@@ -1963,33 +2000,49 @@ export const en = {
   "lessonPerformance.videoStyle": "Video style",
   "lessonPerformance.videoStyleClassroom": "Classroom",
   "lessonPerformance.videoStyleRemotion": "Remotion animation",
-  "lessonPerformance.remotionStyleHint": "Learning and video share the same teaching and advanced animation. Use the studio to edit and export.",
+  "lessonPerformance.remotionStyleHint":
+    "Learning and video share the same teaching and advanced animation. Use the studio to edit and export.",
   "lessonPerformance.remotionCreateTitle": "Remotion video preview",
   "lessonPerformance.remotionTemplates": "Remotion shot templates",
-  "lessonPerformance.remotionCreateHint": "Courses and videos share one set of explanations and animations. Existing teaching is reused, and missing sections are prepared and saved to the course. Edit, voice and export the video here.",
+  "lessonPerformance.remotionCreateHint":
+    "Courses and videos share one set of explanations and animations. Existing teaching is reused, and missing sections are prepared and saved to the course. Edit, voice and export the video here.",
   "lessonPerformance.remotionBrief": "Teaching brief",
-  "lessonPerformance.remotionBriefPlaceholder": "For example: explain planetary orbits to beginners, show how speed and gravity interact in space, then compare two orbits.",
-  "lessonPerformance.remotionBasicCapabilities": "Core visuals: titles, key points, comparisons, formulas, and code.",
-  "lessonPerformance.remotionAdvancedCapabilities": "Advanced visuals: animated charts, spatial structures, relationships, processes, and explanatory motion.",
+  "lessonPerformance.remotionBriefPlaceholder":
+    "For example: explain planetary orbits to beginners, show how speed and gravity interact in space, then compare two orbits.",
+  "lessonPerformance.remotionBasicCapabilities":
+    "Core visuals: titles, key points, comparisons, formulas, and code.",
+  "lessonPerformance.remotionAdvancedCapabilities":
+    "Advanced visuals: animated charts, spatial structures, relationships, processes, and explanatory motion.",
   "lessonPerformance.remotionGenerateExport": "Generate and export animation",
   "lessonPerformance.remotionGenerate": "Prepare course and arrange video",
   "lessonPerformance.remotionRegenerate": "Update video from course",
   "lessonPerformance.remotionContinue": "Continue course and video preparation",
-  "lessonPerformance.remotionPreparing": "Preparing section content · {completed} / {total} sections saved",
-  "lessonPerformance.remotionPlanning": "Teaching content is ready. Arranging the storyboard…",
+  "lessonPerformance.remotionPreparing":
+    "Preparing section content · {completed} / {total} sections saved",
+  "lessonPerformance.remotionPlanning":
+    "Teaching content is ready. Arranging the storyboard…",
   "lessonPerformance.remotionShotProgress": "Saved {completed} / {total} shots",
   "lessonPerformance.remotionCreatingImage": "Generating image:",
   "lessonPerformance.remotionCreatingShot": "Creating:",
-  "lessonPerformance.remotionResumeHint": "Prepared content and completed shots are preserved. Resume from the unfinished step.",
+  "lessonPerformance.remotionResumeHint":
+    "Prepared content and completed shots are preserved. Resume from the unfinished step.",
   "lessonPerformance.remotionGenerating": "Preparing course and video…",
-  "lessonPerformance.remotionBackgroundHint": "Generation continues in the background. Return here to check progress.",
-  "lessonPerformance.remotionNextSteps": "Teaching is saved to the course. Preview the animations, edit speech and export the video.",
-  "lessonPerformance.remotionGenerateFailed": "Animated lesson generation failed. Please retry.",
-  "lessonPerformance.remotionPreviousLesson": "The previous film is preserved. You can continue the current production.",
-  "lessonPerformance.remotionCourseStale": "Course teaching has changed. Update the video before exporting.",
-  "lessonPerformance.remotionIncomplete": "The complete lesson result was not received. Refresh to continue.",
-  "lessonPerformance.remotionSpeechPending": "{count} narration clips still need audio. You can preview now; complete the audio before exporting the full video.",
-  "lessonPerformance.remotionQueueHint": "Prepare missing course teaching, then reuse its explanations and advanced animation for speech and export.",
+  "lessonPerformance.remotionBackgroundHint":
+    "Generation continues in the background. Return here to check progress.",
+  "lessonPerformance.remotionNextSteps":
+    "Teaching is saved to the course. Preview the animations, edit speech and export the video.",
+  "lessonPerformance.remotionGenerateFailed":
+    "Animated lesson generation failed. Please retry.",
+  "lessonPerformance.remotionPreviousLesson":
+    "The previous film is preserved. You can continue the current production.",
+  "lessonPerformance.remotionCourseStale":
+    "Course teaching has changed. Update the video before exporting.",
+  "lessonPerformance.remotionIncomplete":
+    "The complete lesson result was not received. Refresh to continue.",
+  "lessonPerformance.remotionSpeechPending":
+    "{count} narration clips still need audio. You can preview now; complete the audio before exporting the full video.",
+  "lessonPerformance.remotionQueueHint":
+    "Prepare missing course teaching, then reuse its explanations and advanced animation for speech and export.",
   "lessonPerformance.remotionPreviewLoading": "Preparing animation preview…",
   "lessonPerformance.exportRenderer": "Export renderer",
   "lessonPerformance.exportRendererHtml": "Standard (HTML)",
@@ -2518,9 +2571,9 @@ export const en = {
   "goalDetail.journey.evidenceLoading": "Evidence loading",
   "goalDetail.journey.finalModule": "Final module",
   "goalDetail.journey.lessonProgress": "Lesson progress",
-  "goalDetail.journey.moduleNumber": "Module number",
+  "goalDetail.journey.moduleNumber": "Module {number}",
   "goalDetail.journey.moduleProgress": "Module progress",
-  "goalDetail.journey.moduleProgressAriaLabel": "Module progress ARIA label",
+  "goalDetail.journey.moduleProgressAriaLabel": "Progress for module {number}",
   "goalDetail.journey.notVerified": "Not verified",
   "goalDetail.journey.partiallyReady": "Partially ready",
   "goalDetail.journey.pathAriaLabel": "Path ARIA label",
@@ -2534,7 +2587,7 @@ export const en = {
   "goalDetail.journey.targetVerification": "Target verification",
   "goalDetail.journey.title": "Title",
   "goalDetail.journey.unitProgress": "Unit progress",
-  "goalDetail.journey.unitProgressAriaLabel": "Unit progress ARIA label",
+  "goalDetail.journey.unitProgressAriaLabel": "Progress for {title}",
   "goalDetail.journey.unitsReadyModelPreparing":
     "Lessons are ready while the mastery model continues preparing.",
   "goalDetail.journey.unlockAfterPrevious":
@@ -2596,7 +2649,7 @@ export const en = {
     "Key capabilities description",
   "goalDetail.module.learning": "Learning",
   "goalDetail.module.learningPath": "Learning path",
-  "goalDetail.module.learningUnitCount": "Learning unit count",
+  "goalDetail.module.learningUnitCount": "Learning units: {count}",
   "goalDetail.module.lessonsPartiallyReady": "Some lessons are ready",
   "goalDetail.module.moduleFinalizing":
     "Lessons are ready — finishing module review…",
@@ -2615,7 +2668,7 @@ export const en = {
     "Some critical requirements are not yet met.",
   "goalDetail.module.missingEvidence": "More direct evidence is needed.",
   "goalDetail.module.moduleMastery": "Module mastery",
-  "goalDetail.module.moduleNumber": "Module number",
+  "goalDetail.module.moduleNumber": "Module {number}",
   "goalDetail.module.modulePreparationFailed": "Module preparation failed",
   "goalDetail.module.moduleProgress": "Module progress",
   "goalDetail.module.multipleChoiceExitDiagnostic": "Module exit diagnostic",
@@ -2644,7 +2697,7 @@ export const en = {
   "goalDetail.module.retryIfStalled":
     "Preparation looks paused. Retry to continue the remaining lessons; your progress is kept.",
   "goalDetail.module.sectionQuiz": "Section quiz",
-  "goalDetail.module.sectionTitle": "Section title",
+  "goalDetail.module.sectionTitle": "Section {number}",
   "goalDetail.module.startAnyway": "Start anyway",
   "goalDetail.module.startNextUnit": "Start next unit",
   "goalDetail.module.studyPreparationUnit": "Study preparation unit",
@@ -2656,12 +2709,12 @@ export const en = {
     "Lessons are available while the mastery model is still being prepared",
   "goalDetail.module.unitsListedPreparing":
     "Lessons are listed and can be opened as they become ready",
-  "goalDetail.module.unverifiedCount": "Unverified count",
+  "goalDetail.module.unverifiedCount": "Unverified: {count}",
   "goalDetail.module.verifiedMastery": "Verified mastery",
-  "goalDetail.module.verifiedPercent": "Verified percent",
+  "goalDetail.module.verifiedPercent": "{percent}% verified",
   "goalDetail.module.viewAllCapabilities": "View all capabilities",
   "goalDetail.module.viewLearningPath": "View learning path",
-  "goalDetail.module.viewSectionCount": "View section count",
+  "goalDetail.module.viewSectionCount": "View sections ({count})",
   "goalDetail.module.weakDimensions": "Weak dimensions",
   "goalDetail.overview.autoPreparingMicro": "Auto preparing micro-course",
   "goalDetail.overview.completeMicro": "Complete micro-course",
@@ -2700,7 +2753,7 @@ export const en = {
   "goalDetail.overview.regenerateMicroTitle": "Regenerate micro-course title",
   "goalDetail.overview.regenerateTitle": "Regenerate title",
   "goalDetail.overview.reorganizing": "Reorganizing…",
-  "goalDetail.path.childCount": "Child count",
+  "goalDetail.path.childCount": "Subitems: {count}",
   "goalDetail.path.collapseAll": "Collapse all",
   "goalDetail.path.collapseChildren": "Collapse children",
   "goalDetail.path.empty": "Empty",
@@ -2727,7 +2780,7 @@ export const en = {
   "goalDetail.plan.detailedDescription": "Detailed description",
   "goalDetail.plan.detailedPlanError": "Unable to generate the detailed plan.",
   "goalDetail.plan.documentsDetected": "Uploaded documents detected",
-  "goalDetail.plan.estimatedLessons": "Estimated lessons",
+  "goalDetail.plan.estimatedLessons": "Estimated lessons: {count}",
   "goalDetail.plan.generateMap": "Generate map",
   "goalDetail.plan.generateMicro": "Generate micro-course",
   "goalDetail.plan.generatePlan": "Generate plan",
@@ -2755,7 +2808,7 @@ export const en = {
     "Create a focused micro-course for this topic.",
   "goalDetail.plan.microGenerationError":
     "Unable to generate the micro-course.",
-  "goalDetail.plan.moduleCount": "Module count",
+  "goalDetail.plan.moduleCount": "Modules: {count}",
   "goalDetail.plan.personalizedCourse": "Personalized course",
   "goalDetail.plan.preparingMicro": "Preparing micro-course…",
   "goalDetail.plan.reconnectError": "Connection lost. Reconnect and try again.",
@@ -3215,13 +3268,13 @@ export const en = {
   "projectDetail.workbench.history.empty": "No previous submissions.",
   "projectDetail.workbench.history.latest": "Attempt {number}",
   "projectDetail.workbench.history.submittedAt": "Submitted {date}",
-  "projectDetail.workbench.milestone": "Milestone",
+  "projectDetail.workbench.milestone": "Milestone {number}",
   "projectDetail.workbench.notRecorded": "Not recorded",
   "projectDetail.workbench.process.action": "Action",
   "projectDetail.workbench.process.add": "Add",
   "projectDetail.workbench.process.decision": "Decision",
   "projectDetail.workbench.process.descriptionAria":
-    "Learn more about process.",
+    "Description for process record {number}",
   "projectDetail.workbench.process.linkedArtifacts": "{count} linked artifacts",
   "projectDetail.workbench.process.note": "Note",
   "projectDetail.workbench.process.placeholder": "Placeholder",
@@ -3276,7 +3329,7 @@ export const en = {
   "uiChrome.goalLayout.courseNavigation": "Course navigation",
   "uiChrome.goalLayout.courseOutline": "Course outline",
   "uiChrome.goalLayout.expandSidebar": "Expand sidebar",
-  "uiChrome.goalLayout.foundationFor": "Foundation for",
+  "uiChrome.goalLayout.foundationFor": "Prerequisites for {title}",
   "uiChrome.goalLayout.foundations": "Foundations",
   "uiChrome.goalLayout.goalNavigation": "Goal navigation",
   "uiChrome.goalLayout.journey": "Journey",
@@ -3441,7 +3494,8 @@ export const en = {
   "wizard.material.simulator.unknownVariables":
     "Unknown variables: {variables}",
   "wizard.material.takeawaysTitle": "Key takeaways",
-  "wizard.reading.assessmentFailed": "Assessment preparation needs another attempt. You can continue reading the existing lesson.",
+  "wizard.reading.assessmentFailed":
+    "Assessment preparation needs another attempt. You can continue reading the existing lesson.",
   "wizard.reading.assessmentRetry": "Prepare assessment again",
   "wizard.reading.assessmentRetrying": "Preparing assessment…",
   "wizard.reading.assessmentLocked":
@@ -3737,7 +3791,7 @@ export const en = {
   "settings.persona.advancedStyle": "Advanced style",
   "settings.persona.advancedStyleDescription":
     "Leave blank to inherit the selected assistant’s distinctive style; override only what you truly want to change.",
-  "settings.persona.avatarAlt": "Assistant avatar",
+  "settings.persona.avatarAlt": "Avatar for {name}",
   "settings.persona.avatarVariantAria": "Choose an avatar variation",
   "settings.persona.chooseAvatar": "Choose avatar",
   "settings.persona.current": "Current assistant",
@@ -3745,13 +3799,13 @@ export const en = {
   "settings.persona.deleteConfirm": "Delete this custom assistant?",
   "settings.persona.edit": "Edit assistant",
   "settings.persona.female": "Female",
-  "settings.persona.genderAvatar": "Voice and avatar",
+  "settings.persona.genderAvatar": "Avatar ({gender})",
   "settings.persona.loadFailed": "Unable to load teaching assistants.",
   "settings.persona.loading": "Loading assistants…",
   "settings.persona.male": "Male",
   "settings.persona.myAssistantName": "My assistant",
   "settings.persona.setDefault": "Set as default",
-  "settings.persona.switchTo": "Switch to this assistant",
+  "settings.persona.switchTo": "Switch to {name}",
   "sharedGoal.loading": "Loading shared goal…",
   "sharedGoal.error.invalidTitle": "Invalid share link",
   "sharedGoal.error.notFound":
@@ -4149,13 +4203,16 @@ export const en = {
   "desktop.deviceSettings.errorLogs": "Error logs",
   "desktop.deviceSettings.runtime": "Maintenance",
   "desktop.production.batchTitle": "General education · Four-semester library",
-  "desktop.production.batchDescription": "Prepare all 28 courses in order, including lesson content, images and tests. Once every check passes, download the complete static library with its images.",
+  "desktop.production.batchDescription":
+    "Prepare all 28 courses in order, including lesson content, images and tests. Once every check passes, download the complete static library with its images.",
   "desktop.production.batchGenerate": "Generate all 28 courses",
   "desktop.production.batchResume": "Continue all courses",
   "desktop.production.batchRecheck": "Recheck all courses",
   "desktop.production.batchExport": "Download all courses",
-  "desktop.production.batchReady": "All lesson content, images and tests are complete. The library is ready to export.",
-  "desktop.production.batchIdle": "Reuse existing courses and skip complete content. Progress is saved so you can stop and continue later.",
+  "desktop.production.batchReady":
+    "All lesson content, images and tests are complete. The library is ready to export.",
+  "desktop.production.batchIdle":
+    "Reuse existing courses and skip complete content. Progress is saved so you can stop and continue later.",
   "desktop.production.batchDetails": "View all course statuses",
   "desktop.production.batchPacking": "Check assets and build static packages",
   "desktop.production.batchStatusReady": "Complete",
@@ -4166,17 +4223,22 @@ export const en = {
   "desktop.production.preset": "Course preset",
   "desktop.production.custom": "Custom course",
   "desktop.production.semester": "Semester",
-  "desktop.production.presetHelp": "28 course presets fill the goals automatically. Auto-confirm uses Exploration and Fast planning: one module, up to six teaching units per course.",
+  "desktop.production.presetHelp":
+    "28 course presets fill the goals automatically. Auto-confirm uses Exploration and Fast planning: one module, up to six teaching units per course.",
   "desktop.production.destination": "Destination",
   "desktop.production.title": "Course production",
-  "desktop.production.description": "Create one course at a time. Prepare all lessons, images, and tests for the selected course, then download its package once everything is complete.",
+  "desktop.production.description":
+    "Create one course at a time. Prepare all lessons, images, and tests for the selected course, then download its package once everything is complete.",
   "desktop.production.input": "Course brief",
   "desktop.production.name": "Course name",
-  "desktop.production.namePlaceholder": "For example: Matter, particles and chemical change",
+  "desktop.production.namePlaceholder":
+    "For example: Matter, particles and chemical change",
   "desktop.production.goal": "Detailed learning goal",
   "desktop.production.example": "Use an example",
-  "desktop.production.goalPlaceholder": "Describe the starting point, observable outcomes, required knowledge and scope. You can paste a prepared course brief.",
-  "desktop.production.defaults": "Defaults to Chinese and beginner level; no clarification questionnaire",
+  "desktop.production.goalPlaceholder":
+    "Describe the starting point, observable outcomes, required knowledge and scope. You can paste a prepared course brief.",
+  "desktop.production.defaults":
+    "Defaults to Chinese and beginner level; no clarification questionnaire",
   "desktop.production.generate": "Prepare this entire course",
   "desktop.production.readyLabel": "Course ready",
   "desktop.production.running": "Preparing in background",
@@ -4184,20 +4246,25 @@ export const en = {
   "desktop.production.stop": "Stop",
   "desktop.production.new": "Create another",
   "desktop.production.restart": "Create a fresh edition",
-  "desktop.production.restartHelp": "Use the latest brief to create a new course, preserving the previous course without reusing its plan or content.",
+  "desktop.production.restartHelp":
+    "Use the latest brief to create a new course, preserving the previous course without reusing its plan or content.",
   "desktop.production.loading": "Restoring production progress…",
-  "desktop.production.ready": "This course’s lessons, images, and tests are complete and ready to export.",
+  "desktop.production.ready":
+    "This course’s lessons, images, and tests are complete and ready to export.",
   "desktop.production.saved": "Previous progress restored. You can continue.",
-  "desktop.production.idle": "Uses your configured model and saves progress automatically.",
+  "desktop.production.idle":
+    "Uses your configured model and saves progress automatically.",
   "desktop.production.progress": "Content preparation progress",
   "desktop.production.result": "Course and export",
-  "desktop.production.resultDescription": "Export this course’s lessons, tests, correct answers, explanations, and local images for later use in Godot.",
+  "desktop.production.resultDescription":
+    "Export this course’s lessons, tests, correct answers, explanations, and local images for later use in Godot.",
   "desktop.production.openSpace": "Open learning space",
   "desktop.production.openCourse": "View course",
   "desktop.production.godotTitle": "Export to Godot",
   "desktop.production.godotDev": "Development",
   "desktop.production.godotBinding": "{course} · Semester {semester}",
-  "desktop.production.godotChooseCourse": "Select a semester course to link its course ID.",
+  "desktop.production.godotChooseCourse":
+    "Select a semester course to link its course ID.",
   "desktop.production.godotDirectory": "Destination",
   "desktop.production.godotNoDirectory": "Not configured",
   "desktop.production.godotChooseDirectory": "Choose project folder",
@@ -4205,14 +4272,19 @@ export const en = {
   "desktop.production.godotPreparing": "Exporting course…",
   "desktop.production.godotCompressing": "Processing images…",
   "desktop.production.godotInstalling": "Updating assets…",
-  "desktop.production.godotHelp": "Compress illustrations and prefer vector SVG. Replace the same course ID while preserving quest source files.",
-  "desktop.production.godotDone": "Updated {course} (semester {semester}). Images: {before} → {after} MiB.",
+  "desktop.production.godotHelp":
+    "Compress illustrations and prefer vector SVG. Replace the same course ID while preserving quest source files.",
+  "desktop.production.godotDone":
+    "Updated {course} (semester {semester}). Images: {before} → {after} MiB.",
   "desktop.production.export": "Download this course",
-  "desktop.production.modelNote": "Preparation continues when you leave this page. Running tasks resume when the app reopens. Generation uses your current model allowance.",
+  "desktop.production.modelNote":
+    "Preparation continues when you leave this page. Running tasks resume when the app reopens. Generation uses your current model allowance.",
   "desktop.production.modelSettings": "Model settings",
-  "desktop.production.saveFailed": "Could not save production progress. Please retry.",
+  "desktop.production.saveFailed":
+    "Could not save production progress. Please retry.",
   "desktop.production.stopped": "Stop requested. Progress has been retained.",
-  "desktop.production.downloaded": "Course downloaded. Review content and assets before publishing.",
+  "desktop.production.downloaded":
+    "Course downloaded. Review content and assets before publishing.",
   "desktop.deviceSettings.displayPlugins": "Display plugins",
   "desktop.deviceSettings.teachingSkills": "Teaching skills",
   "desktop.deviceSettings.resources": "Resource processing",
@@ -4229,17 +4301,20 @@ export const en = {
   "desktop.resourceSettings.saving": "Saving…",
   "desktop.resourceSettings.saved": "Saved. New uploads will use this limit.",
   "desktop.guidedImageModel.title": "Image understanding model",
-  "desktop.guidedImageModel.description": "Used to locate teaching-image regions and narrate what is shown. Auto uses the current model when it supports image input, otherwise DeepSeek.",
+  "desktop.guidedImageModel.description":
+    "Used to locate teaching-image regions and narrate what is shown. Auto uses the current model when it supports image input, otherwise DeepSeek.",
   "desktop.guidedImageModel.mode": "Selection",
   "desktop.guidedImageModel.auto": "Auto: follow the current model",
   "desktop.guidedImageModel.manual": "Choose a model manually",
   "desktop.guidedImageModel.current": "Current chat model: {model}",
   "desktop.guidedImageModel.provider": "Provider",
   "desktop.guidedImageModel.model": "Model",
-  "desktop.guidedImageModel.manualHint": "Choose a model that accepts images. Uses the provider’s saved sign-in or key; custom providers use the active endpoint.",
+  "desktop.guidedImageModel.manualHint":
+    "Choose a model that accepts images. Uses the provider’s saved sign-in or key; custom providers use the active endpoint.",
   "desktop.guidedImageModel.save": "Save image model",
   "desktop.guidedImageModel.saving": "Saving…",
-  "desktop.guidedImageModel.saved": "Saved. Applies to the next image analysis.",
+  "desktop.guidedImageModel.saved":
+    "Saved. Applies to the next image analysis.",
   "desktop.apiKeys.title": "AI models",
   "desktop.apiKeys.codex.label": "Codex (ChatGPT subscription)",
   "desktop.apiKeys.codex.signIn": "Sign in to Codex",
@@ -4660,6 +4735,727 @@ export const en = {
   "desktop.embeddingSetup.invalidUrl":
     "The endpoint URL must use HTTP or HTTPS.",
   "desktop.embeddingSetup.saveFailed": "Could not save ({status}).",
+  // Desktop learning controls and workspace operations.
+  "desktop.ui.agentChat.exitGoalCreation": "Exit goal creation",
+  "desktop.ui.agentChat.loadEarlierMessages": "Load earlier messages",
+  "desktop.ui.agentChatWorkspace.aiLearningPlanner": "AI learning planner",
+  "desktop.ui.agentChatWorkspace.describeWhatYouWantToLearn":
+    "Describe what you want to learn",
+  "desktop.ui.agentChatWorkspace.newGoal": "New goal",
+  "desktop.ui.agentChatWorkspace.workWithYourAssistantToDefineA":
+    "Work with your assistant to define a goal and build your learning plan.",
+  "desktop.ui.assistantSectionMaterial.couldNotStartPlayback":
+    "Could not start playback: ",
+  "desktop.ui.circuitSandbox.circuitSandbox": "Circuit sandbox",
+  "desktop.ui.circuitSandbox.circuitStatus": "Circuit status",
+  "desktop.ui.circuitSandbox.close": "Close",
+  "desktop.ui.circuitSandbox.closed": "Closed",
+  "desktop.ui.circuitSandbox.closedCircuit": "Closed circuit",
+  "desktop.ui.circuitSandbox.components": "Components",
+  "desktop.ui.circuitSandbox.open": "Open",
+  "desktop.ui.circuitSandbox.open2": "Open",
+  "desktop.ui.circuitSandbox.openCircuit": "Open circuit",
+  "desktop.ui.collectFormCard.confirmLearningSettings":
+    "Confirm learning settings",
+  "desktop.ui.collectFormCard.createALearningMapAndDetailedPlan":
+    "Create a learning map and detailed plan",
+  "desktop.ui.collectFormCard.exploreOneTopicInAShortLesson":
+    "Explore one topic in a short lesson, with a preview prepared automatically",
+  "desktop.ui.collectFormCard.learningMaterialsOptional":
+    "Learning materials (optional)",
+  "desktop.ui.collectFormCard.learningPreferences": "Learning preferences",
+  "desktop.ui.completeStep.practiceAgain": "Practice again",
+  "desktop.ui.completeStep.shortCourseComplete": "Short course complete",
+  "desktop.ui.completeStep.theLessonContentAndNotesAreAvailable":
+    "The lesson content and notes are available on the right.",
+  "desktop.ui.completeStep.thisUnitNeedsMorePracticeRevisitIt":
+    "This unit needs more practice. Revisit it to strengthen your understanding.",
+  "desktop.ui.completeStep.unitComplete": "Unit complete",
+  "desktop.ui.completeStep.yourProgressIsSavedSpacedReviewsWill":
+    "Your progress is saved. Spaced reviews will be scheduled for this material.",
+  "desktop.ui.composedStage.clearFocus": "Clear focus",
+  "desktop.ui.composedStage.focus": "Focus",
+  "desktop.ui.composedStage.showAll": "Show all",
+  "desktop.ui.conversationalUnitView.turnOffSpokenExplanations":
+    "Turn off spoken explanations",
+  "desktop.ui.conversationalUnitView.turnOnSpokenExplanations":
+    "Turn on spoken explanations",
+  "desktop.ui.courseInteractionBlocks.correctOrder": "Correct order",
+  "desktop.ui.courseInteractionBlocks.dragStep": "Drag step",
+  "desktop.ui.coursePatternPanel.aCoursePatternDefinesTheStructureOf":
+    "A course pattern defines the structure of similar lessons, their content blocks and how to reuse shared context. New previews and lesson content follow this pattern.",
+  "desktop.ui.coursePatternPanel.noCoursePatternYetSaveYourOwn":
+    "No course pattern yet. Save your own pattern or select Regenerate.",
+  "desktop.ui.coursePatternPanel.patternContent": "Pattern content",
+  "desktop.ui.displayBlockHost.pausePresentation": "Pause presentation",
+  "desktop.ui.displayBlockHost.playPresentation": "Play presentation",
+  "desktop.ui.displayBlockHost.presentationProgress": "Presentation progress",
+  "desktop.ui.displayBlockHost.seconds": " seconds",
+  "desktop.ui.exportTextbookButton.desktopLayout": "Desktop layout",
+  "desktop.ui.exportTextbookButton.exportCourseAsPdf": "Export course as PDF",
+  "desktop.ui.exportTextbookButton.mobileLayout": "Mobile layout",
+  "desktop.ui.exportTextbookButton.preparingPdf": "Preparing PDF…",
+  "desktop.ui.feynmanStep.explain": "Explain “",
+  "desktop.ui.feynmanStep.inYourOwnWordsAsIfTeaching":
+    "” in your own words, as if teaching a complete beginner.",
+  "desktop.ui.feynmanStep.needsPractice": "Needs practice",
+  "desktop.ui.feynmanStep.passed": "Passed",
+  "desktop.ui.feynmanStep.result": "Result: ",
+  "desktop.ui.feynmanStep.startExplaining": "Start explaining…",
+  "desktop.ui.feynmanStep.submitExplanation": "Submit explanation",
+  "desktop.ui.forceSubdividePanel.expandGoal": "Expand goal",
+  "desktop.ui.forceSubdividePanel.removeSubMap": "Remove sub-map",
+  "desktop.ui.forceSubdividePanel.removing": "Removing…",
+  "desktop.ui.forceSubdividePanel.splitUnit": "Split unit",
+  "desktop.ui.goalDashboardPage.checkLearningGoals": "Check learning goals",
+  "desktop.ui.goalDashboardPage.couldNotLoadThisGoalPleaseTry":
+    "Could not load this goal. Please try again.",
+  "desktop.ui.goalDashboardPage.loadingGoal": "Loading goal…",
+  "desktop.ui.goalDashboardPage.overview": "Overview: ",
+  "desktop.ui.goalDashboardPage.startOverview": "Start overview",
+  "desktop.ui.goalDashboardPage.theFirstTwoLevelsAreShownInitially":
+    "The first two levels are shown initially. Expand each branch as needed to explore the rest.",
+  "desktop.ui.goalDashboardPage.viewOverview": "View overview",
+  "desktop.ui.goalFoundationsPage.createAPrerequisiteLearningGoal":
+    "Create a prerequisite learning goal",
+  "desktop.ui.goalFoundationsPage.creating": "Creating…",
+  "desktop.ui.kacomDetachDevPanel.detachKacom": "Detach KACOM",
+  "desktop.ui.kacomDetachDevPanel.detaching": "Detaching…",
+  "desktop.ui.labFrameHost.couldNotLoadLabResources":
+    "Could not load lab resources",
+  "desktop.ui.labFrameHost.couldNotStartPleaseTryAgain":
+    "Could not start. Please try again.",
+  "desktop.ui.labShell.controlsAndParameters": "Controls and parameters",
+  "desktop.ui.labShell.expandToFullScreen": "Expand to full screen",
+  "desktop.ui.labShell.liveSimulationReadings": "Live simulation readings",
+  "desktop.ui.labShell.resetExperiment": "Reset experiment",
+  "desktop.ui.learningReferencePanel.referToLessonContentAndNotesWhile":
+    "Refer to lesson content and notes while you practice",
+  "desktop.ui.llmLogsViewer.nestedCalls": " · Nested calls",
+  "desktop.ui.materialSlideDeck.completedPracticeAgainAnytime":
+    "Completed · Practice again anytime",
+  "desktop.ui.materialSlideDeck.contents": "Contents",
+  "desktop.ui.materialSlideDeck.finishLesson": "Finish lesson",
+  "desktop.ui.materialSlideDeck.lessonSlides": "Lesson slides",
+  "desktop.ui.materialSlideDeck.slideOutline": "Slide outline",
+  "desktop.ui.materialSlideDeck.youHaveFinishedTheLessonContinueBelow":
+    "You have finished the lesson. Continue below to prepare your study notes.",
+  "desktop.ui.mechanicsSandbox.accelerationDownSlopeA":
+    "Acceleration down slope a: ",
+  "desktop.ui.mechanicsSandbox.cartOnAnIncline": "Cart on an incline",
+  "desktop.ui.mechanicsSandbox.coefficientOfRestitutionE1Elastic0":
+    "Coefficient of restitution e (1 = elastic, 0 = inelastic)",
+  "desktop.ui.mechanicsSandbox.inclineAngle": "Incline angle θ",
+  "desktop.ui.mechanicsSandbox.initial": "Initial ",
+  "desktop.ui.mechanicsSandbox.initialVelocityOfObjectAV":
+    "Initial velocity of object A (v₁)",
+  "desktop.ui.mechanicsSandbox.jFinal": "J → Final ",
+  "desktop.ui.mechanicsSandbox.jLoss": "J (loss: ",
+  "desktop.ui.mechanicsSandbox.kineticEnergyEK": "Kinetic energy E_k: ",
+  "desktop.ui.mechanicsSandbox.massOfObjectAM": "Mass of object A (m₁)",
+  "desktop.ui.mechanicsSandbox.massOfObjectBM": "Mass of object B (m₂)",
+  "desktop.ui.mechanicsSandbox.momentumP": "Momentum P: ",
+  "desktop.ui.mechanicsSandbox.naturalFrequencyF": "Natural frequency f: ",
+  "desktop.ui.mechanicsSandbox.normalForceNGravitationalComponent":
+    "Normal force N / gravitational component: ",
+  "desktop.ui.mechanicsSandbox.pendulumLengthL": "Pendulum length L",
+  "desktop.ui.mechanicsSandbox.pendulumPeriodT": "Pendulum period T: ",
+  "desktop.ui.mechanicsSandbox.physicsSandbox": "Physics sandbox",
+  "desktop.ui.mechanicsSandbox.startSimulation": "Start simulation",
+  "desktop.ui.mechanicsSandbox.velocitiesAfterCollision":
+    "Velocities after collision: ",
+  "desktop.ui.personalSyncPage.alreadyOnThisDevice": "Already on this device",
+  "desktop.ui.personalSyncPage.atLeast12Characters": "At least 12 characters",
+  "desktop.ui.personalSyncPage.avoidEditingTheSameGoalOnTwo":
+    "Avoid editing the same goal on two devices at once",
+  "desktop.ui.personalSyncPage.checkingStatus": "Checking status…",
+  "desktop.ui.personalSyncPage.chooseAnIcloudDriveLocation":
+    "Choose an iCloud Drive location",
+  "desktop.ui.personalSyncPage.chooseFolder": "Choose folder",
+  "desktop.ui.personalSyncPage.chooseSyncLocation": "Choose sync location",
+  "desktop.ui.personalSyncPage.chooseTheSameIcloudDriveLocationAs":
+    "Choose the same iCloud Drive location as your other device, then enter the original sync password.",
+  "desktop.ui.personalSyncPage.conflictsToReviewTheConflictingVersionsHave":
+    " conflicts to review. The conflicting versions have been preserved.",
+  "desktop.ui.personalSyncPage.connect": "Connect",
+  "desktop.ui.personalSyncPage.connectAnExistingSyncedWorkspace":
+    "Connect an existing synced workspace",
+  "desktop.ui.personalSyncPage.current": "Current",
+  "desktop.ui.personalSyncPage.currentWorkspace": "Current workspace",
+  "desktop.ui.personalSyncPage.disableSyncForThisWorkspace":
+    "Disable sync for this workspace",
+  "desktop.ui.personalSyncPage.enableAutomaticSync": "Enable automatic sync",
+  "desktop.ui.personalSyncPage.enableEncryptedFolderSync":
+    "Enable encrypted folder sync",
+  "desktop.ui.personalSyncPage.encryptedFolderSync": "Encrypted folder sync",
+  "desktop.ui.personalSyncPage.encryptedWorkspace": "Encrypted workspace ",
+  "desktop.ui.personalSyncPage.enterThePasswordToDecryptItsName":
+    "Enter the password to decrypt its name on this device",
+  "desktop.ui.personalSyncPage.enterTheSyncPasswordToUnlockThis":
+    "Enter the sync password to unlock this workspace",
+  "desktop.ui.personalSyncPage.findExistingWorkspaces":
+    "Find existing workspaces",
+  "desktop.ui.personalSyncPage.folderSyncEnabled": "Folder sync enabled",
+  "desktop.ui.personalSyncPage.keepThisPasswordInAPasswordManager":
+    "Keep this password in a password manager. If you lose both the password and every unlocked device, the encrypted data cannot be recovered.",
+  "desktop.ui.personalSyncPage.keepXuelearnAndTheSyncFolderAvailable":
+    "Keep XueLearn and the sync folder available. Larger workspaces may take a few minutes.",
+  "desktop.ui.personalSyncPage.letOneDeviceFinishSyncingBeforeContinuing":
+    "Let one device finish syncing before continuing on another. iCloud Drive syncs files without locking the whole workspace. If a conflict is detected, XueLearn keeps the conflicting versions for review.",
+  "desktop.ui.personalSyncPage.locked": " · Locked",
+  "desktop.ui.personalSyncPage.newWorkspaceName": "New workspace name",
+  "desktop.ui.personalSyncPage.notSelected": "Not selected",
+  "desktop.ui.personalSyncPage.openIcloudDriveInFinderAndChoose":
+    "Open iCloud Drive in Finder and choose a location. XueLearn will create a XueLearn Sync folder there.",
+  "desktop.ui.personalSyncPage.saveEndToEndEncryptedLearningRecords":
+    "Save end-to-end encrypted learning records in your iCloud Drive. No Apple developer account is needed, and XueLearn does not receive your Apple sign-in details.",
+  "desktop.ui.personalSyncPage.setASyncPassword": "Set a sync password",
+  "desktop.ui.personalSyncPage.switch": "Switch",
+  "desktop.ui.personalSyncPage.syncFolder": "Sync folder",
+  "desktop.ui.personalSyncPage.syncNow": "Sync now",
+  "desktop.ui.personalSyncPage.syncPassword": "Sync password",
+  "desktop.ui.personalSyncPage.syncing": "Syncing",
+  "desktop.ui.personalSyncPage.thereAre": "There are ",
+  "desktop.ui.personalSyncPage.thisDeviceOnly": "This device only",
+  "desktop.ui.personalSyncPage.unlock": "Unlock",
+  "desktop.ui.personalSyncPage.workspacesOnThisDevice":
+    "Workspaces on this device",
+  "desktop.ui.quizSetDrawer.chooseAPracticeSetToAnswerOr":
+    "Choose a practice set to answer or review",
+  "desktop.ui.quizSetDrawer.practiceSets": "Practice sets",
+  "desktop.ui.quizSetDrawer.questions": " questions",
+  "desktop.ui.quizSetList.allPracticeSets": "All practice sets",
+  "desktop.ui.quizSetList.generatedPracticeSetsAreSavedHereSo":
+    "Generated practice sets are saved here so you can try them again anytime.",
+  "desktop.ui.quizSetList.loadingPracticeHistory": "Loading practice history…",
+  "desktop.ui.quizSetList.noPracticeSetsYet": "No practice sets yet",
+  "desktop.ui.quizSetList.notAnswered": " · Not answered",
+  "desktop.ui.quizSetList.viewLatestAttempt": "View latest attempt",
+  "desktop.ui.socraticChatPanel.answer": "Answer",
+  "desktop.ui.socraticChatPanel.completed": " · Completed",
+  "desktop.ui.socraticChatPanel.eachMissedQuestionHasItsOwnConversation":
+    "Each missed question has its own conversation. Select one to begin.",
+  "desktop.ui.socraticChatPanel.originalQuestion": "Original question",
+  "desktop.ui.socraticChatPanel.selectAMissedQuestionToReview":
+    "Select a missed question to review",
+  "desktop.ui.socraticChatPanel.selectStartGuidedReviewToPrepareThe":
+    "Select Start guided review to prepare the first question",
+  "desktop.ui.socraticChatPanel.startGuidedReview": "Start guided review",
+  "desktop.ui.socraticChatPanel.thisReviewIsCompleteSelectNextQuestion":
+    "This review is complete. Select Next question to continue.",
+  "desktop.ui.socraticChatPanel.writeYourThoughts": "Write your thoughts…",
+  "desktop.ui.socraticChatPanel.youHaveReviewedEveryMissedQuestionSelect":
+    "You have reviewed every missed question. Select Continue for the next step.",
+  "desktop.ui.socraticChatPanel.yourAssistantWillAskQuestionsToHelp":
+    "Your assistant will ask questions to help you discover where your reasoning went wrong.",
+  "desktop.ui.socraticStep.backToCompletion": "Back to completion",
+  "desktop.ui.socraticStep.finishPractice": "Finish practice",
+  "desktop.ui.socraticStep.finishReview": "Finish review",
+  "desktop.ui.socraticStep.reviewEveryMissedQuestionBeforeContinuing":
+    "Review every missed question before continuing",
+  "desktop.ui.socraticStep.selectAMissedQuestionToStartA":
+    "Select a missed question to start a guided conversation and work through your reasoning.",
+  "desktop.ui.socraticThreadDrawer.afterAQuizAnyMissedQuestionsWill":
+    "After a quiz, any missed questions will appear here",
+  "desktop.ui.socraticThreadDrawer.chooseAQuestionToReviewWithYour":
+    "Choose a question to review with your assistant",
+  "desktop.ui.socraticThreadDrawer.missedQuestions": "Missed questions",
+  "desktop.ui.socraticThreadDrawer.noMissedQuestionsToReview":
+    "No missed questions to review",
+  "desktop.ui.socraticThreadDrawer.notStarted": "Not started",
+  "desktop.ui.socraticThreadDrawer.responses": " responses",
+  "desktop.ui.toolUiRenderer.openShortCourse": "Open short course",
+  "desktop.ui.toolUiRenderer.pleaseAddMoreDetail": "Please add more detail",
+  "desktop.ui.toolUiRenderer.shortCourseCreated": "Short course created",
+  "desktop.ui.toolUiRenderer.youCanAlsoReplyInTheMessage":
+    "You can also reply in the message box below",
+  "desktop.ui.typewriterText.skipTypingAnimation": "Skip typing animation",
+  "desktop.ui.unitContentGenBadges.lessonContent": "Lesson content",
+  "desktop.ui.unitLab.theInteractiveLabIsNotEnabledYet":
+    "The interactive lab is not enabled yet.",
+  "desktop.ui.unitLab.whatToObserve": "What to observe: ",
+  "desktop.ui.unitWizard.hideLearningMaterials": "Hide learning materials",
+  "desktop.ui.unitWizard.openLearningMaterials": "Open learning materials",
+  "desktop.ui.unitWizard.questionReviewComplete": "Question review complete",
+  "desktop.ui.unitWizard.referToLessonContentAndNotesDuring":
+    "Refer to lesson content and notes during your review",
+  "desktop.ui.unitWizard.youCanFinishThisUnitAndContinue":
+    "You can finish this unit and continue with the next review.",
+  "desktop.i18n.automaticContentLanguage": "Automatic (conversation language)",
+  "desktop.i18n.bootstrapFailed": "XueLearn could not start",
+  "desktop.i18n.expandGoalHint":
+    "Your assistant will ask a few questions before expanding this into a full learning goal.",
+  "desktop.i18n.expandGoalMissing":
+    "The learning goal could not be found. Reopen it and try again.",
+  "desktop.i18n.exportFailed":
+    "Could not export the file ({status}). Please try again.",
+  "desktop.i18n.feynmanPrompt":
+    "Explain “{title}” in your own words, as if teaching a complete beginner.",
+  "desktop.i18n.filesSelected.one": "{count} file selected",
+  "desktop.i18n.filesSelected.other": "{count} files selected",
+  "desktop.i18n.modelCustomPlaceholder": "Or enter a custom model ID",
+  "desktop.i18n.overviewFailed": "Preparation failed",
+  "desktop.i18n.overviewGenerating": "Preparing",
+  "desktop.i18n.overviewIdle": "Not started",
+  "desktop.i18n.overviewReady": "Ready",
+  "desktop.i18n.pathFromMaterials": "Based on your materials",
+  "desktop.i18n.pathFromWeb": "Based on web references",
+  "desktop.i18n.pathGeneral": "General learning path",
+  "desktop.i18n.patternRegenerate": "Regenerate course pattern",
+  "desktop.i18n.patternRegenerateConfirm":
+    "This replaces the course pattern using the current goal settings. Continue?",
+  "desktop.i18n.patternRegenerateFailed":
+    "Could not regenerate the course pattern.",
+  "desktop.i18n.patternSaveFailed": "Could not save the course pattern.",
+  "desktop.i18n.questionCount.one": "{count} question",
+  "desktop.i18n.questionCount.other": "{count} questions",
+  "desktop.i18n.regenerateMap": "Regenerate sub-map",
+  "desktop.i18n.regenerateMapConfirm":
+    "Replan “{title}”? An unstarted sub-map may be replaced. If learning has begun, the course structure and evidence are preserved and only removable in-unit steps are created.",
+  "desktop.i18n.regenerateMapHint":
+    "Changes course structure only before learning begins; otherwise updates in-unit steps safely.",
+  "desktop.i18n.removeMapConfirm":
+    "Remove the unstarted sub-map or in-unit learning steps for “{title}”? Any learning activity, content, notes, practice, evidence or review history prevents structural removal. Your learning history will be preserved.",
+  "desktop.i18n.removeMapFailed": "Could not remove the sub-map.",
+  "desktop.i18n.removingMap": "Removing sub-map…",
+  "desktop.i18n.responseCount.one": "{count} response",
+  "desktop.i18n.responseCount.other": "{count} responses",
+  "desktop.i18n.sectionNotFound": "This reading section could not be found.",
+  "desktop.i18n.splitConfirm":
+    "Split “{title}”? Unstarted units may be split within the same module. If learning has begun, only in-unit steps are created; progress, evidence and history are preserved.",
+  "desktop.i18n.splitFailed": "Could not split this unit.",
+  "desktop.i18n.splitHint":
+    "Splits unstarted units, or adds steps without changing existing learning progress and evidence.",
+  "desktop.i18n.splitSubunits": "Split into smaller units",
+  "desktop.i18n.streamBufferTooLarge":
+    "The response exceeded the supported size.",
+  "desktop.i18n.streamEventTooLarge":
+    "A response event exceeded the supported size.",
+  "desktop.i18n.streamInterrupted":
+    "The connection ended before the response finished. Please try again.",
+  "desktop.i18n.streamInvalid":
+    "The response could not be read. Please try again.",
+  "desktop.i18n.streamMissing": "The service did not return a response stream.",
+  "desktop.i18n.uploadOptional":
+    "Drop files here or select {formats} files (optional)",
+  "desktop.i18n.voiceClone": "Voice clone",
+  "desktop.sync.conflicts.one":
+    "{count} conflict needs review. Both versions have been preserved.",
+  "desktop.sync.conflicts.other":
+    "{count} conflicts need review. The conflicting versions have been preserved.",
+  "desktop.sync.lastSuccess": " · Last synced {time}",
+  "desktop.sync.progress.finalizing": "Finishing sync…",
+  "desktop.sync.progress.localUpToDate": "Local records are up to date",
+  "desktop.sync.progress.preparing":
+    "Checking this device and the sync folder…",
+  "desktop.sync.progress.receiving": "Merging synced learning records{count}",
+  "desktop.sync.progress.remoteUpToDate": "Synced records are up to date",
+  "desktop.sync.progress.uploading": "Uploading learning records{count}",
+  "desktop.sync.state.authenticationRequired": "Reconnect the sync folder",
+  "desktop.sync.state.conflict": "Sync conflicts need review",
+  "desktop.sync.state.disabled": "Saved on this device only",
+  "desktop.sync.state.error": "There was a sync problem",
+  "desktop.sync.state.locked": "Enter your sync password to unlock",
+  "desktop.sync.state.offline": "Waiting for the sync folder to reconnect",
+  "desktop.sync.state.readOnly": "Update required (read-only)",
+  "desktop.sync.state.synced": "Synced",
+  "desktop.sync.state.syncing": "Syncing",
+  "desktop.i18n.quizAttempts": " · Attempts: {count} · Best score: {score}",
+  "desktop.learningMode.skillPractice": "Skill practice · learn by doing",
+  "desktop.learningMode.conceptualUnderstanding":
+    "Conceptual understanding · principles and systems",
+  "desktop.learningMode.researchScholarship": "Academic research",
+  "desktop.learningMode.professionalApplied": "Professional application",
+  "desktop.learningMode.creativeExpression": "Creative expression",
+  "desktop.learningMode.mixed": "Mixed approach",
+  "desktop.domainTag.stem": "STEM",
+  "desktop.domainTag.humanities": "Humanities / language arts",
+  "desktop.domainTag.general": "General",
+  "desktop.unitStatus.available": "Ready",
+  "desktop.unitStatus.in_progress": "In progress",
+  "desktop.unitStatus.completed": "Completed",
+  "desktop.unitStatus.completed_needs_reinforcement": "Needs practice",
+  "desktop.unitStatus.skipped": "Skipped",
+  // Shared display controls and built-in library metadata.
+  "display.ui.a0C888Keys": "A0–C8 · 88 keys",
+  "display.ui.aConversation": "A conversation",
+  "display.ui.all": "All",
+  "display.ui.allPlugins": "← All plugins",
+  "display.ui.animatedDiagram": "Animated diagram",
+  "display.ui.audioCouldNotStartPressListenToTryAgain":
+    "Audio could not start. Press Listen to try again.",
+  "display.ui.audioCouldNotStartPressPlayToTryAgain":
+    "Audio could not start. Press Play to try again.",
+  "display.ui.audioUnavailable": "Audio unavailable",
+  "display.ui.backToLibrary": "Back to library",
+  "display.ui.browseComponents": "Browse components",
+  "display.ui.browseTheDisplayComponentsInThisPlugin":
+    "Browse the display components in this plugin.",
+  "display.ui.builtIn": "Built-in",
+  "display.ui.cancelPreparation": "Cancel preparation",
+  "display.ui.cello": "Cello",
+  "display.ui.chooseAVersionThenPressPlay": "Choose a version, then press Play",
+  "display.ui.clearFilters": "Clear filters",
+  "display.ui.codeAndComputing": "Code and computing",
+  "display.ui.codeDemonstration": "Code demonstration",
+  "display.ui.codeExplanation": "Code explanation",
+  "display.ui.combineTextEquationsAndOtherComponentsOnOneCanvas":
+    "Combine text, equations and other components on one canvas.",
+  "display.ui.compareObservationsAndAnExplanatoryViewToUnderstandHidden":
+    "Compare observations and an explanatory view to understand hidden states.",
+  "display.ui.comparePlayback": "Compare playback",
+  "display.ui.compareTwoPerspectivesMethodsOrResultsSideBySide":
+    "Compare two perspectives, methods or results side by side.",
+  "display.ui.comparison": "Comparison",
+  "display.ui.comparison2": "Comparison",
+  "display.ui.compositionCanvas": "Composition canvas",
+  "display.ui.conceptCards": "Concept cards",
+  "display.ui.conceptRelationships": "Concept relationships",
+  "display.ui.copied": "Copied",
+  "display.ui.copy": "Copy",
+  "display.ui.copyCode": "Copy code",
+  "display.ui.coreIdea": "CORE IDEA",
+  "display.ui.couldNotCopy": "Could not copy",
+  "display.ui.couldNotLoadDisplayPlugin": "Could not load display plugin",
+  "display.ui.couldNotPrepareDisplayContent":
+    "Could not prepare display content",
+  "display.ui.couldNotResolvePluginDependencies":
+    "Could not resolve plugin dependencies",
+  "display.ui.currentRange": "Current range",
+  "display.ui.customExample": "Custom example",
+  "display.ui.dataChart": "Data chart",
+  "display.ui.disable": "Disable",
+  "display.ui.disabled": "Disabled",
+  "display.ui.disabledForNewCoursesExistingCoursesCanStillPlay":
+    "Disabled for new courses. Existing courses can still play.",
+  "display.ui.disabledPreviewAvailable": "Disabled; preview available",
+  "display.ui.displayComponentNotFound": "Display component not found",
+  "display.ui.displayCompositionContainsACycle":
+    "Display composition contains a cycle",
+  "display.ui.displayInputChangedTheOutdatedBuildResultWasIgnored":
+    "Display input changed; the outdated build result was ignored.",
+  "display.ui.displayLibrary": "Display library",
+  "display.ui.displayPluginVersionMismatch": "Display plugin version mismatch",
+  "display.ui.displayPlugins": "Display plugins",
+  "display.ui.displayResourcesAreNotReady": "Display resources are not ready",
+  "display.ui.dragTheProgressSliderToExploreTheAnimationOr":
+    "Drag the progress slider to explore the animation, or play an interactive score. Examples do not change course content.",
+  "display.ui.drawBarLineOrDoughnutChartsFromNumericData":
+    "Draw bar, line or doughnut charts from numeric data.",
+  "display.ui.electricPiano": "Electric piano",
+  "display.ui.enable": "Enable",
+  "display.ui.enabled": "Enabled",
+  "display.ui.enabledForNewCourses": "Enabled for new courses.",
+  "display.ui.equationExplanation": "Equation explanation",
+  "display.ui.evaluationComparison": "Evaluation comparison",
+  "display.ui.exampleFilesMustBeNoLargerThan2Mib":
+    "Example files must be no larger than 2 MiB.",
+  "display.ui.experimentsAndRelationships": "Experiments and relationships",
+  "display.ui.explainIdeasWithCardsConversationsAndProcesses":
+    "Explain ideas with cards, conversations and processes.",
+  "display.ui.explainPhysicsWithRelationshipDiagramsAndObservationalScenes":
+    "Explain physics with relationship diagrams and observational scenes.",
+  "display.ui.explainWithAnimatedSignalFlowsCyclesAndChanges":
+    "Explain with animated signal flows, cycles and changes.",
+  "display.ui.exploreEquationsDataAndEveryStepOfADerivation":
+    "Explore equations, data and every step of a derivation.",
+  "display.ui.exploreMathematicsWithAnimatedGeometryFunctionsAndAreas":
+    "Explore mathematics with animated geometry, functions and areas.",
+  "display.ui.exploreMusicThroughScoresKeyboardsAndHarmony":
+    "Explore music through scores, keyboards and harmony.",
+  "display.ui.exploreNoteRelationshipsInMelodyAndHarmony":
+    "Explore note relationships in melody and harmony.",
+  "display.ui.explorePhysicsThroughChangingForcesWavesAndCircuits":
+    "Explore physics through changing forces, waves and circuits.",
+  "display.ui.exploreReasoningThroughQuestionsAndAnswers":
+    "Explore reasoning through questions and answers.",
+  "display.ui.exportDefinition": "Export definition",
+  "display.ui.fluidr3GmCcBy30LocalSamples":
+    "FluidR3 GM · CC BY 3.0 · Local samples",
+  "display.ui.fluidr3GmFrankWenAndContributorsMidiJsSoundfonts":
+    "FluidR3_GM / Frank Wen and contributors; MIDI.js Soundfonts, CC BY 3.0. Local samples with approximated sustain.",
+  "display.ui.flute": "Flute",
+  "display.ui.followEquationTransformationsAndTheReasonForEachStep":
+    "Follow equation transformations and the reason for each step.",
+  "display.ui.formalDerivation": "Formal derivation",
+  "display.ui.fullKeyboard": "Full keyboard",
+  "display.ui.fullScore": "Full score",
+  "display.ui.generalPresentation": "General presentation",
+  "display.ui.generalTeachingAnimation": "General teaching animation",
+  "display.ui.highlightDefinitionsConclusionsAndIdeasToRemember":
+    "Highlight definitions, conclusions and ideas to remember.",
+  "display.ui.imageExplanation": "Image explanation",
+  "display.ui.imagesAndAnimation": "Images and animation",
+  "display.ui.importAPluginToBrowseAndPreviewItsComponents":
+    "Import a plugin to browse and preview its components.",
+  "display.ui.importPlugin": "Import plugin",
+  "display.ui.imported": "Imported",
+  "display.ui.instrument": "Instrument",
+  "display.ui.interactiveScore": "Interactive score",
+  "display.ui.introduceATopicWithATitleKeywordsAndA":
+    "Introduce a topic with a title, keywords and a short explanation.",
+  "display.ui.introductionAndSummary": "Introduction and summary",
+  "display.ui.invalidDisplayComponent": "Invalid display component",
+  "display.ui.invalidDisplayComposition": "Invalid display composition",
+  "display.ui.invalidDisplayContent": "Invalid display content",
+  "display.ui.invalidDisplayData": "Invalid display data",
+  "display.ui.keepSourceCodeIntactAndHighlightTheLinesBeing":
+    "Keep source code intact and highlight the lines being explained.",
+  "display.ui.keyInsight": "KEY INSIGHT",
+  "display.ui.keyPoint": "Key point",
+  "display.ui.keyboard": "Keyboard ·",
+  "display.ui.listen": "Listen",
+  "display.ui.loadComponentInputDataToPreviewItHere":
+    "Load component input data to preview it here.",
+  "display.ui.loadExampleData": "Load example data",
+  "display.ui.loadingDisplayComponent": "Loading display component",
+  "display.ui.loadingPlugins": "Loading plugins…",
+  "display.ui.loadingWorkspaceDisplayPlugins":
+    "Loading workspace display plugins",
+  "display.ui.loop": "Loop",
+  "display.ui.marimba": "Marimba",
+  "display.ui.mathematicsAndDerivation": "Mathematics and derivation",
+  "display.ui.mathematicsAnimation": "Mathematics animation",
+  "display.ui.missingDisplayPlugin": "Missing display plugin",
+  "display.ui.motionScene": "Motion scene",
+  "display.ui.musicAndScores": "Music and scores",
+  "display.ui.musicAnimation": "Music animation",
+  "display.ui.nextComponent": "Next component",
+  "display.ui.noDisplayPluginsYet": "No display plugins yet",
+  "display.ui.noExampleDataForThisComponent":
+    "No example data for this component",
+  "display.ui.noMatchingPlugins": "No matching plugins",
+  "display.ui.notation": "Notation",
+  "display.ui.numberedNotation": "Numbered notation",
+  "display.ui.nylonStringGuitar": "Nylon-string guitar",
+  "display.ui.observeHowGeometricPartsFormSpatialStructures":
+    "Observe how geometric parts form spatial structures.",
+  "display.ui.observeMotionSpatialStructuresAndExperiments":
+    "Observe motion, spatial structures and experiments.",
+  "display.ui.observeTranslationRotationAndMotionInStages":
+    "Observe translation, rotation and motion in stages.",
+  "display.ui.occlusionExperiment": "Occlusion experiment",
+  "display.ui.openACardToPreviewItsComponentsExportedPlugins":
+    "Open a card to preview its components. Exported plugins can be shared; existing courses keep the version they use.",
+  "display.ui.openAComponentToPreviewAnExample":
+    "Open a component to preview an example",
+  "display.ui.organ": "Organ",
+  "display.ui.organizeIdeasIntoLayersProcessesOrCharts":
+    "Organize ideas into layers, processes or charts.",
+  "display.ui.organizeRelatedIdeasIntoClearCards":
+    "Organize related ideas into clear cards.",
+  "display.ui.organizeTeachingContentWithAnimatedLayersAndProcesses":
+    "Organize teaching content with animated layers and processes.",
+  "display.ui.originalPhrase": "Original phrase",
+  "display.ui.pause": "Pause",
+  "display.ui.pause2": "Ⅱ Pause",
+  "display.ui.pausePreview": "Pause preview",
+  "display.ui.physicsAndSpace": "Physics and space",
+  "display.ui.physicsAnimation": "Physics animation",
+  "display.ui.piano": "Piano",
+  "display.ui.play": "Play",
+  "display.ui.play2": "▷ Play",
+  "display.ui.playPreview": "Play preview",
+  "display.ui.playbackProgress": "Playback progress",
+  "display.ui.playing": "Playing ·",
+  "display.ui.pluginAndComponentNavigation": "Plugin and component navigation",
+  "display.ui.pluginCategories": "Plugin categories",
+  "display.ui.pluginDetailsAndExampleData": "Plugin details and example data",
+  "display.ui.pluginFilesMustBeNoLargerThan2Mib":
+    "Plugin files must be no larger than 2 MiB.",
+  "display.ui.pluginInstalledAndReadyToPreviewEnabledComponentsAre":
+    "Plugin installed and ready to preview. Enabled components are available for new courses.",
+  "display.ui.pluginListRefreshed": "Plugin list refreshed.",
+  "display.ui.preparingDisplayContent": "Preparing display content",
+  "display.ui.preparingPreview": "Preparing preview…",
+  "display.ui.presentAProcessInOrderFocusingOnEachStep":
+    "Present a process in order, focusing on each step.",
+  "display.ui.presentDerivationsWhilePreservingEquationStructure":
+    "Present derivations while preserving equation structure.",
+  "display.ui.presentEquationsAndExplanationsWithFocusOnIndividualTerms":
+    "Present equations and explanations, with focus on individual terms.",
+  "display.ui.presentHeadingsTextAndExplanationsWithEquations":
+    "Present headings, text and explanations with equations.",
+  "display.ui.presentTeachingImagesWithCameraMovementAndRegionFocus":
+    "Present teaching images with camera movement and region focus.",
+  "display.ui.presentThisComponentInCoursesAndVideos":
+    "Present this component in courses and videos.",
+  "display.ui.previewAComponentThenChooseHowToPresentYour":
+    "Preview a component, then choose how to present your course. Learning and video use the same components.",
+  "display.ui.previewComponent": "Preview component",
+  "display.ui.previewExample": "Preview example",
+  "display.ui.previewFromTheStart": "Preview from the start",
+  "display.ui.previewPath": "Preview path",
+  "display.ui.previewProgress": "Preview progress",
+  "display.ui.previousComponent": "Previous component",
+  "display.ui.processesAndSteps": "Processes and steps",
+  "display.ui.progress": "Progress",
+  "display.ui.readCodeLineByLineAndCompareComputationAnd":
+    "Read code line by line and compare computation and evaluation results.",
+  "display.ui.readStaffNotationAndTheKeyboardThenListenTo":
+    "Read staff notation and the keyboard, then listen to musical phrases.",
+  "display.ui.refresh": "Refresh",
+  "display.ui.restart": "Restart",
+  "display.ui.retryLoading": "Retry loading",
+  "display.ui.run": "Run",
+  "display.ui.runTheSameExamplesThroughDifferentEvaluationProcesses":
+    "Run the same examples through different evaluation processes.",
+  "display.ui.scoreInstrumentPianoByDefault":
+    "Score instrument (piano by default)",
+  "display.ui.scoreScrollHorizontally": "Score, scroll horizontally",
+  "display.ui.scoreWalkthrough": "Score walkthrough",
+  "display.ui.searchPluginsAndComponents": "Search plugins and components",
+  "display.ui.searchPluginsComponentsOrUses":
+    "Search plugins, components or uses…",
+  "display.ui.showHowConceptsConnectToOneAnother":
+    "Show how concepts connect to one another.",
+  "display.ui.soundAttribution": "Sound attribution",
+  "display.ui.soundSource": "Sound source",
+  "display.ui.source": "Source",
+  "display.ui.spatialStructure": "Spatial structure",
+  "display.ui.speed": "Speed",
+  "display.ui.staffAndNumberedNotation": "Staff and numbered notation",
+  "display.ui.staffNotation": "Staff notation",
+  "display.ui.stepByStepDerivation": "Step-by-step derivation",
+  "display.ui.stop": "Stop",
+  "display.ui.structuredDiagram": "Structured diagram",
+  "display.ui.teachingConversation": "Teaching conversation",
+  "display.ui.textExplanation": "Text explanation",
+  "display.ui.theDisplayBuildReturnedMismatchedContent":
+    "The display build returned mismatched content.",
+  "display.ui.thePluginOrComponentVersionMayHaveChangedChoose":
+    "The plugin or component version may have changed. Choose it again from the library.",
+  "display.ui.thisComponentCannotBeDisplayedRightNow":
+    "This component cannot be displayed right now.",
+  "display.ui.thisConversationHasNoContentYet":
+    "This conversation has no content yet.",
+  "display.ui.tryAnotherSearchOrBrowseAllCategories":
+    "Try another search or browse all categories.",
+  "display.ui.useImagesAndAnimatedDiagramsToExplainIdeas":
+    "Use images and animated diagrams to explain ideas.",
+  "display.ui.violin": "Violin",
+  "display.ui.visualExplanation": "Visual explanation",
+  "display.music.scoreError": "Could not load score: {error}",
+  "display.music.bars": "{label} · Bars {bars}",
+  "display.music.auditionNote": "Listen to {note}",
+  "display.music.playbackError": "{error} Press Play to try again.",
+  "display.preview.seconds": "{seconds} seconds",
+  "display.preview.component": "Preview {title}",
+  "display.workspace.updateError": "Could not update display content: {error}",
+  "display.library.componentVersion": "{kind} · Component version {version}",
+  "display.library.counts": "Plugins: {plugins} · Components: {components}",
+  "display.library.componentCount.one": "{count} component",
+  "display.library.componentCount.other": "{count} components",
+  "display.code.lines.one": "{count} line",
+  "display.code.lines.other": "{count} lines",
+  "desktop.copy.adjustTheInclineAndObserveTheCartSMotion":
+    "Adjust the incline and observe the cart's motion.",
+  "desktop.copy.anAnswerIsBeingGeneratedWaitForItToFinish":
+    "An answer is being generated. Wait for it to finish before selecting another reference.",
+  "desktop.copy.askAboutYourLearningGoalsOrReviewsOrSayCreate":
+    "Ask about your learning goals or reviews, or say “Create a goal”",
+  "desktop.copy.backToGoals": "Back to goals",
+  "desktop.copy.backToLearningJourney": "Back to learning journey",
+  "desktop.copy.basedOnTrustedWebSources": "Based on trusted web sources",
+  "desktop.copy.couldNotAnalyzeTheQuestion": "Could not analyze the question",
+  "desktop.copy.couldNotCreateALearningGoalFromTheseMaterials":
+    "Could not create a learning goal from these materials",
+  "desktop.copy.couldNotDetach": "Could not detach",
+  "desktop.copy.couldNotLoadDetails": "Could not load details",
+  "desktop.copy.couldNotLoadLearningContent": "Could not load learning content",
+  "desktop.copy.couldNotLoadLearningContent2":
+    "Could not load learning content",
+  "desktop.copy.couldNotLoadTheLearningSession":
+    "Could not load the learning session",
+  "desktop.copy.couldNotLoadTheReplay": "Could not load the replay",
+  "desktop.copy.couldNotRead": "Could not read",
+  "desktop.copy.couldNotReadTheUrl": "Could not read the URL",
+  "desktop.copy.couldNotReconnect": "Could not reconnect",
+  "desktop.copy.couldNotReconnectToMicroCourseGeneration":
+    "Could not reconnect to micro-course generation",
+  "desktop.copy.couldNotStartAFollowUpConversation":
+    "Could not start a follow-up conversation",
+  "desktop.copy.couldNotStartTheMicroCourseExpansionConversation":
+    "Could not start the micro-course expansion conversation",
+  "desktop.copy.couldNotVerifyTheReadingInteraction":
+    "Could not verify the reading interaction",
+  "desktop.copy.detachKacomDevelopmentOnly": "Detach KACOM (development only)",
+  "desktop.copy.forExampleIWantToLearnPythonDataAnalysisIn":
+    "For example: I want to learn Python data analysis in three months",
+  "desktop.copy.interactiveLab": "Interactive lab",
+  "desktop.copy.justNow": "Just now",
+  "desktop.copy.kacomDetached": "KACOM detached",
+  "desktop.copy.learningContentIsStillBeingPreparedTryAgainLater":
+    "Learning content is still being prepared. Try again later.",
+  "desktop.copy.newConversation": "New conversation",
+  "desktop.copy.notAnswered": "Not answered",
+  "desktop.copy.objectA": "Object A",
+  "desktop.copy.objectB": "Object B",
+  "desktop.copy.open": "Open",
+  "desktop.copy.regenerateLessonContent": "Regenerate lesson content",
+  "desktop.copy.regenerateNotes": "Regenerate notes",
+  "desktop.copy.regeneratePreview": "Regenerate preview",
+  "desktop.copy.regeneratingTheLessonContentWillDeleteExistingLearningNotesContinue":
+    "Regenerating the lesson content will delete existing learning notes. Continue?",
+  "desktop.copy.theLabCommandTimedOut": "The lab command timed out",
+  "desktop.copy.theLabCommandWasNotAccepted":
+    "The lab command was not accepted",
+  "desktop.copy.theLabTookTooLongToLoad": "The lab took too long to load",
+  "desktop.copy.theLearningModelIsStillBeingPreparedGuidedCorrectionsWill":
+    "The learning model is still being prepared. Guided corrections will be available later.",
+  "desktop.copy.theLearningModelIsStillBeingPreparedQuizzesAndCompletion":
+    "The learning model is still being prepared. Quizzes and completion records will be available later.",
+  "desktop.copy.theLearningModelIsStillBeingPreparedQuizzesWillBe":
+    "The learning model is still being prepared. Quizzes will be available later.",
+  "desktop.copy.theLearningModelIsStillBeingPreparedYouCanKeep":
+    "The learning model is still being prepared. You can keep reading; quizzes will be available later.",
+  "desktop.copy.theLearningModelIsStillBeingPreparedYouCanKeep2":
+    "The learning model is still being prepared. You can keep reading; verification records will be available later.",
+  "desktop.copy.thisGoalNowUsesExplorationModeHistoricalKacomDataIs":
+    "This goal now uses exploration mode. Historical KACOM data is preserved.",
+  "desktop.copy.thisSwitchesTheGoalToExplorationModeExistingKacomSnapshots":
+    "This switches the goal to exploration mode. Existing KACOM snapshots, targets and evidence are preserved but no longer used for current learning, the agenda or global learning state.",
+  "desktop.copy.tryAgainLater": "Try again later.",
+  "desktop.copy.unknownError": "Unknown error",
+  "desktop.copy.viewGoals": "View goals",
+  "desktop.copy.viewLearningJourney": "View learning journey",
+  "desktop.copy.virtualExperiment": "Virtual experiment",
+  "desktop.copy.workOnAWeakPoint": "Work on a weak point",
+  "desktop.i18n.followUpThread": "Follow-up · {title} · ",
+  "desktop.i18n.citation": "Source {index}",
+  "desktop.i18n.viewCitation": "View source {index}: {title}",
+  "desktop.i18n.goalFilter": "Goal: {title}",
+  "desktop.i18n.generated": "{label} generated",
+  "desktop.i18n.notGenerated": "{label} not generated",
+  "desktop.i18n.dependencyIncomplete":
+    "This step's prerequisites are not complete. {hint}",
+  "desktop.i18n.focusSubview": "Focus view {number}",
+  "desktop.i18n.quizSet": "Set {number}",
+  "desktop.i18n.quizSets": "Quiz sets",
+  "desktop.i18n.quizSetsCount": "Quiz sets ({count})",
+  "desktop.i18n.mistakeReview": "Mistake review",
+  "desktop.i18n.mistakeReviewCount": "Mistake review ({count})",
+  "desktop.i18n.learnFromMaterials":
+    "I want to learn: {topic} (using the uploaded materials: {files})",
+  "desktop.i18n.expandMicroCourse":
+    "I want to expand the micro course “{unit}” into a full learning goal, “{goal}”. Please first ask me 1–3 questions about my scope, priorities and existing knowledge, then help me expand it.",
+  "desktop.wizard.learningInput": "Learning input",
+  "desktop.wizard.readingAndPreview": "Reading and preview",
+  "desktop.wizard.checkWithAQuiz": "Check with a quiz",
+  "desktop.wizard.explainInYourOwnWords": "Explain in your own words",
+  "desktop.wizard.aiGuidedCorrections": "AI-guided corrections",
+  "desktop.wizard.thisUnitIsCompleteRegeneratingThePreviewWillResetMasteryQuizRecords":
+    "This unit is complete. Regenerating the preview will reset mastery, quiz records and the review schedule, and delete existing sections, lesson content and notes. Continue?",
+  "desktop.wizard.thisUnitIsCompleteRegeneratingLessonContentWillResetMasteryQuizRecords":
+    "This unit is complete. Regenerating lesson content will reset mastery, quiz records and the review schedule, and delete existing section content and notes. Continue?",
+  "desktop.wizard.thisUnitIsCompleteRegeneratingNotesWillResetMasteryQuizRecordsAnd":
+    "This unit is complete. Regenerating notes will reset mastery, quiz records and the review schedule. Continue?",
+  "desktop.wizard.regeneratingThePreviewWillDeleteGeneratedSectionsLessonContentAndLearningNotes":
+    "Regenerating the preview will delete generated sections, lesson content and learning notes. Continue?",
+  "desktop.wizard.regeneratingLessonContentWillClearSectionContentAndProgressAndDeleteExisting":
+    "Regenerating lesson content will clear section content and progress, and delete existing learning notes. Continue?",
+  "mainline.nav.continue": "Continue",
+  "mainline.nav.history": "History",
 } as const;
 
 export type TranslationMessages = {

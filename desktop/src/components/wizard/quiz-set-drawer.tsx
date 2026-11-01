@@ -1,4 +1,7 @@
 "use client";
+import { translateCurrent } from "@xue-learn/core/i18n";
+
+import { useT, countVariant } from "@xue-learn/core/i18n";
 
 import { useEffect, useState } from "react";
 import { ChevronDown, List } from "lucide-react";
@@ -38,11 +41,16 @@ function activeSetLabel(
   activeQuizSetId: string | null,
 ): string {
   if (!activeQuizSetId) {
-    return sets.length > 0 ? `测验题组 (${sets.length})` : "测验题组";
+    return sets.length > 0
+      ? translateCurrent("desktop.i18n.quizSetsCount", { count: sets.length })
+      : translateCurrent("desktop.ui.quizSetDrawer.practiceSets");
   }
   const index = sets.findIndex((set) => set.id === activeQuizSetId);
-  if (index === -1) return "测验题组";
-  return `第 ${sets.length - index} 组`;
+  if (index === -1)
+    return translateCurrent("desktop.ui.quizSetDrawer.practiceSets");
+  return translateCurrent("desktop.i18n.quizSet", {
+    number: sets.length - index,
+  });
 }
 
 function QuizSetTrigger({
@@ -54,6 +62,7 @@ function QuizSetTrigger({
   label: string;
   activeSet?: QuizSetSummary;
 }) {
+  const t = useT();
   return (
     <Button
       type="button"
@@ -66,7 +75,11 @@ function QuizSetTrigger({
       <span className="truncate">{label}</span>
       {activeSet && (
         <span className="hidden truncate text-muted-foreground sm:inline">
-          · {activeSet.questionCount} 题
+          ·{" "}
+          {t(
+            `desktop.i18n.questionCount.${countVariant(activeSet.questionCount)}`,
+            { count: activeSet.questionCount },
+          )}
         </span>
       )}
       <ChevronDown
@@ -92,6 +105,7 @@ export function QuizSetDrawer({
   onSelectAttempt?: (set: QuizSetSummary) => void;
   className?: string;
 }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const isMobile = useIsMobile();
   const activeSet = sets.find((set) => set.id === activeQuizSetId);
@@ -135,9 +149,11 @@ export function QuizSetDrawer({
             className="h-[100dvh] max-h-[100dvh] w-full max-w-none gap-0 rounded-none border-0 p-0"
           >
             <SheetHeader className="border-b px-4 py-3 text-left">
-              <SheetTitle>测验题组</SheetTitle>
+              <SheetTitle>
+                {t("desktop.ui.quizSetDrawer.practiceSets")}
+              </SheetTitle>
               <SheetDescription className="sr-only">
-                选择要作答或查看的测验题组
+                {t("desktop.ui.quizSetDrawer.chooseAPracticeSetToAnswerOr")}
               </SheetDescription>
             </SheetHeader>
             <div className="min-h-0 flex-1 overflow-y-auto p-3">{list}</div>

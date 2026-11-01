@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "../../shared/i18n/index.js";
 
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { Check, Copy, Play } from "lucide-react";
@@ -87,6 +88,7 @@ export function CodeBlockShell({
   figureId?: string;
   presentation?: "default" | "chat";
 }) {
+  const t = useT();
   const [copied, setCopied] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const noticeTimerRef = useRef<number | null>(null);
@@ -152,13 +154,13 @@ export function CodeBlockShell({
     const ok = await copyTextToClipboard(renderedCode);
     if (ok) {
       setCopied(true);
-      showNotice("已复制");
+      showNotice(t("display.ui.copied"));
       window.setTimeout(() => setCopied(false), COPY_NOTICE_MS);
       return;
     }
 
     setCopied(false);
-    showNotice("复制失败");
+    showNotice(t("display.ui.couldNotCopy"));
   };
 
   return (
@@ -193,19 +195,21 @@ export function CodeBlockShell({
                 event.stopPropagation();
                 pythonEditor?.openEditor(renderedCode, { run: true });
               }}
-              aria-label="运行"
-              title="运行"
+              aria-label={t("display.ui.run")}
+              title={t("display.ui.run")}
               className="inline-flex h-7 items-center gap-1 rounded-md border border-[var(--course-content-code-border)] bg-[var(--course-content-code-bg)] px-2 text-[11px] font-medium text-[var(--course-content-code-muted)] transition hover:border-[var(--course-content-code-muted)] hover:text-[var(--course-content-code-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <Play className="size-3" aria-hidden />
-              <span className="hidden sm:inline">运行</span>
+              <span className="hidden sm:inline">{t("display.ui.run")}</span>
             </button>
           ) : null}
           <button
             type="button"
             onClick={handleCopy}
-            aria-label={copied ? "已复制" : "复制代码"}
-            title={copied ? "已复制" : "复制代码"}
+            aria-label={
+              copied ? t("display.ui.copied") : t("display.ui.copyCode")
+            }
+            title={copied ? t("display.ui.copied") : t("display.ui.copyCode")}
             className="inline-flex h-7 items-center gap-1 rounded-md border border-[var(--course-content-code-border)] bg-[var(--course-content-code-bg)] px-2 text-[11px] font-medium text-[var(--course-content-code-muted)] transition hover:border-[var(--course-content-code-muted)] hover:text-[var(--course-content-code-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             {copied ? (
@@ -214,7 +218,7 @@ export function CodeBlockShell({
               <Copy className="size-3" aria-hidden />
             )}
             <span className="hidden sm:inline">
-              {copied ? "已复制" : "复制"}
+              {copied ? t("display.ui.copied") : t("display.ui.copy")}
             </span>
           </button>
         </div>

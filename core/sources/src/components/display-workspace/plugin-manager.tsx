@@ -1,3 +1,4 @@
+import { countVariant, useT } from "../../shared/i18n/index.js";
 import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import type {
   DisplayComponentManifest,
@@ -57,6 +58,7 @@ export function DisplayPluginManager({
   selection?: DisplayPluginSelection | null;
   onSelectionChange?: (selection: DisplayPluginSelection | null) => void;
 }) {
+  const t = useT();
   const inputId = useId(),
     sampleInputId = useId();
   const runtime = useDisplayPreviewRuntime();
@@ -169,7 +171,7 @@ export function DisplayPluginManager({
   const actions = ({ manifest, builtin, enabled }: DisplayPluginRecord) => (
     <div className="display-plugin-actions">
       <button type="button" onClick={() => exportPlugin(manifest)}>
-        导出定义
+        {t("display.ui.exportDefinition")}
       </button>
       {!builtin && (
         <button
@@ -184,12 +186,14 @@ export function DisplayPluginManager({
                   enabled: !enabled,
                 }),
               enabled
-                ? "已停止在新课程中使用。已有课程仍可播放。"
-                : "已启用，可用于生成新课程。",
+                ? t(
+                    "display.ui.disabledForNewCoursesExistingCoursesCanStillPlay",
+                  )
+                : t("display.ui.enabledForNewCourses"),
             )
           }
         >
-          {enabled ? "停用" : "启用"}
+          {enabled ? t("display.ui.disable") : t("display.ui.enable")}
         </button>
       )}
     </div>
@@ -216,11 +220,11 @@ export function DisplayPluginManager({
   );
   const categories = [
     ...new Set(
-      plugins.map((record) => displayPluginInfo(record.manifest).domain),
+      plugins.map((record) => displayPluginInfo(record.manifest, t).domain),
     ),
   ];
   const shown = plugins.filter((record) => {
-    const info = displayPluginInfo(record.manifest);
+    const info = displayPluginInfo(record.manifest, t);
     return (
       (category === "all" ||
         (category === "imported" && !record.builtin) ||
@@ -232,8 +236,8 @@ export function DisplayPluginManager({
         record.manifest.id,
         ...record.manifest.components.flatMap((component) => [
           component.kind,
-          displayComponentInfo(component).title,
-          displayComponentInfo(component).summary,
+          displayComponentInfo(component, t).title,
+          displayComponentInfo(component, t).summary,
         ]),
       ]
         .join(" ")
@@ -248,21 +252,26 @@ export function DisplayPluginManager({
   const currentIndex =
     selectedRecord?.manifest.components.indexOf(selectedComponent!) ?? -1;
   return (
-    <section className="display-plugin-manager" aria-label="Display 插件">
+    <section
+      className="display-plugin-manager"
+      aria-label={t("display.ui.displayPlugins")}
+    >
       <header className="display-plugin-heading">
         <div>
-          <span className="display-plugin-eyebrow">展示组件库</span>
+          <span className="display-plugin-eyebrow">
+            {t("display.ui.displayLibrary")}
+          </span>
           <h1 ref={heading} tabIndex={-1}>
-            Display 插件
+            {t("display.ui.displayPlugins")}
           </h1>
-          <p>先看效果，再选择适合课程的展示方式。学习与视频共用同一套组件。</p>
+          <p>{t("display.ui.previewAComponentThenChooseHowToPresentYour")}</p>
         </div>
         <label
           className="display-plugin-import"
           htmlFor={inputId}
           aria-disabled={busy}
         >
-          <span aria-hidden="true">＋</span> 导入插件
+          <span aria-hidden="true">＋</span> {t("display.ui.importPlugin")}
           <input
             id={inputId}
             type="file"
@@ -274,12 +283,14 @@ export function DisplayPluginManager({
               if (!file) return;
               void change(async () => {
                 if (file.size > 2 * 1024 * 1024)
-                  throw Error("插件文件不能超过 2 MiB。");
+                  throw Error(
+                    t("display.ui.pluginFilesMustBeNoLargerThan2Mib"),
+                  );
                 return client.post(
                   DISPLAY_PLUGINS_ENDPOINT + "/import",
                   JSON.parse(await file.text()),
                 );
-              }, "插件已安装，可以打开预览。新课程可使用已启用的组件。");
+              }, t("display.ui.pluginInstalledAndReadyToPreviewEnabledComponentsAre"));
             }}
           />
         </label>
@@ -290,9 +301,11 @@ export function DisplayPluginManager({
           <button
             type="button"
             disabled={busy}
-            onClick={() => void change(refresh, "插件列表已更新。")}
+            onClick={() =>
+              void change(refresh, t("display.ui.pluginListRefreshed"))
+            }
           >
-            重新读取
+            {t("display.ui.refresh")}
           </button>
         </div>
       )}
@@ -301,21 +314,28 @@ export function DisplayPluginManager({
           {notice}
         </p>
       )}
-      {busy && !plugins.length && <p role="status">正在加载插件…</p>}
+      {busy && !plugins.length && (
+        <p role="status">{t("display.ui.loadingPlugins")}</p>
+      )}
       {selection && !busy && (!selectedRecord || !selectedComponent) ? (
         <div className="display-plugin-empty">
-          <h2>找不到这个展示组件</h2>
-          <p>插件或组件版本可能已改变，请返回插件库重新选择。</p>
+          <h2>{t("display.ui.displayComponentNotFound")}</h2>
+          <p>
+            {t("display.ui.thePluginOrComponentVersionMayHaveChangedChoose")}
+          </p>
           <button type="button" onClick={() => select(null)}>
-            返回插件库
+            {t("display.ui.backToLibrary")}
           </button>
         </div>
       ) : null}
       {selectedRecord && selectedComponent ? (
         <>
-          <nav className="display-plugin-breadcrumb" aria-label="预览路径">
+          <nav
+            className="display-plugin-breadcrumb"
+            aria-label={t("display.ui.previewPath")}
+          >
             <button type="button" onClick={() => select(null)}>
-              ← 全部插件
+              {t("display.ui.allPlugins")}
             </button>
             <span aria-hidden="true">/</span>
             <button
@@ -327,21 +347,21 @@ export function DisplayPluginManager({
                 )
               }
             >
-              {displayPluginInfo(selectedRecord.manifest).title}
+              {displayPluginInfo(selectedRecord.manifest, t).title}
             </button>
             <span aria-hidden="true">/</span>
             <span aria-current="page">
-              {displayComponentInfo(selectedComponent).title}
+              {displayComponentInfo(selectedComponent, t).title}
             </span>
           </nav>
           <div className="display-plugin-detail">
             <aside className="display-plugin-sidebar">
-              <h2>浏览组件</h2>
-              <nav aria-label="插件与组件导航">
+              <h2>{t("display.ui.browseComponents")}</h2>
+              <nav aria-label={t("display.ui.pluginAndComponentNavigation")}>
                 {plugins.map((record) => {
                   const active =
                       key(record.manifest) === key(selectedRecord.manifest),
-                    info = displayPluginInfo(record.manifest);
+                    info = displayPluginInfo(record.manifest, t);
                   return (
                     <div
                       className="display-plugin-nav-group"
@@ -379,7 +399,7 @@ export function DisplayPluginManager({
                                 openComponent(record.manifest, component)
                               }
                             >
-                              {displayComponentInfo(component).title}
+                              {displayComponentInfo(component, t).title}
                             </button>
                           ))}
                         </div>
@@ -393,17 +413,17 @@ export function DisplayPluginManager({
               <div className="display-plugin-detail-heading">
                 <div>
                   <span className="display-plugin-eyebrow">
-                    {displayPluginInfo(selectedRecord.manifest).title} ·{" "}
+                    {displayPluginInfo(selectedRecord.manifest, t).title} ·{" "}
                     {currentIndex + 1} /{" "}
                     {selectedRecord.manifest.components.length}
                   </span>
-                  <h2>{displayComponentInfo(selectedComponent).title}</h2>
-                  <p>{displayComponentInfo(selectedComponent).summary}</p>
+                  <h2>{displayComponentInfo(selectedComponent, t).title}</h2>
+                  <p>{displayComponentInfo(selectedComponent, t).summary}</p>
                 </div>
                 <div className="display-plugin-step-buttons">
                   <button
                     type="button"
-                    aria-label="上一个组件"
+                    aria-label={t("display.ui.previousComponent")}
                     disabled={currentIndex <= 0}
                     onClick={() =>
                       openComponent(
@@ -416,7 +436,7 @@ export function DisplayPluginManager({
                   </button>
                   <button
                     type="button"
-                    aria-label="下一个组件"
+                    aria-label={t("display.ui.nextComponent")}
                     disabled={
                       currentIndex >=
                       selectedRecord.manifest.components.length - 1
@@ -443,15 +463,15 @@ export function DisplayPluginManager({
               ) : (
                 <div className="display-plugin-empty">
                   <span aria-hidden="true">◇</span>
-                  <h3>这个组件还没有示例数据</h3>
-                  <p>加载一份组件输入数据，即可在这里查看实际效果。</p>
+                  <h3>{t("display.ui.noExampleDataForThisComponent")}</h3>
+                  <p>{t("display.ui.loadComponentInputDataToPreviewItHere")}</p>
                 </div>
               )}
               <div className="display-plugin-example-bar">
                 <div
                   className="display-plugin-example-tabs"
                   role="group"
-                  aria-label="预览示例"
+                  aria-label={t("display.ui.previewExample")}
                 >
                   {examples.map((item, index) => (
                     <button
@@ -467,13 +487,13 @@ export function DisplayPluginManager({
                       {item.label}
                     </button>
                   ))}
-                  {customSample && <span>自定义示例</span>}
+                  {customSample && <span>{t("display.ui.customExample")}</span>}
                 </div>
                 <label
                   className="display-plugin-sample-import"
                   htmlFor={sampleInputId}
                 >
-                  加载示例数据
+                  {t("display.ui.loadExampleData")}
                   <input
                     id={sampleInputId}
                     type="file"
@@ -485,7 +505,11 @@ export function DisplayPluginManager({
                       void (async () => {
                         try {
                           if (file.size > 2 * 1024 * 1024)
-                            throw Error("示例文件不能超过 2 MiB。");
+                            throw Error(
+                              t(
+                                "display.ui.exampleFilesMustBeNoLargerThan2Mib",
+                              ),
+                            );
                           setCustomSample({
                             label: file.name,
                             payload: JSON.parse(await file.text()),
@@ -509,22 +533,25 @@ export function DisplayPluginManager({
                 </p>
               )}
               <p className="display-plugin-preview-note">
-                拖动进度查看动画；交互乐谱可直接试听。这里的示例不会修改课程内容。
+                {t("display.ui.dragTheProgressSliderToExploreTheAnimationOr")}
               </p>
               <details className="display-plugin-definition">
-                <summary>插件信息与示例数据</summary>
+                <summary>{t("display.ui.pluginDetailsAndExampleData")}</summary>
                 <p>
                   {selectedRecord.manifest.title} ·{" "}
                   {selectedRecord.manifest.version}
                 </p>
                 <p className="display-plugin-version">
-                  {selectedComponent.kind} · 组件版本{" "}
-                  {selectedComponent.version} ·{" "}
+                  {t("display.library.componentVersion", {
+                    kind: selectedComponent.kind,
+                    version: selectedComponent.version,
+                  })}{" "}
+                  ·{" "}
                   {selectedRecord.builtin
-                    ? "内置"
+                    ? t("display.ui.builtIn")
                     : selectedRecord.enabled
-                      ? "已启用"
-                      : "已停用，仍可预览"}
+                      ? t("display.ui.enabled")
+                      : t("display.ui.disabledPreviewAvailable")}
                 </p>
                 {actions(selectedRecord)}
                 {sample && <pre>{JSON.stringify(sample.payload, null, 2)}</pre>}
@@ -540,28 +567,33 @@ export function DisplayPluginManager({
                 <span aria-hidden="true">⌕</span>
                 <input
                   type="search"
-                  placeholder="搜索插件、组件或用途…"
-                  aria-label="搜索插件和组件"
+                  placeholder={t("display.ui.searchPluginsComponentsOrUses")}
+                  aria-label={t("display.ui.searchPluginsAndComponents")}
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                 />
               </label>
               <span className="display-plugin-count">
-                {plugins.length} 个插件 ·{" "}
-                {plugins.reduce(
-                  (count, record) => count + record.manifest.components.length,
-                  0,
-                )}{" "}
-                个组件
+                {t("display.library.counts", {
+                  plugins: plugins.length,
+                  components: plugins.reduce(
+                    (count, record) =>
+                      count + record.manifest.components.length,
+                    0,
+                  ),
+                })}
               </span>
             </div>
-            <nav className="display-plugin-categories" aria-label="插件分类">
+            <nav
+              className="display-plugin-categories"
+              aria-label={t("display.ui.pluginCategories")}
+            >
               <button
                 type="button"
                 aria-pressed={category === "all"}
                 onClick={() => setCategory("all")}
               >
-                全部
+                {t("display.ui.all")}
               </button>
               {categories.map((domain) => (
                 <button
@@ -574,8 +606,10 @@ export function DisplayPluginManager({
                     displayPluginInfo(
                       plugins.find(
                         (record) =>
-                          displayPluginInfo(record.manifest).domain === domain,
+                          displayPluginInfo(record.manifest, t).domain ===
+                          domain,
                       )!.manifest,
+                      t,
                     ).title
                   }
                 </button>
@@ -586,7 +620,7 @@ export function DisplayPluginManager({
                   aria-pressed={category === "imported"}
                   onClick={() => setCategory("imported")}
                 >
-                  已导入
+                  {t("display.ui.imported")}
                 </button>
               )}
             </nav>
@@ -604,12 +638,16 @@ export function DisplayPluginManager({
             {!busy && !shown.length && (
               <div className="display-plugin-empty">
                 <h2>
-                  {plugins.length ? "没有找到匹配的插件" : "还没有展示插件"}
+                  {plugins.length
+                    ? t("display.ui.noMatchingPlugins")
+                    : t("display.ui.noDisplayPluginsYet")}
                 </h2>
                 <p>
                   {plugins.length
-                    ? "试试其他关键词，或查看全部分类。"
-                    : "导入插件后，即可浏览组件和预览效果。"}
+                    ? t("display.ui.tryAnotherSearchOrBrowseAllCategories")
+                    : t(
+                        "display.ui.importAPluginToBrowseAndPreviewItsComponents",
+                      )}
                 </p>
                 {plugins.length > 0 && (
                   <button
@@ -619,13 +657,13 @@ export function DisplayPluginManager({
                       setCategory("all");
                     }}
                   >
-                    清除筛选
+                    {t("display.ui.clearFilters")}
                   </button>
                 )}
               </div>
             )}
             <p className="display-plugin-help">
-              点击卡片预览全部组件。导出的插件可以分享；已有课程保留其使用的版本。
+              {t("display.ui.openACardToPreviewItsComponentsExportedPlugins")}
             </p>
           </>
         )
@@ -648,8 +686,9 @@ function PluginCard({
   ) => void;
   actions: React.ReactNode;
 }) {
+  const t = useT();
   const { manifest, builtin, enabled } = record,
-    info = displayPluginInfo(manifest),
+    info = displayPluginInfo(manifest, t),
     component = preferred(manifest);
   const document = useMemo(() => {
     const sample = component && displayPreviewExamples(manifest, component)[0];
@@ -665,18 +704,19 @@ function PluginCard({
         ) : (
           <div className="display-plugin-poster display-plugin-poster-empty">
             <span aria-hidden="true">{info.symbol}</span>
-            <p>打开组件，加载示例预览</p>
+            <p>{t("display.ui.openAComponentToPreviewAnExample")}</p>
           </div>
         )}
         <button
           type="button"
           className="display-plugin-card-cover"
-          aria-label={`预览${info.title}`}
+          aria-label={t("display.preview.component", { title: info.title })}
           disabled={!component}
           onClick={() => open(manifest, component)}
         >
           <span className="display-plugin-poster-link">
-            预览组件 <span aria-hidden="true">↗</span>
+            {t("display.ui.previewComponent")}
+            <span aria-hidden="true">↗</span>
           </span>
         </button>
       </div>
@@ -684,7 +724,11 @@ function PluginCard({
         <div className="display-plugin-card-heading">
           <h2>{info.title}</h2>
           <span className={!enabled ? "is-disabled" : ""}>
-            {builtin ? "内置" : enabled ? "已启用" : "已停用"}
+            {builtin
+              ? t("display.ui.builtIn")
+              : enabled
+                ? t("display.ui.enabled")
+                : t("display.ui.disabled")}
           </span>
         </div>
         <p className="display-plugin-card-summary">{info.summary}</p>
@@ -693,16 +737,20 @@ function PluginCard({
             <button
               type="button"
               key={`${item.kind}@${item.version}`}
-              title={displayComponentInfo(item).summary}
+              title={displayComponentInfo(item, t).summary}
               onClick={() => open(manifest, item)}
             >
-              {displayComponentInfo(item).title}
+              {displayComponentInfo(item, t).title}
             </button>
           ))}
         </div>
         <footer>
           <span>
-            {manifest.components.length} 个组件 · v{manifest.version}
+            {t(
+              `display.library.componentCount.${countVariant(manifest.components.length)}`,
+              { count: manifest.components.length },
+            )}{" "}
+            · v{manifest.version}
           </span>
           {actions}
         </footer>

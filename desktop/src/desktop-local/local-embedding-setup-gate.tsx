@@ -21,6 +21,7 @@ import { useI18n } from "@xue-learn/core/i18n";
 import { pluginMessages } from "@/features/plugins/messages";
 import { getDesktopBridge } from "./runtime.ts";
 import { ProviderQuickSetupCard } from "./provider-quick-setup-card";
+import { InterfaceLanguageSelect } from "@/components/settings/interface-language-select";
 import { chatSetupComplete, quickSetupMessages } from "./quick-setup";
 
 type Choice = "qwen" | "ollama" | "online";
@@ -92,8 +93,9 @@ function RequiredEmbeddingSetupGate({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<LocalAiModelSettings>();
   const [statuses, setStatuses] = useState<CredentialStatus[]>([]);
   const [choice, setChoice] = useState<Choice>("qwen");
-  const [source, setSource] =
-    useState<EmbeddingModelDownloadSource>("modelscope");
+  const [source, setSource] = useState<EmbeddingModelDownloadSource>(
+    locale === "en" ? "huggingface" : "modelscope",
+  );
   const [modelStatus, setModelStatus] = useState<EmbeddingModelInstallStatus>();
   const [ollamaModel, setOllamaModel] = useState(
     "hf.co/Qwen/Qwen3-Embedding-0.6B-GGUF:Q8_0",
@@ -217,6 +219,7 @@ function RequiredEmbeddingSetupGate({ children }: { children: ReactNode }) {
     return (
       <main className="min-h-screen bg-[radial-gradient(circle_at_top,var(--course-content-surface-accent),var(--background)_55%)] px-5 py-10 text-foreground sm:py-16">
         <section className="mx-auto max-w-2xl">
+          <InterfaceLanguageSelect />
           <p className="text-sm font-semibold text-primary">
             {t("desktop.embeddingSetup.firstUse")}
           </p>
@@ -277,6 +280,7 @@ function RequiredEmbeddingSetupGate({ children }: { children: ReactNode }) {
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,var(--course-content-surface-accent),var(--background)_45%)] px-5 py-10 text-foreground">
       <section className="mx-auto max-w-4xl rounded-3xl border border-border bg-card p-6 shadow-xl sm:p-9">
+        <InterfaceLanguageSelect />
         <div className="max-w-2xl">
           <p className="text-sm font-semibold text-primary">
             {messages.progress}

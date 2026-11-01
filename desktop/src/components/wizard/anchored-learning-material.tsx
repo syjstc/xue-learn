@@ -1,3 +1,4 @@
+import { translateCurrent } from "@xue-learn/core/i18n";
 import { useMainlineReadingPosition } from "@/features/learning-mainline/use-reading-position";
 import {
   captureReadingPosition,
@@ -364,7 +365,11 @@ export function AnchoredLearningMaterial({
         return;
       }
       if (fu.sending) {
-        fu.setError("当前回答生成中，完成后可切换到新的引用。");
+        fu.setError(
+          translateCurrent(
+            "desktop.copy.anAnswerIsBeingGeneratedWaitForItToFinish",
+          ),
+        );
         openUnitFollowUp(unitId, followUpOwnerId);
         return;
       }
@@ -489,7 +494,11 @@ export function AnchoredLearningMaterial({
             inlineChat: {
               discussions: (() => {
                 const records = fu.threads
-                  .filter((thread) => !thread.anchor.reading && thread.anchor.sectionId === sectionId)
+                  .filter(
+                    (thread) =>
+                      !thread.anchor.reading &&
+                      thread.anchor.sectionId === sectionId,
+                  )
                   .map((thread) => ({
                     ...thread,
                     anchor: toLocalAnchor(thread.anchor),

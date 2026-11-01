@@ -56,6 +56,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   useI18n,
   useT,
+  translateCurrent,
   type TranslationKey,
   type UiLocale,
 } from "@xue-learn/core/i18n";
@@ -91,7 +92,9 @@ const providerLabels: Partial<Record<LocalProviderId, string>> = {
   tavily: "Tavily",
   anysearch: "AnySearch",
   ollama: "Ollama",
-  codex: "Codex（ChatGPT 订阅）",
+  get codex() {
+    return translateCurrent("desktop.apiKeys.codex.label");
+  },
   builtin: "Qwen3 Embedding · Local",
 };
 
@@ -2167,10 +2170,18 @@ export function ProviderCredentialPanel({
     setLiveCatalog(undefined);
     setCatalogError(undefined);
     setReadingModels(false);
-    return () => { modelReadVersion.current++; };
-  }, [drafts[`${providerId}.apiKey`], drafts[`${providerId}.baseUrl`], savedFieldValues[`${providerId}.baseUrl`]]);
-  const availableModels = capability === "chat" && providerId !== "codex"
-    ? liveCatalog?.models.map((entry) => entry.id) ?? [] : models;
+    return () => {
+      modelReadVersion.current++;
+    };
+  }, [
+    drafts[`${providerId}.apiKey`],
+    drafts[`${providerId}.baseUrl`],
+    savedFieldValues[`${providerId}.baseUrl`],
+  ]);
+  const availableModels =
+    capability === "chat" && providerId !== "codex"
+      ? (liveCatalog?.models.map((entry) => entry.id) ?? [])
+      : models;
   async function refreshModels() {
     const version = ++modelReadVersion.current;
     setReadingModels(true);
@@ -2180,20 +2191,36 @@ export function ProviderCredentialPanel({
       const result = await window.xueLearnModelCatalog.list({
         providerId,
         apiKey: drafts[`${providerId}.apiKey`]?.trim() || undefined,
-        baseUrl: drafts[`${providerId}.baseUrl`]?.trim() || savedFieldValues[`${providerId}.baseUrl`],
+        baseUrl:
+          drafts[`${providerId}.baseUrl`]?.trim() ||
+          savedFieldValues[`${providerId}.baseUrl`],
       });
       if (version !== modelReadVersion.current) return;
       setLiveCatalog(result);
       if (result.code !== "ok") {
-        setCatalogError(result.code === "unsupported" ? catalogMessages.unsupported
-          : result.code === "unauthorized" ? catalogMessages.unauthorized
-          : result.code === "missing_credentials" ? catalogMessages.missing
-          : result.code === "empty" ? catalogMessages.empty : catalogMessages.unavailable);
-      } else if (!result.models.some((entry) => entry.id === model) && result.models[0]) {
+        setCatalogError(
+          result.code === "unsupported"
+            ? catalogMessages.unsupported
+            : result.code === "unauthorized"
+              ? catalogMessages.unauthorized
+              : result.code === "missing_credentials"
+                ? catalogMessages.missing
+                : result.code === "empty"
+                  ? catalogMessages.empty
+                  : catalogMessages.unavailable,
+        );
+      } else if (
+        !result.models.some((entry) => entry.id === model) &&
+        result.models[0]
+      ) {
         onModelChange(result.models[0].id);
       }
-    } catch { if (version === modelReadVersion.current) setCatalogError(catalogMessages.unavailable); }
-    finally { if (version === modelReadVersion.current) setReadingModels(false); }
+    } catch {
+      if (version === modelReadVersion.current)
+        setCatalogError(catalogMessages.unavailable);
+    } finally {
+      if (version === modelReadVersion.current) setReadingModels(false);
+    }
   }
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState<
@@ -2365,23 +2392,43 @@ export function ProviderCredentialPanel({
                   onModelChange(event.target.value);
                 }}
               >
-                {[...new Set([model, ...availableModels])].filter(Boolean).map((modelName) => (
-                  <option key={modelName} value={modelName}>
-                    {capability === "audio"
-                      ? localAudioModelLabel(modelName)
-                      : modelName}
-                  </option>
-                ))}
+                {[...new Set([model, ...availableModels])]
+                  .filter(Boolean)
+                  .map((modelName) => (
+                    <option key={modelName} value={modelName}>
+                      {capability === "audio"
+                        ? localAudioModelLabel(modelName)
+                        : modelName}
+                    </option>
+                  ))}
               </select>
             )}
             {capability === "chat" && providerId !== "codex" ? (
               <span className="mt-2 block space-y-1.5">
-                <button type="button" className="text-xs font-medium text-primary disabled:opacity-50"
-                  disabled={readingModels || busy} onClick={() => void refreshModels()}>
-                  {readingModels ? catalogMessages.reading : catalogMessages.refresh}
+                <button
+                  type="button"
+                  className="text-xs font-medium text-primary disabled:opacity-50"
+                  disabled={readingModels || busy}
+                  onClick={() => void refreshModels()}
+                >
+                  {readingModels
+                    ? catalogMessages.reading
+                    : catalogMessages.refresh}
                 </button>
-                {liveCatalog?.code === "ok" ? <span className="block text-xs">{catalogMessages.catalogSource} · {new Date(liveCatalog.fetchedAt).toLocaleTimeString()}</span> : null}
-                {catalogError ? <span role="status" className="block text-xs text-muted-foreground">{catalogError}</span> : null}
+                {liveCatalog?.code === "ok" ? (
+                  <span className="block text-xs">
+                    {catalogMessages.catalogSource} ·{" "}
+                    {new Date(liveCatalog.fetchedAt).toLocaleTimeString()}
+                  </span>
+                ) : null}
+                {catalogError ? (
+                  <span
+                    role="status"
+                    className="block text-xs text-muted-foreground"
+                  >
+                    {catalogError}
+                  </span>
+                ) : null}
               </span>
             ) : null}
           </label>

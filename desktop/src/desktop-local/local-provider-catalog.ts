@@ -1,3 +1,4 @@
+import { translateCurrent } from "@xue-learn/core/i18n";
 import {
   BUILTIN_EMBEDDING_MODEL_ID,
   defaultLocalChatThinkingSettings,
@@ -10,7 +11,8 @@ import { doubaoThinkingConfigurable } from "@/shared/llm/doubao-thinking";
 
 export function localAudioModelLabel(modelId: string): string {
   if (modelId === "qwen-audio-3.0-tts-plus") return `${modelId} · Plus`;
-  if (modelId === "qwen3-tts-vc-2026-01-22") return `${modelId} · 克隆`;
+  if (modelId === "qwen3-tts-vc-2026-01-22")
+    return `${modelId} · ${translateCurrent("desktop.i18n.voiceClone")}`;
   return modelId;
 }
 
@@ -118,7 +120,7 @@ export const LOCAL_PROVIDER_CAPABILITIES: Partial<
 };
 
 const LOCAL_CHAT_PROVIDER_LABELS: Record<string, string> = {
-  qwen: "Qwen / 阿里云",
+  qwen: "Qwen",
   custom: "OpenAI-compatible",
   openai: "OpenAI",
   deepseek: "DeepSeek",
@@ -126,7 +128,7 @@ const LOCAL_CHAT_PROVIDER_LABELS: Record<string, string> = {
   doubao: "Doubao",
   bigmodel: "BigModel",
   minimax: "MiniMax",
-  codex: "Codex（ChatGPT 订阅）",
+  codex: "Codex",
   ollama: "Ollama",
 };
 
@@ -140,7 +142,11 @@ export const LOCAL_CHAT_PROVIDER_PRESETS: Record<string, LocalProviderPreset> =
     ["custom", ...Object.keys(LOCAL_DEFAULT_MODELS.chat)].map((providerId) => [
       providerId,
       {
-        label: LOCAL_CHAT_PROVIDER_LABELS[providerId] ?? providerId,
+        get label() {
+          return providerId === "codex"
+            ? translateCurrent("desktop.apiKeys.codex.label")
+            : (LOCAL_CHAT_PROVIDER_LABELS[providerId] ?? providerId);
+        },
         baseUrl: LOCAL_PROVIDER_DEFAULT_URLS[providerId as LocalProviderId],
         models: LOCAL_DEFAULT_MODELS.chat[providerId] ?? [],
         ...(providerId === "custom" ? { customEndpoint: true } : {}),

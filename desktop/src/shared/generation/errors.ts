@@ -1,5 +1,7 @@
+import { translateCurrent } from "@xue-learn/core/i18n";
+
 export class GenerationCancelledError extends Error {
-  constructor(message = "生成已停止") {
+  constructor(message = translateCurrent("trajectory.cancelled")) {
     super(message);
     this.name = "GenerationCancelledError";
   }

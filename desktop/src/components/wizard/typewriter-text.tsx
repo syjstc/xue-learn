@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@xue-learn/core/i18n";
 
 import { useEffect } from "react";
 import { useTypewriter } from "@/hooks/use-typewriter";
@@ -45,6 +46,7 @@ export function TypewriterText({
   revealedLength?: number;
   onSkip?: () => void;
 }) {
+  const t = useT();
   const interval = useTypewriter(text, {
     enabled,
     resetKey: resetKey ?? text,
@@ -124,7 +126,9 @@ export function TypewriterText({
         if (controlled) onSkip?.();
         else interval.skip();
       }}
-      title={!done ? "点击跳过打字动画" : undefined}
+      title={
+        !done ? t("desktop.ui.typewriterText.skipTypingAnimation") : undefined
+      }
     >
       {fullTextUnderlay}
       <div

@@ -1,9 +1,9 @@
 "use client";
+import { translateCurrent } from "@xue-learn/core/i18n";
 
-import {
-  type ReactNode,
-  useState,
-} from "react";
+import { useT } from "@xue-learn/core/i18n";
+
+import { type ReactNode, useState } from "react";
 import {
   Maximize2,
   RotateCcw,
@@ -46,9 +46,10 @@ export function LabShell({
   compact = false,
   className,
   canvasClassName,
-  badge = "虚拟实验",
+  badge = translateCurrent("desktop.copy.virtualExperiment"),
   headerActions,
 }: LabShellProps) {
+  const t = useT();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const headerContent = (
@@ -68,8 +69,8 @@ export function LabShell({
           <button
             type="button"
             onClick={onReset}
-            title="重置实验参数"
-            aria-label="重置实验参数"
+            title={t("desktop.ui.labShell.resetExperiment")}
+            aria-label={t("desktop.ui.labShell.resetExperiment")}
             className="flex h-8 w-8 items-center justify-center rounded-md border border-[var(--course-content-border-accent)] bg-[var(--course-content-surface)] text-[var(--course-content-muted)] transition hover:bg-[var(--course-content-surface-hover)] hover:text-[var(--course-content)]"
           >
             <RotateCcw className="h-4 w-4" />
@@ -78,8 +79,8 @@ export function LabShell({
         <button
           type="button"
           onClick={() => setIsExpanded(true)}
-          title="全屏展开"
-          aria-label="全屏展开"
+          title={t("desktop.ui.labShell.expandToFullScreen")}
+          aria-label={t("desktop.ui.labShell.expandToFullScreen")}
           className="flex h-8 w-8 items-center justify-center rounded-md border border-[var(--course-content-border-accent)] bg-[var(--course-content-surface)] text-[var(--course-content-muted)] transition hover:bg-[var(--course-content-surface-hover)] hover:text-[var(--course-content)]"
         >
           <Maximize2 className="h-4 w-4" />
@@ -112,7 +113,7 @@ export function LabShell({
           <Sparkles className="h-4 w-4 shrink-0 text-[var(--color-primary)] mt-0.5" />
           <div className="leading-relaxed">
             <span className="font-semibold text-[var(--color-primary)]">
-              观察要点：
+              {t("desktop.ui.unitLab.whatToObserve")}
             </span>
             {targetObservation}
           </div>
@@ -126,7 +127,7 @@ export function LabShell({
             <div className="rounded-lg border border-[var(--course-content-border-accent)] bg-[var(--course-content-surface)] p-3.5">
               <div className="mb-2.5 flex items-center gap-1.5 text-xs font-semibold text-[var(--course-content)]">
                 <Sliders className="h-3.5 w-3.5 text-[var(--color-primary)]" />
-                <span>交互控制与参数调节</span>
+                <span>{t("desktop.ui.labShell.controlsAndParameters")}</span>
               </div>
               <div className="flex flex-col gap-3">{controls}</div>
             </div>
@@ -136,7 +137,7 @@ export function LabShell({
             <div className="rounded-lg border border-[var(--course-content-border-accent)] bg-[var(--course-content-surface)] p-3.5">
               <div className="mb-2.5 flex items-center gap-1.5 text-xs font-semibold text-[var(--course-content)]">
                 <Activity className="h-3.5 w-3.5 text-[var(--color-accent)]" />
-                <span>实时物理与数据读数</span>
+                <span>{t("desktop.ui.labShell.liveSimulationReadings")}</span>
               </div>
               <div className="flex flex-col gap-2">{readouts}</div>
             </div>

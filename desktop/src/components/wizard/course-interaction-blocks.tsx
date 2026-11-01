@@ -272,6 +272,7 @@ function SortableStep({
   children: ReactNode;
   valid?: boolean;
 }) {
+  const t = useT();
   const {
     attributes,
     listeners,
@@ -290,7 +291,7 @@ function SortableStep({
         valid === true && "border-green-500",
         valid === false && "border-amber-500",
       )}
-      aria-label="拖动步骤"
+      aria-label={t("desktop.ui.courseInteractionBlocks.dragStep")}
       {...attributes}
       {...listeners}
     >
@@ -308,6 +309,7 @@ function StepSort({
 }: {
   block: Extract<InteractiveBlock, { type: "step_sort" }>;
 }) {
+  const t = useT();
   const correct = useMemo(
     () => [...block.correct_sequence].sort((a, b) => a.order - b.order),
     [block],
@@ -362,8 +364,10 @@ function StepSort({
         )}
       >
         {complete
-          ? "顺序正确"
-          : `该步骤的前置条件还未完成。${block.dependency_hint}`}
+          ? t("desktop.ui.courseInteractionBlocks.correctOrder")
+          : t("desktop.i18n.dependencyIncomplete", {
+              hint: block.dependency_hint ?? "",
+            })}
       </p>
       <Button
         type="button"
@@ -373,7 +377,7 @@ function StepSort({
         onClick={() => setSteps(initial)}
       >
         <RotateCcw className="h-4 w-4" />
-        重置
+        {t("wizard.material.mathScene.reset")}
       </Button>
     </Shell>
   );

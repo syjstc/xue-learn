@@ -1,17 +1,10 @@
 "use client";
+import { translateCurrent } from "@xue-learn/core/i18n";
 
-import {
-  useState,
-  useEffect,
-  useRef,
-  useMemo,
-  type ReactNode,
-} from "react";
-import {
-  Play,
-  Pause,
-  RotateCcw,
-} from "lucide-react";
+import { useT } from "@xue-learn/core/i18n";
+
+import { useState, useEffect, useRef, useMemo, type ReactNode } from "react";
+import { Play, Pause, RotateCcw } from "lucide-react";
 import {
   calculate1DCollision,
   calculateInclinedPlane,
@@ -30,10 +23,21 @@ export function MechanicsSandboxBlock({
   block: MechanicsSandbox;
   compact?: boolean;
 }) {
+  const t = useT();
 
   // Object parameters
-  const obj1 = block.objects[0] ?? { id: "obj1", name: "物体 A", mass: 1, initialVelocity: 2 };
-  const obj2 = block.objects[1] ?? { id: "obj2", name: "物体 B", mass: 1, initialVelocity: 0 };
+  const obj1 = block.objects[0] ?? {
+    id: "obj1",
+    name: translateCurrent("desktop.copy.objectA"),
+    mass: 1,
+    initialVelocity: 2,
+  };
+  const obj2 = block.objects[1] ?? {
+    id: "obj2",
+    name: translateCurrent("desktop.copy.objectB"),
+    mass: 1,
+    initialVelocity: 0,
+  };
 
   const [m1, setM1] = useState(obj1.mass);
   const [v1, setV1] = useState(obj1.initialVelocity ?? 2);
@@ -123,7 +127,8 @@ export function MechanicsSandboxBlock({
       const trackY = 160;
       const initialPos1 = 120;
       const initialPos2 = 320;
-      const collisionTime = (initialPos2 - initialPos1 - 50) / Math.max(0.1, v1 - v2);
+      const collisionTime =
+        (initialPos2 - initialPos1 - 50) / Math.max(0.1, v1 - v2);
 
       let curPos1 = initialPos1;
       let curPos2 = initialPos2;
@@ -341,7 +346,7 @@ export function MechanicsSandboxBlock({
         <>
           <div className="space-y-1">
             <div className="flex justify-between text-xs text-[var(--course-content)]">
-              <span>物体 A 质量 (m₁)</span>
+              <span>{t("desktop.ui.mechanicsSandbox.massOfObjectAM")}</span>
               <span className="font-mono font-semibold">{m1} kg</span>
             </div>
             <Slider
@@ -355,7 +360,9 @@ export function MechanicsSandboxBlock({
 
           <div className="space-y-1">
             <div className="flex justify-between text-xs text-[var(--course-content)]">
-              <span>物体 A 初速度 (v₁)</span>
+              <span>
+                {t("desktop.ui.mechanicsSandbox.initialVelocityOfObjectAV")}
+              </span>
               <span className="font-mono font-semibold">{v1} m/s</span>
             </div>
             <Slider
@@ -369,7 +376,7 @@ export function MechanicsSandboxBlock({
 
           <div className="space-y-1">
             <div className="flex justify-between text-xs text-[var(--course-content)]">
-              <span>物体 B 质量 (m₂)</span>
+              <span>{t("desktop.ui.mechanicsSandbox.massOfObjectBM")}</span>
               <span className="font-mono font-semibold">{m2} kg</span>
             </div>
             <Slider
@@ -383,7 +390,11 @@ export function MechanicsSandboxBlock({
 
           <div className="space-y-1">
             <div className="flex justify-between text-xs text-[var(--course-content)]">
-              <span>恢复系数 e (1=完全弹性, 0=完全非弹性)</span>
+              <span>
+                {t(
+                  "desktop.ui.mechanicsSandbox.coefficientOfRestitutionE1Elastic0",
+                )}
+              </span>
               <span className="font-mono font-semibold">{restitution}</span>
             </div>
             <Slider
@@ -391,7 +402,9 @@ export function MechanicsSandboxBlock({
               min={0}
               max={1}
               step={0.1}
-              onValueChange={([val]) => val !== undefined && setRestitution(val)}
+              onValueChange={([val]) =>
+                val !== undefined && setRestitution(val)
+              }
             />
           </div>
         </>
@@ -400,7 +413,7 @@ export function MechanicsSandboxBlock({
       {block.sandboxType === "inclined_plane" && (
         <div className="space-y-1">
           <div className="flex justify-between text-xs text-[var(--course-content)]">
-            <span>倾角 θ</span>
+            <span>{t("desktop.ui.mechanicsSandbox.inclineAngle")}</span>
             <span className="font-mono font-semibold">{inclineAngle}°</span>
           </div>
           <Slider
@@ -416,7 +429,7 @@ export function MechanicsSandboxBlock({
       {block.sandboxType === "pendulum" && (
         <div className="space-y-1">
           <div className="flex justify-between text-xs text-[var(--course-content)]">
-            <span>摆长 L</span>
+            <span>{t("desktop.ui.mechanicsSandbox.pendulumLengthL")}</span>
             <span className="font-mono font-semibold">{pendulumLength} m</span>
           </div>
           <Slider
@@ -437,21 +450,34 @@ export function MechanicsSandboxBlock({
       {block.sandboxType === "collision_1d" && (
         <>
           <div className="flex items-center justify-between rounded bg-[var(--course-content-surface-muted)] px-2.5 py-1.5">
-            <span className="text-[var(--course-content-muted)]">碰撞后速度：</span>
+            <span className="text-[var(--course-content-muted)]">
+              {t("desktop.ui.mechanicsSandbox.velocitiesAfterCollision")}
+            </span>
             <span className="font-mono font-medium">
-              v₁&apos; = {collisionResult.v1Final} m/s, v₂&apos; = {collisionResult.v2Final} m/s
+              v₁&apos; = {collisionResult.v1Final} m/s, v₂&apos; ={" "}
+              {collisionResult.v2Final} m/s
             </span>
           </div>
           <div className="flex items-center justify-between rounded bg-[var(--course-content-surface-muted)] px-2.5 py-1.5">
-            <span className="text-[var(--course-content-muted)]">动量守恒 P：</span>
+            <span className="text-[var(--course-content-muted)]">
+              {t("desktop.ui.mechanicsSandbox.momentumP")}
+            </span>
             <span className="font-mono font-medium">
-              {collisionResult.initialMomentum} kg·m/s → {collisionResult.finalMomentum} kg·m/s
+              {collisionResult.initialMomentum} kg·m/s →{" "}
+              {collisionResult.finalMomentum} kg·m/s
             </span>
           </div>
           <div className="flex items-center justify-between rounded bg-[var(--course-content-surface-muted)] px-2.5 py-1.5">
-            <span className="text-[var(--course-content-muted)]">动能转化 E_k：</span>
+            <span className="text-[var(--course-content-muted)]">
+              {t("desktop.ui.mechanicsSandbox.kineticEnergyEK")}
+            </span>
             <span className="font-mono font-medium">
-              初 {collisionResult.initialKineticEnergy} J → 末 {collisionResult.finalKineticEnergy} J (损耗 {collisionResult.energyLoss} J)
+              {t("desktop.ui.mechanicsSandbox.initial")}
+              {collisionResult.initialKineticEnergy}{" "}
+              {t("desktop.ui.mechanicsSandbox.jFinal")}
+              {collisionResult.finalKineticEnergy}{" "}
+              {t("desktop.ui.mechanicsSandbox.jLoss")}
+              {collisionResult.energyLoss} J)
             </span>
           </div>
         </>
@@ -460,13 +486,22 @@ export function MechanicsSandboxBlock({
       {block.sandboxType === "inclined_plane" && (
         <>
           <div className="flex items-center justify-between rounded bg-[var(--course-content-surface-muted)] px-2.5 py-1.5">
-            <span className="text-[var(--course-content-muted)]">下滑加速度 a：</span>
-            <span className="font-mono font-medium">{inclineResult.acceleration} m/s²</span>
+            <span className="text-[var(--course-content-muted)]">
+              {t("desktop.ui.mechanicsSandbox.accelerationDownSlopeA")}
+            </span>
+            <span className="font-mono font-medium">
+              {inclineResult.acceleration} m/s²
+            </span>
           </div>
           <div className="flex items-center justify-between rounded bg-[var(--course-content-surface-muted)] px-2.5 py-1.5">
-            <span className="text-[var(--course-content-muted)]">支持力 N / 重力分力：</span>
+            <span className="text-[var(--course-content-muted)]">
+              {t(
+                "desktop.ui.mechanicsSandbox.normalForceNGravitationalComponent",
+              )}
+            </span>
             <span className="font-mono font-medium">
-              N = {inclineResult.normalForce} N, G_∥ = {inclineResult.gravityParallel} N
+              N = {inclineResult.normalForce} N, G_∥ ={" "}
+              {inclineResult.gravityParallel} N
             </span>
           </div>
         </>
@@ -475,12 +510,20 @@ export function MechanicsSandboxBlock({
       {block.sandboxType === "pendulum" && (
         <>
           <div className="flex items-center justify-between rounded bg-[var(--course-content-surface-muted)] px-2.5 py-1.5">
-            <span className="text-[var(--course-content-muted)]">摆动周期 T：</span>
-            <span className="font-mono font-medium">{pendulumResult.period} s</span>
+            <span className="text-[var(--course-content-muted)]">
+              {t("desktop.ui.mechanicsSandbox.pendulumPeriodT")}
+            </span>
+            <span className="font-mono font-medium">
+              {pendulumResult.period} s
+            </span>
           </div>
           <div className="flex items-center justify-between rounded bg-[var(--course-content-surface-muted)] px-2.5 py-1.5">
-            <span className="text-[var(--course-content-muted)]">固有频率 f：</span>
-            <span className="font-mono font-medium">{pendulumResult.frequency} Hz</span>
+            <span className="text-[var(--course-content-muted)]">
+              {t("desktop.ui.mechanicsSandbox.naturalFrequencyF")}
+            </span>
+            <span className="font-mono font-medium">
+              {pendulumResult.frequency} Hz
+            </span>
           </div>
         </>
       )}
@@ -492,7 +535,7 @@ export function MechanicsSandboxBlock({
       title={block.title}
       summary={block.summary}
       targetObservation={block.targetObservation}
-      badge="物理沙箱"
+      badge={t("desktop.ui.mechanicsSandbox.physicsSandbox")}
       compact={compact}
       onReset={handleReset}
       controls={controlsUi}
@@ -503,8 +546,14 @@ export function MechanicsSandboxBlock({
           onClick={() => setIsPlaying((p) => !p)}
           className="flex items-center gap-1 rounded-md bg-[var(--color-primary)] px-2.5 py-1 text-xs font-medium text-white transition hover:opacity-90"
         >
-          {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
-          {isPlaying ? "暂停" : "开始模拟"}
+          {isPlaying ? (
+            <Pause className="h-3.5 w-3.5" />
+          ) : (
+            <Play className="h-3.5 w-3.5" />
+          )}
+          {isPlaying
+            ? t("presentationPreview.pause")
+            : t("desktop.ui.mechanicsSandbox.startSimulation")}
         </button>
       }
     >
@@ -524,6 +573,7 @@ function InclinedPlaneLabFrame({
   isPlaying: boolean;
   resetVersion: number;
 }) {
+  const t = useT();
   const hostRef = useRef<LabFrameHandle>(null);
   const manifest = useMemo(
     () =>
@@ -531,8 +581,10 @@ function InclinedPlaneLabFrame({
         type: "physics_lab",
         experimentId: "inclined_plane_friction",
         experimentVersion: 2,
-        title: "斜面小车",
-        summary: "调整斜面参数并观察小车运动。",
+        title: translateCurrent("desktop.ui.mechanicsSandbox.cartOnAnIncline"),
+        summary: translateCurrent(
+          "desktop.copy.adjustTheInclineAndObserveTheCartSMotion",
+        ),
         branch: "mechanics",
         stage: "high_school",
         renderMode: "3d",
@@ -545,7 +597,11 @@ function InclinedPlaneLabFrame({
     hostRef.current?.send({ type: "setParameter", id: "mass", value: mass });
   }, [mass]);
   useEffect(() => {
-    hostRef.current?.send({ type: "setParameter", id: "angle", value: angleDeg });
+    hostRef.current?.send({
+      type: "setParameter",
+      id: "angle",
+      value: angleDeg,
+    });
   }, [angleDeg]);
   useEffect(() => {
     hostRef.current?.send({ type: isPlaying ? "play" : "pause" });
@@ -558,7 +614,7 @@ function InclinedPlaneLabFrame({
     <LabFrameHost
       ref={hostRef}
       manifest={manifest}
-      title="斜面小车"
+      title={t("desktop.ui.mechanicsSandbox.cartOnAnIncline")}
       className="h-[320px] w-full sm:h-[380px]"
     />
   );

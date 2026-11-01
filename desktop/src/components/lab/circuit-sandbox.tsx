@@ -1,4 +1,7 @@
 "use client";
+import { translateCurrent } from "@xue-learn/core/i18n";
+
+import { useT } from "@xue-learn/core/i18n";
 
 import { useId, useMemo, useState } from "react";
 import {
@@ -29,6 +32,7 @@ export function CircuitSandboxBlock({
   block: CircuitSandbox;
   compact?: boolean;
 }) {
+  const t = useT();
   const [overrides, setOverrides] = useState<Record<string, CircuitOverride>>(
     () => initialCircuitOverrides(block),
   );
@@ -91,7 +95,11 @@ export function CircuitSandboxBlock({
                     : "left-0.5 bg-[var(--course-content-muted)]",
                 )}
               />
-              <span className="sr-only">{closed ? "已闭合" : "已断开"}</span>
+              <span className="sr-only">
+                {closed
+                  ? t("desktop.ui.circuitSandbox.closed")
+                  : t("desktop.ui.circuitSandbox.open")}
+              </span>
               <span
                 className={cn(
                   "pointer-events-none absolute inset-y-0 flex items-center text-[10px] font-semibold",
@@ -100,7 +108,9 @@ export function CircuitSandboxBlock({
                     : "right-2 text-[var(--course-content-muted)]",
                 )}
               >
-                {closed ? "闭合" : "断开"}
+                {closed
+                  ? t("desktop.ui.circuitSandbox.close")
+                  : t("desktop.ui.circuitSandbox.open2")}
               </span>
             </button>
           </div>
@@ -130,7 +140,9 @@ export function CircuitSandboxBlock({
               min={min}
               max={max}
               step={1}
-              onValueChange={([val]) => val !== undefined && setOhm(pot.id, val)}
+              onValueChange={([val]) =>
+                val !== undefined && setOhm(pot.id, val)
+              }
             />
           </div>
         );
@@ -148,14 +160,16 @@ export function CircuitSandboxBlock({
             : "bg-[var(--course-content-surface-muted)] text-[var(--course-content-muted)]",
         )}
       >
-        <span>回路状态</span>
+        <span>{t("desktop.ui.circuitSandbox.circuitStatus")}</span>
         <span className="font-semibold tracking-wide">
-          {solution.isCompleteCircuit ? "通路" : "断路"}
+          {solution.isCompleteCircuit
+            ? t("desktop.ui.circuitSandbox.closedCircuit")
+            : t("desktop.ui.circuitSandbox.openCircuit")}
         </span>
       </div>
       <div className="overflow-hidden rounded-md border border-[var(--course-content-border)]">
         <div className="grid grid-cols-[minmax(0,1.4fr)_0.7fr_0.7fr] gap-2 bg-[var(--course-content-surface-muted)] px-2.5 py-1.5 font-medium text-[var(--course-content-muted)]">
-          <span>元件</span>
+          <span>{t("desktop.ui.circuitSandbox.components")}</span>
           <span className="text-right">I</span>
           <span className="text-right">U / P</span>
         </div>
@@ -189,7 +203,7 @@ export function CircuitSandboxBlock({
       title={block.title}
       summary={block.summary}
       targetObservation={block.targetObservation}
-      badge="电路仿真沙箱"
+      badge={t("desktop.ui.circuitSandbox.circuitSandbox")}
       compact={compact}
       onReset={() => setOverrides(initialCircuitOverrides(block))}
       controls={controlsUi}
@@ -392,7 +406,9 @@ function annotationText(
   closed?: boolean,
 ): string | undefined {
   if (symbol.kind === "switch") {
-    return closed ? "闭合" : "断开";
+    return closed
+      ? translateCurrent("desktop.ui.circuitSandbox.close")
+      : translateCurrent("desktop.ui.circuitSandbox.open2");
   }
   if (symbol.kind === "ammeter" && solved) {
     return `${Math.abs(solved.current).toFixed(2)}A`;
@@ -423,7 +439,14 @@ function PartGlyph({
     case "battery":
       return (
         <>
-          <line x1="-6" y1="-13" x2="-6" y2="13" stroke={ink} strokeWidth="2.4" />
+          <line
+            x1="-6"
+            y1="-13"
+            x2="-6"
+            y2="13"
+            stroke={ink}
+            strokeWidth="2.4"
+          />
           <line
             x1="2"
             y1="-7"
@@ -501,8 +524,22 @@ function PartGlyph({
       const isClosed = closed ?? false;
       return (
         <>
-          <circle cx="-12" cy="0" r="2.8" fill={surface} stroke={ink} strokeWidth="1.8" />
-          <circle cx="12" cy="0" r="2.8" fill={surface} stroke={ink} strokeWidth="1.8" />
+          <circle
+            cx="-12"
+            cy="0"
+            r="2.8"
+            fill={surface}
+            stroke={ink}
+            strokeWidth="1.8"
+          />
+          <circle
+            cx="12"
+            cy="0"
+            r="2.8"
+            fill={surface}
+            stroke={ink}
+            strokeWidth="1.8"
+          />
           <line
             x1="-12"
             y1="0"

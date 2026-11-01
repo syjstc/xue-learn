@@ -1,16 +1,18 @@
-import type {
- TranslationMessages } from "./en.js";
+import type { TranslationMessages } from "./en.js";
 
 export const zhHans = {
   "capabilityPath.title": "全程能力路线",
-  "capabilityPath.checked": "结构链路已检查 · {modules} 个模块 · {units} 个单元",
-  "capabilityPath.conditional": "这条路线以入门基础成立为前提，实际掌握需要练习证据。正文将在学习时按需生成。",
+  "capabilityPath.checked":
+    "结构链路已检查 · {modules} 个模块 · {units} 个单元",
+  "capabilityPath.conditional":
+    "这条路线以入门基础成立为前提，实际掌握需要练习证据。正文将在学习时按需生成。",
   "capabilityPath.baseline": "确认入门基础",
   "capabilityPath.entryFoundation": "入门基础",
   "capabilityPath.reported": "已自述具备 · 尚未评估",
   "capabilityPath.unknown": "待确认",
   "capabilityPath.needBridge": "这项基础还不会",
-  "capabilityPath.bridgeFeedback": "我还不会“{title}”。请移除这项入门假设，在首次使用之前补上最小必要的基础单元，重新检查整条 KACOM 能力链路，并保留其他已确认目标。",
+  "capabilityPath.bridgeFeedback":
+    "我还不会“{title}”。请移除这项入门假设，在首次使用之前补上最小必要的基础单元，重新检查整条 KACOM 能力链路，并保留其他已确认目标。",
   "capabilityPath.unitCount": "{count} 个单元",
   "capabilityPath.requires": "需要：",
   "capabilityPath.provides": "学成后能够：",
@@ -38,7 +40,8 @@ export const zhHans = {
   "reading.readableFigure": "清晰字号",
   "reading.zoomIn": "放大图示",
   "reading.zoomOut": "缩小图示",
-  "reading.figureNavigation": "默认显示完整图示，可放大查看细节；专注模式提供更大的阅读区域。",
+  "reading.figureNavigation":
+    "默认显示完整图示，可放大查看细节；专注模式提供更大的阅读区域。",
   "reading.displayMode": "演示",
   "reading.check": "随堂自测",
   "reading.correct": "回答正确",
@@ -72,7 +75,8 @@ export const zhHans = {
   "reading.empty": "生成适合手机阅读的教材。正文先出现，图示和推导在后台补齐。",
   "reading.legacy": "原有阅读内容",
   "presentationPreview.title": "课堂演示组件",
-  "presentationPreview.description": "步骤、对照与聚焦随讲解推进，可暂停、回看。",
+  "presentationPreview.description":
+    "步骤、对照与聚焦随讲解推进，可暂停、回看。",
   "presentationPreview.choose": "选择课堂组件",
   "presentationPreview.classroom": "切换课堂",
   "presentationPreview.reading": "切换阅读",
@@ -82,23 +86,31 @@ export const zhHans = {
   "presentationPreview.pause": "暂停",
   "presentationPreview.progress": "播放进度",
   "presentationPreview.seconds": "{current} / {total} 秒",
-  "presentationPreview.note": "跨学科组件样本 · 共用课堂与阅读组件 · 本次试播无配音",
+  "presentationPreview.note":
+    "跨学科组件样本 · 共用课堂与阅读组件 · 本次试播无配音",
   "desktop.videoProduction.title": "视频流水线",
   "desktop.videoProduction.enqueue": "一键导出视频",
-  "desktop.videoProduction.unavailable": "视频流水线仅支持桌面开发版，请重启 desktop dev 加载新功能。",
-  "desktop.videoProduction.description": "自动生成预习，按章节准备公式、音乐等教学内容，再整合分镜、生成配音并导出 1080p 视频。",
+  "desktop.videoProduction.unavailable":
+    "视频流水线仅支持桌面开发版，请重启 desktop dev 加载新功能。",
+  "desktop.videoProduction.description":
+    "自动生成预习，按章节准备公式、音乐等教学内容，再整合分镜、生成配音并导出 1080p 视频。",
   "desktop.videoProduction.directory": "导出目录",
   "desktop.videoProduction.clearCompleted": "清理已完成记录",
-  "desktop.videoProduction.clearCompletedHint": "只从任务列表移除已完成记录，不删除已导出的视频和封面文件。",
+  "desktop.videoProduction.clearCompletedHint":
+    "只从任务列表移除已完成记录，不删除已导出的视频和封面文件。",
   "desktop.videoProduction.cancel": "删除任务",
-  "desktop.videoProduction.cancelHint": "停止并移除此任务，不删除已导出文件和已保存的制作进度。之后可再次一键导出。",
-  "desktop.videoProduction.lanes": "多个单元可同时准备教学内容，各自完成后再整合分镜；配音和视频分别排队。制作进度自动保存，失败后可继续。",
-  "desktop.videoProduction.recovery": "在桌面后台运行，刷新不丢进度；服务中断后自动续作，关闭应用后下次打开继续未完成任务。",
+  "desktop.videoProduction.cancelHint":
+    "停止并移除此任务，不删除已导出文件和已保存的制作进度。之后可再次一键导出。",
+  "desktop.videoProduction.lanes":
+    "多个单元可同时准备教学内容，各自完成后再整合分镜；配音和视频分别排队。制作进度自动保存，失败后可继续。",
+  "desktop.videoProduction.recovery":
+    "在桌面后台运行，刷新不丢进度；服务中断后自动续作，关闭应用后下次打开继续未完成任务。",
   "desktop.videoProduction.destination": "新任务保存到：",
   "desktop.videoProduction.count": "共 {total} 条 · {pending} 条未完成",
   "desktop.videoProduction.openCourses": "打开课程",
   "desktop.videoProduction.loading": "正在读取已保存的任务…",
-  "desktop.videoProduction.empty": "进入某个单元，点击「一键导出视频」开始。可以连续添加多个单元。",
+  "desktop.videoProduction.empty":
+    "进入某个单元，点击「一键导出视频」开始。可以连续添加多个单元。",
   "desktop.videoProduction.stages": "制作阶段",
   "desktop.videoProduction.retry": "继续任务",
   "desktop.videoProduction.reveal": "查看文件",
@@ -142,7 +154,8 @@ export const zhHans = {
   "mainline.later": "稍后",
   "mainline.today": "今天不提醒",
   "mainline.footprints": "学习足迹",
-  "mainline.footprintsDescription": "按实际学习片段记录。阅读位置不代表掌握程度。",
+  "mainline.footprintsDescription":
+    "按实际学习片段记录。阅读位置不代表掌握程度。",
   "mainline.open": "回看",
   "mainline.kind.lesson": "学习",
   "mainline.kind.supplement": "补充学习",
@@ -165,7 +178,8 @@ export const zhHans = {
   "trajectory.cancel": "停止生成",
   "trajectory.later": "稍后",
   "trajectory.dismiss": "撤销补充",
-  "trajectory.goalProposalHint": "确认后加入学习空间，作为待启动的目标。不会立即生成整门课程。",
+  "trajectory.goalProposalHint":
+    "确认后加入学习空间，作为待启动的目标。不会立即生成整门课程。",
   "trajectory.destination": "加入学习空间",
   "trajectory.needSpace": "请先在学习空间中创建一个空间，再加入此目标。",
   "trajectory.confirmGoal": "加入待学目标",
@@ -189,7 +203,8 @@ export const zhHans = {
   "trajectory.empty": "你的提问、补充学习和返回记录会出现在这里。",
   "trajectory.more": "更早的足迹",
   "trajectory.return": "返回原课程",
-  "trajectory.canReturn": "觉得已经够用了，就可以回到刚才的问题；也可以继续追问。",
+  "trajectory.canReturn":
+    "觉得已经够用了，就可以回到刚才的问题；也可以继续追问。",
   "trajectory.studying": "正在补充学习",
   "trajectory.resumeHint": "可以接着上次的位置学习，也可以直接回到原课程。",
   "trajectory.contentUnavailable": "原补充内容已不可用，你仍然可以返回原课程。",
@@ -681,6 +696,7 @@ export const zhHans = {
   "theme.appearanceTheme": "外观",
   "theme.appearanceDescription": "选择浅色、深色，或跟随系统设置。",
   "i18n.uiLanguage": "界面语言",
+  "i18n.systemLanguage": "跟随系统语言",
   "i18n.uiLanguageDescription":
     "翻译应用控件与导航。生成的学习内容继续使用自己的语言设置。",
   "nav.home": "首页",
@@ -919,7 +935,8 @@ export const zhHans = {
   "teachingDerivation.previousCue": "上一句",
   "teachingDerivation.nextCue": "下一句",
   "teachingDerivation.cueProgress": "讲解 {current} / {total}",
-  "teachingDerivation.visualUnavailable": "本步辅助视觉缺少已保存的来源，请重新生成该讲解。",
+  "teachingDerivation.visualUnavailable":
+    "本步辅助视觉缺少已保存的来源，请重新生成该讲解。",
   "teachingDerivation.references": "本步引用",
   "teachingDerivation.relation.introduce": "建立起点",
   "teachingDerivation.relation.equivalence": "等价变换",
@@ -1260,8 +1277,10 @@ export const zhHans = {
   "agenda.reminderEnabled": "每日提醒",
   "agenda.reminderOff": "已关闭",
   "knowledgeActivity.skipped": "已跳过网页搜索",
-  "knowledgeActivity.skippedTimeout": "搜索超时，已继续后续流程。将根据已有信息处理，时效性内容尚未经过网页核实。",
-  "knowledgeActivity.skippedUnavailable": "搜索未启用、暂不可用或未找到可用来源，已根据已有信息继续后续流程。",
+  "knowledgeActivity.skippedTimeout":
+    "搜索超时，已继续后续流程。将根据已有信息处理，时效性内容尚未经过网页核实。",
+  "knowledgeActivity.skippedUnavailable":
+    "搜索未启用、暂不可用或未找到可用来源，已根据已有信息继续后续流程。",
   "knowledgeActivity.searching": "正在搜索网页",
   "knowledgeActivity.reading": "正在阅读搜索结果",
   "knowledgeActivity.saving": "正在保存网页知识",
@@ -1831,33 +1850,48 @@ export const zhHans = {
   "lessonPerformance.videoStyle": "视频风格",
   "lessonPerformance.videoStyleClassroom": "课堂演课",
   "lessonPerformance.videoStyleRemotion": "Remotion 动画",
-  "lessonPerformance.remotionStyleHint": "课程学习与视频共用讲解和高级动画，视频工作室负责编辑与导出。",
+  "lessonPerformance.remotionStyleHint":
+    "课程学习与视频共用讲解和高级动画，视频工作室负责编辑与导出。",
   "lessonPerformance.remotionCreateTitle": "Remotion 视频预览",
   "lessonPerformance.remotionTemplates": "Remotion 分镜模板库",
-  "lessonPerformance.remotionCreateHint": "课程和视频共用同一份讲解与动画。已有内容直接复用，缺失章节会自动补齐并保存到课程；这里负责视频编辑、配音与导出。",
+  "lessonPerformance.remotionCreateHint":
+    "课程和视频共用同一份讲解与动画。已有内容直接复用，缺失章节会自动补齐并保存到课程；这里负责视频编辑、配音与导出。",
   "lessonPerformance.remotionBrief": "教学要求",
-  "lessonPerformance.remotionBriefPlaceholder": "例如：给初学者讲解行星为什么绕太阳运行，用空间演示说明速度与引力的关系，最后比较两种轨道。",
-  "lessonPerformance.remotionBasicCapabilities": "基础表达：标题、要点、比较、公式与代码。",
-  "lessonPerformance.remotionAdvancedCapabilities": "高级表达：动态图表、立体结构、关系与流程、讲解动效。",
+  "lessonPerformance.remotionBriefPlaceholder":
+    "例如：给初学者讲解行星为什么绕太阳运行，用空间演示说明速度与引力的关系，最后比较两种轨道。",
+  "lessonPerformance.remotionBasicCapabilities":
+    "基础表达：标题、要点、比较、公式与代码。",
+  "lessonPerformance.remotionAdvancedCapabilities":
+    "高级表达：动态图表、立体结构、关系与流程、讲解动效。",
   "lessonPerformance.remotionGenerateExport": "生成并导出动画",
   "lessonPerformance.remotionGenerate": "准备课程并编排视频",
   "lessonPerformance.remotionRegenerate": "从课程更新视频",
   "lessonPerformance.remotionContinue": "继续准备课程与视频",
-  "lessonPerformance.remotionPreparing": "正在准备章节教学内容 · 已保存 {completed} / {total} 节",
+  "lessonPerformance.remotionPreparing":
+    "正在准备章节教学内容 · 已保存 {completed} / {total} 节",
   "lessonPerformance.remotionPlanning": "教学内容已准备，正在整合分镜…",
-  "lessonPerformance.remotionShotProgress": "已保存 {completed} / {total} 个镜头",
+  "lessonPerformance.remotionShotProgress":
+    "已保存 {completed} / {total} 个镜头",
   "lessonPerformance.remotionCreatingImage": "正在生成配图：",
   "lessonPerformance.remotionCreatingShot": "正在制作：",
-  "lessonPerformance.remotionResumeHint": "已准备的内容和已完成的镜头会保留，继续时从未完成的位置接着制作。",
+  "lessonPerformance.remotionResumeHint":
+    "已准备的内容和已完成的镜头会保留，继续时从未完成的位置接着制作。",
   "lessonPerformance.remotionGenerating": "正在准备课程与视频…",
-  "lessonPerformance.remotionBackgroundHint": "生成在后台继续，离开页面后可回来查看进度。",
-  "lessonPerformance.remotionNextSteps": "课程内容已保存，可预览动画、编辑配音并导出视频。",
+  "lessonPerformance.remotionBackgroundHint":
+    "生成在后台继续，离开页面后可回来查看进度。",
+  "lessonPerformance.remotionNextSteps":
+    "课程内容已保存，可预览动画、编辑配音并导出视频。",
   "lessonPerformance.remotionGenerateFailed": "动画课程生成失败，请重试。",
-  "lessonPerformance.remotionPreviousLesson": "上次完成的视频仍保留，当前制作进度可继续。",
-  "lessonPerformance.remotionCourseStale": "课程教学内容已改变，请更新视频后再导出。",
-  "lessonPerformance.remotionIncomplete": "动画课程未收到完整生成结果，请刷新后继续。",
-  "lessonPerformance.remotionSpeechPending": "还需生成 {count} 段配音。可先预览，完整视频导出前请补齐语音。",
-  "lessonPerformance.remotionQueueHint": "自动补齐课程教学内容，再复用讲解与高级动画进行配音和导出。",
+  "lessonPerformance.remotionPreviousLesson":
+    "上次完成的视频仍保留，当前制作进度可继续。",
+  "lessonPerformance.remotionCourseStale":
+    "课程教学内容已改变，请更新视频后再导出。",
+  "lessonPerformance.remotionIncomplete":
+    "动画课程未收到完整生成结果，请刷新后继续。",
+  "lessonPerformance.remotionSpeechPending":
+    "还需生成 {count} 段配音。可先预览，完整视频导出前请补齐语音。",
+  "lessonPerformance.remotionQueueHint":
+    "自动补齐课程教学内容，再复用讲解与高级动画进行配音和导出。",
   "lessonPerformance.remotionPreviewLoading": "正在准备动画预览…",
   "lessonPerformance.exportRenderer": "导出渲染器",
   "lessonPerformance.exportRendererHtml": "标准（HTML）",
@@ -2802,11 +2836,11 @@ export const zhHans = {
   "settings.persona.myAssistantName": "我的助教名称",
   "settings.persona.setDefault": "设为默认",
   "settings.persona.switchTo": "切换到 {name}",
-  "uiChrome.assistant.ask": "问问助教",
+  "uiChrome.assistant.ask": "问问 {name}",
   "uiChrome.assistant.defaultName": "小慧",
-  "uiChrome.assistant.open": "打开学习助手",
-  "uiChrome.assistant.openWithReply": "打开学习助手查看回复",
-  "uiChrome.assistant.title": "学习助手",
+  "uiChrome.assistant.open": "打开学习助手 {name}",
+  "uiChrome.assistant.openWithReply": "打开学习助手 {name} 查看回复",
+  "uiChrome.assistant.title": "学习助手 {name}",
   "uiChrome.nav.primary": "主导航",
   "devLogs.common.all": "全部",
   "devLogs.common.copied": "已复制",
@@ -3159,8 +3193,7 @@ export const zhHans = {
   "wizard.material.answer.false": "错误",
   "wizard.material.answer.judgmentCorrect": "判断正确",
   "wizard.material.answer.judgmentIncorrect": "判断错误",
-  "wizard.material.answer.learningTarget":
-    "学习目标：{question.learningTarget}",
+  "wizard.material.answer.learningTarget": "学习目标：{target}",
   "wizard.material.answer.true": "正确",
   "wizard.material.callout.definition": "定义",
   "wizard.material.callout.example": "示例",
@@ -3218,11 +3251,12 @@ export const zhHans = {
   "wizard.material.regenerate": "重新生成",
   "wizard.material.regenerateFailed": "重新生成失败",
   "wizard.material.regenerating": "重新生成中…",
-  "wizard.material.simulator.absoluteDeterminant": "行列式绝对值",
+  "wizard.material.simulator.absoluteDeterminant": "行列式绝对值：{value}",
   "wizard.material.simulator.areaScale": "面积缩放因子",
   "wizard.material.simulator.cannotCalculate": "无法根据当前公式计算结果",
   "wizard.material.simulator.currentResult": "当前结果",
-  "wizard.material.simulator.curveSummary": "{variable}参数变化产生的曲线",
+  "wizard.material.simulator.curveSummary":
+    "{variable} 参数变化产生的曲线：{value}",
   "wizard.material.simulator.curveTitle": "{variable}曲线",
   "wizard.material.simulator.density": "密度",
   "wizard.material.simulator.determinant": "行列式",
@@ -3285,7 +3319,8 @@ export const zhHans = {
   "wizard.material.simulator.unknownVariables":
     "公式引用了未定义变量：{variables}",
   "wizard.material.takeawaysTitle": "这一节，记住这些",
-  "wizard.reading.assessmentFailed": "测验准备未完成，你可以继续阅读已有正文，稍后重新准备测验。",
+  "wizard.reading.assessmentFailed":
+    "测验准备未完成，你可以继续阅读已有正文，稍后重新准备测验。",
   "wizard.reading.assessmentRetry": "重新准备测验",
   "wizard.reading.assessmentRetrying": "正在准备测验…",
   "wizard.reading.assessmentLocked":
@@ -3378,8 +3413,7 @@ export const zhHans = {
   "wizard.section.audioPreparing": "语音准备中",
   "wizard.section.completeFailed": "无法完成本小节",
   "wizard.section.completed": "已完成",
-  "wizard.section.comprehensionCheckHeading":
-    "第 {activeSectionNumber} 段理解检查",
+  "wizard.section.comprehensionCheckHeading": "第 {number} 段理解检查",
   "wizard.section.continue": "继续",
   "wizard.section.continueAfterCheck": "完成理解检查后继续",
   "wizard.section.continueNext": "继续下一节",
@@ -3910,13 +3944,16 @@ export const zhHans = {
   "desktop.deviceSettings.errorLogs": "错误记录",
   "desktop.deviceSettings.runtime": "维护与诊断",
   "desktop.production.batchTitle": "通识课程 · 四学期课程库",
-  "desktop.production.batchDescription": "一键依次准备 28 门课程，自动补齐正文、图片和测试题。全部检查通过后，可下载包含图片的整套静态课程包。",
+  "desktop.production.batchDescription":
+    "一键依次准备 28 门课程，自动补齐正文、图片和测试题。全部检查通过后，可下载包含图片的整套静态课程包。",
   "desktop.production.batchGenerate": "一键生成全部 28 门",
   "desktop.production.batchResume": "继续生成全部课程",
   "desktop.production.batchRecheck": "重新检查全部课程",
   "desktop.production.batchExport": "下载全部课程包",
-  "desktop.production.batchReady": "全部课程的正文、图片与测试题已完整，可以整套导出。",
-  "desktop.production.batchIdle": "复用已有课程，跳过完整内容；进度自动保存，停止后可继续。",
+  "desktop.production.batchReady":
+    "全部课程的正文、图片与测试题已完整，可以整套导出。",
+  "desktop.production.batchIdle":
+    "复用已有课程，跳过完整内容；进度自动保存，停止后可继续。",
   "desktop.production.batchDetails": "查看全部课程状态",
   "desktop.production.batchPacking": "检查素材并打包静态课程",
   "desktop.production.batchStatusReady": "完整",
@@ -3927,17 +3964,21 @@ export const zhHans = {
   "desktop.production.preset": "课程预设",
   "desktop.production.custom": "自定义课程",
   "desktop.production.semester": "学期",
-  "desktop.production.presetHelp": "28 门课程自动填入目标；自动确认，使用浏览模式和快速规划。每课一个模块、最多六个教学单元。",
+  "desktop.production.presetHelp":
+    "28 门课程自动填入目标；自动确认，使用浏览模式和快速规划。每课一个模块、最多六个教学单元。",
   "desktop.production.destination": "课程归入",
   "desktop.production.title": "课程制作",
-  "desktop.production.description": "一次制作一门课程。选择课程后，一键准备这门课的全部正文、图片和测试题，检查完整后下载课程包。",
+  "desktop.production.description":
+    "一次制作一门课程。选择课程后，一键准备这门课的全部正文、图片和测试题，检查完整后下载课程包。",
   "desktop.production.input": "课程目标",
   "desktop.production.name": "课程名称",
   "desktop.production.namePlaceholder": "例如：物质、粒子与化学变化",
   "desktop.production.goal": "详细学习目标",
   "desktop.production.example": "填入示例",
-  "desktop.production.goalPlaceholder": "写清学习起点、学完能做什么、必教知识和范围边界。可以直接粘贴已整理好的课程简报。",
-  "desktop.production.defaults": "默认中文、基础起点；直接生成，不再发起澄清问卷",
+  "desktop.production.goalPlaceholder":
+    "写清学习起点、学完能做什么、必教知识和范围边界。可以直接粘贴已整理好的课程简报。",
+  "desktop.production.defaults":
+    "默认中文、基础起点；直接生成，不再发起澄清问卷",
   "desktop.production.generate": "一键准备这门课程",
   "desktop.production.readyLabel": "已准备完整",
   "desktop.production.running": "后台制作中",
@@ -3945,20 +3986,23 @@ export const zhHans = {
   "desktop.production.stop": "停止",
   "desktop.production.new": "制作另一门",
   "desktop.production.restart": "从头重新制作",
-  "desktop.production.restartHelp": "使用最新简报建立新课程，保留旧课程，不复用旧目录与正文。",
+  "desktop.production.restartHelp":
+    "使用最新简报建立新课程，保留旧课程，不复用旧目录与正文。",
   "desktop.production.loading": "正在恢复制作进度…",
   "desktop.production.ready": "这门课程的正文、图片和测试题已完整，可以导出。",
   "desktop.production.saved": "已恢复上次制作，可继续准备。",
   "desktop.production.idle": "开始后会使用当前配置的模型，进度自动保存。",
   "desktop.production.progress": "内容准备进度",
   "desktop.production.result": "课程与导出",
-  "desktop.production.resultDescription": "导出当前这门课程的全部正文、测试题、答案解析与本地图片，供后续 Godot 使用。",
+  "desktop.production.resultDescription":
+    "导出当前这门课程的全部正文、测试题、答案解析与本地图片，供后续 Godot 使用。",
   "desktop.production.openSpace": "打开学习空间",
   "desktop.production.openCourse": "查看课程",
   "desktop.production.godotTitle": "导出到 Godot",
   "desktop.production.godotDev": "开发用",
   "desktop.production.godotBinding": "{course} · 第 {semester} 学期",
-  "desktop.production.godotChooseCourse": "选择一门学期课程后，自动关联课程编号。",
+  "desktop.production.godotChooseCourse":
+    "选择一门学期课程后，自动关联课程编号。",
   "desktop.production.godotDirectory": "写入位置",
   "desktop.production.godotNoDirectory": "尚未设置",
   "desktop.production.godotChooseDirectory": "选择项目目录",
@@ -3966,10 +4010,13 @@ export const zhHans = {
   "desktop.production.godotPreparing": "正在导出课程…",
   "desktop.production.godotCompressing": "正在处理图片…",
   "desktop.production.godotInstalling": "正在更新素材…",
-  "desktop.production.godotHelp": "自动压缩插图，SVG 优先保留矢量。同一课程编号覆盖更新，保留任务源文件。",
-  "desktop.production.godotDone": "已更新 {course}（第 {semester} 学期）。图片 {before} → {after} MiB。",
+  "desktop.production.godotHelp":
+    "自动压缩插图，SVG 优先保留矢量。同一课程编号覆盖更新，保留任务源文件。",
+  "desktop.production.godotDone":
+    "已更新 {course}（第 {semester} 学期）。图片 {before} → {after} MiB。",
   "desktop.production.export": "下载这门课程包",
-  "desktop.production.modelNote": "离开此页面仍会在后台继续；关闭应用后，下次打开会恢复运行中的任务。生成会使用当前模型的额度。",
+  "desktop.production.modelNote":
+    "离开此页面仍会在后台继续；关闭应用后，下次打开会恢复运行中的任务。生成会使用当前模型的额度。",
   "desktop.production.modelSettings": "模型设置",
   "desktop.production.saveFailed": "制作进度保存失败，请重试。",
   "desktop.production.stopped": "已请求停止，进度已保留。",
@@ -3990,14 +4037,16 @@ export const zhHans = {
   "desktop.resourceSettings.saving": "正在保存…",
   "desktop.resourceSettings.saved": "已保存，新上传的资料将使用此上限。",
   "desktop.guidedImageModel.title": "图解识图模型",
-  "desktop.guidedImageModel.description": "用于教学图片的区域识别和看图讲解。自动模式优先使用当前支持图片输入的模型，否则使用 DeepSeek。",
+  "desktop.guidedImageModel.description":
+    "用于教学图片的区域识别和看图讲解。自动模式优先使用当前支持图片输入的模型，否则使用 DeepSeek。",
   "desktop.guidedImageModel.mode": "选择方式",
   "desktop.guidedImageModel.auto": "自动：跟随当前模型",
   "desktop.guidedImageModel.manual": "手动指定模型",
   "desktop.guidedImageModel.current": "当前对话模型：{model}",
   "desktop.guidedImageModel.provider": "服务商",
   "desktop.guidedImageModel.model": "模型",
-  "desktop.guidedImageModel.manualHint": "请指定支持图片输入的模型，复用该服务商已保存的登录或密钥。自定义服务商使用当前启用的端点。",
+  "desktop.guidedImageModel.manualHint":
+    "请指定支持图片输入的模型，复用该服务商已保存的登录或密钥。自定义服务商使用当前启用的端点。",
   "desktop.guidedImageModel.save": "保存识图设置",
   "desktop.guidedImageModel.saving": "保存中…",
   "desktop.guidedImageModel.saved": "已保存，下次识图时生效",
@@ -4384,4 +4433,681 @@ export const zhHans = {
     "本地服务重启后未能启用 Qwen，请重试。",
   "desktop.embeddingSetup.invalidUrl": "接口地址必须使用 HTTP 或 HTTPS。",
   "desktop.embeddingSetup.saveFailed": "保存失败（{status}）。",
+  // Desktop learning controls and workspace operations.
+  "desktop.ui.agentChat.exitGoalCreation": "退出目标创建",
+  "desktop.ui.agentChat.loadEarlierMessages": "加载更早消息",
+  "desktop.ui.agentChatWorkspace.aiLearningPlanner": "AI 目标规划",
+  "desktop.ui.agentChatWorkspace.describeWhatYouWantToLearn":
+    "描述你的学习目标",
+  "desktop.ui.agentChatWorkspace.newGoal": "新目标",
+  "desktop.ui.agentChatWorkspace.workWithYourAssistantToDefineA":
+    "与 AI 对话完成目标设定、学习规划与学习地图生成。",
+  "desktop.ui.assistantSectionMaterial.couldNotStartPlayback": "演奏未能启动：",
+  "desktop.ui.circuitSandbox.circuitSandbox": "电路仿真沙箱",
+  "desktop.ui.circuitSandbox.circuitStatus": "回路状态",
+  "desktop.ui.circuitSandbox.close": "闭合",
+  "desktop.ui.circuitSandbox.closed": "已闭合",
+  "desktop.ui.circuitSandbox.closedCircuit": "通路",
+  "desktop.ui.circuitSandbox.components": "元件",
+  "desktop.ui.circuitSandbox.open": "已断开",
+  "desktop.ui.circuitSandbox.open2": "断开",
+  "desktop.ui.circuitSandbox.openCircuit": "断路",
+  "desktop.ui.collectFormCard.confirmLearningSettings": "确认学习设置",
+  "desktop.ui.collectFormCard.createALearningMapAndDetailedPlan":
+    "生成学习地图与详细规划",
+  "desktop.ui.collectFormCard.exploreOneTopicInAShortLesson":
+    "单单元快速了解，跳过地图与摘要，自动生成预习",
+  "desktop.ui.collectFormCard.learningMaterialsOptional": "学习资料（可选）",
+  "desktop.ui.collectFormCard.learningPreferences": "内容定制说明",
+  "desktop.ui.completeStep.practiceAgain": "再次练习",
+  "desktop.ui.completeStep.shortCourseComplete": "本节轻课学习完成",
+  "desktop.ui.completeStep.theLessonContentAndNotesAreAvailable":
+    "右侧可查阅本单元的正文与笔记。",
+  "desktop.ui.completeStep.thisUnitNeedsMorePracticeRevisitIt":
+    "本单元标记为需巩固，建议多复习几次。",
+  "desktop.ui.completeStep.unitComplete": "本单元学习完成",
+  "desktop.ui.completeStep.yourProgressIsSavedSpacedReviewsWill":
+    "学习进度已保存，系统将安排间隔复习。",
+  "desktop.ui.composedStage.clearFocus": "取消聚焦",
+  "desktop.ui.composedStage.focus": "聚焦",
+  "desktop.ui.composedStage.showAll": "显示全部",
+  "desktop.ui.conversationalUnitView.turnOffSpokenExplanations": "关闭语音讲解",
+  "desktop.ui.conversationalUnitView.turnOnSpokenExplanations": "开启语音讲解",
+  "desktop.ui.courseInteractionBlocks.correctOrder": "顺序正确",
+  "desktop.ui.courseInteractionBlocks.dragStep": "拖动步骤",
+  "desktop.ui.coursePatternPanel.aCoursePatternDefinesTheStructureOf":
+    "课程模式定义相似学习单元的固定结构、内容块用法，以及共享背景（如作者、朝代、语法体系）应如何复用。 后续生成预习与正文时会遵循此模式。",
+  "desktop.ui.coursePatternPanel.noCoursePatternYetSaveYourOwn":
+    "尚未生成课程模式。可先保存自定义内容，或点击「重新生成」。",
+  "desktop.ui.coursePatternPanel.patternContent": "模式内容",
+  "desktop.ui.displayBlockHost.pausePresentation": "暂停演示",
+  "desktop.ui.displayBlockHost.playPresentation": "播放演示",
+  "desktop.ui.displayBlockHost.presentationProgress": "演示进度",
+  "desktop.ui.displayBlockHost.seconds": "秒",
+  "desktop.ui.exportTextbookButton.desktopLayout": "桌面版宽度",
+  "desktop.ui.exportTextbookButton.exportCourseAsPdf": "导出 PDF 教材",
+  "desktop.ui.exportTextbookButton.mobileLayout": "手机版宽度",
+  "desktop.ui.exportTextbookButton.preparingPdf": "正在生成 PDF…",
+  "desktop.ui.feynmanStep.explain": "用自己的话讲解「",
+  "desktop.ui.feynmanStep.inYourOwnWordsAsIfTeaching":
+    "」，就像教一个完全不懂的人。",
+  "desktop.ui.feynmanStep.needsPractice": "需巩固",
+  "desktop.ui.feynmanStep.passed": "通过",
+  "desktop.ui.feynmanStep.result": "结果：",
+  "desktop.ui.feynmanStep.startExplaining": "开始讲解…",
+  "desktop.ui.feynmanStep.submitExplanation": "提交讲解",
+  "desktop.ui.forceSubdividePanel.expandGoal": "扩展目标",
+  "desktop.ui.forceSubdividePanel.removeSubMap": "移除子地图",
+  "desktop.ui.forceSubdividePanel.removing": "移除中…",
+  "desktop.ui.forceSubdividePanel.splitUnit": "拆分单元",
+  "desktop.ui.goalDashboardPage.checkLearningGoals": "验证学习目标",
+  "desktop.ui.goalDashboardPage.couldNotLoadThisGoalPleaseTry":
+    "暂时无法加载目标，请稍后再试。",
+  "desktop.ui.goalDashboardPage.loadingGoal": "加载目标…",
+  "desktop.ui.goalDashboardPage.overview": "总览：",
+  "desktop.ui.goalDashboardPage.startOverview": "开始总览",
+  "desktop.ui.goalDashboardPage.theFirstTwoLevelsAreShownInitially":
+    "默认展示前两层；需要时再逐层展开，避免深层路径一次铺满页面。",
+  "desktop.ui.goalDashboardPage.viewOverview": "查看总览",
+  "desktop.ui.goalFoundationsPage.createAPrerequisiteLearningGoal":
+    "创建基础补充目标",
+  "desktop.ui.goalFoundationsPage.creating": "正在创建…",
+  "desktop.ui.kacomDetachDevPanel.detachKacom": "解除 KACOM",
+  "desktop.ui.kacomDetachDevPanel.detaching": "解除中…",
+  "desktop.ui.labFrameHost.couldNotLoadLabResources": "实验室资源加载失败",
+  "desktop.ui.labFrameHost.couldNotStartPleaseTryAgain": "暂时无法启动。",
+  "desktop.ui.labShell.controlsAndParameters": "交互控制与参数调节",
+  "desktop.ui.labShell.expandToFullScreen": "全屏展开",
+  "desktop.ui.labShell.liveSimulationReadings": "实时物理与数据读数",
+  "desktop.ui.labShell.resetExperiment": "重置实验参数",
+  "desktop.ui.learningReferencePanel.referToLessonContentAndNotesWhile":
+    "练习时可随时查阅正文与笔记",
+  "desktop.ui.llmLogsViewer.nestedCalls": "· 父子嵌套",
+  "desktop.ui.materialSlideDeck.completedPracticeAgainAnytime":
+    "已学完 · 可反复练习",
+  "desktop.ui.materialSlideDeck.contents": "目录",
+  "desktop.ui.materialSlideDeck.finishLesson": "完成学习",
+  "desktop.ui.materialSlideDeck.lessonSlides": "幻灯片学习",
+  "desktop.ui.materialSlideDeck.slideOutline": "幻灯片目录",
+  "desktop.ui.materialSlideDeck.youHaveFinishedTheLessonContinueBelow":
+    "正文已学完，请在下方继续生成学习笔记。",
+  "desktop.ui.mechanicsSandbox.accelerationDownSlopeA": "下滑加速度 a：",
+  "desktop.ui.mechanicsSandbox.cartOnAnIncline": "斜面小车",
+  "desktop.ui.mechanicsSandbox.coefficientOfRestitutionE1Elastic0":
+    "恢复系数 e (1=完全弹性, 0=完全非弹性)",
+  "desktop.ui.mechanicsSandbox.inclineAngle": "倾角 θ",
+  "desktop.ui.mechanicsSandbox.initial": "初",
+  "desktop.ui.mechanicsSandbox.initialVelocityOfObjectAV": "物体 A 初速度 (v₁)",
+  "desktop.ui.mechanicsSandbox.jFinal": "J → 末",
+  "desktop.ui.mechanicsSandbox.jLoss": "J (损耗",
+  "desktop.ui.mechanicsSandbox.kineticEnergyEK": "动能转化 E_k：",
+  "desktop.ui.mechanicsSandbox.massOfObjectAM": "物体 A 质量 (m₁)",
+  "desktop.ui.mechanicsSandbox.massOfObjectBM": "物体 B 质量 (m₂)",
+  "desktop.ui.mechanicsSandbox.momentumP": "动量守恒 P：",
+  "desktop.ui.mechanicsSandbox.naturalFrequencyF": "固有频率 f：",
+  "desktop.ui.mechanicsSandbox.normalForceNGravitationalComponent":
+    "支持力 N / 重力分力：",
+  "desktop.ui.mechanicsSandbox.pendulumLengthL": "摆长 L",
+  "desktop.ui.mechanicsSandbox.pendulumPeriodT": "摆动周期 T：",
+  "desktop.ui.mechanicsSandbox.physicsSandbox": "物理沙箱",
+  "desktop.ui.mechanicsSandbox.startSimulation": "开始模拟",
+  "desktop.ui.mechanicsSandbox.velocitiesAfterCollision": "碰撞后速度：",
+  "desktop.ui.personalSyncPage.alreadyOnThisDevice": "已在本机",
+  "desktop.ui.personalSyncPage.atLeast12Characters": "至少 12 个字符",
+  "desktop.ui.personalSyncPage.avoidEditingTheSameGoalOnTwo":
+    "避免同时编辑同一个学习目标",
+  "desktop.ui.personalSyncPage.checkingStatus": "正在读取状态…",
+  "desktop.ui.personalSyncPage.chooseAnIcloudDriveLocation":
+    "选择 iCloud Drive 位置",
+  "desktop.ui.personalSyncPage.chooseFolder": "选择文件夹",
+  "desktop.ui.personalSyncPage.chooseSyncLocation": "选择同步位置",
+  "desktop.ui.personalSyncPage.chooseTheSameIcloudDriveLocationAs":
+    "选择另一台设备使用的同一个 iCloud Drive 位置，然后输入原同步密码。",
+  "desktop.ui.personalSyncPage.conflictsToReviewTheConflictingVersionsHave":
+    "个需要处理的冲突。冲突版本已保留，不会静默覆盖。",
+  "desktop.ui.personalSyncPage.connect": "加入",
+  "desktop.ui.personalSyncPage.connectAnExistingSyncedWorkspace":
+    "在这台设备加入已有同步工作区",
+  "desktop.ui.personalSyncPage.current": "当前",
+  "desktop.ui.personalSyncPage.currentWorkspace": "当前工作区",
+  "desktop.ui.personalSyncPage.disableSyncForThisWorkspace": "停用此工作区同步",
+  "desktop.ui.personalSyncPage.enableAutomaticSync": "启用自动同步",
+  "desktop.ui.personalSyncPage.enableEncryptedFolderSync": "启用加密文件夹同步",
+  "desktop.ui.personalSyncPage.encryptedFolderSync": "加密文件夹同步",
+  "desktop.ui.personalSyncPage.encryptedWorkspace": "加密工作区",
+  "desktop.ui.personalSyncPage.enterThePasswordToDecryptItsName":
+    "输入密码后才会在本机解密名称",
+  "desktop.ui.personalSyncPage.enterTheSyncPasswordToUnlockThis":
+    "输入同步密码以解锁此工作区",
+  "desktop.ui.personalSyncPage.findExistingWorkspaces": "查找已有工作区",
+  "desktop.ui.personalSyncPage.folderSyncEnabled": "文件夹同步已启用",
+  "desktop.ui.personalSyncPage.keepThisPasswordInAPasswordManager":
+    "请把密码保存在密码管理器中。忘记密码且所有已解锁设备都丢失后，加密数据无法恢复。",
+  "desktop.ui.personalSyncPage.keepXuelearnAndTheSyncFolderAvailable":
+    "请保持 XueLearn 和同步文件夹可用；课程较多时可能需要几分钟。",
+  "desktop.ui.personalSyncPage.letOneDeviceFinishSyncingBeforeContinuing":
+    "iCloud Drive 会同步文件，但不提供数据库级原子锁。请让一台设备完成同步后再在另一台设备继续；检测到冲突时，XueLearn 会保留冲突记录而不会静默覆盖。",
+  "desktop.ui.personalSyncPage.locked": "· 已锁定",
+  "desktop.ui.personalSyncPage.newWorkspaceName": "新工作区名称",
+  "desktop.ui.personalSyncPage.notSelected": "尚未选择",
+  "desktop.ui.personalSyncPage.openIcloudDriveInFinderAndChoose":
+    "在 Finder 侧边栏打开 iCloud Drive，选择一个位置。XueLearn 会在其中创建“XueLearn Sync”文件夹。",
+  "desktop.ui.personalSyncPage.saveEndToEndEncryptedLearningRecords":
+    "把端到端加密的学习记录保存到你的 iCloud Drive。无需 Apple 开发者账户，XueLearn 也不会获得你的 Apple 登录信息。",
+  "desktop.ui.personalSyncPage.setASyncPassword": "设置同步密码",
+  "desktop.ui.personalSyncPage.switch": "切换",
+  "desktop.ui.personalSyncPage.syncFolder": "同步文件夹",
+  "desktop.ui.personalSyncPage.syncNow": "立即同步",
+  "desktop.ui.personalSyncPage.syncPassword": "同步密码",
+  "desktop.ui.personalSyncPage.syncing": "同步中",
+  "desktop.ui.personalSyncPage.thereAre": "存在",
+  "desktop.ui.personalSyncPage.thisDeviceOnly": "仅本机",
+  "desktop.ui.personalSyncPage.unlock": "解锁",
+  "desktop.ui.personalSyncPage.workspacesOnThisDevice": "本机工作区",
+  "desktop.ui.quizSetDrawer.chooseAPracticeSetToAnswerOr":
+    "选择要作答或查看的测验题组",
+  "desktop.ui.quizSetDrawer.practiceSets": "测验题组",
+  "desktop.ui.quizSetDrawer.questions": "题",
+  "desktop.ui.quizSetList.allPracticeSets": "全部测验题组",
+  "desktop.ui.quizSetList.generatedPracticeSetsAreSavedHereSo":
+    "生成题目后会保存在这里，可随时重新作答",
+  "desktop.ui.quizSetList.loadingPracticeHistory": "加载测验记录…",
+  "desktop.ui.quizSetList.noPracticeSetsYet": "还没有测验题组",
+  "desktop.ui.quizSetList.notAnswered": "· 未作答",
+  "desktop.ui.quizSetList.viewLatestAttempt": "查看最近作答",
+  "desktop.ui.socraticChatPanel.answer": "回答",
+  "desktop.ui.socraticChatPanel.completed": "· 已完成",
+  "desktop.ui.socraticChatPanel.eachMissedQuestionHasItsOwnConversation":
+    "每道错题一条对话，选择后开始引导式修正",
+  "desktop.ui.socraticChatPanel.originalQuestion": "原题",
+  "desktop.ui.socraticChatPanel.selectAMissedQuestionToReview":
+    "从错题列表选择一道题开始修正",
+  "desktop.ui.socraticChatPanel.selectStartGuidedReviewToPrepareThe":
+    "点击「开始引导修正」生成首个问题",
+  "desktop.ui.socraticChatPanel.startGuidedReview": "开始引导修正",
+  "desktop.ui.socraticChatPanel.thisReviewIsCompleteSelectNextQuestion":
+    "本题修正完成。点击下一题后再继续。",
+  "desktop.ui.socraticChatPanel.writeYourThoughts": "写下你的思考…",
+  "desktop.ui.socraticChatPanel.youHaveReviewedEveryMissedQuestionSelect":
+    "所有错题均已修正。点击继续进入下一阶段。",
+  "desktop.ui.socraticChatPanel.yourAssistantWillAskQuestionsToHelp":
+    "AI 会通过引导提问帮你自己发现误区，而不是直接给答案",
+  "desktop.ui.socraticStep.backToCompletion": "返回完成页",
+  "desktop.ui.socraticStep.finishPractice": "完成练习",
+  "desktop.ui.socraticStep.finishReview": "完成修正",
+  "desktop.ui.socraticStep.reviewEveryMissedQuestionBeforeContinuing":
+    "完成所有错题后继续",
+  "desktop.ui.socraticStep.selectAMissedQuestionToStartA":
+    "通过错题列表选择测验错题，每题一条对话。选中后开始引导式修正，帮你自己发现误区。",
+  "desktop.ui.socraticThreadDrawer.afterAQuizAnyMissedQuestionsWill":
+    "完成测验后，每道错题会出现在这里",
+  "desktop.ui.socraticThreadDrawer.chooseAQuestionToReviewWithYour":
+    "选择要修正的错题对话",
+  "desktop.ui.socraticThreadDrawer.missedQuestions": "错题列表",
+  "desktop.ui.socraticThreadDrawer.noMissedQuestionsToReview":
+    "还没有错题可修正",
+  "desktop.ui.socraticThreadDrawer.notStarted": "待开始",
+  "desktop.ui.socraticThreadDrawer.responses": "轮回答",
+  "desktop.ui.toolUiRenderer.openShortCourse": "查看轻课",
+  "desktop.ui.toolUiRenderer.pleaseAddMoreDetail": "请补充说明",
+  "desktop.ui.toolUiRenderer.shortCourseCreated": "已创建轻课",
+  "desktop.ui.toolUiRenderer.youCanAlsoReplyInTheMessage":
+    "也可在下方输入框直接回复",
+  "desktop.ui.typewriterText.skipTypingAnimation": "点击跳过打字动画",
+  "desktop.ui.unitContentGenBadges.lessonContent": "正文",
+  "desktop.ui.unitLab.theInteractiveLabIsNotEnabledYet":
+    "实验室运行时尚未启用。",
+  "desktop.ui.unitLab.whatToObserve": "观察要点：",
+  "desktop.ui.unitWizard.hideLearningMaterials": "收起学习资料",
+  "desktop.ui.unitWizard.openLearningMaterials": "打开学习资料",
+  "desktop.ui.unitWizard.questionReviewComplete": "错题修正已完成",
+  "desktop.ui.unitWizard.referToLessonContentAndNotesDuring":
+    "复习时可随时查阅正文与笔记",
+  "desktop.ui.unitWizard.youCanFinishThisUnitAndContinue":
+    "可以完成本单元并继续下一个复习单元。",
+  "desktop.i18n.automaticContentLanguage": "自动（按对话语言）",
+  "desktop.i18n.bootstrapFailed": "好会学未能启动",
+  "desktop.i18n.expandGoalHint": "助手会先提问，再帮助你扩展为完整目标。",
+  "desktop.i18n.expandGoalMissing": "找不到学习目标，请重新打开后重试。",
+  "desktop.i18n.exportFailed": "导出失败（{status}），请重试。",
+  "desktop.i18n.feynmanPrompt":
+    "用自己的话讲解「{title}」，就像教一个完全不懂的人。",
+  "desktop.i18n.filesSelected.one": "已选 {count} 个文件",
+  "desktop.i18n.filesSelected.other": "已选 {count} 个文件",
+  "desktop.i18n.modelCustomPlaceholder": "或输入自定义模型 ID",
+  "desktop.i18n.overviewFailed": "准备失败",
+  "desktop.i18n.overviewGenerating": "生成中",
+  "desktop.i18n.overviewIdle": "未开始",
+  "desktop.i18n.overviewReady": "已就绪",
+  "desktop.i18n.pathFromMaterials": "基于你的资料",
+  "desktop.i18n.pathFromWeb": "基于网络参考资料",
+  "desktop.i18n.pathGeneral": "通用学习路径",
+  "desktop.i18n.patternRegenerate": "重新生成课程模式",
+  "desktop.i18n.patternRegenerateConfirm":
+    "将根据当前目标信息重新生成课程模式，并覆盖现有内容。确定继续吗？",
+  "desktop.i18n.patternRegenerateFailed": "重新生成课程模式失败。",
+  "desktop.i18n.patternSaveFailed": "保存课程模式失败。",
+  "desktop.i18n.questionCount.one": "{count} 题",
+  "desktop.i18n.questionCount.other": "{count} 题",
+  "desktop.i18n.regenerateMap": "重新生成子地图",
+  "desktop.i18n.regenerateMapConfirm":
+    "重新规划「{title}」？尚未开始的结构子地图可重新生成；已有学习活动时保留课程结构与证据，只生成可移除的单元内步骤。",
+  "desktop.i18n.regenerateMapHint":
+    "没有学习活动时调整课程结构，否则只更新单元内学习步骤。",
+  "desktop.i18n.removeMapConfirm":
+    "移除「{title}」尚未开始的结构子地图，或移除单元内的学习步骤？已有会话、内容、笔记、练习、证据或复习记录时不会移除课程结构，也不会清除学习历史。",
+  "desktop.i18n.removeMapFailed": "移除子地图失败。",
+  "desktop.i18n.removingMap": "正在移除子地图…",
+  "desktop.i18n.responseCount.one": "{count} 轮回答",
+  "desktop.i18n.responseCount.other": "{count} 轮回答",
+  "desktop.i18n.sectionNotFound": "阅读章节不存在。",
+  "desktop.i18n.splitConfirm":
+    "拆分「{title}」？尚未开始的单元可拆成同模块子单元；已有学习活动时只生成单元内步骤，保留进度、证据与历史。",
+  "desktop.i18n.splitFailed": "拆分失败。",
+  "desktop.i18n.splitHint":
+    "未开始时拆分单元，开始后生成不影响进度与证据的学习步骤。",
+  "desktop.i18n.splitSubunits": "拆分子单元",
+  "desktop.i18n.streamBufferTooLarge": "响应超出了支持的大小。",
+  "desktop.i18n.streamEventTooLarge": "响应事件超出了支持的大小。",
+  "desktop.i18n.streamInterrupted": "响应完成前连接已中断，请重试。",
+  "desktop.i18n.streamInvalid": "无法读取响应，请重试。",
+  "desktop.i18n.streamMissing": "服务没有返回响应流。",
+  "desktop.i18n.uploadOptional": "拖拽或点击上传 {formats}（可选）",
+  "desktop.i18n.voiceClone": "克隆",
+  "desktop.sync.conflicts.one":
+    "存在 {count} 个需要处理的冲突，冲突版本已保留。",
+  "desktop.sync.conflicts.other":
+    "存在 {count} 个需要处理的冲突，冲突版本已保留。",
+  "desktop.sync.lastSuccess": " · 上次成功 {time}",
+  "desktop.sync.progress.finalizing": "正在完成同步…",
+  "desktop.sync.progress.localUpToDate": "本机记录已是最新",
+  "desktop.sync.progress.preparing": "正在检查本机与同步文件夹…",
+  "desktop.sync.progress.receiving": "正在合并云端学习记录{count}",
+  "desktop.sync.progress.remoteUpToDate": "云端记录已是最新",
+  "desktop.sync.progress.uploading": "正在上传学习记录{count}",
+  "desktop.sync.state.authenticationRequired": "需要重新连接同步文件夹",
+  "desktop.sync.state.conflict": "有需要检查的同步冲突",
+  "desktop.sync.state.disabled": "仅保存在本机",
+  "desktop.sync.state.error": "同步遇到问题",
+  "desktop.sync.state.locked": "需要同步密码解锁",
+  "desktop.sync.state.offline": "等待同步文件夹恢复连接",
+  "desktop.sync.state.readOnly": "需要升级（只读）",
+  "desktop.sync.state.synced": "已同步",
+  "desktop.sync.state.syncing": "正在同步",
+  "desktop.i18n.quizAttempts": " · 作答 {count} 次 · 最高 {score}",
+  "desktop.learningMode.skillPractice": "技能实践（学会做/用）",
+  "desktop.learningMode.conceptualUnderstanding": "概念理解（理解原理与体系）",
+  "desktop.learningMode.researchScholarship": "学科研究（学术性探究）",
+  "desktop.learningMode.professionalApplied": "职业应用（岗位与实务）",
+  "desktop.learningMode.creativeExpression": "创作表达（产出与风格）",
+  "desktop.learningMode.mixed": "混合模式",
+  "desktop.domainTag.stem": "理工 / STEM",
+  "desktop.domainTag.humanities": "人文 / 语言艺术",
+  "desktop.domainTag.general": "综合",
+  "desktop.unitStatus.available": "可开始",
+  "desktop.unitStatus.in_progress": "学习中",
+  "desktop.unitStatus.completed": "已完成",
+  "desktop.unitStatus.completed_needs_reinforcement": "需巩固",
+  "desktop.unitStatus.skipped": "已跳过",
+  // Shared display controls and built-in library metadata.
+  "display.ui.a0C888Keys": "A0–C8 · 88 键",
+  "display.ui.aConversation": "一段对话",
+  "display.ui.all": "全部",
+  "display.ui.allPlugins": "← 全部插件",
+  "display.ui.animatedDiagram": "动态图解",
+  "display.ui.audioCouldNotStartPressListenToTryAgain":
+    "音频未能启动，请再次点击试听",
+  "display.ui.audioCouldNotStartPressPlayToTryAgain":
+    "音频未能启动，请再次点击播放",
+  "display.ui.audioUnavailable": "音频不可用",
+  "display.ui.backToLibrary": "返回插件库",
+  "display.ui.browseComponents": "浏览组件",
+  "display.ui.browseTheDisplayComponentsInThisPlugin":
+    "浏览这个插件提供的展示组件。",
+  "display.ui.builtIn": "内置",
+  "display.ui.cancelPreparation": "取消准备",
+  "display.ui.cello": "大提琴",
+  "display.ui.chooseAVersionThenPressPlay": "选择后点击播放",
+  "display.ui.clearFilters": "清除筛选",
+  "display.ui.codeAndComputing": "代码与计算",
+  "display.ui.codeDemonstration": "代码演示",
+  "display.ui.codeExplanation": "代码讲解",
+  "display.ui.combineTextEquationsAndOtherComponentsOnOneCanvas":
+    "在同一画布中组合文字、公式和其他领域组件。",
+  "display.ui.compareObservationsAndAnExplanatoryViewToUnderstandHidden":
+    "对照实际观测和教学透视，理解隐藏状态。",
+  "display.ui.comparePlayback": "试听对比",
+  "display.ui.compareTwoPerspectivesMethodsOrResultsSideBySide":
+    "并排比较两种观点、方法或结果。",
+  "display.ui.comparison": "对比",
+  "display.ui.comparison2": "对比讲解",
+  "display.ui.compositionCanvas": "组合画布",
+  "display.ui.conceptCards": "概念卡片",
+  "display.ui.conceptRelationships": "概念关系",
+  "display.ui.copied": "已复制",
+  "display.ui.copy": "复制",
+  "display.ui.copyCode": "复制代码",
+  "display.ui.coreIdea": "核心概念 · CORE IDEA",
+  "display.ui.couldNotCopy": "复制失败",
+  "display.ui.couldNotLoadDisplayPlugin": "展示插件加载失败",
+  "display.ui.couldNotPrepareDisplayContent": "展示内容准备失败",
+  "display.ui.couldNotResolvePluginDependencies": "插件依赖无法解析",
+  "display.ui.currentRange": "当前音区",
+  "display.ui.customExample": "自定义示例",
+  "display.ui.dataChart": "数据图表",
+  "display.ui.disable": "停用",
+  "display.ui.disabled": "已停用",
+  "display.ui.disabledForNewCoursesExistingCoursesCanStillPlay":
+    "已停止在新课程中使用。已有课程仍可播放。",
+  "display.ui.disabledPreviewAvailable": "已停用，仍可预览",
+  "display.ui.displayComponentNotFound": "找不到这个展示组件",
+  "display.ui.displayCompositionContainsACycle": "展示组合存在循环",
+  "display.ui.displayInputChangedTheOutdatedBuildResultWasIgnored":
+    "展示输入已改变，忽略旧构建结果。",
+  "display.ui.displayLibrary": "展示组件库",
+  "display.ui.displayPluginVersionMismatch": "展示插件版本不匹配",
+  "display.ui.displayPlugins": "Display 插件",
+  "display.ui.displayResourcesAreNotReady": "展示资源未就绪",
+  "display.ui.dragTheProgressSliderToExploreTheAnimationOr":
+    "拖动进度查看动画；交互乐谱可直接试听。这里的示例不会修改课程内容。",
+  "display.ui.drawBarLineOrDoughnutChartsFromNumericData":
+    "从真实数值绘制柱状图、折线图或环形图。",
+  "display.ui.electricPiano": "电钢琴",
+  "display.ui.enable": "启用",
+  "display.ui.enabled": "已启用",
+  "display.ui.enabledForNewCourses": "已启用，可用于生成新课程。",
+  "display.ui.equationExplanation": "公式讲解",
+  "display.ui.evaluationComparison": "评测对照",
+  "display.ui.exampleFilesMustBeNoLargerThan2Mib": "示例文件不能超过 2 MiB。",
+  "display.ui.experimentsAndRelationships": "实验与关系演示",
+  "display.ui.explainIdeasWithCardsConversationsAndProcesses":
+    "用卡片、对话和流程，把知识讲清楚。",
+  "display.ui.explainPhysicsWithRelationshipDiagramsAndObservationalScenes":
+    "用关系图和观测场景组织物理讲解。",
+  "display.ui.explainWithAnimatedSignalFlowsCyclesAndChanges":
+    "用信号流、循环和变化动画辅助讲解。",
+  "display.ui.exploreEquationsDataAndEveryStepOfADerivation":
+    "让公式、数据和每一步推导都看得见。",
+  "display.ui.exploreMathematicsWithAnimatedGeometryFunctionsAndAreas":
+    "通过几何、函数和面积动画理解数学。",
+  "display.ui.exploreMusicThroughScoresKeyboardsAndHarmony":
+    "通过乐谱、键盘与和声理解音乐。",
+  "display.ui.exploreNoteRelationshipsInMelodyAndHarmony":
+    "观察旋律与和声中的音符关系。",
+  "display.ui.explorePhysicsThroughChangingForcesWavesAndCircuits":
+    "通过力、波和电路的变化理解物理关系。",
+  "display.ui.exploreReasoningThroughQuestionsAndAnswers":
+    "通过师生问答展开思考过程。",
+  "display.ui.exportDefinition": "导出定义",
+  "display.ui.fluidr3GmCcBy30LocalSamples": "FluidR3 GM · CC BY 3.0 · 本地采样",
+  "display.ui.fluidr3GmFrankWenAndContributorsMidiJsSoundfonts":
+    "FluidR3_GM / Frank Wen 与贡献者；MIDI.js\n        Soundfonts，CC BY 3.0。本地采样与近似延音模拟。",
+  "display.ui.flute": "长笛",
+  "display.ui.followEquationTransformationsAndTheReasonForEachStep":
+    "观察公式变换，并阅读每一步的理由。",
+  "display.ui.formalDerivation": "形式化推导",
+  "display.ui.fullKeyboard": "完整键盘",
+  "display.ui.fullScore": "全曲",
+  "display.ui.generalPresentation": "通用表达",
+  "display.ui.generalTeachingAnimation": "通用教学动画",
+  "display.ui.highlightDefinitionsConclusionsAndIdeasToRemember":
+    "突出定义、结论和需要记住的知识点。",
+  "display.ui.imageExplanation": "图像讲解",
+  "display.ui.imagesAndAnimation": "图像与动画",
+  "display.ui.importAPluginToBrowseAndPreviewItsComponents":
+    "导入插件后，即可浏览组件和预览效果。",
+  "display.ui.importPlugin": "导入插件",
+  "display.ui.imported": "已导入",
+  "display.ui.instrument": "音色",
+  "display.ui.interactiveScore": "交互乐谱",
+  "display.ui.introduceATopicWithATitleKeywordsAndA":
+    "以标题、关键词和简短说明引入主题。",
+  "display.ui.introductionAndSummary": "开场与总结",
+  "display.ui.invalidDisplayComponent": "展示组件格式有误",
+  "display.ui.invalidDisplayComposition": "展示组合无效",
+  "display.ui.invalidDisplayContent": "展示内容格式有误",
+  "display.ui.invalidDisplayData": "展示数据无效",
+  "display.ui.keepSourceCodeIntactAndHighlightTheLinesBeing":
+    "保留完整源代码，按讲解突出相关行。",
+  "display.ui.keyInsight": "关键理解 · KEY INSIGHT",
+  "display.ui.keyPoint": "重点提示",
+  "display.ui.keyboard": "键盘 ·",
+  "display.ui.listen": "试听",
+  "display.ui.loadComponentInputDataToPreviewItHere":
+    "加载一份组件输入数据，即可在这里查看实际效果。",
+  "display.ui.loadExampleData": "加载示例数据",
+  "display.ui.loadingDisplayComponent": "正在加载展示组件",
+  "display.ui.loadingPlugins": "正在加载插件…",
+  "display.ui.loadingWorkspaceDisplayPlugins": "正在加载工作区展示插件",
+  "display.ui.loop": "循环",
+  "display.ui.marimba": "马林巴",
+  "display.ui.mathematicsAndDerivation": "数学与推导",
+  "display.ui.mathematicsAnimation": "数学教学动画",
+  "display.ui.missingDisplayPlugin": "缺少展示插件",
+  "display.ui.motionScene": "运动场景",
+  "display.ui.musicAndScores": "音乐与乐谱",
+  "display.ui.musicAnimation": "音乐教学动画",
+  "display.ui.nextComponent": "下一个组件",
+  "display.ui.noDisplayPluginsYet": "还没有展示插件",
+  "display.ui.noExampleDataForThisComponent": "这个组件还没有示例数据",
+  "display.ui.noMatchingPlugins": "没有找到匹配的插件",
+  "display.ui.notation": "谱面",
+  "display.ui.numberedNotation": "简谱",
+  "display.ui.nylonStringGuitar": "尼龙弦吉他",
+  "display.ui.observeHowGeometricPartsFormSpatialStructures":
+    "观察几何部件如何组成空间结构。",
+  "display.ui.observeMotionSpatialStructuresAndExperiments":
+    "观察运动、空间结构和实验过程。",
+  "display.ui.observeTranslationRotationAndMotionInStages":
+    "观察物体平移、转动和分阶段运动。",
+  "display.ui.occlusionExperiment": "遮挡实验",
+  "display.ui.openACardToPreviewItsComponentsExportedPlugins":
+    "点击卡片预览全部组件。导出的插件可以分享；已有课程保留其使用的版本。",
+  "display.ui.openAComponentToPreviewAnExample": "打开组件，加载示例预览",
+  "display.ui.organ": "管风琴",
+  "display.ui.organizeIdeasIntoLayersProcessesOrCharts":
+    "把知识组织成层次、流程或数据图。",
+  "display.ui.organizeRelatedIdeasIntoClearCards":
+    "把并列知识点整理成清晰的卡片。",
+  "display.ui.organizeTeachingContentWithAnimatedLayersAndProcesses":
+    "通过层次、流程等动画组织教学内容。",
+  "display.ui.originalPhrase": "原句",
+  "display.ui.pause": "暂停",
+  "display.ui.pause2": "Ⅱ 暂停",
+  "display.ui.pausePreview": "暂停预览",
+  "display.ui.physicsAndSpace": "物理与空间",
+  "display.ui.physicsAnimation": "物理教学动画",
+  "display.ui.piano": "钢琴",
+  "display.ui.play": "播放",
+  "display.ui.play2": "▷ 播放",
+  "display.ui.playPreview": "播放预览",
+  "display.ui.playbackProgress": "播放进度",
+  "display.ui.playing": "正在演奏 ·",
+  "display.ui.pluginAndComponentNavigation": "插件与组件导航",
+  "display.ui.pluginCategories": "插件分类",
+  "display.ui.pluginDetailsAndExampleData": "插件信息与示例数据",
+  "display.ui.pluginFilesMustBeNoLargerThan2Mib": "插件文件不能超过 2 MiB。",
+  "display.ui.pluginInstalledAndReadyToPreviewEnabledComponentsAre":
+    "插件已安装，可以打开预览。新课程可使用已启用的组件。",
+  "display.ui.pluginListRefreshed": "插件列表已更新。",
+  "display.ui.preparingDisplayContent": "正在准备展示内容",
+  "display.ui.preparingPreview": "正在准备预览…",
+  "display.ui.presentAProcessInOrderFocusingOnEachStep":
+    "按顺序展示过程，逐步聚焦每一个环节。",
+  "display.ui.presentDerivationsWhilePreservingEquationStructure":
+    "展示保留公式结构的推导画布。",
+  "display.ui.presentEquationsAndExplanationsWithFocusOnIndividualTerms":
+    "呈现公式与对应的解释，支持逐项聚焦。",
+  "display.ui.presentHeadingsTextAndExplanationsWithEquations":
+    "展示标题、正文和带公式的解释。",
+  "display.ui.presentTeachingImagesWithCameraMovementAndRegionFocus":
+    "呈现教学图像，并支持镜头移动与区域聚焦。",
+  "display.ui.presentThisComponentInCoursesAndVideos":
+    "在课程和视频中展示这个组件。",
+  "display.ui.previewAComponentThenChooseHowToPresentYour":
+    "先看效果，再选择适合课程的展示方式。学习与视频共用同一套组件。",
+  "display.ui.previewComponent": "预览组件",
+  "display.ui.previewExample": "预览示例",
+  "display.ui.previewFromTheStart": "从头预览",
+  "display.ui.previewPath": "预览路径",
+  "display.ui.previewProgress": "预览进度",
+  "display.ui.previousComponent": "上一个组件",
+  "display.ui.processesAndSteps": "流程与步骤",
+  "display.ui.progress": "进度",
+  "display.ui.readCodeLineByLineAndCompareComputationAnd":
+    "逐行阅读代码，对比计算与评测结果。",
+  "display.ui.readStaffNotationAndTheKeyboardThenListenTo":
+    "阅读五线谱和键盘，并试听乐句。",
+  "display.ui.refresh": "重新读取",
+  "display.ui.restart": "重来",
+  "display.ui.retryLoading": "重试加载",
+  "display.ui.run": "运行",
+  "display.ui.runTheSameExamplesThroughDifferentEvaluationProcesses":
+    "让相同测试样例经过不同评测流程。",
+  "display.ui.scoreInstrumentPianoByDefault": "谱面音色（默认钢琴）",
+  "display.ui.scoreScrollHorizontally": "乐谱，可横向滚动",
+  "display.ui.scoreWalkthrough": "乐谱讲解步骤",
+  "display.ui.searchPluginsAndComponents": "搜索插件和组件",
+  "display.ui.searchPluginsComponentsOrUses": "搜索插件、组件或用途…",
+  "display.ui.showHowConceptsConnectToOneAnother":
+    "用连接关系解释知识点如何相互关联。",
+  "display.ui.soundAttribution": "音源说明",
+  "display.ui.soundSource": "音源",
+  "display.ui.source": "来源",
+  "display.ui.spatialStructure": "空间结构",
+  "display.ui.speed": "速度",
+  "display.ui.staffAndNumberedNotation": "五线谱与简谱",
+  "display.ui.staffNotation": "五线谱",
+  "display.ui.stepByStepDerivation": "分步推导",
+  "display.ui.stop": "停止",
+  "display.ui.structuredDiagram": "结构化图解",
+  "display.ui.teachingConversation": "教学对话",
+  "display.ui.textExplanation": "文字讲解",
+  "display.ui.theDisplayBuildReturnedMismatchedContent":
+    "展示构建返回了不匹配的内容。",
+  "display.ui.thePluginOrComponentVersionMayHaveChangedChoose":
+    "插件或组件版本可能已改变，请返回插件库重新选择。",
+  "display.ui.thisComponentCannotBeDisplayedRightNow": "此组件暂时无法显示",
+  "display.ui.thisConversationHasNoContentYet": "这段对话暂时没有内容。",
+  "display.ui.tryAnotherSearchOrBrowseAllCategories":
+    "试试其他关键词，或查看全部分类。",
+  "display.ui.useImagesAndAnimatedDiagramsToExplainIdeas":
+    "让图像与动态图解成为讲解的一部分。",
+  "display.ui.violin": "小提琴",
+  "display.ui.visualExplanation": "视觉讲解",
+  "display.music.scoreError": "乐谱未能载入：{error}",
+  "display.music.bars": "{label} · 第 {bars} 小节",
+  "display.music.auditionNote": "试听 {note}",
+  "display.music.playbackError": "{error}。可再次点击播放重试。",
+  "display.preview.seconds": "{seconds} 秒",
+  "display.preview.component": "预览{title}",
+  "display.workspace.updateError": "展示内容更新失败：{error}",
+  "display.library.componentVersion": "{kind} · 组件版本 {version}",
+  "display.library.counts": "{plugins} 个插件 · {components} 个组件",
+  "display.library.componentCount.one": "{count} 个组件",
+  "display.library.componentCount.other": "{count} 个组件",
+  "display.code.lines.one": "{count} 行",
+  "display.code.lines.other": "{count} 行",
+  "desktop.copy.adjustTheInclineAndObserveTheCartSMotion":
+    "调整斜面参数并观察小车运动。",
+  "desktop.copy.anAnswerIsBeingGeneratedWaitForItToFinish":
+    "当前回答生成中，完成后可切换到新的引用。",
+  "desktop.copy.askAboutYourLearningGoalsOrReviewsOrSayCreate":
+    "问我学习目标、复习安排，或者说「新建目标」",
+  "desktop.copy.backToGoals": "返回目标列表",
+  "desktop.copy.backToLearningJourney": "返回学习旅程",
+  "desktop.copy.basedOnTrustedWebSources": "基于网络权威路径",
+  "desktop.copy.couldNotAnalyzeTheQuestion": "题目解析失败",
+  "desktop.copy.couldNotCreateALearningGoalFromTheseMaterials":
+    "无法从资料创建学习目标",
+  "desktop.copy.couldNotDetach": "解除失败",
+  "desktop.copy.couldNotLoadDetails": "加载详情失败",
+  "desktop.copy.couldNotLoadLearningContent": "学习内容加载失败",
+  "desktop.copy.couldNotLoadLearningContent2": "学习内容载入失败",
+  "desktop.copy.couldNotLoadTheLearningSession": "学习会话加载失败",
+  "desktop.copy.couldNotLoadTheReplay": "无法载入回看内容",
+  "desktop.copy.couldNotRead": "读取失败",
+  "desktop.copy.couldNotReadTheUrl": "无法读取 URL",
+  "desktop.copy.couldNotReconnect": "重连失败",
+  "desktop.copy.couldNotReconnectToMicroCourseGeneration":
+    "极速轻课生成重连失败",
+  "desktop.copy.couldNotStartAFollowUpConversation": "无法创建追问对话",
+  "desktop.copy.couldNotStartTheMicroCourseExpansionConversation":
+    "无法启动轻课扩展对话",
+  "desktop.copy.couldNotVerifyTheReadingInteraction": "正文互动验证失败",
+  "desktop.copy.detachKacomDevelopmentOnly": "解除 KACOM（仅开发环境）",
+  "desktop.copy.forExampleIWantToLearnPythonDataAnalysisIn":
+    "例如：我想在 3 个月内学会 Python 数据分析",
+  "desktop.copy.interactiveLab": "互动实验室",
+  "desktop.copy.justNow": "刚刚",
+  "desktop.copy.kacomDetached": "已解除 KACOM",
+  "desktop.copy.learningContentIsStillBeingPreparedTryAgainLater":
+    "学习内容仍在准备，请稍后重试。",
+  "desktop.copy.newConversation": "新对话",
+  "desktop.copy.notAnswered": "未作答",
+  "desktop.copy.objectA": "物体 A",
+  "desktop.copy.objectB": "物体 B",
+  "desktop.copy.open": "打开",
+  "desktop.copy.regenerateLessonContent": "重新生成正文",
+  "desktop.copy.regenerateNotes": "重新生成笔记",
+  "desktop.copy.regeneratePreview": "重新生成预习",
+  "desktop.copy.regeneratingTheLessonContentWillDeleteExistingLearningNotesContinue":
+    "重新生成学习正文将删除已有学习笔记，确定继续吗？",
+  "desktop.copy.theLabCommandTimedOut": "实验室指令响应超时",
+  "desktop.copy.theLabCommandWasNotAccepted": "实验室指令未被接受",
+  "desktop.copy.theLabTookTooLongToLoad": "实验室加载超时",
+  "desktop.copy.theLearningModelIsStillBeingPreparedGuidedCorrectionsWill":
+    "认知模型仍在准备，引导修正稍后开放。",
+  "desktop.copy.theLearningModelIsStillBeingPreparedQuizzesAndCompletion":
+    "认知模型仍在准备，测验与完成记录稍后开放。",
+  "desktop.copy.theLearningModelIsStillBeingPreparedQuizzesWillBe":
+    "认知模型仍在准备，测验稍后开放。",
+  "desktop.copy.theLearningModelIsStillBeingPreparedYouCanKeep":
+    "认知模型仍在准备，阅读不受影响；测验稍后开放。",
+  "desktop.copy.theLearningModelIsStillBeingPreparedYouCanKeep2":
+    "认知模型仍在准备，正文可继续阅读；验证记录稍后开放。",
+  "desktop.copy.thisGoalNowUsesExplorationModeHistoricalKacomDataIs":
+    "该目标现在按探索模式运行；历史 KACOM 数据仍被保留。",
+  "desktop.copy.thisSwitchesTheGoalToExplorationModeExistingKacomSnapshots":
+    "这会把目标切换为探索模式。已有 KACOM 快照、目标和证据会保留，但不再参与当前学习、议程或全局学习状态。",
+  "desktop.copy.tryAgainLater": "请稍后重试。",
+  "desktop.copy.unknownError": "未知错误",
+  "desktop.copy.viewGoals": "查看目标列表",
+  "desktop.copy.viewLearningJourney": "查看学习旅程",
+  "desktop.copy.virtualExperiment": "虚拟实验",
+  "desktop.copy.workOnAWeakPoint": "薄弱点修正",
+  "desktop.i18n.followUpThread": "追问 · {title} · ",
+  "desktop.i18n.citation": "来源 {index}",
+  "desktop.i18n.viewCitation": "查看参考来源 {index}：{title}",
+  "desktop.i18n.goalFilter": "目标：{title}",
+  "desktop.i18n.generated": "{label}已生成",
+  "desktop.i18n.notGenerated": "{label}未生成",
+  "desktop.i18n.dependencyIncomplete": "该步骤的前置条件还未完成。{hint}",
+  "desktop.i18n.focusSubview": "聚焦第 {number} 个子视图",
+  "desktop.i18n.quizSet": "第 {number} 组",
+  "desktop.i18n.quizSets": "测验题组",
+  "desktop.i18n.quizSetsCount": "测验题组 ({count})",
+  "desktop.i18n.mistakeReview": "错题列表",
+  "desktop.i18n.mistakeReviewCount": "错题列表 ({count})",
+  "desktop.i18n.learnFromMaterials":
+    "我想学习：{topic}（基于上传资料「{files}」）",
+  "desktop.i18n.expandMicroCourse":
+    "我想把轻课「{unit}」扩展为完整学习目标「{goal}」。请先问我 1-3 个问题，了解我的学习范围、重点方向和已有基础，再帮我扩展。",
+  "desktop.wizard.learningInput": "学习输入",
+  "desktop.wizard.readingAndPreview": "阅读与预习",
+  "desktop.wizard.checkWithAQuiz": "测验检验",
+  "desktop.wizard.explainInYourOwnWords": "用自己的话解释",
+  "desktop.wizard.aiGuidedCorrections": "AI 纠错补漏",
+  "desktop.wizard.thisUnitIsCompleteRegeneratingThePreviewWillResetMasteryQuizRecords":
+    "本单元已完成学习。重新生成预习将重置掌握状态、测验记录、复习计划，并删除已有学习小节、正文与笔记。确定继续吗？",
+  "desktop.wizard.thisUnitIsCompleteRegeneratingLessonContentWillResetMasteryQuizRecords":
+    "本单元已完成学习。重新生成正文将重置掌握状态、测验记录、复习计划，并删除已有学习小节内容与笔记。确定继续吗？",
+  "desktop.wizard.thisUnitIsCompleteRegeneratingNotesWillResetMasteryQuizRecordsAnd":
+    "本单元已完成学习。重新生成笔记将重置掌握状态、测验记录与复习计划。确定继续吗？",
+  "desktop.wizard.regeneratingThePreviewWillDeleteGeneratedSectionsLessonContentAndLearningNotes":
+    "重新生成预习将删除已生成的学习小节、正文与学习笔记，确定继续吗？",
+  "desktop.wizard.regeneratingLessonContentWillClearSectionContentAndProgressAndDeleteExisting":
+    "重新生成正文将清空各学习小节内容与进度，并删除已有学习笔记，确定继续吗？",
+  "mainline.nav.continue": "继续学习",
+  "mainline.nav.history": "学习足迹",
 } as const satisfies TranslationMessages;
