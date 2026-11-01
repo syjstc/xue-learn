@@ -1,6 +1,10 @@
 # 好会学 · XueLearn
 
-好会学是一款个人学习桌面应用。从一个想学的问题出发，规划学习路径，通过阅读、交互演示、追问与练习逐步理解。
+好会学是一款 AI 个人学习桌面应用。告诉它你想学什么、现在会多少，它会帮你规划学习路径，带你按小节阅读讲解、看演示、提问和练习。下次打开时，可以继续学习并复习学过的内容。
+
+例如：“我没有统计学基础，想看懂新闻里的平均数、概率和相关性，请多用生活中的例子。”你也可以带着自己的教材、笔记或公开网页开始学习。
+
+**[下载 Mac 版](https://github.com/syjstc/xue-learn/releases) · [使用指南：从安装到第一课](docs/user-guide.md) · [常见问题](docs/user-guide.md#常见问题)**
 
 - **学习路径**：把学习目标拆成模块、小节与可验证的能力。
 - **阅读与追问**：按小节阅读，选中文本提问，保留追问的位置与上下文。
@@ -12,7 +16,7 @@
 
 ## 安装与开始学习
 
-[前往 Releases 下载 Mac 安装包](https://github.com/syjstc/xue-learn/releases) · [安装与首次配置](docs/mac-release.md)
+[前往 Releases 下载 Mac 安装包](https://github.com/syjstc/xue-learn/releases) · [普通用户使用指南](docs/user-guide.md)
 
 macOS 当前提供 Apple 芯片版本。打开 DMG，将「好会学」拖入「应用程序」。安装包包含应用和本地服务，无需另行安装 Node.js、pnpm 或 Core。正式 Mac 安装包执行 Developer ID 签名、Apple 公证和 Gatekeeper 检查。
 
@@ -37,9 +41,12 @@ pnpm run test:core
 pnpm run test:desktop
 pnpm run check:security  # 需要 Gitleaks 8.30.1+ 及联网的 npm advisory registry
 pnpm run build:mac      # 在 macOS 使用自己的签名与公证配置
+pnpm run release:mac    # 检查、正式打包并上传发布草稿
 ```
 
 安装包不会随源码提交自动更新；用户通过安装新版本获得更新。Windows、Linux 和 Intel Mac 的构建配置尚需对应设备验证。
+
+维护者的一键打包、草稿与正式发布命令见 [Mac 发布说明](docs/mac-release.md#一键打包与发布)。
 
 参见 [Core API](core/docs/public-api.md)、[Desktop 插件](desktop/docs/desktop-plugins.md)、[贡献指南](CONTRIBUTING.md)和[安全策略](SECURITY.md)。
 

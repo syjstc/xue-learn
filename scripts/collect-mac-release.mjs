@@ -13,6 +13,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { assertTrustedMacRelease } from "./mac-release-config.mjs";
 import { releaseSourceIdentity, assertReleaseSourceIdentity } from "./release-source-identity.mjs";
+import { verifyMacInstaller } from "./verify-mac-installer.mjs";
 import { createRequire } from "node:module";
 
 const desktopRequire = createRequire(new URL("../desktop/package.json", import.meta.url));
@@ -136,9 +137,14 @@ assertTrustedMacRelease({
   gatekeeperAccepted,
   installerGatekeeperAccepted,
 });
+const installerContents = await verifyMacInstaller({
+  installer, app, source, version,
+  auditScript: path.join(host, "scripts/audit-packaged-resources.mjs"),
+});
 await copyFile(installer, target);
 const manifest = {
   ...source,
+  installerContents,
   hardenedFuses,
   product: "好会学 Desktop",
   version,

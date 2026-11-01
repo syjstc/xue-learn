@@ -7,6 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadPackagingEnv } from "../desktop/apps/desktop/src/load-packaging-env.ts";
 import { macNotaryArguments } from "./mac-release-config.mjs";
+import { assertReleaseSourceIdentity, releaseSourceIdentity } from "./release-source-identity.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const host = path.join(root, "desktop/apps/desktop");
@@ -161,6 +162,10 @@ async function main() {
   const builtVersion = await run("plutil", ["-extract", "CFBundleShortVersionString", "raw", "-o", "-", path.join(app, "Contents/Info.plist")], true);
   if (builtVersion.stdout.trim() !== version)
     throw Error("The built application version does not match the release version.");
+  assertReleaseSourceIdentity(
+    JSON.parse(await readFile(path.join(app, "Contents/Resources/build-info.json"), "utf8")),
+    await releaseSourceIdentity(),
+  );
   await run("codesign", ["--verify", "--deep", "--strict", app]);
   const details = await run(
     "codesign",
