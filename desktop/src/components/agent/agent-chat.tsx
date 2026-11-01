@@ -419,7 +419,9 @@ export function AgentChat({
               disabled={loadingMore}
               onClick={() => void loadMoreFromCurrentScroll()}
             >
-              {loadingMore ? "加载中…" : "加载更早消息"}
+              {loadingMore
+                ? t("common.loading")
+                : t("desktop.ui.agentChat.loadEarlierMessages")}
             </Button>
           </div>
         ) : null}
@@ -692,7 +694,7 @@ export function AgentChat({
             onClick={onExitGoalCreation}
           >
             <XCircle className="size-4" />
-            退出目标创建
+            {t("desktop.ui.agentChat.exitGoalCreation")}
           </Button>
         </div>
       ) : null}

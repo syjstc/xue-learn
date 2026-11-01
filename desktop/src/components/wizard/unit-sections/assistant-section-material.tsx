@@ -1,8 +1,14 @@
 import { isLearningSceneControlTarget } from "@/shared/dom/learning-scene-interaction";
 import { resolveMusicCue } from "@xue-learn/core/domain";
-import type { MusicPlaybackState, MusicPerformancePlan as TimelineMusicInput } from "@xue-learn/core/domain";
+import type {
+  MusicPlaybackState,
+  MusicPerformancePlan as TimelineMusicInput,
+} from "@xue-learn/core/domain";
 import { MusicClipPlayer } from "@xue-learn/core/shared/music/clip-player";
-import { claimMusicAudio, releaseMusicAudio } from "@xue-learn/core/shared/music/audio-ownership";
+import {
+  claimMusicAudio,
+  releaseMusicAudio,
+} from "@xue-learn/core/shared/music/audio-ownership";
 import { MusicTimelineContext } from "@xue-learn/core/display/music-teaching-display";
 ("use client");
 
@@ -337,12 +343,16 @@ export function AssistantSectionMaterial({
   const [musicError, setMusicError] = useState("");
   const musicPlansRef = useRef(new Map<string, TimelineMusicInput>());
   musicPlansRef.current = useMemo(() => {
-    const plans = new Map<string, TimelineMusicInput>(); let display: unknown;
+    const plans = new Map<string, TimelineMusicInput>();
+    let display: unknown;
     narrationMaterial.blocks.forEach((block, index) => {
       if (block.type === "heading") display = undefined;
       else if (block.type === "paragraph") {
         const action = (block as { cue?: { music?: unknown } }).cue?.music;
-        if (action) { const plan = resolveMusicCue(display, action); if (plan) plans.set(`block:${index}`, plan); }
+        if (action) {
+          const plan = resolveMusicCue(display, action);
+          if (plan) plans.set(`block:${index}`, plan);
+        }
       } else if (block.type !== "check") display = block;
     });
     return plans;
@@ -409,7 +419,8 @@ export function AssistantSectionMaterial({
   const stopAudio = useCallback((revealAll = false) => {
     releaseMusicAudio(audioRef);
     playbackAttemptRef.current += 1;
-    musicPlayerRef.current?.stop(); setReadingMusic(undefined);
+    musicPlayerRef.current?.stop();
+    setReadingMusic(undefined);
     if (audioFrameRef.current !== null) {
       window.cancelAnimationFrame(audioFrameRef.current);
       audioFrameRef.current = null;
@@ -430,7 +441,9 @@ export function AssistantSectionMaterial({
     ) => {
       const attempt = ++playbackAttemptRef.current;
       claimMusicAudio(audioRef, () => stopAudio());
-      musicPlayerRef.current?.stop(); setReadingMusic(undefined); setMusicError("");
+      musicPlayerRef.current?.stop();
+      setReadingMusic(undefined);
+      setMusicError("");
       const musicPlan = musicPlansRef.current.get(asset.contentKey);
       if (audioFrameRef.current !== null) {
         window.cancelAnimationFrame(audioFrameRef.current);
@@ -503,12 +516,34 @@ export function AssistantSectionMaterial({
           }
           setRevealedLength(narrationText.length);
           if (musicPlan && musicPlayerRef.current) {
-            void musicPlayerRef.current.play(musicPlan, 0, tick => {
-              if (attempt !== playbackAttemptRef.current) return;
-              if (tick == null) { setReadingMusic(undefined); setAudioPlayingContentKey(null); return; }
-              const notes = musicPlan.notes.filter(n => tick >= n.startTick && tick < n.startTick + n.durationTicks);
-              setReadingMusic({ figureId: musicPlan.figureId, clipId: musicPlan.clipId, label: musicPlan.label, elapsedTicks: tick, targetIds: notes.map(n => n.targetId), midi: notes.map(n => n.midi) });
-            }).catch(error => { if (attempt === playbackAttemptRef.current) { setMusicError(String(error)); setReadingMusic(undefined); setAudioPlayingContentKey(null); } });
+            void musicPlayerRef.current
+              .play(musicPlan, 0, (tick) => {
+                if (attempt !== playbackAttemptRef.current) return;
+                if (tick == null) {
+                  setReadingMusic(undefined);
+                  setAudioPlayingContentKey(null);
+                  return;
+                }
+                const notes = musicPlan.notes.filter(
+                  (n) =>
+                    tick >= n.startTick && tick < n.startTick + n.durationTicks,
+                );
+                setReadingMusic({
+                  figureId: musicPlan.figureId,
+                  clipId: musicPlan.clipId,
+                  label: musicPlan.label,
+                  elapsedTicks: tick,
+                  targetIds: notes.map((n) => n.targetId),
+                  midi: notes.map((n) => n.midi),
+                });
+              })
+              .catch((error) => {
+                if (attempt === playbackAttemptRef.current) {
+                  setMusicError(String(error));
+                  setReadingMusic(undefined);
+                  setAudioPlayingContentKey(null);
+                }
+              });
           } else setAudioPlayingContentKey(null);
         };
         const sync = () => {
@@ -568,7 +603,9 @@ export function AssistantSectionMaterial({
   }, [audioEnabled]);
 
   useEffect(() => {
-    const hide = () => { if (document.hidden) stopAudio(); };
+    const hide = () => {
+      if (document.hidden) stopAudio();
+    };
     document.addEventListener("visibilitychange", hide);
     return () => document.removeEventListener("visibilitychange", hide);
   }, [stopAudio]);
@@ -1476,95 +1513,102 @@ export function AssistantSectionMaterial({
   );
 
   return (
-    <MusicTimelineContext.Provider value={{ clocked: false, music: readingMusic }}>
-    <section
-      ref={containerRef}
-      data-assistant-section={sectionId}
-      data-integrated-course-controls="true"
-      className={cn(
-        "mx-auto w-full max-w-[90rem] scroll-mt-24 px-0.5 sm:px-0",
-        historical && "opacity-95",
-      )}
+    <MusicTimelineContext.Provider
+      value={{ clocked: false, music: readingMusic }}
     >
-      <div
-        data-learning-scene-stage
-        className="relative min-h-[16rem] px-2 py-3 sm:min-h-[19rem] sm:px-3 sm:py-4"
-        onClickCapture={(event) => {
-          const target = event.target;
-          if (isLearningSceneControlTarget(target)) {
-            return;
-          }
-          if (window.getSelection()?.toString().trim()) return;
-          handleStageAdvance();
-        }}
+      <section
+        ref={containerRef}
+        data-assistant-section={sectionId}
+        data-integrated-course-controls="true"
+        className={cn(
+          "mx-auto w-full max-w-[90rem] scroll-mt-24 px-0.5 sm:px-0",
+          historical && "opacity-95",
+        )}
       >
-        <div ref={sceneContentRef} className="relative z-[1]">
-          <AnchoredLearningMaterial
-            unitId={unitId}
-            goalId={goalId}
-            material={material}
-            sectionId={sectionId}
-            onMaterialChange={onMaterialChange}
-            onMaterialCommitted={handleMaterialCommitted}
-            continuous
-            blockOffset={blockOffset}
-            complexComponentAnchors={complexComponentAnchors}
-            onVerifiedAnswer={onVerifiedAnswer}
-            materialCheckResults={materialCheckResults}
-            onRegenerateTopic={onRegenerateTopic}
-            regeneratingTopicIndex={regeneratingTopicIndex}
-            assistantFeed={{
-              controls: sceneControls,
-              firstVisibleTurnIndex: activeBeat?.startTurnIndex ?? 0,
-              visibleTurnCount: presentedTurnCount,
-              stagedOpeningTurnIndex:
-                stageOpening &&
-                animateNewest &&
-                presentedTurnCount === (activeBeat?.startTurnIndex ?? 0) + 1
-                  ? activeBeat?.startTurnIndex
+        <div
+          data-learning-scene-stage
+          className="relative min-h-[16rem] px-2 py-3 sm:min-h-[19rem] sm:px-3 sm:py-4"
+          onClickCapture={(event) => {
+            const target = event.target;
+            if (isLearningSceneControlTarget(target)) {
+              return;
+            }
+            if (window.getSelection()?.toString().trim()) return;
+            handleStageAdvance();
+          }}
+        >
+          <div ref={sceneContentRef} className="relative z-[1]">
+            <AnchoredLearningMaterial
+              unitId={unitId}
+              goalId={goalId}
+              material={material}
+              sectionId={sectionId}
+              onMaterialChange={onMaterialChange}
+              onMaterialCommitted={handleMaterialCommitted}
+              continuous
+              blockOffset={blockOffset}
+              complexComponentAnchors={complexComponentAnchors}
+              onVerifiedAnswer={onVerifiedAnswer}
+              materialCheckResults={materialCheckResults}
+              onRegenerateTopic={onRegenerateTopic}
+              regeneratingTopicIndex={regeneratingTopicIndex}
+              assistantFeed={{
+                controls: sceneControls,
+                firstVisibleTurnIndex: activeBeat?.startTurnIndex ?? 0,
+                visibleTurnCount: presentedTurnCount,
+                stagedOpeningTurnIndex:
+                  stageOpening &&
+                  animateNewest &&
+                  presentedTurnCount === (activeBeat?.startTurnIndex ?? 0) + 1
+                    ? activeBeat?.startTurnIndex
+                    : undefined,
+                preparingTurnIndex:
+                  progressive && preparingTurnIndex !== null
+                    ? preparingTurnIndex
+                    : undefined,
+                reservedTurnMinHeight:
+                  progressive && reservedTurnMinHeight !== null
+                    ? reservedTurnMinHeight
+                    : undefined,
+                reservedTurnIndex:
+                  progressive && reservedTurnMinHeight !== null
+                    ? presentedTurnCount - 1
+                    : undefined,
+                animatedTurnIndex:
+                  progressive && animateNewest
+                    ? presentedTurnCount - 1
+                    : undefined,
+                animationEnabled: progressive && animateNewest,
+                textAnimationEnabled: progressive && typing,
+                onAnimationComplete: () => {
+                  setAnimateNewest(false);
+                  setTyping(false);
+                },
+                timedReveal:
+                  audioEnabled &&
+                  audioAutoPlay &&
+                  !audioFallback &&
+                  activeAudioContentKey
+                    ? {
+                        contentKey: activeAudioContentKey,
+                        revealedLength: revealedLength ?? 0,
+                        onSkip: revealCurrentText,
+                      }
+                    : undefined,
+                renderNarrationAudioControl: audioEnabled
+                  ? renderNarrationAudioControl
                   : undefined,
-              preparingTurnIndex:
-                progressive && preparingTurnIndex !== null
-                  ? preparingTurnIndex
-                  : undefined,
-              reservedTurnMinHeight:
-                progressive && reservedTurnMinHeight !== null
-                  ? reservedTurnMinHeight
-                  : undefined,
-              reservedTurnIndex:
-                progressive && reservedTurnMinHeight !== null
-                  ? presentedTurnCount - 1
-                  : undefined,
-              animatedTurnIndex:
-                progressive && animateNewest
-                  ? presentedTurnCount - 1
-                  : undefined,
-              animationEnabled: progressive && animateNewest,
-              textAnimationEnabled: progressive && typing,
-              onAnimationComplete: () => {
-                setAnimateNewest(false);
-                setTyping(false);
-              },
-              timedReveal:
-                audioEnabled &&
-                audioAutoPlay &&
-                !audioFallback &&
-                activeAudioContentKey
-                  ? {
-                      contentKey: activeAudioContentKey,
-                      revealedLength: revealedLength ?? 0,
-                      onSkip: revealCurrentText,
-                    }
-                  : undefined,
-              renderNarrationAudioControl: audioEnabled
-                ? renderNarrationAudioControl
-                : undefined,
-            }}
-          />
+              }}
+            />
+          </div>
         </div>
-      </div>
-      {musicError && <p role="alert">演奏未能启动：{musicError}</p>}
-    </section>
+        {musicError && (
+          <p role="alert">
+            {t("desktop.ui.assistantSectionMaterial.couldNotStartPlayback")}
+            {musicError}
+          </p>
+        )}
+      </section>
     </MusicTimelineContext.Provider>
   );
 }

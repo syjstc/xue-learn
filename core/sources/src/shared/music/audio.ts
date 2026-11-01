@@ -1,3 +1,4 @@
+import { translateCurrent } from "../i18n/index.js";
 import {
   musicPerformance,
   type MusicInstrument,
@@ -24,14 +25,30 @@ let catalog: Promise<Preset[]> | undefined;
 const decoded = new Map<string, Promise<Omit<Sample, "rate" | "sustain">>>();
 let activePlayer: MusicPlayer | undefined;
 export const MUSIC_LABELS: Record<MusicInstrument, string> = {
-  piano: "钢琴",
-  electric_piano: "电钢琴",
-  guitar: "尼龙弦吉他",
-  violin: "小提琴",
-  cello: "大提琴",
-  flute: "长笛",
-  marimba: "马林巴",
-  organ: "管风琴",
+  get piano() {
+    return translateCurrent("display.ui.piano");
+  },
+  get electric_piano() {
+    return translateCurrent("display.ui.electricPiano");
+  },
+  get guitar() {
+    return translateCurrent("display.ui.nylonStringGuitar");
+  },
+  get violin() {
+    return translateCurrent("display.ui.violin");
+  },
+  get cello() {
+    return translateCurrent("display.ui.cello");
+  },
+  get flute() {
+    return translateCurrent("display.ui.flute");
+  },
+  get marimba() {
+    return translateCurrent("display.ui.marimba");
+  },
+  get organ() {
+    return translateCurrent("display.ui.organ");
+  },
 };
 export async function loadMusicSample(
   context: BaseAudioContext,
@@ -157,7 +174,9 @@ export class MusicPlayer {
     this.context ??= new AudioContext();
     await this.context.resume();
     if (this.context.state !== "running")
-      throw Error("音频未能启动，请再次点击播放");
+      throw Error(
+        translateCurrent("display.ui.audioCouldNotStartPressPlayToTryAgain"),
+      );
     return this.context;
   }
   async play(
@@ -229,7 +248,10 @@ export class MusicPlayer {
       this.update({
         beat: this.beat,
         state: "error",
-        error: error instanceof Error ? error.message : "音频不可用",
+        error:
+          error instanceof Error
+            ? error.message
+            : translateCurrent("display.ui.audioUnavailable"),
       });
     }
   }

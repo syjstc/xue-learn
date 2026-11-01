@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@xue-learn/core/i18n";
 
 import { SocraticChatPanel } from "../../socratic-chat-panel.tsx";
 import type { UnitWizardModel } from "../use-unit-wizard.tsx";
@@ -31,6 +32,7 @@ export function SocraticStep({
   reviewMode = false,
   conversationMode = false,
 }: Props) {
+  const t = useT();
   const correctionComplete =
     socraticThreads.length > 0 &&
     socraticThreads.every((thread) => thread.done);
@@ -39,7 +41,7 @@ export function SocraticStep({
     <div className="space-y-4">
       {conversationMode ? null : (
         <p className="text-sm text-[var(--text-400)]">
-          通过错题列表选择测验错题，每题一条对话。选中后开始引导式修正，帮你自己发现误区。
+          {t("desktop.ui.socraticStep.selectAMissedQuestionToStartA")}
         </p>
       )}
       <SocraticChatPanel
@@ -66,22 +68,22 @@ export function SocraticStep({
         onSend={(answer) => void socraticTurn(answer)}
         onSelectThread={(threadId) => void selectSocraticThread(threadId)}
         onFinish={() =>
-          void (
-            correctionComplete
-              ? reviewMode
-                ? finishDrills()
-                : finishSocratic()
-              : finishDrills()
-          )
+          void (correctionComplete
+            ? reviewMode
+              ? finishDrills()
+              : finishSocratic()
+            : finishDrills())
         }
         finishLabel={
           reviewMode
             ? correctionComplete
-              ? "完成修正"
-              : "完成所有错题后继续"
+              ? t("desktop.ui.socraticStep.finishReview")
+              : t(
+                  "desktop.ui.socraticStep.reviewEveryMissedQuestionBeforeContinuing",
+                )
             : isLearningDone
-              ? "返回完成页"
-              : "完成练习"
+              ? t("desktop.ui.socraticStep.backToCompletion")
+              : t("desktop.ui.socraticStep.finishPractice")
         }
         canFinish={!reviewMode || correctionComplete}
       />

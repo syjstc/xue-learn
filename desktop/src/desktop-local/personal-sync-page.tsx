@@ -1,4 +1,10 @@
 import {
+  useT,
+  getCurrentUiLocale,
+  countVariant,
+  type TranslationKey,
+} from "@xue-learn/core/i18n";
+import {
   useCallback,
   useEffect,
   useMemo,
@@ -26,16 +32,16 @@ import { Label } from "@/components/ui/label";
 import { apiGet } from "@/shared/api";
 import { getDesktopBridge } from "./runtime.ts";
 
-const labels: Record<PersonalSyncStatus["state"], string> = {
-  disabled: "仅保存在本机",
-  synced: "已同步",
-  syncing: "正在同步",
-  offline: "等待同步文件夹恢复连接",
-  authentication_required: "需要重新连接同步文件夹",
-  locked: "需要同步密码解锁",
-  read_only: "需要升级（只读）",
-  conflict: "有需要检查的同步冲突",
-  error: "同步遇到问题",
+const labels: Record<PersonalSyncStatus["state"], TranslationKey> = {
+  disabled: "desktop.sync.state.disabled",
+  synced: "desktop.sync.state.synced",
+  syncing: "desktop.sync.state.syncing",
+  offline: "desktop.sync.state.offline",
+  authentication_required: "desktop.sync.state.authenticationRequired",
+  locked: "desktop.sync.state.locked",
+  read_only: "desktop.sync.state.readOnly",
+  conflict: "desktop.sync.state.conflict",
+  error: "desktop.sync.state.error",
 };
 
 const idleProgress: PersonalSyncProgress = {
@@ -57,24 +63,27 @@ export async function settlePersonalSyncAction(input: {
     : input.refresh());
 }
 
-function progressLabel(progress: PersonalSyncProgress): string {
+function progressLabel(
+  progress: PersonalSyncProgress,
+  t: ReturnType<typeof useT>,
+): string {
   const count =
     progress.totalItems === null
       ? ""
       : ` ${progress.completedItems}/${progress.totalItems}`;
   switch (progress.phase) {
     case "preparing":
-      return "正在检查本机与同步文件夹…";
+      return t("desktop.sync.progress.preparing");
     case "uploading":
       return progress.totalItems === 0
-        ? "本机记录已是最新"
-        : `正在上传学习记录${count}`;
+        ? t("desktop.sync.progress.localUpToDate")
+        : t("desktop.sync.progress.uploading", { count });
     case "receiving":
       return progress.totalItems === 0
-        ? "云端记录已是最新"
-        : `正在合并云端学习记录${count}`;
+        ? t("desktop.sync.progress.remoteUpToDate")
+        : t("desktop.sync.progress.receiving", { count });
     case "finalizing":
-      return "正在完成同步…";
+      return t("desktop.sync.progress.finalizing");
     case "idle":
       return "";
   }
@@ -103,6 +112,7 @@ function Step({
 }
 
 export function PersonalSyncPage() {
+  const t = useT();
   const bridge = useMemo(() => getDesktopBridge(), []);
   const [workspaces, setWorkspaces] = useState<WorkspaceSummary[]>([]);
   const [status, setStatus] = useState<PersonalSyncStatus>();
@@ -210,11 +220,12 @@ export function PersonalSyncPage() {
         </span>
         <div>
           <h2 id="personal-sync-title" className="text-xl font-semibold">
-            个人云同步
+            {t("desktop.deviceSettings.personalSync")}
           </h2>
           <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
-            把端到端加密的学习记录保存到你的 iCloud Drive。无需 Apple
-            开发者账户，XueLearn 也不会获得你的 Apple 登录信息。
+            {t(
+              "desktop.ui.personalSyncPage.saveEndToEndEncryptedLearningRecords",
+            )}
           </p>
         </div>
       </div>
@@ -223,11 +234,14 @@ export function PersonalSyncPage() {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <p className="font-medium">{active?.name ?? "当前工作区"}</p>
+              <p className="font-medium">
+                {active?.name ??
+                  t("desktop.ui.personalSyncPage.currentWorkspace")}
+              </p>
               {active?.cloudSyncEnabled ? (
                 <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs text-emerald-800">
                   <Check className="size-3" aria-hidden />
-                  文件夹同步已启用
+                  {t("desktop.ui.personalSyncPage.folderSyncEnabled")}
                 </span>
               ) : null}
             </div>
@@ -235,10 +249,14 @@ export function PersonalSyncPage() {
               {progress.running
                 ? labels.syncing
                 : status
-                  ? labels[status.state]
-                  : "正在读取状态…"}
+                  ? t(labels[status.state])
+                  : t("desktop.ui.personalSyncPage.checkingStatus")}
               {status?.lastSuccessfulSyncAt
-                ? ` · 上次成功 ${new Date(status.lastSuccessfulSyncAt).toLocaleString()}`
+                ? t("desktop.sync.lastSuccess", {
+                    time: new Date(status.lastSuccessfulSyncAt).toLocaleString(
+                      getCurrentUiLocale(),
+                    ),
+                  })
                 : ""}
             </p>
           </div>
@@ -251,7 +269,9 @@ export function PersonalSyncPage() {
                 className={`mr-2 size-4 ${syncing ? "animate-spin" : ""}`}
                 aria-hidden
               />
-              {syncing ? "同步中" : "立即同步"}
+              {syncing
+                ? t("desktop.ui.personalSyncPage.syncing")
+                : t("desktop.ui.personalSyncPage.syncNow")}
             </Button>
           ) : null}
         </div>
@@ -263,7 +283,7 @@ export function PersonalSyncPage() {
           >
             <div className="flex items-center justify-between gap-3 text-sm">
               <span className="font-medium text-[var(--brand-900)]">
-                {progressLabel(progress)}
+                {progressLabel(progress, t)}
               </span>
               {progressPercent !== null ? (
                 <span className="tabular-nums text-[var(--brand-700)]">
@@ -274,7 +294,7 @@ export function PersonalSyncPage() {
             <div
               className="mt-2 h-1.5 overflow-hidden rounded-full bg-[var(--brand-200)]"
               role="progressbar"
-              aria-label={progressLabel(progress)}
+              aria-label={progressLabel(progress, t)}
               aria-valuemin={0}
               aria-valuemax={progress.totalItems ?? undefined}
               aria-valuenow={
@@ -295,17 +315,25 @@ export function PersonalSyncPage() {
               />
             </div>
             <p className="mt-2 text-xs text-[var(--brand-800)]/75">
-              请保持 XueLearn 和同步文件夹可用；课程较多时可能需要几分钟。
+              {t(
+                "desktop.ui.personalSyncPage.keepXuelearnAndTheSyncFolderAvailable",
+              )}
             </p>
           </div>
         ) : null}
 
         {!active?.cloudSyncEnabled ? (
           <div className="mt-5 space-y-6 border-t pt-5">
-            <Step number={1} title="选择 iCloud Drive 位置">
+            <Step
+              number={1}
+              title={t(
+                "desktop.ui.personalSyncPage.chooseAnIcloudDriveLocation",
+              )}
+            >
               <p className="mb-3 text-sm text-muted-foreground">
-                在 Finder 侧边栏打开 iCloud Drive，选择一个位置。XueLearn
-                会在其中创建“XueLearn Sync”文件夹。
+                {t(
+                  "desktop.ui.personalSyncPage.openIcloudDriveInFinderAndChoose",
+                )}
               </p>
               <div className="flex flex-wrap items-center gap-3">
                 <Button
@@ -314,7 +342,7 @@ export function PersonalSyncPage() {
                   onClick={() => void chooseFolder()}
                 >
                   <FolderOpen className="mr-2 size-4" aria-hidden />
-                  选择文件夹
+                  {t("desktop.ui.personalSyncPage.chooseFolder")}
                 </Button>
                 {selectedFolder ? (
                   <code className="max-w-full break-all rounded-lg bg-muted px-2.5 py-1.5 text-xs">
@@ -322,29 +350,39 @@ export function PersonalSyncPage() {
                   </code>
                 ) : (
                   <span className="text-sm text-muted-foreground">
-                    尚未选择
+                    {t("desktop.ui.personalSyncPage.notSelected")}
                   </span>
                 )}
               </div>
             </Step>
-            <Step number={2} title="设置同步密码">
+            <Step
+              number={2}
+              title={t("desktop.ui.personalSyncPage.setASyncPassword")}
+            >
               <Label htmlFor="sync-passphrase" className="sr-only">
-                同步密码
+                {t("desktop.ui.personalSyncPage.syncPassword")}
               </Label>
               <Input
                 id="sync-passphrase"
                 type="password"
                 autoComplete="new-password"
-                placeholder="至少 12 个字符"
+                placeholder={t(
+                  "desktop.ui.personalSyncPage.atLeast12Characters",
+                )}
                 value={passphrase}
                 onChange={(event) => setPassphrase(event.target.value)}
               />
               <p className="mt-2 flex gap-2 rounded-xl bg-amber-50 p-3 text-sm text-amber-950">
                 <LockKeyhole className="mt-0.5 size-4 shrink-0" aria-hidden />
-                请把密码保存在密码管理器中。忘记密码且所有已解锁设备都丢失后，加密数据无法恢复。
+                {t(
+                  "desktop.ui.personalSyncPage.keepThisPasswordInAPasswordManager",
+                )}
               </p>
             </Step>
-            <Step number={3} title="启用自动同步">
+            <Step
+              number={3}
+              title={t("desktop.ui.personalSyncPage.enableAutomaticSync")}
+            >
               <Button
                 disabled={busy || !selectedFolder || !passphraseReady}
                 onClick={() =>
@@ -359,14 +397,16 @@ export function PersonalSyncPage() {
                 }
               >
                 <ShieldCheck className="mr-2 size-4" aria-hidden />
-                启用加密文件夹同步
+                {t("desktop.ui.personalSyncPage.enableEncryptedFolderSync")}
               </Button>
             </Step>
           </div>
         ) : active.locked ? (
           <div className="mt-5 space-y-3 border-t pt-5">
             <Label htmlFor="unlock-sync-passphrase">
-              输入同步密码以解锁此工作区
+              {t(
+                "desktop.ui.personalSyncPage.enterTheSyncPasswordToUnlockThis",
+              )}
             </Label>
             <Input
               id="unlock-sync-passphrase"
@@ -383,7 +423,7 @@ export function PersonalSyncPage() {
                 })
               }
             >
-              解锁
+              {t("desktop.ui.personalSyncPage.unlock")}
             </Button>
           </div>
         ) : (
@@ -394,7 +434,9 @@ export function PersonalSyncPage() {
                 aria-hidden
               />
               <div className="min-w-0">
-                <p className="font-medium">同步文件夹</p>
+                <p className="font-medium">
+                  {t("desktop.ui.personalSyncPage.syncFolder")}
+                </p>
                 <code className="mt-1 block break-all text-xs text-muted-foreground">
                   {active.syncFolderPath}
                 </code>
@@ -405,7 +447,7 @@ export function PersonalSyncPage() {
               disabled={busy}
               onClick={() => void run(() => bridge.personalSync.disconnect())}
             >
-              停用此工作区同步
+              {t("desktop.ui.personalSyncPage.disableSyncForThisWorkspace")}
             </Button>
           </div>
         )}
@@ -415,20 +457,24 @@ export function PersonalSyncPage() {
         <div className="flex gap-2">
           <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
           <div>
-            <p className="font-medium">避免同时编辑同一个学习目标</p>
+            <p className="font-medium">
+              {t("desktop.ui.personalSyncPage.avoidEditingTheSameGoalOnTwo")}
+            </p>
             <p className="mt-1 text-amber-900/80">
-              iCloud Drive
-              会同步文件，但不提供数据库级原子锁。请让一台设备完成同步后再在另一台设备继续；检测到冲突时，XueLearn
-              会保留冲突记录而不会静默覆盖。
+              {t(
+                "desktop.ui.personalSyncPage.letOneDeviceFinishSyncingBeforeContinuing",
+              )}
             </p>
           </div>
         </div>
       </div>
 
       <div className="max-w-3xl rounded-2xl border bg-card p-5 shadow-sm">
-        <h3 className="font-medium">在这台设备加入已有同步工作区</h3>
+        <h3 className="font-medium">
+          {t("desktop.ui.personalSyncPage.connectAnExistingSyncedWorkspace")}
+        </h3>
         <p className="mt-1 text-sm text-muted-foreground">
-          选择另一台设备使用的同一个 iCloud Drive 位置，然后输入原同步密码。
+          {t("desktop.ui.personalSyncPage.chooseTheSameIcloudDriveLocationAs")}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           <Button
@@ -437,7 +483,7 @@ export function PersonalSyncPage() {
             onClick={() => void chooseFolder()}
           >
             <FolderOpen className="mr-2 size-4" aria-hidden />
-            选择同步位置
+            {t("desktop.ui.personalSyncPage.chooseSyncLocation")}
           </Button>
           <Button
             variant="outline"
@@ -452,7 +498,7 @@ export function PersonalSyncPage() {
               )
             }
           >
-            查找已有工作区
+            {t("desktop.ui.personalSyncPage.findExistingWorkspaces")}
           </Button>
         </div>
         {folderWorkspaces.map((workspace) => {
@@ -466,10 +512,13 @@ export function PersonalSyncPage() {
             >
               <div>
                 <p className="text-sm font-medium">
-                  加密工作区 {workspace.workspaceId.slice(0, 8)}
+                  {t("desktop.ui.personalSyncPage.encryptedWorkspace")}
+                  {workspace.workspaceId.slice(0, 8)}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  输入密码后才会在本机解密名称
+                  {t(
+                    "desktop.ui.personalSyncPage.enterThePasswordToDecryptItsName",
+                  )}
                 </p>
               </div>
               <Button
@@ -486,7 +535,9 @@ export function PersonalSyncPage() {
                   )
                 }
               >
-                {exists ? "已在本机" : "加入"}
+                {exists
+                  ? t("desktop.ui.personalSyncPage.alreadyOnThisDevice")
+                  : t("desktop.ui.personalSyncPage.connect")}
               </Button>
             </div>
           );
@@ -494,7 +545,9 @@ export function PersonalSyncPage() {
       </div>
 
       <div className="max-w-3xl rounded-2xl border bg-card p-5 shadow-sm">
-        <h3 className="font-medium">本机工作区</h3>
+        <h3 className="font-medium">
+          {t("desktop.ui.personalSyncPage.workspacesOnThisDevice")}
+        </h3>
         <div className="mt-3 space-y-2">
           {workspaces.map((workspace) => (
             <div
@@ -504,8 +557,12 @@ export function PersonalSyncPage() {
               <div>
                 <p className="text-sm font-medium">{workspace.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {workspace.cloudSyncEnabled ? "加密文件夹同步" : "仅本机"}
-                  {workspace.locked ? " · 已锁定" : ""}
+                  {workspace.cloudSyncEnabled
+                    ? t("desktop.ui.personalSyncPage.encryptedFolderSync")
+                    : t("desktop.ui.personalSyncPage.thisDeviceOnly")}
+                  {workspace.locked
+                    ? t("desktop.ui.personalSyncPage.locked")
+                    : ""}
                 </p>
               </div>
               {!workspace.active ? (
@@ -521,18 +578,20 @@ export function PersonalSyncPage() {
                     )
                   }
                 >
-                  切换
+                  {t("desktop.ui.personalSyncPage.switch")}
                 </Button>
               ) : (
-                <span className="text-xs text-muted-foreground">当前</span>
+                <span className="text-xs text-muted-foreground">
+                  {t("desktop.ui.personalSyncPage.current")}
+                </span>
               )}
             </div>
           ))}
         </div>
         <div className="mt-4 flex gap-2">
           <Input
-            aria-label="新工作区名称"
-            placeholder="新工作区名称"
+            aria-label={t("desktop.ui.personalSyncPage.newWorkspaceName")}
+            placeholder={t("desktop.ui.personalSyncPage.newWorkspaceName")}
             value={newName}
             onChange={(event) => setNewName(event.target.value)}
           />
@@ -546,15 +605,16 @@ export function PersonalSyncPage() {
               })
             }
           >
-            创建
+            {t("spaces.create")}
           </Button>
         </div>
       </div>
 
       {status?.conflictCount ? (
         <p className="max-w-3xl rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
-          存在 {status.conflictCount}{" "}
-          个需要处理的冲突。冲突版本已保留，不会静默覆盖。
+          {t(`desktop.sync.conflicts.${countVariant(status.conflictCount)}`, {
+            count: status.conflictCount,
+          })}
         </p>
       ) : null}
       {error ? (

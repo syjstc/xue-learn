@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@xue-learn/core/i18n";
 
 import { HighlightableTextRegion } from "@/components/markdown/highlightable-text-region";
 import { LlmMarkdownInline } from "@/components/markdown/llm-markdown";
@@ -167,13 +168,14 @@ function PresentationToolbar({
   slideIndex: number;
   slideCount: number;
 }) {
+  const t = useT();
   return (
     <div
       className={`flex flex-wrap items-center gap-2 ${compact ? "text-xs" : "text-sm"}`}
     >
       <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--course-content-surface-accent)] px-2.5 py-1 text-[11px] font-medium text-[var(--course-content-link)]">
         <Presentation className="h-3.5 w-3.5" />
-        幻灯片学习
+        {t("desktop.ui.materialSlideDeck.lessonSlides")}
       </span>
       {slideCount > 0 && (
         <span className="text-muted-foreground">
@@ -182,7 +184,7 @@ function PresentationToolbar({
       )}
       {hasCompletedSlides && (
         <span className="text-[10px] text-[var(--success)]">
-          已学完 · 可反复练习
+          {t("desktop.ui.materialSlideDeck.completedPracticeAgainAnytime")}
         </span>
       )}
     </div>
@@ -214,6 +216,7 @@ function SlidePresentation({
   onVerifiedAnswer?: VerifiedMaterialAnswerHandler;
   materialCheckResults: MaterialCheckResult[];
 }) {
+  const t = useT();
   const slide = slides[pres.slideIndex];
   const isLast = pres.slideIndex >= slides.length - 1;
   const [tocOpen, setTocOpen] = useState(false);
@@ -416,7 +419,9 @@ function SlidePresentation({
               <div className="mt-4 border-t border-[var(--course-content-border)] pt-4">
                 {isLast && pres.hasCompletedSlides && (
                   <p className="mb-2 text-center text-xs text-[var(--success)]">
-                    正文已学完，请在下方继续生成学习笔记。
+                    {t(
+                      "desktop.ui.materialSlideDeck.youHaveFinishedTheLessonContinueBelow",
+                    )}
                   </p>
                 )}
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -426,26 +431,30 @@ function SlidePresentation({
                     size="sm"
                     onClick={handlePrev}
                     disabled={pres.slideIndex === 0}
-                    aria-label="上一页"
+                    aria-label={t("desktop.errorLogs.previous")}
                   >
                     <ChevronLeft className="h-4 w-4" />
-                    上一页
+                    {t("desktop.errorLogs.previous")}
                   </Button>
 
                   <Button
                     type="button"
                     size="sm"
                     onClick={handleNext}
-                    aria-label={isLast ? "完成学习" : "下一页"}
+                    aria-label={
+                      isLast
+                        ? t("desktop.ui.materialSlideDeck.finishLesson")
+                        : t("desktop.errorLogs.next")
+                    }
                   >
                     {isLast ? (
                       <>
                         <Sparkles className="mr-1 h-4 w-4" />
-                        完成学习
+                        {t("desktop.ui.materialSlideDeck.finishLesson")}
                       </>
                     ) : (
                       <>
-                        下一页
+                        {t("desktop.errorLogs.next")}
                         <ChevronRight className="ml-1 h-4 w-4" />
                       </>
                     )}
@@ -499,6 +508,7 @@ function SlideTableOfContents({
   onNavigate: (slideIndex: number) => void;
   footer?: ReactNode;
 }) {
+  const t = useT();
   const rootRef = useRef<HTMLDivElement>(null);
   const activeItemRef = useRef<HTMLButtonElement>(null);
 
@@ -535,7 +545,10 @@ function SlideTableOfContents({
   const textSize = compact ? "text-[11px]" : "text-xs";
 
   const list = (
-    <nav aria-label="幻灯片目录" className="space-y-0.5">
+    <nav
+      aria-label={t("desktop.ui.materialSlideDeck.slideOutline")}
+      className="space-y-0.5"
+    >
       {entries.map((entry) => {
         const active = entry.slideIndex === currentIndex;
         return (
@@ -572,7 +585,7 @@ function SlideTableOfContents({
         aria-controls="slide-toc-panel"
       >
         <ListTree className="mr-1 h-3.5 w-3.5" />
-        目录
+        {t("desktop.ui.materialSlideDeck.contents")}
       </Button>
       {open && (
         <div

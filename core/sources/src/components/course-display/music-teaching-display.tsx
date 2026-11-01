@@ -1,3 +1,4 @@
+import { useT } from "../../shared/i18n/index.js";
 import {
   createContext,
   useContext,
@@ -16,7 +17,7 @@ import type { drawMusicTeaching } from "../../shared/music/teaching-score.js";
 import { MusicPlayer } from "../../shared/music/audio.js";
 import { MusicClipPlayer } from "../../shared/music/clip-player.js";
 import { sampleMusicNarrationFocus } from "../../shared/music/narration-focus.js";
-import {InlineMathText} from "../markdown/inline-math-text.js";
+import { InlineMathText } from "../markdown/inline-math-text.js";
 import { ProseMarkdown } from "../markdown/prose-markdown.js";
 import "./music-display.css";
 import "./music-teaching-display.css";
@@ -25,7 +26,7 @@ export const MusicTimelineContext = createContext<{
   music?: MusicPlaybackState;
   clocked: boolean;
   reportRemotionStatus?: boolean;
-  narration?: {progress: number; previousTargetIds: readonly string[]};
+  narration?: { progress: number; previousTargetIds: readonly string[] };
 }>({ clocked: false });
 
 export function MusicTeachingDisplay({
@@ -40,14 +41,19 @@ export function MusicTeachingDisplay({
   /** Production capture must wait for the asynchronous VexFlow drawing. */
   reportRemotionStatus?: boolean;
 }) {
+  const t = useT();
   const timeline = useContext(MusicTimelineContext);
-  const reportStatus = reportRemotionStatus || timeline.reportRemotionStatus === true;
+  const reportStatus =
+    reportRemotionStatus || timeline.reportRemotionStatus === true;
   const host = useRef<HTMLDivElement>(null),
     drawing = useRef<ReturnType<typeof drawMusicTeaching> | null>(null);
   const [width, setWidth] = useState(0),
     [revision, setRevision] = useState(0),
     [error, setError] = useState("");
-  const [rendered, setRendered] = useState<{block: MaterialMusicTeaching; width: number} | null>(null);
+  const [rendered, setRendered] = useState<{
+    block: MaterialMusicTeaching;
+    width: number;
+  } | null>(null);
   const [manual, setManual] = useState<{ clipId: string; tick: number } | null>(
     null,
   );
@@ -117,15 +123,14 @@ export function MusicTeachingDisplay({
             { compact: timeline.clocked },
           );
           setRevision((n) => n + 1);
-          setRendered({block, width});
+          setRendered({ block, width });
         };
         // The first KaTeX label may request fonts. Settle its measured lanes
         // once those fonts load; later cue updates only change emphasis.
         if (reportStatus && document.fonts?.status === "loading") {
           await document.fonts.ready;
           draw();
-        }
-        else {
+        } else {
           draw();
           if (document.fonts?.status === "loading")
             void document.fonts.ready.then(draw);
@@ -184,25 +189,46 @@ export function MusicTeachingDisplay({
       ),
     );
     draw.marks.forEach((node, id) => {
-      node.style.opacity = overview ? "1" : String(sampleMusicNarrationFocus({
-        figureId: block.id, targetId: id, targetIds: activeTargetIds,
-        previousTargetIds: timeline.narration?.previousTargetIds, progress: timeline.narration?.progress,
-      }));
+      node.style.opacity = overview
+        ? "1"
+        : String(
+            sampleMusicNarrationFocus({
+              figureId: block.id,
+              targetId: id,
+              targetIds: activeTargetIds,
+              previousTargetIds: timeline.narration?.previousTargetIds,
+              progress: timeline.narration?.progress,
+            }),
+          );
     });
     draw.focusIndicators.forEach((indicators, id) => {
-      const amount = sampleMusicNarrationFocus({figureId: block.id, targetId: id, targetIds: activeTargetIds,
-        previousTargetIds: timeline.narration?.previousTargetIds, progress: timeline.narration?.progress});
-      indicators.forEach(({group, trace, pointer}) => {
+      const amount = sampleMusicNarrationFocus({
+        figureId: block.id,
+        targetId: id,
+        targetIds: activeTargetIds,
+        previousTargetIds: timeline.narration?.previousTargetIds,
+        progress: timeline.narration?.progress,
+      });
+      indicators.forEach(({ group, trace, pointer }) => {
         group.setAttribute("opacity", String(amount));
         trace.setAttribute("stroke-dasharray", `${amount} 1`);
         // The measured transform stays immutable; only its own small entrance
         // offset changes, leaving the notation and annotation geometry intact.
-        pointer.style.translate = pointer.dataset.focusAxis === "y"
-          ? `0 ${(1 - amount) * 8}px` : `${(1 - amount) * -8}px 0`;
+        pointer.style.translate =
+          pointer.dataset.focusAxis === "y"
+            ? `0 ${(1 - amount) * 8}px`
+            : `${(1 - amount) * -8}px 0`;
       });
     });
-  }, [cueKey, playing.join("|"), midi.join("|"), revision, block,
-    timeline.narration?.progress, timeline.narration?.previousTargetIds.join("|")]);
+  }, [
+    cueKey,
+    playing.join("|"),
+    midi.join("|"),
+    revision,
+    block,
+    timeline.narration?.progress,
+    timeline.narration?.previousTargetIds.join("|"),
+  ]);
   const play = async (id: string) => {
     if (manual?.clipId === id) {
       player.current?.stop();
@@ -226,7 +252,15 @@ export function MusicTeachingDisplay({
       className="music-display music-teaching"
       data-music-version="2"
       data-music-clocked={timeline.clocked}
-      data-remotion-resource-status={reportStatus ? error ? "error" : width > 0 && rendered?.block === block && rendered.width === width ? "ready" : "loading" : undefined}
+      data-remotion-resource-status={
+        reportStatus
+          ? error
+            ? "error"
+            : width > 0 && rendered?.block === block && rendered.width === width
+              ? "ready"
+              : "loading"
+          : undefined
+      }
       data-music-state={
         manual?.tick === -1 ? "loading" : music || manual ? "playing" : "paused"
       }
@@ -239,7 +273,14 @@ export function MusicTeachingDisplay({
           variant="board"
         />
         <span className="music-playback-label">
-          {music ? <>正在演奏 · <InlineMathText text={music.label}/></> : "\u00a0"}
+          {music ? (
+            <>
+              {t("display.ui.playing")}
+              <InlineMathText text={music.label} />
+            </>
+          ) : (
+            "\u00a0"
+          )}
         </span>
       </header>
       <div ref={host} className="music-teaching-canvas" />
@@ -251,7 +292,10 @@ export function MusicTeachingDisplay({
               onClick={() => void play(clip.id)}
               aria-pressed={manual?.clipId === clip.id}
             >
-              {manual?.clipId === clip.id ? "停止" : "试听"} · <InlineMathText text={clip.label}/>
+              {manual?.clipId === clip.id
+                ? t("display.ui.stop")
+                : t("display.ui.listen")}{" "}
+              · <InlineMathText text={clip.label} />
             </button>
           ))}
         </div>
@@ -259,13 +303,14 @@ export function MusicTeachingDisplay({
       {error && <p role="alert">{error}</p>}
       {!timeline.clocked && !!block.clips?.length && (
         <details className="music-attribution">
-          <summary>音源</summary>FluidR3 GM · CC BY 3.0 · 本地采样
+          <summary>{t("display.ui.soundSource")}</summary>
+          {t("display.ui.fluidr3GmCcBy30LocalSamples")}
           <a
             href="https://member.keymusician.com/Member/FluidR3_GM/index.html"
             target="_blank"
             rel="noreferrer"
           >
-            来源
+            {t("display.ui.source")}
           </a>
         </details>
       )}

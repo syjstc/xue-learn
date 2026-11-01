@@ -1,3 +1,4 @@
+import { translateCurrent } from "../i18n/index.js";
 import {
   renderMusicPcm,
   type MusicPerformancePlan as TimelineMusicInput,
@@ -72,7 +73,9 @@ export class MusicClipPlayer {
     this.context ??= new AudioContext({ sampleRate: 48_000 });
     await this.context.resume();
     if (this.context.state !== "running")
-      throw Error("音频未能启动，请再次点击试听");
+      throw Error(
+        translateCurrent("display.ui.audioCouldNotStartPressListenToTryAgain"),
+      );
     if (this.prepared?.plan !== plan)
       this.prepared = {
         plan,

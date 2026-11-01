@@ -8,18 +8,23 @@ import {
   useI18n,
   useT,
   type TranslationKey,
-  type UiLocale,
+  type UiLocalePreference,
 } from "@xue-learn/core/i18n";
 import { cn } from "@xue-learn/core/utils";
 
-const LOCALE_LABEL_KEYS: Record<UiLocale, TranslationKey> = {
+const LOCALE_LABEL_KEYS: Record<UiLocalePreference, TranslationKey> = {
+  system: "i18n.systemLanguage",
   en: "common.english",
   "zh-Hans": "common.simplifiedChinese",
   "zh-Hant": "common.traditionalChinese",
 };
 
-export function LanguageSettingsForm({ compact = false }: { compact?: boolean }) {
-  const { locale, setLocale } = useI18n();
+export function LanguageSettingsForm({
+  compact = false,
+}: {
+  compact?: boolean;
+}) {
+  const { locale, localePreference, setLocale } = useI18n();
   const t = useT();
 
   return (
@@ -41,9 +46,13 @@ export function LanguageSettingsForm({ compact = false }: { compact?: boolean })
           {t("i18n.uiLanguage")}
         </Label>
       )}
-      <div className="grid gap-2 sm:grid-cols-3" role="radiogroup" aria-label={t("i18n.uiLanguage")}>
-        {UI_LOCALES.map((option) => {
-          const active = locale === option;
+      <div
+        className="grid gap-2 sm:grid-cols-2"
+        role="radiogroup"
+        aria-label={t("i18n.uiLanguage")}
+      >
+        {(["system", ...UI_LOCALES] as const).map((option) => {
+          const active = (localePreference ?? locale) === option;
           return (
             <button
               key={option}
@@ -58,9 +67,11 @@ export function LanguageSettingsForm({ compact = false }: { compact?: boolean })
                   : "border-border bg-background text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground",
               )}
             >
-              <span className="block font-medium">{t(LOCALE_LABEL_KEYS[option])}</span>
+              <span className="block font-medium">
+                {t(LOCALE_LABEL_KEYS[option])}
+              </span>
               <span className="mt-0.5 block text-xs opacity-75">
-                {getUiLocaleNativeName(option)}
+                {getUiLocaleNativeName(option === "system" ? locale : option)}
               </span>
             </button>
           );

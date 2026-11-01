@@ -1,3 +1,5 @@
+import { translateCurrent, type TranslationKey } from "@xue-learn/core/i18n";
+
 /**
  * Maps API / network failures to learner-facing copy.
  * Prefer domain messages from the API when they are already human-readable;
@@ -148,32 +150,22 @@ export function classifyApiError(error: unknown): ApiErrorKind {
   return "unknown";
 }
 
-/** Default zh-Hans copy used by non-React API helpers. */
+/** Resolve generic failures in the active UI language without translating domain content. */
 export function messageForApiErrorKind(kind: ApiErrorKind): string {
-  switch (kind) {
-    case "network":
-      return "网络连接异常，请检查网络后重试。";
-    case "unauthorized":
-      return "登录已过期，请重新登录。";
-    case "forbidden":
-      return "没有权限执行此操作。";
-    case "not_found":
-      return "找不到相关内容。";
-    case "conflict":
-      return "操作冲突，请刷新后重试。";
-    case "rate_limit":
-      return "操作太频繁，请稍后再试。";
-    case "payment":
-      return "积分不足，请充值后再试。";
-    case "timeout":
-      return "请求超时，请稍后再试。";
-    case "bad_request":
-      return "请求无效，请检查后重试。";
-    case "server":
-      return "服务暂时出了点问题，请稍后再试。";
-    case "unknown":
-      return "暂时无法完成请求，请稍后再试。";
-  }
+  const keys: Record<ApiErrorKind, TranslationKey> = {
+    network: "errors.network",
+    unauthorized: "errors.unauthorized",
+    forbidden: "errors.forbidden",
+    not_found: "errors.notFound",
+    conflict: "errors.conflict",
+    rate_limit: "errors.rateLimit",
+    payment: "errors.payment",
+    timeout: "errors.timeout",
+    bad_request: "errors.badRequest",
+    server: "errors.server",
+    unknown: "errors.unknown",
+  };
+  return translateCurrent(keys[kind]);
 }
 
 export function messageForApiErrorStatus(status: number): string {
@@ -187,11 +179,7 @@ export function resolveUserFacingApiError(
   const kind = classifyApiError(error);
   const kindDefault = messageForApiErrorKind(kind);
   const raw = readRawMessage(error);
-  if (
-    raw &&
-    !isTechnicalApiErrorMessage(raw) &&
-    raw !== kindDefault
-  ) {
+  if (raw && !isTechnicalApiErrorMessage(raw) && raw !== kindDefault) {
     return { kind, message: raw, isDomainMessage: true };
   }
   if (

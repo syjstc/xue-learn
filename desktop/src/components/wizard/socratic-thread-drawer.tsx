@@ -1,4 +1,5 @@
 "use client";
+import { translateCurrent } from "@xue-learn/core/i18n";
 
 import { useEffect, useState } from "react";
 import {
@@ -26,7 +27,7 @@ import {
   type SocraticThread,
 } from "@/shared/graph/socratic-threads";
 import { cn } from "@xue-learn/core/utils";
-import { useT } from "@xue-learn/core/i18n";
+import { useT, countVariant, getCurrentUiLocale } from "@xue-learn/core/i18n";
 
 const MOBILE_MAX_WIDTH = 1023;
 
@@ -48,32 +49,46 @@ function formatUpdatedAt(iso: string): string {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffMin = Math.floor(diffMs / 60_000);
-  if (diffMin < 1) return "刚刚";
-  if (diffMin < 60) return `${diffMin} 分钟前`;
+  if (diffMin < 1) return translateCurrent("desktop.copy.justNow");
+  if (diffMin < 60)
+    return new Intl.RelativeTimeFormat(getCurrentUiLocale(), {
+      numeric: "auto",
+    }).format(-diffMin, "minute");
   const diffHr = Math.floor(diffMin / 60);
-  if (diffHr < 24) return `${diffHr} 小时前`;
-  return date.toLocaleDateString("zh-CN", { month: "short", day: "numeric" });
+  if (diffHr < 24)
+    return new Intl.RelativeTimeFormat(getCurrentUiLocale(), {
+      numeric: "auto",
+    }).format(-diffHr, "hour");
+  return date.toLocaleDateString(getCurrentUiLocale(), {
+    month: "short",
+    day: "numeric",
+  });
 }
 
 function ThreadStatusBadge({ thread }: { thread: SocraticThread }) {
+  const t = useT();
   if (thread.done) {
     return (
       <span className="inline-flex items-center gap-0.5 text-[10px] text-[var(--brand-600)]">
         <CheckCircle2 className="h-3 w-3" aria-hidden />
-        已完成
+        {t("spaces.completed")}
       </span>
     );
   }
   const turns = thread.messages.filter((m) => m.role === "user").length;
   if (turns > 0) {
     return (
-      <span className="text-[10px] text-[var(--text-400)]">{turns} 轮回答</span>
+      <span className="text-[10px] text-[var(--text-400)]">
+        {t(`desktop.i18n.responseCount.${countVariant(turns)}`, {
+          count: turns,
+        })}
+      </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-0.5 text-[10px] text-[var(--text-400)]">
       <Circle className="h-2.5 w-2.5" aria-hidden />
-      待开始
+      {t("desktop.ui.socraticThreadDrawer.notStarted")}
     </span>
   );
 }
@@ -87,6 +102,7 @@ function SocraticThreadList({
   activeThreadId?: string | null;
   onSelect: (thread: SocraticThread) => void;
 }) {
+  const t = useT();
   if (threads.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-2 py-8 text-center">
@@ -94,16 +110,23 @@ function SocraticThreadList({
           className="h-8 w-8 text-[var(--text-400)]/50"
           aria-hidden
         />
-        <p className="text-sm text-[var(--text-400)]">还没有错题可修正</p>
+        <p className="text-sm text-[var(--text-400)]">
+          {t("desktop.ui.socraticThreadDrawer.noMissedQuestionsToReview")}
+        </p>
         <p className="max-w-[14rem] text-xs text-[var(--text-400)]/80">
-          完成测验后，每道错题会出现在这里
+          {t(
+            "desktop.ui.socraticThreadDrawer.afterAQuizAnyMissedQuestionsWill",
+          )}
         </p>
       </div>
     );
   }
 
   return (
-    <ul className="space-y-1" aria-label="错题列表">
+    <ul
+      className="space-y-1"
+      aria-label={t("desktop.ui.socraticThreadDrawer.missedQuestions")}
+    >
       {threads.map((thread) => {
         const active = thread.id === activeThreadId;
         return (
@@ -153,10 +176,17 @@ function activeThreadLabel(
   activeThreadId?: string | null,
 ): string {
   if (!activeThreadId || threads.length === 0) {
-    return threads.length > 0 ? `错题列表 (${threads.length})` : "错题列表";
+    return threads.length > 0
+      ? translateCurrent("desktop.i18n.mistakeReviewCount", {
+          count: threads.length,
+        })
+      : translateCurrent("desktop.ui.socraticThreadDrawer.missedQuestions");
   }
   const thread = threads.find((t) => t.id === activeThreadId);
-  return thread?.label ?? "错题列表";
+  return (
+    thread?.label ??
+    translateCurrent("desktop.ui.socraticThreadDrawer.missedQuestions")
+  );
 }
 
 function SocraticThreadTrigger({
@@ -170,6 +200,7 @@ function SocraticThreadTrigger({
   doneCount?: number;
   totalCount?: number;
 }) {
+  const t = useT();
   return (
     <Button
       type="button"
@@ -182,7 +213,7 @@ function SocraticThreadTrigger({
       <span className="min-w-0 flex-1 truncate">{label}</span>
       {totalCount != null && totalCount > 0 && (
         <span className="hidden truncate text-muted-foreground sm:inline">
-          · {doneCount ?? 0}/{totalCount} 已完成
+          · {doneCount ?? 0}/{totalCount} {t("spaces.completed")}
         </span>
       )}
       <ChevronDown
@@ -246,9 +277,13 @@ export function SocraticThreadDrawer({
             className="h-[100dvh] max-h-[100dvh] w-full max-w-none gap-0 rounded-none border-0 p-0"
           >
             <SheetHeader className="border-b px-4 py-3 text-left">
-              <SheetTitle>错题列表</SheetTitle>
+              <SheetTitle>
+                {t("desktop.ui.socraticThreadDrawer.missedQuestions")}
+              </SheetTitle>
               <SheetDescription className="sr-only">
-                选择要修正的错题对话
+                {t(
+                  "desktop.ui.socraticThreadDrawer.chooseAQuestionToReviewWithYour",
+                )}
               </SheetDescription>
             </SheetHeader>
             <div className="min-h-0 flex-1 overflow-y-auto p-3">{list}</div>

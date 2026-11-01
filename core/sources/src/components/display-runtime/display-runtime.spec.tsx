@@ -13,25 +13,27 @@ const manifest: DisplayPluginManifest = {apiVersion: 1, id: "demo", version: "1.
 const document: DisplayDocument = {version: 1, id: "lesson", plugins: [{id: "demo", version: "1.0.0"}], root: {id: "row", kind: "demo:row", version: 1, payload: {}, children: [{id: "v", kind: "demo:value", version: 1, payload: {}}]}, timeline: [{id: "cue", startTick: 48_000, durationTicks: 48_000, targets: ["v/value"]}]};
 const components: Record<string, DisplayRenderer> = {
   "demo:row@1": ({children}) => <main>{children}</main>,
-  "demo:value@1": ({clock, state, updateState, activeTargets}) => <button data-tick={clock.tick} data-focus={activeTargets.join(",")} onClick={() => updateState({count: Number(state.count ?? 0) + 1})}>{Number(state.count ?? 0)}</button>,
+  "demo:value@1": ({clock, state, updateState, activeTargets}) => (
+    <button data-tick={clock.tick} data-focus={activeTargets.join(",")} onClick={() => updateState({count: Number(state.count ?? 0) + 1})}>{Number(state.count ?? 0)}</button>),
   "demo:broken@1": () => {throw new Error("Broken leaf");},
 };
 
 describe("unified display runtime", () => {
   let container: HTMLDivElement, root: Root;
-  beforeEach(() => { (globalThis as {IS_REACT_ACT_ENVIRONMENT?: boolean}).IS_REACT_ACT_ENVIRONMENT = true; container = window.document.createElement("div"); window.document.body.appendChild(container); root = createRoot(container); });
+  beforeEach(() => { (globalThis as {IS_REACT_ACT_ENVIRONMENT?: boolean}).IS_REACT_ACT_ENVIRONMENT = true;
+    window.document.documentElement.lang = "en"; container = window.document.createElement("div"); window.document.body.appendChild(container); root = createRoot(container); });
   afterEach(async () => {await act(async () => root.unmount()); container.remove(); delete (globalThis as {IS_REACT_ACT_ENVIRONMENT?: boolean}).IS_REACT_ACT_ENVIRONMENT; jest.restoreAllMocks();});
 
   it("exposes failed component details to the video export readiness check", async () => {
     await act(async () => root.render(<DisplayPlaceholder failure={{reason: "invalid-payload", message: 'objects.0.kind: expected "shape"', nodeId: "force", kind: "physics:motion-scene", pluginId: "org.xuelearn.display.physics", resourceId: "diagram"}}/>));
     const placeholder = container.querySelector<HTMLElement>('[data-display-placeholder="invalid-payload"]')!;
     expect(placeholder.dataset).toMatchObject({displayNode: "force", displayKind: "physics:motion-scene", displayMessage: 'objects.0.kind: expected "shape"', displayPlugin: "org.xuelearn.display.physics", displayResource: "diagram"});
-    expect(placeholder.textContent).toBe("◇展示数据无效");
+    expect(placeholder.textContent).toBe("◇Invalid display data");
   });
 
   it("transitions from lazy loading to a live renderer, preserves state, and samples seek deterministically", async () => {
     let complete!: (value: {components: typeof components}) => void;
-    const loader = new Promise<{components: typeof components}>(resolve => {complete = resolve;});
+    const loader = new Promise<{components: typeof components}>((resolve ) => {complete = resolve;});
     const runtime = createDisplayRuntime({catalog: createDisplayCatalog([manifest]), resolveModule: () => loader});
     const state = createDisplayStateStore();
     const render = (frame: number) => root.render(<DisplayRuntimeSurface document={document} runtime={runtime} clock={createDisplayClock(frame)} state={state}/>);

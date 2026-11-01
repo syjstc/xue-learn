@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMainline } from "./provider.tsx";
-import { useT } from "@xue-learn/core/i18n";
+import { useT, getCurrentUiLocale } from "@xue-learn/core/i18n";
 import { Button } from "@xue-learn/core/ui/button";
 import {
   Sheet,
@@ -16,17 +16,17 @@ export function MainlineFootprints() {
   if (!mainline) return null;
   const latest = mainline.current ?? mainline.snapshot?.activities[0];
   return (
-    <div className="flex items-center gap-1 px-2 py-1">
+    <div className="grid grid-cols-2 items-center gap-1 px-2 py-1">
       <Button
         size="sm"
         variant="ghost"
         disabled={!latest || mainline.busy}
         onClick={() => latest && void mainline.resume(latest)}
       >
-        {t("mainline.continue")}
+        {t("mainline.nav.continue")}
       </Button>
       <Button size="sm" variant="ghost" onClick={() => setOpen(true)}>
-        {t("mainline.footprints")}
+        {t("mainline.nav.history")}
       </Button>
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent>
@@ -44,7 +44,7 @@ export function MainlineFootprints() {
               >
                 <p className="text-xs text-muted-foreground">
                   {t(`mainline.kind.${activity.kind}`)} ·{" "}
-                  {new Date(activity.createdAt).toLocaleString()}
+                  {new Date(activity.createdAt).toLocaleString(getCurrentUiLocale())}
                 </p>
                 <p className="mt-1 text-sm">{activity.title}</p>
                 <Button

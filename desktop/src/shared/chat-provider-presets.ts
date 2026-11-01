@@ -15,7 +15,7 @@ export const CHAT_PROVIDER_PRESETS = [
   },
   {
     id: "qwen",
-    name: "Qwen / 阿里云",
+    name: "Qwen / Alibaba Cloud",
     baseUrl: "https://dashscope.aliyuncs.com/compatible-mode/v1",
     keysUrl: "https://bailian.console.aliyun.com/",
   },
@@ -27,13 +27,13 @@ export const CHAT_PROVIDER_PRESETS = [
   },
   {
     id: "doubao",
-    name: "Doubao / 火山方舟",
+    name: "Doubao / Volcengine",
     baseUrl: "https://ark.cn-beijing.volces.com/api/v3",
     keysUrl: "https://console.volcengine.com/ark/",
   },
   {
     id: "bigmodel",
-    name: "GLM / 智谱",
+    name: "GLM / Zhipu",
     baseUrl: "https://open.bigmodel.cn/api/paas/v4",
     keysUrl: "https://open.bigmodel.cn/",
   },

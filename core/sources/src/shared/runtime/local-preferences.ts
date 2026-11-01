@@ -1,7 +1,7 @@
 import { isDesktopLocalRuntime } from "./client-runtime.js";
 
 export type LocalTheme = "light" | "dark" | "system";
-export type LocalUiLocale = "zh-Hans" | "zh-Hant" | "en";
+export type LocalUiLocale = "zh-Hans" | "zh-Hant" | "en" | "system";
 
 export type LocalAppearancePreferences = {
   theme: LocalTheme;
@@ -10,7 +10,7 @@ export type LocalAppearancePreferences = {
 
 const DEFAULT_PREFERENCES: LocalAppearancePreferences = {
   theme: "system",
-  uiLocale: "zh-Hans",
+  uiLocale: "system",
 };
 
 function isTheme(value: unknown): value is LocalTheme {
@@ -18,7 +18,12 @@ function isTheme(value: unknown): value is LocalTheme {
 }
 
 function isUiLocale(value: unknown): value is LocalUiLocale {
-  return value === "zh-Hans" || value === "zh-Hant" || value === "en";
+  return (
+    value === "zh-Hans" ||
+    value === "zh-Hant" ||
+    value === "en" ||
+    value === "system"
+  );
 }
 
 function normalize(value: unknown): LocalAppearancePreferences {

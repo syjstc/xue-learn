@@ -5,12 +5,12 @@ import {
   type FlashCardFsrsState,
 } from "@xue-learn/core/domain";
 
-export type FsrsRating = 'Again' | 'Hard' | 'Good' | 'Easy';
+export type FsrsRating = "Again" | "Hard" | "Good" | "Easy";
 
 export type FlashcardReviewScope =
-  | { type: 'all' }
-  | { type: 'goal'; goalId: string }
-  | { type: 'unit'; unitId: string };
+  | { type: "all" }
+  | { type: "goal"; goalId: string }
+  | { type: "unit"; unitId: string };
 
 export type FlashCardDto = {
   id: string;
@@ -80,26 +80,28 @@ export type FlashCardSourcePayload = {
   stale: boolean;
 };
 
-export const FLASHCARD_SCOPE_STORAGE_KEY = 'flashcard-review-scope';
+export const FLASHCARD_SCOPE_STORAGE_KEY = "flashcard-review-scope";
 
-export function scopeToQuery(scope: FlashcardReviewScope): Record<string, string> {
-  if (scope.type === 'goal') {
-    return { scope: 'goal', goalId: scope.goalId };
+export function scopeToQuery(
+  scope: FlashcardReviewScope,
+): Record<string, string> {
+  if (scope.type === "goal") {
+    return { scope: "goal", goalId: scope.goalId };
   }
-  if (scope.type === 'unit') {
-    return { scope: 'unit', unitId: scope.unitId };
+  if (scope.type === "unit") {
+    return { scope: "unit", unitId: scope.unitId };
   }
-  return { scope: 'all' };
+  return { scope: "all" };
 }
 
 export function parseScopeFromQuery(
   scope?: string | null,
   goalId?: string | null,
-  unitId?: string | null
+  unitId?: string | null,
 ): FlashcardReviewScope {
-  if (scope === 'goal' && goalId) return { type: 'goal', goalId };
-  if (scope === 'unit' && unitId) return { type: 'unit', unitId };
-  return { type: 'all' };
+  if (scope === "goal" && goalId) return { type: "goal", goalId };
+  if (scope === "unit" && unitId) return { type: "unit", unitId };
+  return { type: "all" };
 }
 
 function flashCardDtoToFsrsState(card: FlashCardDto): FlashCardFsrsState {
@@ -119,26 +121,37 @@ function flashCardDtoToFsrsState(card: FlashCardDto): FlashCardFsrsState {
 export function previewFlashcardNextReview(
   card: FlashCardDto,
   rating: FsrsRating,
-  now = new Date()
+  now = new Date(),
 ): Date {
   return scheduleReview(flashCardDtoToFsrsState(card), rating, now).due;
 }
 
-export function formatFlashcardReviewInterval(due: Date, now = new Date()): string {
+export function formatFlashcardReviewInterval(
+  due: Date,
+  now = new Date(),
+  locale = getCurrentUiLocale(),
+): string {
+  const format = (value: number, unit: string) =>
+    new Intl.NumberFormat(locale, {
+      style: "unit",
+      unit,
+      unitDisplay: "long",
+    }).format(value);
   const diffMs = Math.max(0, due.getTime() - now.getTime());
   const minutes = Math.round(diffMs / 60000);
-  if (minutes < 1) return '<1 分钟';
-  if (minutes < 60) return `${minutes} 分钟`;
+  if (minutes < 1) return `<${format(1, "minute")}`;
+  if (minutes < 60) return format(minutes, "minute");
 
   const hours = Math.round(minutes / 60);
-  if (hours < 24) return `${hours} 小时`;
+  if (hours < 24) return format(hours, "hour");
 
   const days = Math.round(hours / 24);
-  if (days < 30) return `${days} 天`;
+  if (days < 30) return format(days, "day");
 
   const months = Math.round(days / 30);
-  if (months < 12) return `${months} 个月`;
+  if (months < 12) return format(months, "month");
 
   const years = Math.round(months / 12);
-  return `${years} 年`;
+  return format(years, "year");
 }
+import { getCurrentUiLocale } from "@xue-learn/core/i18n";

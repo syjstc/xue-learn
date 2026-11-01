@@ -6,7 +6,14 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ScrollRestoration } from "@/components/routing/scroll-restoration";
 import { queryClient } from "@/shared/api";
 import { configureDesktopLocalQueryClient } from "@/shared/api/query-client";
-import { I18nProvider } from "@xue-learn/core/i18n";
+import {
+  I18nProvider,
+  applyUiLocale,
+  resolveUiLocale,
+  getSystemUiLocale,
+  translateForLocale,
+} from "@xue-learn/core/i18n";
+import { readLocalAppearancePreferences } from "@xue-learn/core/shared/runtime/local-preferences";
 import { configureClientRuntime } from "@xue-learn/core/client-runtime";
 import { hydrateLocalClientPreferences } from "@/shared/runtime/local-client-preferences";
 import { DesktopLocalApp } from "./desktop-local-app.tsx";
@@ -24,7 +31,12 @@ function renderFatal(cause: unknown) {
   const message = cause instanceof Error ? cause.message : String(cause);
   createRoot(rootElement!).render(
     <main role="alert" className="mx-auto max-w-xl p-8">
-      <h1 className="text-xl font-semibold">XueLearn Local could not start</h1>
+      <h1 className="text-xl font-semibold">
+        {translateForLocale(
+          getSystemUiLocale(),
+          "desktop.i18n.bootstrapFailed",
+        )}
+      </h1>
       <p className="mt-3 text-muted-foreground">{message}</p>
     </main>,
   );
@@ -33,7 +45,12 @@ function renderFatal(cause: unknown) {
 void bootstrapDesktopRuntime()
   .then(async (runtime) => {
     configureClientRuntime(runtime);
-    await hydrateLocalClientPreferences();
+    const [appearance] = await Promise.all([
+      readLocalAppearancePreferences(),
+      hydrateLocalClientPreferences(),
+    ]);
+    const initialLocalePreference = appearance?.uiLocale ?? "system";
+    applyUiLocale(resolveUiLocale(initialLocalePreference));
     configureDesktopLocalQueryClient();
     document.documentElement.dataset.desktopPlatform = runtime.os;
     rootElement.replaceChildren();
@@ -43,7 +60,7 @@ void bootstrapDesktopRuntime()
           <BrowserRouter>
             <ScrollRestoration />
             <ThemeProvider>
-              <I18nProvider>
+              <I18nProvider initialLocalePreference={initialLocalePreference}>
                 <DesktopLocalApp />
               </I18nProvider>
             </ThemeProvider>

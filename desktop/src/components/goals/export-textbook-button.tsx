@@ -1,4 +1,5 @@
 "use client";
+import { useT, translateCurrent } from "@xue-learn/core/i18n";
 
 import { useMutation } from "@tanstack/react-query";
 import { ChevronDown, Download, Monitor, Smartphone } from "lucide-react";
@@ -27,7 +28,10 @@ async function downloadTextbookPdf(
     const body = (await res.json().catch(() => null)) as {
       error?: string;
     } | null;
-    throw new Error(body?.error ?? `导出失败 (${res.status})`);
+    throw new Error(
+      body?.error ??
+        translateCurrent("desktop.i18n.exportFailed", { status: res.status }),
+    );
   }
   const blob = await res.blob();
   const disposition = res.headers.get("Content-Disposition");
@@ -53,6 +57,7 @@ export function ExportTextbookButton({
   goalTitle: string;
   className?: string;
 }) {
+  const t = useT();
   const exportMutation = useMutation({
     mutationFn: (layout: PdfExportLayout) =>
       downloadTextbookPdf(goalId, goalTitle, layout),
@@ -75,23 +80,25 @@ export function ExportTextbookButton({
           }
         >
           <Download className="h-4 w-4" aria-hidden />
-          {isPending ? "正在生成 PDF…" : "导出 PDF 教材"}
+          {isPending
+            ? t("desktop.ui.exportTextbookButton.preparingPdf")
+            : t("desktop.ui.exportTextbookButton.exportCourseAsPdf")}
           <ChevronDown className="h-3.5 w-3.5" aria-hidden />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-44">
           <DropdownMenuItem onClick={() => exportMutation.mutate("desktop")}>
             <Monitor className="h-4 w-4" aria-hidden />
-            桌面版宽度
+            {t("desktop.ui.exportTextbookButton.desktopLayout")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => exportMutation.mutate("mobile")}>
             <Smartphone className="h-4 w-4" aria-hidden />
-            手机版宽度
+            {t("desktop.ui.exportTextbookButton.mobileLayout")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       {exportMutation.error && (
         <p className="text-xs text-red-600" role="alert">
-          {exportMutation.error.message || "导出失败"}
+          {exportMutation.error.message || t("lessonPerformance.exportFailed")}
         </p>
       )}
     </div>

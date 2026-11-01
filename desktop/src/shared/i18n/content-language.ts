@@ -46,12 +46,9 @@ const LEGACY_LABELS: Record<string, string> = {
 export function getContentLanguageLabel(
   code: string | null | undefined,
 ): string {
-  if (!code || code === "auto") return "自动";
-  return (
-    LABELS[code as keyof typeof LABELS] ??
-    LEGACY_LABELS[code] ??
-    code
-  );
+  if (!code || code === "auto")
+    return translateCurrent("desktop.i18n.automaticContentLanguage");
+  return LABELS[code as keyof typeof LABELS] ?? LEGACY_LABELS[code] ?? code;
 }
 
 const TRADITIONAL_SCRIPT_MARKERS = new Set(
@@ -114,7 +111,9 @@ export function collectLearningMaterialPlainText(material: unknown): string {
   if (typeof m.title === "string") parts.push(m.title);
   if (Array.isArray(m.keyTakeaways)) {
     parts.push(
-      ...m.keyTakeaways.filter((item): item is string => typeof item === "string"),
+      ...m.keyTakeaways.filter(
+        (item): item is string => typeof item === "string",
+      ),
     );
   }
 
@@ -156,13 +155,10 @@ export function resolveClientContentLanguage(
   goalTitle: string,
 ): Exclude<ContentLanguageCode, "auto"> {
   if (stored === "zh") return "zh-Hans";
-  if (
-    stored &&
-    stored !== "auto" &&
-    stored in LABELS
-  ) {
+  if (stored && stored !== "auto" && stored in LABELS) {
     return stored as Exclude<ContentLanguageCode, "auto">;
   }
   const detected = detectContentLanguage(goalTitle);
   return detected === "auto" ? "zh-Hans" : detected;
 }
+import { translateCurrent } from "@xue-learn/core/i18n";

@@ -8,4 +8,8 @@ Run `pnpm run check:security` before proposing a release. It checks source hygie
 
 Mac release builds require the contributor's own Developer ID and notarization credentials. Keep those outside version control; see [the release guide](docs/mac-release.md). Source contributions do not publish packages or installers automatically.
 
+Changes to `main` go through pull requests and code review. Non-admin contributors need at least one approval, passing `source` and `security` GitHub Actions checks, an up-to-date branch and resolved review conversations. New commits dismiss stale approvals. The repository owner retains administrator control. External contributors should fork the repository and open a PR; public visibility does not grant push permission.
+
+Keep interface text in the shared dictionaries and run `pnpm run check:i18n`. English and Chinese contributions are welcome; see [the translation guide](docs/internationalization.md). Language changes must preserve saved content and existing language choices.
+
 Contributions to project-owned source are provided under the repository's MIT license. Include the source, license, and required attribution for any new third-party dependency or media. Follow the separate [brand policy](desktop/BRAND_POLICY.md) when distributing a modified app.

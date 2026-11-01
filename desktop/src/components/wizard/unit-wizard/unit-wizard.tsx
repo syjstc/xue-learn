@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@xue-learn/core/i18n";
 
 import { useEffect, useState } from "react";
 import { BookOpen, PanelRightClose } from "lucide-react";
@@ -20,6 +21,7 @@ import { ConversationalUnitView } from "../conversation/conversational-unit-view
 import { learnerFacingError } from "@/shared/errors/learner-error";
 
 export function UnitWizard(props: UnitWizardProps) {
+  const t = useT();
   const model = useUnitWizard(props);
   const [reviewReferenceOpen, setReviewReferenceOpen] = useState(false);
   const [mobileReferenceOpen, setMobileReferenceOpen] = useState(false);
@@ -85,7 +87,7 @@ export function UnitWizard(props: UnitWizardProps) {
                 onClick={() => setReviewReferenceOpen(true)}
               >
                 <BookOpen aria-hidden />
-                学习资料
+                {t("goalDocuments.title")}
               </Button>
             )}
             {model.step === "socratic" ? (
@@ -104,9 +106,11 @@ export function UnitWizard(props: UnitWizardProps) {
               />
             ) : model.step === "complete" ? (
               <div className="rounded-xl border border-border bg-card p-6 text-center">
-                <h2 className="text-lg font-semibold">错题修正已完成</h2>
+                <h2 className="text-lg font-semibold">
+                  {t("desktop.ui.unitWizard.questionReviewComplete")}
+                </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  可以完成本单元并继续下一个复习单元。
+                  {t("desktop.ui.unitWizard.youCanFinishThisUnitAndContinue")}
                 </p>
               </div>
             ) : (
@@ -122,7 +126,7 @@ export function UnitWizard(props: UnitWizardProps) {
                 size="icon-sm"
                 className="absolute right-2 top-2 z-10"
                 onClick={() => setReviewReferenceOpen(false)}
-                aria-label="收起学习资料"
+                aria-label={t("desktop.ui.unitWizard.hideLearningMaterials")}
               >
                 <PanelRightClose aria-hidden />
               </Button>
@@ -138,7 +142,7 @@ export function UnitWizard(props: UnitWizardProps) {
               size="icon-lg"
               className="fixed bottom-20 right-4 z-30 rounded-full shadow-lg md:hidden"
               onClick={() => setMobileReferenceOpen(true)}
-              aria-label="打开学习资料"
+              aria-label={t("desktop.ui.unitWizard.openLearningMaterials")}
             >
               <BookOpen aria-hidden />
             </Button>
@@ -151,9 +155,11 @@ export function UnitWizard(props: UnitWizardProps) {
                 className="w-[min(92vw,28rem)] gap-0 overflow-hidden p-0 md:hidden"
               >
                 <SheetHeader className="border-b px-4 py-3 text-left">
-                  <SheetTitle>学习资料</SheetTitle>
+                  <SheetTitle>{t("goalDocuments.title")}</SheetTitle>
                   <SheetDescription>
-                    复习时可随时查阅正文与笔记
+                    {t(
+                      "desktop.ui.unitWizard.referToLessonContentAndNotesDuring",
+                    )}
                   </SheetDescription>
                 </SheetHeader>
                 <div className="min-h-0 flex-1 overflow-y-auto p-3">

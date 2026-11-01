@@ -1,4 +1,7 @@
 "use client";
+import { translateCurrent } from "@xue-learn/core/i18n";
+
+import { useT, countVariant, getCurrentUiLocale } from "@xue-learn/core/i18n";
 
 import { ClipboardList } from "lucide-react";
 import type { QuizSetSummary } from "@/shared/domain/quiz-sets";
@@ -9,11 +12,17 @@ function formatCreatedAt(iso: string): string {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffMin = Math.floor(diffMs / 60_000);
-  if (diffMin < 1) return "刚刚";
-  if (diffMin < 60) return `${diffMin} 分钟前`;
+  if (diffMin < 1) return translateCurrent("desktop.copy.justNow");
+  if (diffMin < 60)
+    return new Intl.RelativeTimeFormat(getCurrentUiLocale(), {
+      numeric: "auto",
+    }).format(-diffMin, "minute");
   const diffHr = Math.floor(diffMin / 60);
-  if (diffHr < 24) return `${diffHr} 小时前`;
-  return date.toLocaleDateString("zh-CN", {
+  if (diffHr < 24)
+    return new Intl.RelativeTimeFormat(getCurrentUiLocale(), {
+      numeric: "auto",
+    }).format(-diffHr, "hour");
+  return date.toLocaleDateString(getCurrentUiLocale(), {
     month: "short",
     day: "numeric",
     hour: "2-digit",
@@ -22,7 +31,7 @@ function formatCreatedAt(iso: string): string {
 }
 
 function scoreLabel(score: number | null): string {
-  if (score === null) return "未作答";
+  if (score === null) return translateCurrent("desktop.copy.notAnswered");
   return `${Math.round(score * 100)}%`;
 }
 
@@ -41,8 +50,13 @@ export function QuizSetList({
   onSelectAttempt?: (set: QuizSetSummary) => void;
   className?: string;
 }) {
+  const t = useT();
   if (loading) {
-    return <p className="text-sm text-muted-foreground">加载测验记录…</p>;
+    return (
+      <p className="text-sm text-muted-foreground">
+        {t("desktop.ui.quizSetList.loadingPracticeHistory")}
+      </p>
+    );
   }
 
   if (sets.length === 0) {
@@ -54,19 +68,26 @@ export function QuizSetList({
           className="h-8 w-8 text-muted-foreground/50"
           aria-hidden
         />
-        <p className="text-sm text-muted-foreground">还没有测验题组</p>
+        <p className="text-sm text-muted-foreground">
+          {t("desktop.ui.quizSetList.noPracticeSetsYet")}
+        </p>
         <p className="max-w-[14rem] text-xs text-muted-foreground/80">
-          生成题目后会保存在这里，可随时重新作答
+          {t("desktop.ui.quizSetList.generatedPracticeSetsAreSavedHereSo")}
         </p>
       </div>
     );
   }
 
   return (
-    <ul className={`space-y-1.5 ${className ?? ""}`} aria-label="全部测验题组">
+    <ul
+      className={`space-y-1.5 ${className ?? ""}`}
+      aria-label={t("desktop.ui.quizSetList.allPracticeSets")}
+    >
       {sets.map((set, index) => {
         const active = set.id === activeQuizSetId;
-        const label = `第 ${sets.length - index} 组`;
+        const label = t("desktop.i18n.quizSet", {
+          number: sets.length - index,
+        });
         return (
           <li key={set.id}>
             <div
@@ -94,10 +115,16 @@ export function QuizSetList({
                   {set.preview}
                 </p>
                 <p className="mt-1 text-[11px] text-muted-foreground">
-                  {set.questionCount} 题
+                  {t(
+                    `desktop.i18n.questionCount.${countVariant(set.questionCount)}`,
+                    { count: set.questionCount },
+                  )}
                   {set.attemptCount > 0
-                    ? ` · ${set.attemptCount} 次作答 · 最高 ${scoreLabel(set.bestScore)}`
-                    : " · 未作答"}
+                    ? t("desktop.i18n.quizAttempts", {
+                        count: set.attemptCount,
+                        score: scoreLabel(set.bestScore),
+                      })
+                    : t("desktop.ui.quizSetList.notAnswered")}
                 </p>
               </button>
               {set.attemptCount > 0 && onSelectAttempt && (
@@ -110,7 +137,7 @@ export function QuizSetList({
                       onSelectAttempt(set);
                     }}
                   >
-                    查看最近作答
+                    {t("desktop.ui.quizSetList.viewLatestAttempt")}
                   </button>
                 </div>
               )}

@@ -1,3 +1,4 @@
+import { useT } from "../../shared/i18n/index.js";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { MusicTimelineContext } from "./music-teaching-display.js";
 import {
@@ -32,8 +33,10 @@ export function MusicDisplay({
   activeTargetIds?: readonly string[];
   interactive?: boolean;
 }) {
+  const t = useT();
   const timeline = useContext(MusicTimelineContext);
-  const music = timeline.music?.figureId === block.id ? timeline.music : undefined;
+  const music =
+    timeline.music?.figureId === block.id ? timeline.music : undefined;
   const plan = useMemo(() => compileMaterialMusic(block), [block]);
   const root = useRef<HTMLElement>(null);
   const host = useRef<HTMLDivElement>(null),
@@ -44,7 +47,10 @@ export function MusicDisplay({
   const [scoreWidth, setScoreWidth] = useState(0);
   const [scoreRevision, setScoreRevision] = useState(0),
     [scoreError, setScoreError] = useState("");
-  const [rendered, setRendered] = useState<{block: MaterialMusic; width: number} | null>(null);
+  const [rendered, setRendered] = useState<{
+    block: MaterialMusic;
+    width: number;
+  } | null>(null);
   const [manualStep, setManualStep] = useState<string | null>(null),
     [variant, setVariant] = useState<"a" | "b">("a");
   const [notation, setNotation] = useState(block.notation ?? "both"),
@@ -65,8 +71,9 @@ export function MusicDisplay({
       activeTargetIds.includes(step.id) ||
       activeTargetIds.includes(musicStepTarget(block.id ?? "display", step.id)),
   );
-  const selected =
-    music ? block.steps.find(step => step.id === music.clipId) : manualStep === "whole"
+  const selected = music
+    ? block.steps.find((step) => step.id === music.clipId)
+    : manualStep === "whole"
       ? undefined
       : (block.steps.find((step) => step.id === manualStep) ?? cueStep);
   const overview: MusicSelection = {
@@ -93,9 +100,16 @@ export function MusicDisplay({
   );
   const from = (selection.bars[0]! - 1) * plan.barBeats,
     to = selection.bars[1]! * plan.barBeats;
-  const beat = music ? from + ((music.elapsedTicks ?? 0) / 48_000 * block.tempo / 60) % (to - from) : Math.max(from, Math.min(to, playback.beat));
-  const activeNotes =
-    music ? plan.notes.filter(note => music.targetIds.includes(note.eventId)) : playback.state === "playing" ? musicFrame(plan, selection, beat).notes : [];
+  const beat = music
+    ? from +
+      (((((music.elapsedTicks ?? 0) / 48_000) * block.tempo) / 60) %
+        (to - from))
+    : Math.max(from, Math.min(to, playback.beat));
+  const activeNotes = music
+    ? plan.notes.filter((note) => music.targetIds.includes(note.eventId))
+    : playback.state === "playing"
+      ? musicFrame(plan, selection, beat).notes
+      : [];
   const activeMidi = new Set(activeNotes.map((n) => n.pitch.midi));
   const focused = new Set(variant === "a" ? (selected?.focus ?? []) : []);
   const focusedMidi = new Set(
@@ -163,7 +177,7 @@ export function MusicDisplay({
         await document.fonts.ready;
         if (!cancelled && host.current) {
           score.current = drawMusicScore(host.current, plan);
-          setRendered({block, width: scoreWidth});
+          setRendered({ block, width: scoreWidth });
           setScoreRevision((n) => n + 1);
         }
       })
@@ -232,9 +246,17 @@ export function MusicDisplay({
       data-music-clocked={timeline.clocked ? "true" : undefined}
       data-music-state={music ? "playing" : playback.state}
       data-music-step={selected?.id ?? "whole"}
-      data-remotion-resource-status={timeline.reportRemotionStatus
-        ? scoreError ? "error" : scoreWidth > 0 && rendered?.block === block && rendered.width === scoreWidth ? "ready" : "loading"
-        : undefined}
+      data-remotion-resource-status={
+        timeline.reportRemotionStatus
+          ? scoreError
+            ? "error"
+            : scoreWidth > 0 &&
+                rendered?.block === block &&
+                rendered.width === scoreWidth
+              ? "ready"
+              : "loading"
+          : undefined
+      }
       aria-label={block.title}
     >
       <header className="music-heading">
@@ -243,13 +265,16 @@ export function MusicDisplay({
           1 = C · {block.meter} · ♩ = {Math.round(block.tempo * speed)}
         </span>
       </header>
-      <div className="music-step-nav" aria-label="乐谱讲解步骤">
+      <div
+        className="music-step-nav"
+        aria-label={t("display.ui.scoreWalkthrough")}
+      >
         <button
           type="button"
           aria-pressed={!selected}
           onClick={() => choose("whole")}
         >
-          全曲
+          {t("display.ui.fullScore")}
         </button>
         {block.steps.map((step, i) => (
           <button
@@ -267,25 +292,34 @@ export function MusicDisplay({
         className="music-score-scroll"
         ref={scroll}
         tabIndex={0}
-        aria-label="乐谱，可横向滚动"
+        aria-label={t("display.ui.scoreScrollHorizontally")}
       >
         <div ref={host} className={`music-score notation-${notation}`} />
       </div>
-      {scoreError && <p role="alert">乐谱未能载入：{scoreError}</p>}
+      {scoreError && (
+        <p role="alert">
+          {t("display.music.scoreError", { error: scoreError })}
+        </p>
+      )}
       <div className="music-selection">
         <span>
-          {selected?.label ?? "全曲"} · 第 {selection.bars.join("–")} 小节
+          {t("display.music.bars", {
+            label: selected?.label ?? t("display.ui.fullScore"),
+            bars: selection.bars.join("–"),
+          })}
         </span>
         <label>
-          谱面{" "}
+          {t("display.ui.notation")}{" "}
           <select
-            aria-label="谱面"
+            aria-label={t("display.ui.notation")}
             value={notation}
             onChange={(e) => setNotation(e.target.value as typeof notation)}
           >
-            <option value="both">五线谱与简谱</option>
-            <option value="staff">五线谱</option>
-            <option value="jianpu">简谱</option>
+            <option value="both">
+              {t("display.ui.staffAndNumberedNotation")}
+            </option>
+            <option value="staff">{t("display.ui.staffNotation")}</option>
+            <option value="jianpu">{t("display.ui.numberedNotation")}</option>
           </select>
         </label>
       </div>
@@ -293,13 +327,15 @@ export function MusicDisplay({
         <div className="music-keyboard-section">
           <div className="music-selection">
             <span>
-              键盘 ·{" "}
+              {t("display.ui.keyboard")}{" "}
               {fullKeyboard
-                ? "A0–C8 · 88 键"
+                ? t("display.ui.a0C888Keys")
                 : `${noteName(low)}–${noteName(high)}`}
             </span>
             <button type="button" onClick={() => setFullKeyboard((v) => !v)}>
-              {fullKeyboard ? "当前音区" : "完整键盘"}
+              {fullKeyboard
+                ? t("display.ui.currentRange")
+                : t("display.ui.fullKeyboard")}
             </button>
           </div>
           <div className="music-keyboard-scroll">
@@ -328,11 +364,15 @@ export function MusicDisplay({
                     key={midi}
                     className={`${black(midi) ? "black" : "white"}${activeMidi.has(midi) ? " is-playing" : ""}${focusedMidi.has(midi) ? " is-focus" : ""}`}
                     style={keyStyle(midi)}
-                    aria-label={`试听 ${noteName(midi)}`}
+                    aria-label={t("display.music.auditionNote", {
+                      note: noteName(midi),
+                    })}
                     tabIndex={
                       fullKeyboard || (midi >= low && midi <= high) ? 0 : -1
                     }
-                    disabled={!interactive || timeline.clocked || Boolean(music)}
+                    disabled={
+                      !interactive || timeline.clocked || Boolean(music)
+                    }
                     onClick={() =>
                       void player.current?.audition(
                         midi,
@@ -356,10 +396,10 @@ export function MusicDisplay({
           onClick={togglePlay}
         >
           {playback.state === "loading"
-            ? "取消准备"
+            ? t("display.ui.cancelPreparation")
             : playback.state === "playing"
-              ? "暂停"
-              : "播放"}
+              ? t("display.ui.pause")
+              : t("display.ui.play")}
         </button>
         <button
           type="button"
@@ -368,12 +408,12 @@ export function MusicDisplay({
             setPlayback({ state: "paused", beat: from });
           }}
         >
-          重来
+          {t("display.ui.restart")}
         </button>
         <label>
-          进度{" "}
+          {t("display.ui.progress")}{" "}
           <input
-            aria-label="播放进度"
+            aria-label={t("display.ui.playbackProgress")}
             type="range"
             min={from}
             max={to}
@@ -386,9 +426,9 @@ export function MusicDisplay({
           />
         </label>
         <label>
-          速度{" "}
+          {t("display.ui.speed")}{" "}
           <select
-            aria-label="速度"
+            aria-label={t("display.ui.speed")}
             value={speed}
             onChange={(e) => setSpeed(Number(e.target.value))}
           >
@@ -400,13 +440,15 @@ export function MusicDisplay({
           </select>
         </label>
         <label>
-          音色{" "}
+          {t("display.ui.instrument")}{" "}
           <select
-            aria-label="音色"
+            aria-label={t("display.ui.instrument")}
             value={instrument}
             onChange={(e) => setInstrument(e.target.value as typeof instrument)}
           >
-            <option value="authored">谱面音色（默认钢琴）</option>
+            <option value="authored">
+              {t("display.ui.scoreInstrumentPianoByDefault")}
+            </option>
             {MUSIC_INSTRUMENTS.map((id) => (
               <option key={id} value={id}>
                 {MUSIC_LABELS[id]}
@@ -423,13 +465,13 @@ export function MusicDisplay({
               setLoop(e.target.checked);
             }}
           />{" "}
-          循环
+          {t("display.ui.loop")}
         </label>
       </div>
       {block.steps.some((step) => step.compare) && (
         <div
           className="music-comparison"
-          aria-label="试听对比"
+          aria-label={t("display.ui.comparePlayback")}
           style={{ visibility: selected?.compare ? "visible" : "hidden" }}
           aria-hidden={!selected?.compare}
         >
@@ -438,30 +480,32 @@ export function MusicDisplay({
             aria-pressed={variant === "a"}
             onClick={() => setVariant("a")}
           >
-            A · {selected?.label ?? "原句"}
+            A · {selected?.label ?? t("display.ui.originalPhrase")}
           </button>
           <button
             type="button"
             aria-pressed={variant === "b"}
             onClick={() => setVariant("b")}
           >
-            B · {selected?.compare?.label ?? "对比"}
+            B · {selected?.compare?.label ?? t("display.ui.comparison")}
           </button>
-          <span>选择后点击播放</span>
+          <span>{t("display.ui.chooseAVersionThenPressPlay")}</span>
         </div>
       )}
       {playback.error && (
-        <p role="alert">{playback.error}。可再次点击播放重试。</p>
+        <p role="alert">
+          {t("display.music.playbackError", { error: playback.error })}
+        </p>
       )}
       <details className="music-attribution">
-        <summary>音源说明</summary>FluidR3_GM / Frank Wen 与贡献者；MIDI.js
-        Soundfonts，CC BY 3.0。本地采样与近似延音模拟。
+        <summary>{t("display.ui.soundAttribution")}</summary>
+        {t("display.ui.fluidr3GmFrankWenAndContributorsMidiJsSoundfonts")}
         <a
           href="https://github.com/gleitz/midi-js-soundfonts/tree/gh-pages/FluidR3_GM"
           target="_blank"
           rel="noreferrer"
         >
-          来源
+          {t("display.ui.source")}
         </a>
       </details>
     </section>

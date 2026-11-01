@@ -1,4 +1,8 @@
-import { isStructuredTextBoard, StructuredTextBoard } from "./structured-text-board.js";
+import { countVariant, useT } from "../../shared/i18n/index.js";
+import {
+  isStructuredTextBoard,
+  StructuredTextBoard,
+} from "./structured-text-board.js";
 import { useTextBoardFit } from "./use-text-board-fit.js";
 import type { CodeBlockShell } from "../markdown/code-block-shell.js";
 import { HighlightedCode } from "../markdown/highlighted-code.js";
@@ -34,8 +38,8 @@ import {
 
 export type ClassroomCodeScrollSample = Readonly<{
   layout: MeasuredClassroomCodeLayout;
-  focus?: Readonly<{startLine: number; endLine: number}>;
-  previousFocus?: Readonly<{startLine: number; endLine: number}>;
+  focus?: Readonly<{ startLine: number; endLine: number }>;
+  previousFocus?: Readonly<{ startLine: number; endLine: number }>;
 }>;
 
 export type CourseCodeDisplayProps =
@@ -275,6 +279,7 @@ function ClockedCodeBoard({
   sourceParts?: readonly MaterialCodePart[];
   sampleClockedScroll?: (sample: ClassroomCodeScrollSample) => number;
 }) {
+  const t = useT();
   const boardRef = useRef<HTMLDivElement>(null);
   const [capacity, setCapacity] = useState(CLASSROOM_CODE_MAX_VISIBLE_LINES);
   const [layout, setLayout] = useState<MeasuredClassroomCodeLayout>();
@@ -282,8 +287,13 @@ function ClockedCodeBoard({
   const language = classroomCodeLanguage(block);
   const isTextBoard = isClassroomTextBoardLanguage(language);
   useTextBoardFit(boardRef, isTextBoard, source);
-  const canonicalParts = sourceParts && concatCodeParts(sourceParts) === source ? sourceParts : undefined;
-  const regions = canonicalParts ? resolveCodePartSpans(canonicalParts) : resolveCodeFigureSpans(block);
+  const canonicalParts =
+    sourceParts && concatCodeParts(sourceParts) === source
+      ? sourceParts
+      : undefined;
+  const regions = canonicalParts
+    ? resolveCodePartSpans(canonicalParts)
+    : resolveCodeFigureSpans(block);
   const figureId = blockFigureId(block);
   const lineCueEnabled = !isTextBoard || !activeTargetIds.includes("whole");
   const previousLineCueEnabled =
@@ -374,8 +384,22 @@ function ClockedCodeBoard({
   // target offset directly and let CSS transitions ease smoothly.
   let currentScrollOffset = targetScrollOffset;
   if (clocked && measuredLayout && sampleClockedScroll) {
-    currentScrollOffset = Math.max(0, Math.min(maxScrollOffset, sampleClockedScroll({layout: measuredLayout, focus, previousFocus: prevFocus})));
-  } else if (clocked && measuredLayout && prevScrollOffset !== targetScrollOffset) {
+    currentScrollOffset = Math.max(
+      0,
+      Math.min(
+        maxScrollOffset,
+        sampleClockedScroll({
+          layout: measuredLayout,
+          focus,
+          previousFocus: prevFocus,
+        }),
+      ),
+    );
+  } else if (
+    clocked &&
+    measuredLayout &&
+    prevScrollOffset !== targetScrollOffset
+  ) {
     const enterRatio = Math.max(0, Math.min(1, beatEnter ?? 1));
     currentScrollOffset =
       prevScrollOffset + (targetScrollOffset - prevScrollOffset) * enterRatio;
@@ -398,7 +422,9 @@ function ClockedCodeBoard({
   const canScrollUp = currentScrollOffset > 0.5;
   const canScrollDown = currentScrollOffset < maxScrollOffset - 0.5;
   const hasCued = lineCueEnabled && litRanges.length > 0;
-  const boardParts = isTextBoard ? canonicalParts ?? textBoardParts(block, source, regions) : [];
+  const boardParts = isTextBoard
+    ? (canonicalParts ?? textBoardParts(block, source, regions))
+    : [];
 
   const isLineLit = (lineNo: number) => {
     return (
@@ -444,7 +470,10 @@ function ClockedCodeBoard({
       const headerH = header instanceof HTMLElement ? header.offsetHeight : 0;
       // A wrapped first source line spans several glyph rows. Its complete
       // box must not become the minimum height of every other source line.
-      const lineH = lines[0] ? Number.parseFloat(getComputedStyle(lines[0]).minHeight) || lines[0].offsetHeight : 0;
+      const lineH = lines[0]
+        ? Number.parseFloat(getComputedStyle(lines[0]).minHeight) ||
+          lines[0].offsetHeight
+        : 0;
       if (
         !(viewport instanceof HTMLElement) ||
         !(scroll instanceof HTMLElement) ||
@@ -471,7 +500,10 @@ function ClockedCodeBoard({
         ),
       );
       const scrollRect = scroll.getBoundingClientRect();
-      const scaleY = pane.offsetHeight > 0 ? pane.getBoundingClientRect().height / pane.offsetHeight : 1;
+      const scaleY =
+        pane.offsetHeight > 0
+          ? pane.getBoundingClientRect().height / pane.offsetHeight
+          : 1;
       const lineBoxes = lines.map((line) => {
         const rect = line.getBoundingClientRect();
         return {
@@ -565,10 +597,16 @@ function ClockedCodeBoard({
             {hasOverflow ? (
               <span className="lp-code-range-pill">
                 {visibleRange.startLine}–{visibleRange.endLine} /{" "}
-                {fit.totalLines} 行
+                {t(`display.code.lines.${countVariant(fit.totalLines)}`, {
+                  count: fit.totalLines,
+                })}
               </span>
             ) : (
-              <span className="lp-code-range-pill">{fit.totalLines} 行</span>
+              <span className="lp-code-range-pill">
+                {t(`display.code.lines.${countVariant(fit.totalLines)}`, {
+                  count: fit.totalLines,
+                })}
+              </span>
             )}
           </div>
         </div>
@@ -590,7 +628,17 @@ function ClockedCodeBoard({
               <StructuredTextBoard
                 parts={boardParts}
                 hasCued={hasCued}
-                isLit={(part) => lineCueEnabled && Boolean(part.id && materialCueCodeRegionLit(activeTargetIds, part.id, figureId))}
+                isLit={(part) =>
+                  lineCueEnabled &&
+                  Boolean(
+                    part.id &&
+                    materialCueCodeRegionLit(
+                      activeTargetIds,
+                      part.id,
+                      figureId,
+                    ),
+                  )
+                }
               />
             ) : isTextBoard ? (
               <div className="lp-text-board-parts">

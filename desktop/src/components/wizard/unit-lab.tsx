@@ -123,7 +123,9 @@ function UnitLabItemCard({
   const t = useT();
   const [regenerating, setRegenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const embeddedManifest = item.manifest ?? (item.block ? labManifestFromLegacyBlock(item.block) : null);
+  const embeddedManifest =
+    item.manifest ??
+    (item.block ? labManifestFromLegacyBlock(item.block) : null);
 
   async function regenerate() {
     if (!onRegenerate || regenerating) return;
@@ -166,12 +168,10 @@ function UnitLabItemCard({
         </div>
       ) : null}
       {item.status === "ready" && (item.block || embeddedManifest) ? (
-        (item.componentType === "physics_lab" || item.componentType === "chemistry_lab") &&
+        (item.componentType === "physics_lab" ||
+          item.componentType === "chemistry_lab") &&
         embeddedManifest ? (
-          <EmbeddedLabItem
-            manifest={embeddedManifest}
-            onFinish={onFinish}
-          />
+          <EmbeddedLabItem manifest={embeddedManifest} onFinish={onFinish} />
         ) : item.componentType === "physics_lab" && item.block ? (
           <PhysicsLabBlock
             block={
@@ -193,7 +193,10 @@ function UnitLabItemCard({
         ) : (
           <div className="rounded-xl border border-dashed bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
             <p className="font-medium text-foreground">{item.title}</p>
-            <p className="mt-1">{item.fallbackBody || "实验室运行时尚未启用。"}</p>
+            <p className="mt-1">
+              {item.fallbackBody ||
+                t("desktop.ui.unitLab.theInteractiveLabIsNotEnabledYet")}
+            </p>
           </div>
         )
       ) : (
@@ -218,6 +221,7 @@ function EmbeddedLabItem({
   manifest: import("@xue-learn/core/lab-protocol").LabManifestV1;
   onFinish?: () => void;
 }) {
+  const t = useT();
   function handleEvent(event: LabEvent) {
     if (event.type === "finish.requested") onFinish?.();
   }
@@ -234,7 +238,10 @@ function EmbeddedLabItem({
             <p className="font-medium text-foreground">{manifest.title}</p>
             <p className="mt-1">{manifest.summary}</p>
             {manifest.targetObservation ? (
-              <p className="mt-2">观察要点：{manifest.targetObservation}</p>
+              <p className="mt-2">
+                {t("desktop.ui.unitLab.whatToObserve")}
+                {manifest.targetObservation}
+              </p>
             ) : null}
           </div>
         }

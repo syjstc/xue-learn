@@ -120,11 +120,7 @@ export function LiteProviderSelect({
       </SelectTrigger>
       <SelectContent>
         {providers.map((p) => (
-          <SelectItem
-            key={p.id}
-            value={p.id}
-            disabled={p.configured === false}
-          >
+          <SelectItem key={p.id} value={p.id} disabled={p.configured === false}>
             {p.label}
           </SelectItem>
         ))}
@@ -182,7 +178,7 @@ export function ModelPicker({
   presets,
   value,
   onChange,
-  placeholder = "或输入自定义模型 ID",
+  placeholder,
   accent = "indigo",
   allowCustom = true,
 }: {
@@ -201,7 +197,11 @@ export function ModelPicker({
 
   if (!allowCustom) {
     return (
-      <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t("settings.model")}>
+      <div
+        className="flex flex-wrap gap-2"
+        role="radiogroup"
+        aria-label={t("settings.model")}
+      >
         {presets.map((m) => (
           <button
             key={m}
@@ -249,7 +249,7 @@ export function ModelPicker({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/15"
-        placeholder={placeholder}
+        placeholder={placeholder ?? t("desktop.i18n.modelCustomPlaceholder")}
       />
     </div>
   );

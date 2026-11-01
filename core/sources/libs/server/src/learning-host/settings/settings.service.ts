@@ -64,7 +64,7 @@ const memoryPatchSchema = z.object({ enabled: z.boolean() }).strict();
 const appearancePatchSchema = z
   .object({
     theme: z.enum(["light", "dark", "system"]).optional(),
-    uiLocale: z.enum(["zh-Hans", "zh-Hant", "en"]).optional(),
+    uiLocale: z.enum(["system", "zh-Hans", "zh-Hant", "en"]).optional(),
   })
   .strict()
   .refine(
@@ -91,30 +91,60 @@ export class SettingsService {
   async getLlm() {
     await ensureLlmRuntimeConfig();
     const runtime = await refreshLlmRuntimeConfig();
-    const route = await resolveLlmOperationRoute(DEFAULT_LLM_OPERATION_KEY, runtime);
+    const route = await resolveLlmOperationRoute(
+      DEFAULT_LLM_OPERATION_KEY,
+      runtime,
+    );
     return {
-      config: { provider: runtime.provider, chatModel: route.model,
+      config: {
+        provider: runtime.provider,
+        chatModel: route.model,
         minimaxThinkingEnabled: runtime.minimaxThinkingEnabled,
         ollamaThinkingEnabled: runtime.ollamaThinkingEnabled,
         deepseekThinkingEnabled: runtime.deepseekThinkingEnabled,
-        doubaoThinkingMode: runtime.doubaoThinkingMode },
-      providers: LLM_PROVIDER_OPTIONS.filter(option => activeLlmProviderIds.includes(option.id as typeof activeLlmProviderIds[number]))
-        .map(option => ({ ...option, configured: hasProviderCredentials(option.id as LlmProviderId) })),
-      unitLearningEstimate: null, unitLearningEstimateRange: null, unitLearningEstimates: [],
+        doubaoThinkingMode: runtime.doubaoThinkingMode,
+      },
+      providers: LLM_PROVIDER_OPTIONS.filter((option) =>
+        activeLlmProviderIds.includes(
+          option.id as (typeof activeLlmProviderIds)[number],
+        ),
+      ).map((option) => ({
+        ...option,
+        configured: hasProviderCredentials(option.id as LlmProviderId),
+      })),
+      unitLearningEstimate: null,
+      unitLearningEstimateRange: null,
+      unitLearningEstimates: [],
     };
   }
 
   async patchLlm(body: unknown) {
     const parsed = llmPatchSchema.safeParse(body);
-    if (!parsed.success) throw new BadRequestException({code: "INVALID_BODY", message: tBackend("error.request.invalidBody"), details: parsed.error.flatten()});
+    if (!parsed.success)
+      throw new BadRequestException({
+        code: "INVALID_BODY",
+        message: tBackend("error.request.invalidBody"),
+        details: parsed.error.flatten(),
+      });
     const current = await refreshLlmRuntimeConfig();
     const provider = parsed.data.provider ?? current.provider;
-    if (!hasProviderCredentials(provider)) throw new BadRequestException({code: "PROVIDER_NOT_CONFIGURED", message: tBackend("error.settings.providerNotConfigured", {provider})});
-    await saveLlmRuntimeConfig({ provider, chatModel: defaultLlmChatModel(provider),
-      minimaxThinkingEnabled: parsed.data.minimaxThinkingEnabled ?? current.minimaxThinkingEnabled,
-      ollamaThinkingEnabled: parsed.data.ollamaThinkingEnabled ?? current.ollamaThinkingEnabled,
-      deepseekThinkingEnabled: parsed.data.deepseekThinkingEnabled ?? current.deepseekThinkingEnabled,
-      doubaoThinkingMode: parsed.data.doubaoThinkingMode ?? current.doubaoThinkingMode });
+    if (!hasProviderCredentials(provider))
+      throw new BadRequestException({
+        code: "PROVIDER_NOT_CONFIGURED",
+        message: tBackend("error.settings.providerNotConfigured", { provider }),
+      });
+    await saveLlmRuntimeConfig({
+      provider,
+      chatModel: defaultLlmChatModel(provider),
+      minimaxThinkingEnabled:
+        parsed.data.minimaxThinkingEnabled ?? current.minimaxThinkingEnabled,
+      ollamaThinkingEnabled:
+        parsed.data.ollamaThinkingEnabled ?? current.ollamaThinkingEnabled,
+      deepseekThinkingEnabled:
+        parsed.data.deepseekThinkingEnabled ?? current.deepseekThinkingEnabled,
+      doubaoThinkingMode:
+        parsed.data.doubaoThinkingMode ?? current.doubaoThinkingMode,
+    });
     return this.getLlm();
   }
 
@@ -189,9 +219,11 @@ export class SettingsService {
           ? settings.theme
           : "system",
       uiLocale:
-        settings?.uiLocale === "zh-Hant" || settings?.uiLocale === "en"
+        settings?.uiLocale === "zh-Hans" ||
+        settings?.uiLocale === "zh-Hant" ||
+        settings?.uiLocale === "en"
           ? settings.uiLocale
-          : "zh-Hans",
+          : "system",
     };
   }
 

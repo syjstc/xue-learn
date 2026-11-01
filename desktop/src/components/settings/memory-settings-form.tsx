@@ -1,7 +1,15 @@
 "use client";
 
 import { useState, type KeyboardEvent } from "react";
-import { Archive, BrainCircuit, Check, Pencil, Plus, Trash2, X } from "lucide-react";
+import {
+  Archive,
+  BrainCircuit,
+  Check,
+  Pencil,
+  Plus,
+  Trash2,
+  X,
+} from "lucide-react";
 import {
   type MemoryItem,
   type MemoryKind,
@@ -22,7 +30,11 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useT, type TranslationKey } from "@xue-learn/core/i18n";
+import {
+  useT,
+  getCurrentUiLocale,
+  type TranslationKey,
+} from "@xue-learn/core/i18n";
 import { cn } from "@xue-learn/core/utils";
 
 const EDITABLE_KINDS: Array<Exclude<MemoryKind, "episode">> = [
@@ -103,7 +115,9 @@ function MemoryRow({ item }: { item: MemoryItem }) {
             <Badge variant="secondary">{t(kindKey(item.kind))}</Badge>
             <Badge variant="outline">{t(sourceKey(item))}</Badge>
             <span className="text-xs text-muted-foreground">
-              {new Date(item.updatedAt).toLocaleDateString()}
+              {new Date(item.updatedAt).toLocaleDateString(
+                getCurrentUiLocale(),
+              )}
             </span>
           </div>
           {editing ? (

@@ -1,4 +1,5 @@
 "use client";
+import { translateCurrent } from "@xue-learn/core/i18n";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -499,7 +500,11 @@ export function LlmLogsViewer({
       }
     } catch (e) {
       if (requestId !== listRequestRef.current) return;
-      setError(e instanceof Error ? e.message : "加载失败");
+      setError(
+        e instanceof Error
+          ? e.message
+          : translateCurrent("assessment.diagnostic.loadError"),
+      );
     } finally {
       if (requestId === listRequestRef.current) setLoading(false);
     }
@@ -576,7 +581,11 @@ export function LlmLogsViewer({
       .catch((error: unknown) => {
         if (!active || requestId !== detailRequestRef.current) return;
         setSelectedDetail(null);
-        setDetailError(error instanceof Error ? error.message : "加载详情失败");
+        setDetailError(
+          error instanceof Error
+            ? error.message
+            : translateCurrent("desktop.copy.couldNotLoadDetails"),
+        );
       })
       .finally(() => {
         if (active && requestId === detailRequestRef.current) {
@@ -1025,7 +1034,9 @@ export function LlmLogsViewer({
           <div className="flex flex-wrap items-center gap-1.5">
             {goalId ? (
               <FilterChip
-                label={`目标: ${selectedGoalTitle ?? goalId.slice(0, 8)}`}
+                label={t("desktop.i18n.goalFilter", {
+                  title: selectedGoalTitle ?? goalId.slice(0, 8),
+                })}
                 onClear={() => setGoalId("")}
               />
             ) : null}
@@ -1163,7 +1174,7 @@ export function LlmLogsViewer({
             {!timelineActive && (data.total ?? 0) > 0
               ? ` · ${t("devLogs.viewer.pageSummary", { page: data.page ?? page, totalPages: data.totalPages || 1, total: data.total ?? 0 })}`
               : null}
-            {timelineActive ? " · 父子嵌套" : null}
+            {timelineActive ? t("desktop.ui.llmLogsViewer.nestedCalls") : null}
           </p>
           <p className="font-mono truncate" title={data.logDir}>
             {data.logDir}

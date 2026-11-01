@@ -1,32 +1,34 @@
-# 好会学 · XueLearn
+# XueLearn · 好会学
 
-好会学是一款 AI 个人学习桌面应用。告诉它你想学什么、现在会多少，它会帮你规划学习路径，带你按小节阅读讲解、看演示、提问和练习。下次打开时，可以继续学习并复习学过的内容。
+[English](README.md) · [简体中文](README.zh-CN.md)
 
-例如：“我没有统计学基础，想看懂新闻里的平均数、概率和相关性，请多用生活中的例子。”你也可以带着自己的教材、笔记或公开网页开始学习。
+XueLearn is a personal learning app for your desktop. Tell it what you want to learn and what you already know. It helps you build a learning path, then work through explanations, interactive demonstrations, questions and practice. Return later to continue where you left off or review earlier material.
 
-**[下载 Mac 版](https://github.com/syjstc/xue-learn/releases) · [使用指南：从安装到第一课](docs/user-guide.md) · [常见问题](docs/user-guide.md#常见问题)**
+For example: “I’m new to statistics. I want to understand averages, probability and correlation in the news. Please use everyday examples.” You can also start with your own textbooks, notes or public web articles.
 
-- **学习路径**：把学习目标拆成模块、小节与可验证的能力。
-- **阅读与追问**：按小节阅读，选中文本提问，保留追问的位置与上下文。
-- **交互演示**：在学习内容中查看动画、图解、公式与交互组件。
-- **练习与复习**：通过测验与复习记录积累学习证据。
-- **本机工作区**：学习记录保存在本机，可自行选择模型服务商并管理扩展。
+**[Download for Mac](https://github.com/syjstc/xue-learn/releases) · [User guide: installation to your first lesson](docs/user-guide.en.md) · [Frequently asked questions](docs/user-guide.en.md#frequently-asked-questions)**
 
-本仓库包含 [Core 学习库](core/) 和 [Desktop 桌面应用](desktop/)，使用同一 pnpm workspace 和锁文件。Desktop 始终构建和使用仓库中的当前 Core。
+- **Learning paths:** turn a broad goal into manageable modules and lessons.
+- **Read and ask:** study explanations, select a passage to ask about it, and keep the context of your questions.
+- **Interactive explanations:** explore diagrams, demonstrations and step-by-step reasoning.
+- **Practice and review:** check your understanding and revisit material over time.
+- **Your local workspace:** keep learning records on your device and choose the model services you use.
 
-## 安装与开始学习
+## Install and start learning
 
-[前往 Releases 下载 Mac 安装包](https://github.com/syjstc/xue-learn/releases) · [普通用户使用指南](docs/user-guide.md)
+The currently validated platform is an Apple silicon Mac. Download the `mac-arm64.dmg`, open it, and drag **好会学** into **Applications**. The installer includes the app and its local service; you do not need Node.js or other development tools to use it. Formal Mac installers use Developer ID signing, Apple notarization and Gatekeeper verification.
 
-macOS 当前提供 Apple 芯片版本。打开 DMG，将「好会学」拖入「应用程序」。安装包包含应用和本地服务，无需另行安装 Node.js、pnpm 或 Core。正式 Mac 安装包执行 Developer ID 签名、Apple 公证和 Gatekeeper 检查。
+Starting with **0.3.3**, the interface supports **English, Simplified Chinese and Traditional Chinese**. It initially follows your system language, with English as the fallback for unsupported languages. You can change the language on the first setup screen or under **Settings → Appearance**. Course content has its own language setting; changing the interface does not rewrite existing lessons. If 0.3.3 is not listed on the download page yet, these improvements are awaiting release.
 
-首次启动时选择模型服务商，填写自己的 API Key，并读取可用模型列表。DeepSeek 为推荐选项，也支持其他服务商、通用 OpenAI 兼容服务和本机 Ollama。未提供模型列表的服务可手动填写模型 ID。随后按提示准备本机知识检索，创建学习目标即可开始。语音、图片和联网搜索可按需配置。
+At first launch, connect your learning assistant: choose a model service, enter your own API key, read the available models and save your choice. Then prepare local knowledge search and create your first learning goal. Voice, image generation and web search are optional and can be configured later.
 
-模型服务可能按用量计费，应用不附带 API Key 或 API 额度。使用外部模型服务时，相关提问、学习内容或选取的文档会发送给你配置的服务商；详情见[数据与隐私](docs/privacy.md)。
+Cloud model services may charge for usage. XueLearn does not include API keys or model credits. Relevant questions, course material or selected documents are sent to the services you configure when those services are used. See [Data and privacy](docs/user-guide.en.md#your-data-and-model-services).
 
-## 从源码开发
+## Develop from source
 
-安装 Node.js 24 LTS（见 `.nvmrc`）和 pnpm `9.15.9`，在仓库根目录执行：
+This repository contains [Core](core/) and the [Desktop app](desktop/) in one pnpm workspace. Desktop builds and uses the current Core source.
+
+Use Node.js 24 LTS from `.nvmrc` and pnpm `9.15.9`:
 
 ```sh
 pnpm run setup
@@ -34,22 +36,23 @@ pnpm run check
 pnpm run dev
 ```
 
-`check` 检查源码边界，构建和测试 Core、Desktop，执行类型检查，并构建渲染器和本地服务。开发启动会监听 Core 源码变化并重建，无需单独同步版本。安装依赖时需允许原生模块的构建脚本。
+`check` audits source boundaries and translations, builds and tests Core and Desktop, checks types, and builds the renderer and local service. Development watches Core source and rebuilds it when needed.
 
 ```sh
+pnpm run check:i18n     # Translation keys, placeholders and static UI copy
 pnpm run test:core
 pnpm run test:desktop
-pnpm run check:security  # 需要 Gitleaks 8.30.1+ 及联网的 npm advisory registry
-pnpm run build:mac      # 在 macOS 使用自己的签名与公证配置
-pnpm run release:mac    # 检查、正式打包并上传发布草稿
+pnpm run check:security # Gitleaks and dependency advisories
+pnpm run build:mac      # macOS with your signing/notarization credentials
+pnpm run release:mac    # Full checks, formal build and a draft GitHub Release
 ```
 
-安装包不会随源码提交自动更新；用户通过安装新版本获得更新。Windows、Linux 和 Intel Mac 的构建配置尚需对应设备验证。
+The default release command stops at a draft. After reviewing the exact installer, `pnpm run release:mac --resume --publish` publishes it. See the [Mac release guide (中文)](docs/mac-release.md) for prerequisites and recovery. Source commits do not update installed apps automatically; users install a new release to update.
 
-维护者的一键打包、草稿与正式发布命令见 [Mac 发布说明](docs/mac-release.md#一键打包与发布)。
+Windows, Linux and Intel Mac builds need validation on those platforms.
 
-参见 [Core API](core/docs/public-api.md)、[Desktop 插件](desktop/docs/desktop-plugins.md)、[贡献指南](CONTRIBUTING.md)和[安全策略](SECURITY.md)。
+See the [contribution guide](CONTRIBUTING.md), [translation guide](docs/internationalization.md), [Core API](core/docs/public-api.md), [Desktop plugins](desktop/docs/desktop-plugins.md) and [security policy](SECURITY.md).
 
-## 许可
+## License
 
-自有源码采用 [MIT](LICENSE)。品牌名称、图标与部分媒体另有条款；第三方依赖保留原始许可。请阅读[许可范围](LICENSING.md)、[Core 第三方说明](core/THIRD_PARTY_NOTICES.md)和 [Desktop 第三方说明](desktop/THIRD_PARTY_NOTICES.md)。
+Project-owned source uses the [MIT license](LICENSE). Names, icons and some media have separate terms; third-party dependencies retain their original licenses. See [license scope](LICENSING.md), [Core notices](core/THIRD_PARTY_NOTICES.md), [Desktop notices](desktop/THIRD_PARTY_NOTICES.md) and the [brand policy](desktop/BRAND_POLICY.md).

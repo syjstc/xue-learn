@@ -1,6 +1,9 @@
 import { MusicDisplay } from "./music-display.js";
 import { MusicTeachingDisplay } from "./music-teaching-display.js";
-import { readMaterialMusic, readMusicTeaching } from "../../../libs/domain/src/index.js";
+import {
+  readMaterialMusic,
+  readMusicTeaching,
+} from "../../../libs/domain/src/index.js";
 import { VisualBoard } from "./visual-board.js";
 import { TeachingDisplay } from "./teaching-display.js";
 import { readMaterialTeaching } from "../../../libs/domain/src/index.js";
@@ -21,10 +24,31 @@ import { courseTextBoard } from "../../shared/domain/course-text-board.js";
 import { CourseTextBoard } from "./course-text-board.js";
 import { CourseCallout, type CourseCalloutVariant } from "./course-callout.js";
 import { CourseCalloutBody } from "./course-callout-body.js";
-import { supportsCourseCardBuild, courseCardRevealedIndexes } from "../../shared/domain/course-card-build.js";
+import {
+  supportsCourseCardBuild,
+  courseCardRevealedIndexes,
+} from "../../shared/domain/course-card-build.js";
 import { ProseMarkdown } from "../markdown/prose-markdown.js";
 import { useT } from "../../shared/i18n/index.js";
-import { legacyCompareDisplay, classroomStageTargetId, classroomCompareTargetId, classroomFigureScopedTargetId, blockFigureId, isMaterialStageLayout, layoutSlots, materialStageFocusIndexes, interpolateMaterialStageLayout, resolveMaterialStageLayout, materialStagePicturePlacement, materialStageItemStyle, materialStageCanvasStyle, materialStagePlanStyle, materialCueNodeLit, type CourseDisplayBlock, type MaterialStageLayout } from "../../../libs/domain/src/index.js";
+import {
+  legacyCompareDisplay,
+  classroomStageTargetId,
+  classroomCompareTargetId,
+  classroomFigureScopedTargetId,
+  blockFigureId,
+  isMaterialStageLayout,
+  layoutSlots,
+  materialStageFocusIndexes,
+  interpolateMaterialStageLayout,
+  resolveMaterialStageLayout,
+  materialStagePicturePlacement,
+  materialStageItemStyle,
+  materialStageCanvasStyle,
+  materialStagePlanStyle,
+  materialCueNodeLit,
+  type CourseDisplayBlock,
+  type MaterialStageLayout,
+} from "../../../libs/domain/src/index.js";
 import type { CourseDisplayScene } from "../../../libs/domain/src/index.js";
 import {
   CourseMediaScene,
@@ -43,7 +67,10 @@ import {
 
 type BoardOptions = {
   calloutPresentation?: "film";
-  teachingTimeline?: { intervals: readonly MaterialTeachingCueInterval[]; tick: number };
+  teachingTimeline?: {
+    intervals: readonly MaterialTeachingCueInterval[];
+    tick: number;
+  };
   revealedTargetIds?: readonly string[];
   previousRevealedTargetIds?: readonly string[];
   animate?: boolean;
@@ -150,9 +177,7 @@ function ClassroomBoardCopy({ content }: { content: string }) {
 }
 
 type BoardCompareSide = { label?: string; points?: readonly string[] };
-function snapshotCompareSides(
-  block: CourseDisplayBlock,
-): BoardCompareSide[] {
+function snapshotCompareSides(block: CourseDisplayBlock): BoardCompareSide[] {
   const sides =
     Array.isArray(block.sides) && block.sides.length >= 2
       ? block.sides
@@ -179,9 +204,7 @@ function LegacyCompareStage({
   const projection = legacyCompareDisplay(block);
   return (
     <ComposedStageScene
-      mediaBlock={
-        projection.display as unknown as CourseDisplayBlock
-      }
+      mediaBlock={projection.display as unknown as CourseDisplayBlock}
       activeTargetIds={projection.targets(activeTargetIds)}
       previousActiveTargetIds={projection.targets(previousActiveTargetIds)}
       clocked={clocked}
@@ -257,10 +280,20 @@ function StageFigurePane({
       data-lp-focused={focused ? "true" : undefined}
     >
       {figure.type === "teaching" ? (
-        teaching ? <TeachingDisplay block={teaching} activeTargetIds={activeTargetIds}
-          previousActiveTargetIds={previousActiveTargetIds} revealedTargetIds={options.revealedTargetIds}
-          progress={beatEnter} reading={options.mode === "chat"} animate={options.animate}
-          timeline={options.teachingTimeline}/> : <TeachingUnavailable/>
+        teaching ? (
+          <TeachingDisplay
+            block={teaching}
+            activeTargetIds={activeTargetIds}
+            previousActiveTargetIds={previousActiveTargetIds}
+            revealedTargetIds={options.revealedTargetIds}
+            progress={beatEnter}
+            reading={options.mode === "chat"}
+            animate={options.animate}
+            timeline={options.teachingTimeline}
+          />
+        ) : (
+          <TeachingUnavailable />
+        )
       ) : figure.type === "music" ? (
         <MusicFigure block={figure} activeTargetIds={activeTargetIds} />
       ) : visual ? (
@@ -365,12 +398,15 @@ function ClassroomCopyCard({
           <CourseCalloutBody
             presentation={options.calloutPresentation}
             reserveSpace={options.mode !== "chat"}
-            figure={figure} body={body}
-            activeTargetIds={activeTargetIds} previousActiveTargetIds={previousActiveTargetIds}
+            figure={figure}
+            body={body}
+            activeTargetIds={activeTargetIds}
+            previousActiveTargetIds={previousActiveTargetIds}
             revealedTargetIds={options.revealedTargetIds}
             previousRevealedTargetIds={options.previousRevealedTargetIds}
             clocked={options.mode !== "chat" && clocked}
-            animate={Boolean(options.animate)} progress={beatEnter}
+            animate={Boolean(options.animate)}
+            progress={beatEnter}
           />
         }
       />
@@ -420,10 +456,14 @@ function ComposedStageScene({
     targetIds: previousActiveTargetIds,
   });
   const content = options.contentSize ?? classroomContentRect("content");
-  const cardBuild = supportsCourseCardBuild(mediaBlock) && options.revealedTargetIds !== undefined;
+  const cardBuild =
+    supportsCourseCardBuild(mediaBlock) &&
+    options.revealedTargetIds !== undefined;
   const presentation = isMaterialPresentation(mediaBlock?.presentation)
     ? mediaBlock.presentation
-    : cardBuild ? "steps" : undefined;
+    : cardBuild
+      ? "steps"
+      : undefined;
   const surface =
     presentation && options.mode === "chat"
       ? content.width < (cardBuild ? 600 : 760)
@@ -471,10 +511,21 @@ function ComposedStageScene({
         key={`${mediaBlock?.id ?? "stage"}:${presentation}`}
         mode={presentation}
         cardBuild={cardBuild}
-        revealedIndexes={cardBuild ? courseCardRevealedIndexes(mediaBlock!, options.revealedTargetIds!) : undefined}
-        previousRevealedIndexes={cardBuild && options.previousRevealedTargetIds
-          ? courseCardRevealedIndexes(mediaBlock!, options.previousRevealedTargetIds)
-          : clocked && !previousActiveTargetIds.length ? [] : undefined}
+        revealedIndexes={
+          cardBuild
+            ? courseCardRevealedIndexes(mediaBlock!, options.revealedTargetIds!)
+            : undefined
+        }
+        previousRevealedIndexes={
+          cardBuild && options.previousRevealedTargetIds
+            ? courseCardRevealedIndexes(
+                mediaBlock!,
+                options.previousRevealedTargetIds,
+              )
+            : clocked && !previousActiveTargetIds.length
+              ? []
+              : undefined
+        }
         plan={currentPlan}
         figures={figures}
         contentSize={content}
@@ -552,7 +603,8 @@ function ComposedStageScene({
       {plan.order.map((index) => {
         const figure = figures[index]!;
         const item = plan.items[index]!;
-        const canvas = options.mode === "chat" ? item : canvasPlan.items[index]!;
+        const canvas =
+          options.mode === "chat" ? item : canvasPlan.items[index]!;
         return (
           <div
             key={`${slots[index] ?? index}`}
@@ -563,7 +615,9 @@ function ComposedStageScene({
                 : materialStageCanvasStyle(item, canvas, reducedMotion)),
               ...(options.mode === "chat"
                 ? { "--lp-stage-type": "1em" }
-                : classroomStageTypeStyle(typography[index] ?? CLASSROOM_STAGE_TYPE_BASE)),
+                : classroomStageTypeStyle(
+                    typography[index] ?? CLASSROOM_STAGE_TYPE_BASE,
+                  )),
             }}
             data-stage-index={index}
             data-stage-picture={
@@ -613,13 +667,14 @@ export function CourseConversationScene(props: {
   title: string;
   mediaBlock?: CourseDisplayBlock;
 }) {
+  const t = useT();
   const turns = conversationTurns(props.mediaBlock);
   const speakers = [...new Set(turns.map((turn) => turn.speaker))];
   return (
     <div className="lp-conversation-scene" data-lp-target="conversation">
       <div className="lp-conversation-heading">
         <MessageCircle aria-hidden="true" />
-        <h3>{props.title || "一段对话"}</h3>
+        <h3>{props.title || t("display.ui.aConversation")}</h3>
       </div>
       <div className="lp-conversation-turns">
         {turns.length > 0 ? (
@@ -642,7 +697,9 @@ export function CourseConversationScene(props: {
             );
           })
         ) : (
-          <p className="lp-conversation-empty">这段对话暂时没有内容。</p>
+          <p className="lp-conversation-empty">
+            {t("display.ui.thisConversationHasNoContentYet")}
+          </p>
         )}
       </div>
     </div>
@@ -664,21 +721,30 @@ function ContentScene({
   clocked?: boolean;
   beatEnter?: number;
 }) {
+  const t = useT();
   const options = useContext(BoardOptionsContext);
   // Both music versions must terminate at the native renderer. The reading
   // fallback routes music back through MaterialBlockView -> CourseChatBoard,
   // so delegating an unrecognized version to renderMedia recurses forever.
   if (mediaBlock?.type === "teaching") {
     const teaching = readMaterialTeaching(mediaBlock);
-    return teaching ? <TeachingDisplay block={teaching} activeTargetIds={activeTargetIds}
-      previousActiveTargetIds={previousActiveTargetIds} revealedTargetIds={options.revealedTargetIds}
-      progress={beatEnter} reading={options.mode === "chat"} animate={options.animate}
-      timeline={options.teachingTimeline}/> : <TeachingUnavailable/>;
+    return teaching ? (
+      <TeachingDisplay
+        block={teaching}
+        activeTargetIds={activeTargetIds}
+        previousActiveTargetIds={previousActiveTargetIds}
+        revealedTargetIds={options.revealedTargetIds}
+        progress={beatEnter}
+        reading={options.mode === "chat"}
+        animate={options.animate}
+        timeline={options.teachingTimeline}
+      />
+    ) : (
+      <TeachingUnavailable />
+    );
   }
   if (mediaBlock?.type === "music")
-    return (
-      <MusicFigure block={mediaBlock} activeTargetIds={activeTargetIds} />
-    );
+    return <MusicFigure block={mediaBlock} activeTargetIds={activeTargetIds} />;
   const visual = readMaterialVisual(mediaBlock);
   if (visual)
     return (
@@ -696,8 +762,10 @@ function ContentScene({
   // An accepted accordion owns its complete copy even when a legacy scene maps
   // it to teacher_board and its slots contain only the title. Keep this terminal
   // branch ahead of template dispatch so exports never replace its body with slots.
-  if (mediaBlock?.type === "accordion" ||
-      (scene.templateId === "content.focus" && mediaBlock?.type === "callout")) {
+  if (
+    mediaBlock?.type === "accordion" ||
+    (scene.templateId === "content.focus" && mediaBlock?.type === "callout")
+  ) {
     return (
       <div
         className="lp-semantic-focus"
@@ -707,7 +775,10 @@ function ContentScene({
             activeTargetIds,
             "focus",
             blockFigureId(mediaBlock),
-          ) || activeTargetIds.some((id) => id.startsWith(`${blockFigureId(mediaBlock)}:detail-`))
+          ) ||
+          activeTargetIds.some((id) =>
+            id.startsWith(`${blockFigureId(mediaBlock)}:detail-`),
+          )
             ? "true"
             : undefined
         }
@@ -769,7 +840,7 @@ function ContentScene({
           <Lightbulb />
         </div>
         <div className="lp-focus-copy">
-          <span>关键理解 · KEY INSIGHT</span>
+          <span>{t("display.ui.keyInsight")}</span>
           <h3>
             <ClassroomBoardCopy content={scene.slots.heading ?? ""} />
           </h3>
@@ -822,7 +893,7 @@ function ContentScene({
         <span />
       </div>
       <div className="lp-board-copy">
-        <span className="lp-board-label">核心概念 · CORE IDEA</span>
+        <span className="lp-board-label">{t("display.ui.coreIdea")}</span>
         <h3>{scene.slots.heading || scene.title}</h3>
         <p>{scene.slots.body}</p>
       </div>

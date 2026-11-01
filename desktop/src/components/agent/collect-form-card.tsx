@@ -1,4 +1,5 @@
 "use client";
+import { useT, countVariant } from "@xue-learn/core/i18n";
 
 import { useRef, useState, type DragEvent } from "react";
 import { Button } from "@xue-learn/core/ui/button";
@@ -23,20 +24,6 @@ import {
 } from "@/shared/domain/document-formats";
 import { normalizeCollectFormOption } from "@/shared/agent/collect-form-values";
 import { cn } from "@xue-learn/core/utils";
-
-const LEVEL_OPTIONS = [
-  { value: "zero", label: "零基础" },
-  { value: "basic", label: "有基础" },
-  { value: "advanced", label: "进阶" },
-];
-
-const CONTENT_LANGUAGE_OPTIONS = [
-  { value: "auto", label: "自动（按对话语言）" },
-  ...CONTENT_LANGUAGES.map((code) => ({
-    value: code,
-    label: getContentLanguageLabel(code),
-  })),
-];
 
 type FormField =
   | "level"
@@ -93,6 +80,17 @@ export function CollectFormCard({
   submitted?: Record<string, unknown>;
   onSubmit: (values: Record<string, unknown>, files: File[]) => void;
 }) {
+  const t = useT();
+  const LEVEL_OPTIONS = (["zero", "basic", "advanced"] as const).map(
+    (value) => ({ value, label: t(`goals.level.${value}`) }),
+  );
+  const CONTENT_LANGUAGE_OPTIONS = [
+    { value: "auto", label: t("desktop.i18n.automaticContentLanguage") },
+    ...CONTENT_LANGUAGES.map((value) => ({
+      value,
+      label: getContentLanguageLabel(value),
+    })),
+  ];
   const locked = Boolean(submitted && Object.keys(submitted).length > 0);
   const source = locked ? submitted : defaults;
   const readOnly = disabled || locked;
@@ -147,11 +145,13 @@ export function CollectFormCard({
       className="w-full rounded-2xl border-[var(--border-200)] bg-[var(--bg-50)] shadow-sm"
     >
       <CardContent className="space-y-3">
-        <p className="text-sm font-semibold text-foreground">确认学习设置</p>
+        <p className="text-sm font-semibold text-foreground">
+          {t("desktop.ui.collectFormCard.confirmLearningSettings")}
+        </p>
 
         {fields.includes("level") && (
           <div className="space-y-1.5">
-            <Label>{labels?.level ?? "基础水平"}</Label>
+            <Label>{labels?.level ?? t("assistant.confirmation.level")}</Label>
             <ChoicePills
               options={LEVEL_OPTIONS}
               value={level}
@@ -163,7 +163,10 @@ export function CollectFormCard({
 
         {fields.includes("contentLanguage") && (
           <div className="space-y-1.5">
-            <Label>{labels?.contentLanguage ?? "内容语言"}</Label>
+            <Label>
+              {labels?.contentLanguage ??
+                t("goalDetail.courseSettings.contentLanguage")}
+            </Label>
             <Select
               items={CONTENT_LANGUAGE_OPTIONS}
               value={contentLanguage}
@@ -206,7 +209,9 @@ export function CollectFormCard({
 
         {fields.includes("isSmallCourse") && (
           <div className="space-y-2 rounded-lg border border-border bg-muted/20 px-3 py-2.5">
-            <Label>{labels?.isSmallCourse ?? "学习类型"}</Label>
+            <Label>
+              {labels?.isSmallCourse ?? t("assistant.goalPrompt.typeLabel")}
+            </Label>
             <div className="grid gap-2 sm:grid-cols-2">
               <button
                 type="button"
@@ -219,9 +224,13 @@ export function CollectFormCard({
                 )}
                 onClick={() => setIsSmallCourse(false)}
               >
-                <span className="block text-sm font-semibold">学习目标</span>
+                <span className="block text-sm font-semibold">
+                  {t("goals.filterFull")}
+                </span>
                 <span className="mt-0.5 block text-xs">
-                  生成学习地图与详细规划
+                  {t(
+                    "desktop.ui.collectFormCard.createALearningMapAndDetailedPlan",
+                  )}
                 </span>
               </button>
               <button
@@ -235,9 +244,13 @@ export function CollectFormCard({
                 )}
                 onClick={() => setIsSmallCourse(true)}
               >
-                <span className="block text-sm font-semibold">轻课</span>
+                <span className="block text-sm font-semibold">
+                  {t("goals.microCourse")}
+                </span>
                 <span className="mt-0.5 block text-xs">
-                  单单元快速了解，跳过地图与摘要，自动生成预习
+                  {t(
+                    "desktop.ui.collectFormCard.exploreOneTopicInAShortLesson",
+                  )}
                 </span>
               </button>
             </div>
@@ -247,7 +260,8 @@ export function CollectFormCard({
         {fields.includes("generationOptions") && (
           <div className="space-y-1.5">
             <Label htmlFor="collect-generation-options">
-              {labels?.generationOptions ?? "内容定制说明"}
+              {labels?.generationOptions ??
+                t("desktop.ui.collectFormCard.learningPreferences")}
             </Label>
             <Textarea
               id="collect-generation-options"
@@ -261,7 +275,10 @@ export function CollectFormCard({
 
         {fields.includes("documents") && (
           <div className="space-y-1.5">
-            <Label>{labels?.documents ?? "学习资料（可选）"}</Label>
+            <Label>
+              {labels?.documents ??
+                t("desktop.ui.collectFormCard.learningMaterialsOptional")}
+            </Label>
             <div
               role="button"
               tabIndex={0}
@@ -284,10 +301,18 @@ export function CollectFormCard({
                 onChange={(e) => setFiles([...(e.target.files ?? [])])}
               />
               {locked && submittedDocNames.length > 0
-                ? `已选 ${submittedDocNames.length} 个文件`
+                ? t(
+                    `desktop.i18n.filesSelected.${countVariant(submittedDocNames.length)}`,
+                    { count: submittedDocNames.length },
+                  )
                 : files.length > 0
-                  ? `已选 ${files.length} 个文件`
-                  : `拖拽或点击上传 ${DOCUMENT_UPLOAD_LABEL}（可选）`}
+                  ? t(
+                      `desktop.i18n.filesSelected.${countVariant(files.length)}`,
+                      { count: files.length },
+                    )
+                  : t("desktop.i18n.uploadOptional", {
+                      formats: DOCUMENT_UPLOAD_LABEL,
+                    })}
             </div>
           </div>
         )}
@@ -299,7 +324,7 @@ export function CollectFormCard({
             disabled={readOnly}
             onClick={() => onSubmit(buildValues(), files)}
           >
-            确认
+            {t("common.confirm")}
           </Button>
         ) : null}
       </CardContent>

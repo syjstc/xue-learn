@@ -1,6 +1,7 @@
 /** @jest-environment jsdom */
 import React, {act} from 'react';
 import {createRoot, type Root} from 'react-dom/client';
+import { I18nProvider } from "@xue-learn/core/i18n";
 import {createDisplayClock, type DisplayDocument, type DisplayNode} from '@xue-learn/core/display/runtime';
 import {DisplayBlockHost, DisplayDocumentHost, estimateDisplayDuration} from '../features/display/display-block-host';
 import {useDerivationMotion} from '../features/teaching-derivation/use-derivation-motion';
@@ -11,13 +12,18 @@ const makeDocument = (durationTicks?: number): DisplayDocument => ({version: 1, 
 
 describe('shared display learning host', () => {
   let container: HTMLDivElement, root: Root, now: number, frames: Map<number, FrameRequestCallback>, nextFrame: number;
-  const latest = () => mockSurface.mock.calls.at(-1)![0] as {document: DisplayDocument; clock: ReturnType<typeof createDisplayClock>; onDocumentResolved: (document: DisplayDocument) => void};
+  const renderRoot = (node: React.ReactNode) =>
+    root.render(
+      <I18nProvider initialLocalePreference="en">{node}</I18nProvider>,
+    );
+  const latest = () => mockSurface.mock.calls.at(-1)![0] as {document: DisplayDocument; clock: ReturnType<typeof createDisplayClock>; onDocumentResolved: (document: DisplayDocument) => void;
+    };
   beforeEach(() => {
     (globalThis as {IS_REACT_ACT_ENVIRONMENT?: boolean}).IS_REACT_ACT_ENVIRONMENT = true;
     container = document.createElement('div'); document.body.append(container); root = createRoot(container); now = 0; frames = new Map(); nextFrame = 1;
     jest.spyOn(performance, 'now').mockImplementation(() => now);
-    jest.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => {const id = nextFrame++; frames.set(id, callback); return id;});
-    jest.spyOn(window, 'cancelAnimationFrame').mockImplementation(id => {frames.delete(id);});
+    jest.spyOn(window, 'requestAnimationFrame').mockImplementation((callback ) => {const id = nextFrame++; frames.set(id, callback); return id;});
+    jest.spyOn(window, 'cancelAnimationFrame').mockImplementation((id ) => {frames.delete(id);});
     Object.defineProperty(window, 'matchMedia', {configurable: true, value: jest.fn(() => ({matches: false, addEventListener() {}, removeEventListener() {}}))});
     (globalThis as any).ResizeObserver = class {observe() {} disconnect() {}};
     mockSurface.mockReset();
@@ -36,14 +42,14 @@ describe('shared display learning host', () => {
   });
 
   it('clamps the initial settled frame to the actual duration', async () => {
-    await act(async () => root.render(<DisplayDocumentHost document={makeDocument(4_800)}/>));
+    await act(async () => renderRoot(<DisplayDocumentHost document={makeDocument(4_800)}/>));
     expect(latest().clock.frame).toBe(5);
     expect(container.querySelector<HTMLInputElement>('input[type=range]')!.max).toBe('5');
   });
 
   it('holds pending work at zero then plays the resolved length and pauses on demand', async () => {
     const source = {...makeDocument(), root: {...makeDocument().root, build: {jobId: 'job', status: 'pending' as const}}};
-    await act(async () => root.render(<DisplayDocumentHost document={source} autoPlay/>));
+    await act(async () => renderRoot(<DisplayDocumentHost document={source} autoPlay/>));
     await advance(5000);
     expect(latest().clock.frame).toBe(0);
     expect(latest().clock.playing).toBe(false);
@@ -60,7 +66,7 @@ describe('shared display learning host', () => {
 
   it('preserves caller-owned clocks without rendering competing playback controls', async () => {
     const clock = createDisplayClock(12, 24);
-    await act(async () => root.render(<DisplayDocumentHost document={makeDocument()} clock={clock} autoPlay/>));
+    await act(async () => renderRoot(<DisplayDocumentHost document={makeDocument()} clock={clock} autoPlay/>));
     expect(latest().clock).toBe(clock);
     expect(container.querySelector('button')).toBeNull();
     expect(frames.size).toBe(0);
@@ -68,7 +74,7 @@ describe('shared display learning host', () => {
 
   it('seeks backward exactly and clamps when a resolved duration becomes shorter', async () => {
     const source = makeDocument(480_000);
-    await act(async () => root.render(<DisplayDocumentHost document={source}/>));
+    await act(async () => renderRoot(<DisplayDocumentHost document={source}/>));
     const slider = container.querySelector<HTMLInputElement>('input')!;
     await act(async () => {
       Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(slider, '30');
@@ -82,7 +88,7 @@ describe('shared display learning host', () => {
 
   it('keeps teaching emphasis continuous when a repeated cue addresses the same target', async () => {
     const block = {type: 'teaching', version: 1, id: 'layers', title: 'Layers', templateId: 'general-layers', content: {layers: [{title: 'First', detail: 'A'}, {title: 'Second', detail: 'B'}]}};
-    const render = (target: string, key: string) => root.render(<DisplayBlockHost block={block} activeTargetIds={[target]} playback={{animate: true, key, revealedTargetIds: ['layer-1', target]}}/>);
+    const render = (target: string, key: string) => renderRoot(<DisplayBlockHost block={block} activeTargetIds={[target]} playback={{animate: true, key, revealedTargetIds: ['layer-1', target]}}/>);
     await act(async () => render('layer-1', 'cue-1')); await advance(700);
     await act(async () => render('layer-2', 'cue-2'));
     expect(latest().document.root.payload).toMatchObject({activeTargetIds: ['layer-2'], previousActiveTargetIds: ['layer-1'], progress: 0});
@@ -96,7 +102,7 @@ describe('shared display learning host', () => {
 
   it('holds chat on the focused cue without preview controls or a running timeline', async () => {
     const block = {type: 'teaching', version: 1, id: 'layers', title: 'Layers', templateId: 'general-layers', content: {layers: [{title: 'First', detail: 'A'}, {title: 'Second', detail: 'B'}]}};
-    const render = (target: string) => root.render(<DisplayBlockHost block={block} activeTargetIds={[target]} playback={{animate: true, key: target}}/>);
+    const render = (target: string) => renderRoot(<DisplayBlockHost block={block} activeTargetIds={[target]} playback={{animate: true, key: target}}/>);
     await act(async () => render('layer-1'));
     expect(container.querySelector('.workspace-display-controls')).toBeNull();
     expect(latest().clock.playing).toBe(true);
@@ -117,7 +123,7 @@ describe('shared display learning host', () => {
   it('projects portable chat cues without changing the saved video timeline', async () => {
     const source = {...makeDocument(), timeline: [{id: 'video-cue', startTick: 0, durationTicks: 480_000, targets: ['text/video-target']}]};
     const block = {type: 'display', document: source};
-    const render = (target: string) => root.render(<DisplayBlockHost block={block} activeTargetIds={[target]} playback={{animate: true, key: target}}/>);
+    const render = (target: string) => renderRoot(<DisplayBlockHost block={block} activeTargetIds={[target]} playback={{animate: true, key: target}}/>);
     await act(async () => render('text/first'));
     await advance(700);
     await act(async () => render('text/second'));
@@ -135,7 +141,7 @@ describe('shared display learning host', () => {
       {type: 'callout', id: 'left-card', title: 'Left', body: 'One'},
       {type: 'callout', id: 'right-card', title: 'Right', body: 'Two'},
     ]};
-    const render = (targets: string[]) => root.render(<DisplayBlockHost block={block} activeTargetIds={targets} playback={{animate: true, key: targets.join(',')}}/>);
+    const render = (targets: string[]) => renderRoot(<DisplayBlockHost block={block} activeTargetIds={targets} playback={{animate: true, key: targets.join(',')}}/>);
     await act(async () => render(['stage-left']));
     expect(latest().document.root.children![0].payload).toMatchObject({activeTargetIds: ['whole']});
     expect(latest().document.root.children![1].payload).toMatchObject({activeTargetIds: []});
@@ -150,23 +156,24 @@ describe('shared display learning host', () => {
       {id: 'input', kind: 'general:callout', version: 1, payload: {text: 'Keep the file in the project root'}},
     ]}};
     const block = {type: 'display', document: source};
-    mockSurface.mockImplementation(() => <div className="display-film-composition">
+    mockSurface.mockImplementation(() => (
+      <div className="display-film-composition">
       <div><span data-lp-lit="true">Setup</span></div><div>Input</div>
-    </div>);
-    const render = (target: string, key = target) => root.render(<div className="course-conversation-board" style={{overflowY: 'auto'}}>
+    </div>));
+    const render = (target: string, key = target) => renderRoot(<div className="course-conversation-board" style={{overflowY: 'auto'}}>
       <DisplayBlockHost block={block} activeTargetIds={[target]} playback={{animate: false, key}}/>
     </div>);
     await act(async () => render('setup/whole'));
     const board = container.firstElementChild as HTMLElement;
     Object.defineProperties(board, {clientHeight: {value: 400}, scrollHeight: {value: 1000}});
-    board.getBoundingClientRect = () => ({top: 0, bottom: 400} as DOMRect);
+    board.getBoundingClientRect = () => ({top: 0, bottom: 400} ) as DOMRect;
     const panels = [...container.querySelectorAll<HTMLElement>('.display-film-composition > div')];
-    panels.forEach((panel, index) => {panel.getBoundingClientRect = () => ({top: 20 + index * 600 - board.scrollTop, bottom: 320 + index * 600 - board.scrollTop, height: 300} as DOMRect);});
+    panels.forEach((panel, index) => {panel.getBoundingClientRect = () => ({top: 20 + index * 600 - board.scrollTop, bottom: 320 + index * 600 - board.scrollTop, height: 300} ) as DOMRect;});
     await advance(0);
     expect(board.scrollTop).toBe(8);
     await act(async () => render('input/whole'));
     await advance(0);
-    expect(panels.map(panel => panel.dataset.focused)).toEqual(['false', 'true']);
+    expect(panels.map((panel ) => panel.dataset.focused)).toEqual(['false', 'true']);
     expect(board.scrollTop).toBe(608);
     await act(async () => render('setup/whole', 'replay'));
     await advance(0);
@@ -180,18 +187,19 @@ describe('shared display learning host', () => {
     ]}};
     const block = {type: 'display', document: source};
     let ready = false;
-    mockSurface.mockImplementation(() => ready ? <div className="display-film-composition"><div>Setup</div><div>Input</div></div> : null);
-    const render = (key = 'input') => root.render(<div className="course-conversation-board" style={{overflowY: 'auto'}}>
+    mockSurface.mockImplementation(() => ready ? (
+        <div className="display-film-composition"><div>Setup</div><div>Input</div></div> ) : null);
+    const render = (key = 'input') => renderRoot(<div className="course-conversation-board" style={{overflowY: 'auto'}}>
       <DisplayBlockHost block={block} activeTargetIds={['input/whole']} playback={{animate: false, key}}/>
     </div>);
     await act(async () => render());
     const board = container.firstElementChild as HTMLElement;
     Object.defineProperties(board, {clientHeight: {value: 400}, scrollHeight: {value: 1000}});
-    board.getBoundingClientRect = () => ({top: 0, bottom: 400} as DOMRect);
+    board.getBoundingClientRect = () => ({top: 0, bottom: 400} ) as DOMRect;
     ready = true;
     await act(async () => render());
     const panel = container.querySelectorAll<HTMLElement>('.display-film-composition > div')[1];
-    panel.getBoundingClientRect = () => ({top: 620 - board.scrollTop, bottom: 920 - board.scrollTop, height: 300} as DOMRect);
+    panel.getBoundingClientRect = () => ({top: 620 - board.scrollTop, bottom: 920 - board.scrollTop, height: 300} ) as DOMRect;
     await advance(0);
     expect(panel.dataset.focused).toBe('true');
     expect(board.scrollTop).toBe(608);
@@ -208,9 +216,9 @@ describe('shared display learning host', () => {
   it('animates backward derivation navigation from the displayed step', async () => {
     let sampled!: ReturnType<typeof useDerivationMotion>;
     function Probe({ordinal}: {ordinal: number}) {sampled = useDerivationMotion(ordinal); return null;}
-    await act(async () => root.render(<Probe ordinal={3}/>));
+    await act(async () => renderRoot(<Probe ordinal={3}/>));
     expect(sampled).toEqual({from: 3, to: 3, progress: 1});
-    await act(async () => root.render(<Probe ordinal={2}/>));
+    await act(async () => renderRoot(<Probe ordinal={2}/>));
     expect(sampled).toEqual({from: 3, to: 2, progress: 0});
     await advance(0); await advance(640);
     expect(sampled).toEqual({from: 3, to: 2, progress: 1});

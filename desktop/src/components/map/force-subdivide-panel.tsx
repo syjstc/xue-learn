@@ -160,7 +160,9 @@ function ForceSubdividePanelInner({
               <li key={`${unit.title ?? "unit"}-${index}`} className="text-sm">
                 <span className="font-medium text-[var(--text-800)]">
                   {index + 1}.{" "}
-                  <LlmMarkdownInline content={unit.title ?? "未命名单元"} />
+                  <LlmMarkdownInline
+                    content={unit.title ?? t("goalDetail.plan.untitledUnit")}
+                  />
                 </span>
                 {unit.contentSummary && (
                   <span className="mt-0.5 block line-clamp-2 text-xs text-[var(--text-400)]">
@@ -200,16 +202,13 @@ function ForceSubdividePanelInner({
 
   async function handleRemoveSubMap() {
     const ok = await confirm({
-      title: "移除子地图",
-      description:
-        `将移除「${unitTitle}」尚未开始的结构子地图，或移除单元内的学习步骤。\n\n` +
-        "只要任一子单元已有会话、内容、笔记、练习、证据或复习记录，系统就会拒绝移除，不会清除学习历史。\n\n" +
-        "确定继续吗？",
+      title: t("desktop.ui.forceSubdividePanel.removeSubMap"),
+      description: t("desktop.i18n.removeMapConfirm", { title: unitTitle }),
     });
     if (!ok) return;
 
     setError("");
-    setStatus("正在移除子地图…");
+    setStatus(t("desktop.i18n.removingMap"));
 
     try {
       await removeSubMap.mutateAsync(unitId);
@@ -217,7 +216,9 @@ function ForceSubdividePanelInner({
       else if (goalId) navigate(`/goals/${goalId}/units/${unitId}`);
       else navigate(0);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "移除子地图失败");
+      setError(
+        e instanceof Error ? e.message : t("desktop.i18n.removeMapFailed"),
+      );
     } finally {
       setStatus("");
     }
@@ -225,7 +226,7 @@ function ForceSubdividePanelInner({
 
   async function handleConvertViaAssistant() {
     if (!goalId) {
-      setError("缺少目标 ID，无法扩展轻课");
+      setError(t("desktop.i18n.expandGoalMissing"));
       return;
     }
     setError("");
@@ -243,11 +244,15 @@ function ForceSubdividePanelInner({
       return;
     }
     const ok = await confirm({
-      confirmLabel: "确认",
-      title: isRegenerate ? "重新生成子地图" : "拆分子单元",
+      confirmLabel: t("common.confirm"),
+      title: t(
+        isRegenerate
+          ? "desktop.i18n.regenerateMap"
+          : "desktop.i18n.splitSubunits",
+      ),
       description: isRegenerate
-        ? `将安全地重新规划「${unitTitle}」。\n\n尚未开始的结构子地图可以重生成；只要已有学习活动，系统就会保留课程结构与证据，改为生成可移除的学习步骤。\n\n确定继续吗？`
-        : `系统会安全拆分「${unitTitle}」。\n\n完全未开始的单元可拆成同模块子单元；已有会话、内容、笔记、练习、证据、复习或完成状态时，只会在当前单元生成学习步骤，不改变课程结构，也不会清除历史。\n\n确定继续吗？`,
+        ? t("desktop.i18n.regenerateMapConfirm", { title: unitTitle })
+        : t("desktop.i18n.splitConfirm", { title: unitTitle }),
     });
     if (!ok) return;
 
@@ -277,7 +282,7 @@ function ForceSubdividePanelInner({
         navigate(`/goals/${goalId}`);
       } else navigate(0);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "拆分失败");
+      setError(e instanceof Error ? e.message : t("desktop.i18n.splitFailed"));
     } finally {
       setStatus("");
       setMapPreview(null);
@@ -314,16 +319,16 @@ function ForceSubdividePanelInner({
     mode === "regenerate"
       ? {
           icon: RefreshCw,
-          hint: "只在没有学习活动时改课程结构；否则安全更新单元内学习步骤。",
+          hint: t("desktop.i18n.regenerateMapHint"),
         }
       : isConvert
         ? {
             icon: MessageSquare,
-            hint: "AI 助手会先提问，再帮你扩展为完整目标。",
+            hint: t("desktop.i18n.expandGoalHint"),
           }
         : {
             icon: Layers,
-            hint: "未开始时拆成同模块子单元；开始后生成不影响进度与证据的学习步骤。",
+            hint: t("desktop.i18n.splitHint"),
           };
 
   const inlineDescription = cardContent.hint;
@@ -366,7 +371,9 @@ function ForceSubdividePanelInner({
             onClick={handleRemoveSubMap}
             disabled={loading}
           >
-            {removing ? status || "移除中…" : "移除子地图"}
+            {removing
+              ? status || t("desktop.ui.forceSubdividePanel.removing")
+              : t("desktop.ui.forceSubdividePanel.removeSubMap")}
           </Button>
         )}
         <Button
@@ -387,17 +394,17 @@ function ForceSubdividePanelInner({
           ) : mode === "regenerate" ? (
             <>
               <RefreshCw className="mr-1 size-3.5" />
-              重新生成
+              {t("trajectory.retry")}
             </>
           ) : isConvert ? (
             <>
               <MessageSquare className="mr-1 size-3.5" />
-              扩展目标
+              {t("desktop.ui.forceSubdividePanel.expandGoal")}
             </>
           ) : (
             <>
               <Sparkles className="mr-1 size-3.5" />
-              拆分单元
+              {t("desktop.ui.forceSubdividePanel.splitUnit")}
             </>
           )}
         </Button>

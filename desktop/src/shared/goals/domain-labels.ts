@@ -1,19 +1,38 @@
 import type { LearningMode } from "@xue-learn/core/schemas";
+import { translateCurrent } from "@xue-learn/core/i18n";
 
 export const LEARNING_MODE_LABELS: Record<LearningMode, string> = {
-  skill_practice: "技能实践（学会做/用）",
-  conceptual_understanding: "概念理解（理解原理与体系）",
-  research_scholarship: "学科研究（学术性探究）",
-  professional_applied: "职业应用（岗位与实务）",
-  creative_expression: "创作表达（产出与风格）",
-  mixed: "混合模式",
+  get skill_practice() {
+    return translateCurrent("desktop.learningMode.skillPractice");
+  },
+  get conceptual_understanding() {
+    return translateCurrent("desktop.learningMode.conceptualUnderstanding");
+  },
+  get research_scholarship() {
+    return translateCurrent("desktop.learningMode.researchScholarship");
+  },
+  get professional_applied() {
+    return translateCurrent("desktop.learningMode.professionalApplied");
+  },
+  get creative_expression() {
+    return translateCurrent("desktop.learningMode.creativeExpression");
+  },
+  get mixed() {
+    return translateCurrent("desktop.learningMode.mixed");
+  },
 };
 
 export const DOMAIN_TAG_LABELS: Record<
   "stem" | "humanities" | "general",
   string
 > = {
-  stem: "理工 / STEM",
-  humanities: "人文 / 语言艺术",
-  general: "综合",
+  get stem() {
+    return translateCurrent("desktop.domainTag.stem");
+  },
+  get humanities() {
+    return translateCurrent("desktop.domainTag.humanities");
+  },
+  get general() {
+    return translateCurrent("desktop.domainTag.general");
+  },
 };

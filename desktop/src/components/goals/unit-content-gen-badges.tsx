@@ -1,3 +1,4 @@
+import { useT } from "@xue-learn/core/i18n";
 import type { UnitContentGenStatus } from "@/shared/domain/unit-content-status";
 import { cn } from "@xue-learn/core/utils";
 
@@ -12,6 +13,7 @@ function GenChip({
   compact?: boolean;
   tone?: "success" | "brand";
 }) {
+  const t = useT();
   return (
     <span
       className={cn(
@@ -21,9 +23,11 @@ function GenChip({
           ? tone === "brand"
             ? "bg-[var(--brand-100)] text-[var(--brand-700)]"
             : "bg-[var(--success-100)] text-[var(--success-700)]"
-          : "bg-[var(--bg-200)] text-[var(--text-400)]"
+          : "bg-[var(--bg-200)] text-[var(--text-400)]",
       )}
-      title={done ? `${label}已生成` : `${label}未生成`}
+      title={t(done ? "desktop.i18n.generated" : "desktop.i18n.notGenerated", {
+        label,
+      })}
     >
       {label}
       {done ? " ✓" : ""}
@@ -40,15 +44,19 @@ export function UnitContentGenBadges({
   compact?: boolean;
   className?: string;
 }) {
+  const t = useT();
   return (
-    <span
-      className={cn(
-        "inline-flex flex-wrap items-center gap-1",
-        className
-      )}
-    >
-      <GenChip label="预习" done={status.hasSurvey} compact={compact} />
-      <GenChip label="正文" done={status.hasMaterial} compact={compact} />
+    <span className={cn("inline-flex flex-wrap items-center gap-1", className)}>
+      <GenChip
+        label={t("learningJourney.preview")}
+        done={status.hasSurvey}
+        compact={compact}
+      />
+      <GenChip
+        label={t("desktop.ui.unitContentGenBadges.lessonContent")}
+        done={status.hasMaterial}
+        compact={compact}
+      />
     </span>
   );
 }

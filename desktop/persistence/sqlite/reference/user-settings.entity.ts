@@ -29,7 +29,7 @@ export class UserSettingsEntity {
   chatAudioEnabled = false;
   personalMemoryEnabled = false;
   theme = "system";
-  uiLocale = "zh-Hans";
+  uiLocale = "system";
   clientPreferencesJson = "{}";
   localRuntimeSettingsJson = "{}";
   updatedAt!: Date;
@@ -197,7 +197,7 @@ export const UserSettingsSchema = new EntitySchema<UserSettingsEntity>({
     uiLocale: {
       type: String,
       columnType: "text",
-      default: "zh-Hans",
+      default: "system",
       fieldName: "uiLocale",
     },
     clientPreferencesJson: {
