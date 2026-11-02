@@ -4,6 +4,10 @@
 
 好会学是一款 AI 个人学习桌面应用。告诉它你想学什么、现在会多少，它会帮你规划学习路径，带你按小节阅读讲解、看演示、提问和练习。下次打开时，可以继续学习并复习学过的内容。
 
+<p align="center">
+  <img src="docs/images/learning-flow-hero.png" alt="学习流程：设定目标 → 学习路径 → 选中追问 → 练习巩固。Goal / Path / Ask / Practice" width="960">
+</p>
+
 例如：“我没有统计学基础，想看懂新闻里的平均数、概率和相关性，请多用生活中的例子。”你也可以带着自己的教材、笔记或公开网页开始学习。
 
 **[下载 Mac 版](https://github.com/syjstc/xue-learn/releases) · [使用指南：从安装到第一课](docs/user-guide.md) · [常见问题](docs/user-guide.md#常见问题)**
