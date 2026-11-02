@@ -4,6 +4,10 @@
 
 XueLearn is a personal learning app for your desktop. Tell it what you want to learn and what you already know. It helps you build a learning path, then work through explanations, interactive demonstrations, questions and practice. Return later to continue where you left off or review earlier material.
 
+<p align="center">
+  <img src="docs/images/learning-flow-hero.png" alt="Learning flow: Goal → Path → Ask → Practice. Set a goal, follow a path of modules, select a passage to ask, then practice and review. 设定目标、学习路径、选中追问、练习巩固" width="960">
+</p>
+
 For example: “I’m new to statistics. I want to understand averages, probability and correlation in the news. Please use everyday examples.” You can also start with your own textbooks, notes or public web articles.
 
 **[Download for Mac](https://github.com/syjstc/xue-learn/releases) · [User guide: installation to your first lesson](docs/user-guide.en.md) · [Frequently asked questions](docs/user-guide.en.md#frequently-asked-questions)**
