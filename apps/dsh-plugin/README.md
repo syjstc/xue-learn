@@ -2,21 +2,31 @@
 
 Personal learning inside DSH: create a learning goal, read generated lessons and ask anchored follow-up questions, explore Core demonstrations, practise with Core assessments, and resume the saved lesson after restarting DSH.
 
-This package targets **DSH 0.2.1-rc.5**, with both its Desktop IPC and authenticated Web transport. The package can be installed as one DSH bundle; a separate XueLearn Electron application is not required. Publication to npm or a plugin market is a separate release step.
+This package targets **DSH 0.2.1-rc.5**, with both its Desktop IPC and authenticated Web transport. The package can be installed as one DSH bundle; a separate XueLearn Electron application is not required.
 
-## Install or update the release bundle
+## Install or update
 
-Download `xue-learn-dsh-plugin-0.1.1.tgz` from the [DSH v0.1.1 release](https://github.com/syjstc/xue-learn/releases/tag/dsh-v0.1.1). In DSH's Plugin Manager, install the downloaded archive using its absolute path. The installed DSH 0.2.1 plugin manager accepts local `.tgz` package archives and installs their production dependencies.
+In DSH's Plugin Manager, install the npm package `@xue-learn/dsh-plugin@0.1.2` from the public npm registry.
 
 For the Desktop CLI, fully quit DSH before running:
 
 ```sh
-dsh plugin --profile desktop add /absolute/path/to/xue-learn-dsh-plugin-0.1.1.tgz
+dsh plugin --profile desktop add @xue-learn/dsh-plugin@0.1.2
 ```
 
-Reopen DSH and select **好会学** in the sidebar. Installing this archive updates the same `@xue-learn/dsh-plugin` bundle. Keep the same DSH profile and plugin `config.dataPath` to retain the existing learning workspace and last-open position; do not delete the plugin's data directory during an update. Models and credentials remain managed by DSH.
+Reopen DSH and select **好会学** in the sidebar. Running the same command updates the installed bundle to that version. Keep the same DSH profile and plugin `config.dataPath` to retain the existing learning workspace and last-open position; do not delete the plugin's data directory during an update. Models and credentials remain managed by DSH.
 
-The archive contains the compiled learning runtime and Client, not preinstalled native binaries. Dependency installation needs network access and native packages compatible with the host Node version and OS/architecture. This release has been built on Apple silicon macOS; Windows and Linux still require separate acceptance. The bundle is distributed as a GitHub attachment; it has not been published to npm or a plugin market.
+The package contains the compiled learning runtime and Client. Dependency installation needs network access and native packages compatible with the host Node version and OS/architecture. This release has been built on Apple silicon macOS; Windows and Linux still require separate acceptance.
+
+DSH's optional custom plugin market adds a **Discover** tab. A market index must list this package before it can appear there; npm publication alone does not add it to a market. Direct package installation works independently of a market listing.
+
+A compiled `.tgz` archive can also be installed using its absolute path:
+
+```sh
+dsh plugin --profile desktop add /absolute/path/to/xue-learn-dsh-plugin-0.1.2.tgz
+```
+
+The earlier GitHub-only v0.1.1 archive remains available in the [DSH v0.1.1 release](https://github.com/syjstc/xue-learn/releases/tag/dsh-v0.1.1).
 
 ## Build and install
 

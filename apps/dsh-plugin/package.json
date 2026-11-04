@@ -1,9 +1,18 @@
 {
   "name": "@xue-learn/dsh-plugin",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Personal learning workspace for DeepSeek Harness, powered by XueLearn Core",
   "type": "module",
   "license": "MIT",
+  "homepage": "https://github.com/syjstc/xue-learn/tree/main/apps/dsh-plugin",
+  "author": {
+    "name": "XueLearn",
+    "url": "https://github.com/syjstc"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "engines": {
     "node": ">=24.9.0",
     "dsh": "0.2.1-rc.5"
