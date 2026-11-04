@@ -1,0 +1,81 @@
+{
+  "name": "@xue-learn/dsh-plugin",
+  "version": "0.1.1",
+  "description": "Personal learning workspace for DeepSeek Harness, powered by XueLearn Core",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24.9.0",
+    "dsh": "0.2.1-rc.5"
+  },
+  "exports": {
+    ".": "./host.mjs",
+    "./client": "./dist/client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.png"
+  },
+  "files": [
+    "host.mjs",
+    "lib",
+    "dist",
+    "cordis.patch.yml",
+    "locale",
+    "icon.png",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/*.test.mjs",
+    "pack:check": "npm pack --dry-run"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar"
+      ],
+      "external": [
+        "react",
+        "react-dom",
+        "react/jsx-runtime"
+      ]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/syjstc/xue-learn.git",
+    "directory": "apps/dsh-plugin"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "learning",
+    "xuelearn"
+  ],
+  "dependencies": {
+    "@astral-sh/ruff-wasm-nodejs": "0.16.0",
+    "@mikro-orm/core": "7.1.11",
+    "@mikro-orm/migrations": "7.1.11",
+    "@mikro-orm/sql": "7.1.11",
+    "@mikro-orm/sqlite": "7.1.11",
+    "@resvg/resvg-js": "2.6.2",
+    "@wasm-fmt/clang-format": "20.1.7",
+    "better-sqlite3": "13.0.3",
+    "node-llama-cpp": "3.19.1",
+    "sharp": "0.35.5",
+    "sqlite-vec": "0.1.9",
+    "tree-sitter-wasms": "0.1.13",
+    "web-tree-sitter": "0.20.8"
+  },
+  "devDependencies": {
+    "@xue-learn/core": "workspace:*",
+    "esbuild": "0.28.1",
+    "react-dom-host": "npm:react-dom@18.3.1"
+  }
+}

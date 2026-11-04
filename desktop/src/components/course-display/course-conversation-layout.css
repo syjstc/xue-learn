@@ -131,7 +131,12 @@ html[data-desktop-platform="macos"] .immersive-learning-workspace[data-immersive
 }
 @media (min-width: 701px) {
   /* Fixed artwork fits the board height; text compositions keep reflowing. */
-  .course-conversation-display .desktop-display-host > .workspace-display-host > .xue-display-runtime > .display-film-stage {
+  .course-conversation-display .desktop-display-host > .workspace-display-host > .xue-display-runtime > .display-film-stage:not(:is(
+    [data-display-artwork="general:callout"],
+    [data-display-artwork="general:text"],
+    [data-display-artwork="general:compare"],
+    [data-display-artwork="general:cards"]
+  )) {
     height: max(1px, calc(var(--course-board-height, 420px) - 32px));
     aspect-ratio: auto;
   }

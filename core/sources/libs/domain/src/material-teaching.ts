@@ -115,6 +115,31 @@ export function readMaterialTeaching(value: unknown): MaterialTeaching | null {
   return parsed.success ? parsed.data : null;
 }
 
+/** Read compatibility for display payloads authored before template schemas
+ * were exposed. Normalize labels, never stringify arbitrary model objects. */
+export function readDisplayTeaching(value: unknown, nodeId: string): MaterialTeaching | null {
+  const accepted = readMaterialTeaching(value);
+  if (accepted) return accepted;
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const record = value as Record<string, unknown>;
+  if (!record.content || typeof record.content !== "object" || Array.isArray(record.content)) return null;
+  const content = record.content as Record<string, unknown>;
+  const label = (entry: unknown) => typeof entry === "string" ? entry : entry && typeof entry === "object"
+    ? (entry as Record<string, unknown>).label ?? (entry as Record<string, unknown>).text : undefined;
+  const title = typeof record.title === "string" ? record.title : typeof content.title === "string" ? content.title
+    : typeof content.caption === "string" ? content.caption : String(record.templateId ?? "");
+  let normalized = content;
+  if (record.templateId === "general-flow" && Array.isArray(content.nodes)) {
+    normalized = {nodes: content.nodes.map(label), caption: content.caption ?? title};
+  } else if (record.templateId === "general-layers" && Array.isArray(content.layers)) {
+    normalized = {layers: content.layers.map(entry => entry && typeof entry === "object"
+      ? {title: (entry as Record<string, unknown>).title, detail: (entry as Record<string, unknown>).detail} : entry)};
+  }
+  return readMaterialTeaching({type: "teaching", version: 1,
+    id: typeof record.id === "string" ? record.id : `t_${nodeId.replace(/[^A-Za-z0-9_-]/g, "_").slice(0, 60)}`,
+    title, templateId: record.templateId, content: normalized});
+}
+
 export type MaterialTeachingStep = Readonly<{
   id: string;
   label: string;

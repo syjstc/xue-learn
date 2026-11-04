@@ -79,7 +79,7 @@ export function QuickSettingsPanel({
     <Sheet open={open} onOpenChange={(nextOpen) => !nextOpen && onClose()}>
       <SheetContent
         side="right"
-        className={cn("w-full p-0 data-[side=right]:w-full sm:max-w-md")}
+        className={cn("w-full p-0 data-[side=right]:w-full data-[side=right]:sm:max-w-md")}
       >
         <SheetHeader className="border-b px-4 py-3 text-left">
           <div className="flex items-center gap-2">

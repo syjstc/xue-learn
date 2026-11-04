@@ -204,11 +204,14 @@ export function AgentChat({
     (phase === "generating_plan" || looksLikeGoalPlanStream(streamPreview)),
   );
   const showPlanningProgress =
-    !hideDeepPlanningProgress &&
     streaming &&
     (Boolean(planningProgress?.active) ||
       phase === "generating_plan" ||
-      Boolean(status));
+      (!hideDeepPlanningProgress && Boolean(status)));
+  // A checkpoint can retain its previous review card while a revision runs.
+  // Show the live revision in its place, including after reloading the thread.
+  const revisingPlan =
+    showPlanningProgress && activeToolUi?.uiKind === "plan_editor";
   const showReplyPlaceholder =
     streaming &&
     !hasStreamingAssistantMessage &&
@@ -259,7 +262,15 @@ export function AgentChat({
     if (!shouldAutoScrollRef.current) return;
     el.scrollTop = el.scrollHeight;
     lastScrollTopRef.current = el.scrollTop;
-  }, [messages, streaming, pendingToolUi, status, phase, streamPreview]);
+  }, [
+    messages,
+    streaming,
+    pendingToolUi,
+    status,
+    phase,
+    streamPreview,
+    planningProgress,
+  ]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -449,6 +460,7 @@ export function AgentChat({
             if (m.role !== "assistant") return true;
             if (hasVisibleText) return true;
             if (!m.toolUi) return false;
+            if (revisingPlan && m.toolUi.uiKind === "plan_editor") return false;
             if (shouldRetainSubmittedToolUi(m.toolUi.uiKind)) return true;
             return (
               !m.toolUi.submitted &&
@@ -458,6 +470,7 @@ export function AgentChat({
           .map((m) => {
             const showToolUi = Boolean(
               m.toolUi &&
+              !(revisingPlan && m.toolUi.uiKind === "plan_editor") &&
               (shouldRetainSubmittedToolUi(m.toolUi.uiKind) ||
                 (!m.toolUi.submitted &&
                   m.toolUi.toolCallId === activeToolUi?.toolCallId)),
@@ -568,6 +581,7 @@ export function AgentChat({
           })}
 
         {pendingToolUi &&
+        !(revisingPlan && pendingToolUi.uiKind === "plan_editor") &&
         !messages.some(
           (m) => m.toolUi?.toolCallId === pendingToolUi.toolCallId,
         ) ? (

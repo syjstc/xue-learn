@@ -54,22 +54,22 @@
 }
 /* Neutral paint in older SVG diagrams follows the host; semantic accents and
  * authored image pixels keep their original colors. */
-.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg :is(text:not([fill]), [fill="#3E3632" i]) {
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg:not(.fer-motion-svg) :is(text:not([fill]), [fill="#3E3632" i]) {
   fill: var(--rm-ink);
 }
-.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg [fill="#7A6F65" i] {
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg:not(.fer-motion-svg) [fill="#7A6F65" i] {
   fill: var(--rm-muted);
 }
-.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg [fill="#FAF7F4" i] {
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg:not(.fer-motion-svg) [fill="#FAF7F4" i] {
   fill: var(--rm-surface);
 }
-.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg [fill="#F5F0EB" i] {
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg:not(.fer-motion-svg) [fill="#F5F0EB" i] {
   fill: var(--rm-stage);
 }
-.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg [fill="#EDE7E0" i] {
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg:not(.fer-motion-svg) [fill="#EDE7E0" i] {
   fill: var(--rm-inset);
 }
-.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg [stroke="#DDD5CB" i] {
+.desktop-display-host[data-display-presentation="chat"] .display-film-stage svg:not(.fer-motion-svg) [stroke="#DDD5CB" i] {
   stroke: var(--rm-border);
 }
 .desktop-display-host[data-display-presentation="chat"] .lp-code-board :is(.hljs-variable, .hljs-template-variable, .hljs-attribute) {

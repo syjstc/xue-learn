@@ -19,12 +19,12 @@ describe("audited capability path repair publication", () => {
     db.exec(`
       CREATE TABLE LearningGoal (id TEXT PRIMARY KEY, userId TEXT, mapPlanJson TEXT, updatedAt INTEGER);
       CREATE TABLE GoalCreationSession (id TEXT, goalId TEXT, userId TEXT, status TEXT);
-      CREATE TABLE LearningModule (id TEXT PRIMARY KEY, goalId TEXT, plannedOutcomes TEXT, exitCapabilityBriefs TEXT, estimatedUnitCount INTEGER, unitPlanningBrief TEXT);
+      CREATE TABLE LearningModule (id TEXT PRIMARY KEY, goalId TEXT, plannedOutcomes TEXT, exitCapabilityBriefs TEXT, estimatedUnitCount INTEGER, unitPlanningBrief TEXT, title TEXT DEFAULT 'Original title', summary TEXT DEFAULT 'Original summary', objective TEXT DEFAULT 'Original objective');
       CREATE TABLE ModuleStructureDraft (moduleId TEXT, goalId TEXT, sessionId TEXT, candidateHash TEXT, status TEXT, planHash TEXT);
       CREATE TABLE LearningUnit (id TEXT, moduleId TEXT);
       INSERT INTO LearningGoal VALUES ('goal','user','original-plan',0);
       INSERT INTO GoalCreationSession VALUES ('session','goal','user','running');
-      INSERT INTO LearningModule VALUES ('flagged','goal','[]','[]',2,'original-brief'), ('valid','goal','[]','[]',4,'valid-brief');
+      INSERT INTO LearningModule (id,goalId,plannedOutcomes,exitCapabilityBriefs,estimatedUnitCount,unitPlanningBrief) VALUES ('flagged','goal','[]','[]',2,'original-brief'), ('valid','goal','[]','[]',4,'valid-brief');
       INSERT INTO ModuleStructureDraft VALUES ('flagged','goal','session','repaired-hash','ready_for_audit','old-hash'), ('valid','goal','session','valid-hash','ready_for_audit','old-hash');
     `);
     const em = {
@@ -50,6 +50,21 @@ describe("audited capability path repair publication", () => {
     expect(db.prepare("SELECT unitPlanningBrief FROM LearningModule WHERE id='valid'").get()).toEqual({ unitPlanningBrief: "valid-brief" });
     expect(db.prepare("SELECT candidateHash FROM ModuleStructureDraft WHERE moduleId='valid'").get()).toEqual({ candidateHash: "valid-hash" });
     expect(await repository.commitPathRepairs(input)).toBe(true);
+  });
+
+  it("atomically aligns only the audited module metadata and leaves other headings intact", async () => {
+    const metadata = { title: "Actual operation", summary: "The unchanged lessons already teach this operation.", objective: "Perform the existing exit ability." };
+    expect(await repository.commitPathRepairs({ ...input, modules: [{ ...input.modules[0]!, metadata }] })).toBe(true);
+    expect(db.prepare("SELECT title,summary,objective FROM LearningModule WHERE id='flagged'").get()).toEqual(metadata);
+    expect(db.prepare("SELECT title FROM LearningModule WHERE id='valid'").get()).toEqual({ title: "Original title" });
+    expect(db.prepare("SELECT mapPlanJson FROM LearningGoal").get()).toEqual({ mapPlanJson: "revised-plan" });
+  });
+
+  it("rejects metadata from an unaudited draft without updating the plan or heading", async () => {
+    db.exec("UPDATE ModuleStructureDraft SET status='repairing' WHERE moduleId='flagged'");
+    expect(await repository.commitPathRepairs({ ...input, modules: [{ ...input.modules[0]!, metadata: { title: "Unreviewed", summary: "Unreviewed", objective: "Unreviewed" } }] })).toBe(false);
+    expect(db.prepare("SELECT title FROM LearningModule WHERE id='flagged'").get()).toEqual({ title: "Original title" });
+    expect(db.prepare("SELECT mapPlanJson FROM LearningGoal").get()).toEqual({ mapPlanJson: "original-plan" });
   });
 
   it("rejects stale plans and stale audited drafts without changing any owning record", async () => {

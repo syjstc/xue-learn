@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { DisplayDocument, DisplayNode } from "../../display/src/types.js";
 import { validateDisplayDocument } from "../../display/src/validation.js";
+import {readDisplayTeaching,readMaterialTeaching} from "./material-teaching.js";
 
 const name = z.string().trim().min(1).max(256);
 const nodeSchema: z.ZodType<DisplayNode> = z.lazy(() => z.object({
@@ -9,7 +10,23 @@ const nodeSchema: z.ZodType<DisplayNode> = z.lazy(() => z.object({
   targets: z.array(name).optional(),
   build: z.object({ jobId: name, status: z.enum(["pending", "running", "ready", "failed", "cancelled"]),
     sourceHash: z.string().optional(), revision: z.number().int().nonnegative().optional(), error: z.string().optional() }).strict().optional(),
-}).strict());
+}).strict().superRefine((node, ctx) => {
+  if (!node.kind.endsWith(":teaching") || !node.payload || typeof node.payload !== "object") return;
+  const payload = node.payload as Record<string, unknown>;
+  if (Array.isArray((payload.block as {stages?: unknown} | null)?.stages)) return;
+  if (!readDisplayTeaching(payload.block, node.id)) {
+    ctx.addIssue({code: "custom", path: ["payload", "block"], message: "Teaching template content must match its declared schema; use plain node labels and the template's required content fields."});
+  }
+}).overwrite(node => {
+  if (!node.kind.endsWith(":teaching") || !node.payload || typeof node.payload !== "object") return node;
+  const payload = node.payload as Record<string, unknown>;
+  if (Array.isArray((payload.block as {stages?: unknown} | null)?.stages)) return node;
+  const block = readDisplayTeaching(payload.block, node.id);
+  if (!block) return node;
+  return {...node, payload: {...payload, block,
+    ...(!readMaterialTeaching(payload.block) ? {teachingOverviewFallback: true} : {}),
+  }};
+}));
 
 export const materialDisplayDocumentSchema: z.ZodType<DisplayDocument> = z.object({
   version: z.literal(1), id: name, root: nodeSchema,

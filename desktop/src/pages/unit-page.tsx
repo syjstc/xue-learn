@@ -50,8 +50,9 @@ import { AiGeneratedNotice } from "@/components/ui/ai-generated-notice";
 import { isDesktopLocalRuntime, supportsGoalWebResources } from "@xue-learn/core/client-runtime";
 import { DesktopPluginSlot } from "@/features/plugins/ui-extensions";
 
-function assistantStepLabel(step: string | undefined, fallback: string) {
-  return ALL_STEPS.find((item) => item.id === step)?.label ?? fallback;
+function assistantStepLabel(step: string | undefined, fallback: string, t: ReturnType<typeof useT>) {
+  const label = ALL_STEPS.find((item) => item.id === step)?.label;
+  return label ? t(label) : fallback;
 }
 
 export function UnitPage() {
@@ -114,7 +115,7 @@ export function UnitPage() {
           data.unit.unitKind === "overview"
             ? t("goalDetail.journey.orientationEyebrow")
             : data.unit.title
-        } · ${assistantStepLabel(assistantCurrentStep, t("course.learningContent"))}`
+        } · ${assistantStepLabel(assistantCurrentStep, t("course.learningContent"), t)}`
       : t("course.currentUnit"),
     currentStep: assistantCurrentStep,
   });
@@ -192,7 +193,7 @@ export function UnitPage() {
             </h1>
             {unit.contentSummary && !isOverview && (
               <div
-                className="mt-1 hidden text-sm leading-6 text-[var(--text-500)] sm:line-clamp-1 sm:block"
+                className="mt-1 hidden text-sm leading-6 text-[var(--text-500)] sm:line-clamp-1"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
                 <LlmMarkdownInline content={unit.contentSummary} />

@@ -37,13 +37,19 @@ export function useReadingFollowUp({unitId, sectionId, goalId, documentId, enabl
       setPendingAnchor(null);
   }, [threads, pendingAnchor]);
 
+  const openQuote = useCallback((quote: MaterialAnchor) => {
+    const existing = threads.find(thread => anchorId(thread.anchor) === anchorId(quote));
+    clear();
+    openUnitFollowUp(unitId, ownerId, {goalId: goalId ?? "", anchor: quote, threadId: existing?.id});
+  }, [threads, clear, openUnitFollowUp, unitId, ownerId, goalId]);
+
   useEffect(() => {
     const root = containerRef.current;
     if (!available || !root) return;
     const anchors = [...threads.map(thread => thread.anchor), ...(pendingAnchor ? [pendingAnchor] : [])]
       .filter(anchor => anchor.sectionId === sectionId && anchor.reading?.documentId === documentId);
-    return observeReadingFollowUpHighlights(root, anchors);
-  }, [available, sectionId, documentId, threads, pendingAnchor]);
+    return observeReadingFollowUpHighlights(root, anchors, openQuote);
+  }, [available, sectionId, documentId, threads, pendingAnchor, openQuote]);
 
   useEffect(() => {
     if (!available || !documentId) return;

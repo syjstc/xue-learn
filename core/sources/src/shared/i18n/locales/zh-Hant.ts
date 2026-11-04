@@ -1552,6 +1552,8 @@ export const zhHant = {
   "goalCreation.stoppedCannotContinue": "此目標建立已停止，不能繼續",
   "goalCreation.needsAttention": "建立遇到問題，可以重試或停止",
   "goalCreation.firstLessonReady": "第一課已準備好",
+  "goalCreation.firstLessonBackground": "第一課已可開始，後續模組正在背景準備。",
+  "goalCreation.firstLessonBackgroundProgress": "第一課已可開始，背景已準備 {ready}/{total} 個模組。",
   "goalCreation.allModulesReady": "全部模塊結構已準備完成",
   "goalCreation.agenticModuleProgress":
     "已準備 {prepared}/{modules} · 已發布 {published} · 失敗 {failed} · 審計 {audit}",

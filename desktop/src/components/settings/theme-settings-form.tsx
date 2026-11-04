@@ -49,10 +49,10 @@ export function ThemeSettingsForm({ compact = false }: { compact?: boolean }) {
               disabled={!hydrated}
               onClick={() => setTheme(value)}
               className={cn(
-                "flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium whitespace-nowrap transition",
+                "flex min-w-0 items-center rounded-lg border py-2.5 text-sm font-medium whitespace-nowrap transition",
                 compact
-                  ? "justify-start sm:justify-center"
-                  : "justify-start sm:justify-center",
+                  ? "justify-start gap-1.5 px-2 sm:justify-center"
+                  : "justify-start gap-2 px-3 sm:justify-center",
                 active
                   ? "border-primary bg-primary/10 text-primary"
                   : "border-border bg-background text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground",

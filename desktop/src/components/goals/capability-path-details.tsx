@@ -13,7 +13,7 @@ export function CapabilityPathDetails({
   disabled,
 }: {
   plan: GoalMapPlan;
-  onMissingFoundation?: (title: string) => void;
+  onMissingFoundation?: (title: string, entityKey: string) => void;
   disabled?: boolean;
 }) {
   const t = useT();
@@ -79,6 +79,7 @@ export function CapabilityPathDetails({
                   onClick={() =>
                     onMissingFoundation(
                       entities.get(entry.entityKey)?.title ?? entry.entityKey,
+                      entry.entityKey,
                     )
                   }
                 >

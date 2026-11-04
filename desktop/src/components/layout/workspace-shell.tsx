@@ -244,7 +244,7 @@ function CreateGoalButton({ compact }: { compact: boolean }) {
                       ? t("goals.creationNeedsAttention")
                       : t("goals.creationRunning")}
                 </span>
-                <span className="mt-0.5 block text-[11px] leading-4 text-[var(--text-400)]">
+                <span role="status" aria-live="polite" className="mt-0.5 block text-[11px] leading-4 text-[var(--text-400)]">
                   {goalCreationShortStatus(session, t)}
                 </span>
               </span>

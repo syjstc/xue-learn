@@ -570,12 +570,13 @@ export async function enqueueInitialModuleKacomOnGoalOpen(
   goalId: string,
   repository: ModuleStructureQueueRepository,
   invalidation: CognitiveModelInvalidationRepository,
+  reason = "goal_page_open",
 ) {
   const result = await repository.enqueueInitialKacom(goalId);
   if (result.authorizeExpansion) {
     await invalidation.invalidate({
       goalId,
-      reason: "goal_page_open",
+      reason,
       force: true,
     });
   }

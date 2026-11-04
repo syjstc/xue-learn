@@ -67,3 +67,15 @@ it("accepts shared path-tool null fields and restricts commits to the flagged mo
   expect(schema.safeParse({ part: "module", modules: null, registry: null, ...repair }).success).toBe(true);
   expect(schema.safeParse({ part: "module", entities: [], module: path.modules[1] }).success).toBe(false);
 });
+
+
+it("accepts metadata-only alignment for the same unchanged module and rejects structural edits hidden inside it", () => {
+  const { path, repair } = repairFixture();
+  const moduleBrief = { title: "Aligned operation", summary: "Describe the operation already taught.", objective: "Apply the existing exit ability.", dependsOnPrevious: "Use the earlier operation." };
+  const schema = modulePathRepairSchema(path, "m_1");
+  expect(schema.safeParse({ part: "module", entities: [], module: path.modules[0], moduleBrief }).success).toBe(true);
+  expect(schema.safeParse({ part: "module", ...repair, moduleBrief }).success).toBe(false);
+  expect(schema.safeParse({ part: "module", entities: [], module: path.modules[1], moduleBrief }).success).toBe(false);
+  expect(schema.safeParse({ part: "module", entities: [], module: path.modules[0], moduleBrief: { ...moduleBrief, moduleId: "another-module" } }).success).toBe(false);
+  expect(schema.safeParse({ part: "module", entities: [], module: path.modules[0], moduleBrief: null }).success).toBe(true);
+});

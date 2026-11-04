@@ -86,6 +86,7 @@ it("lets the learner request a bridge for a concrete assumption, without approvi
     expect(onSubmit).toHaveBeenCalledWith({
       approved: false,
       feedback: 'capabilityPath.bridgeFeedback {"title":"Fractions"}',
+      foundationEntityKey: "prior",
     });
   } finally {
     await act(async () => root.unmount());

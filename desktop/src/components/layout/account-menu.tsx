@@ -13,7 +13,7 @@ import { useT } from "@xue-learn/core/i18n";
 import { cn } from "@xue-learn/core/utils";
 import { Button } from "@xue-learn/core/ui/button";
 import { useLearnerProfile } from "@/hooks/api/use-learner-profile";
-import { isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
+import { getClientRuntime, isDesktopLocalRuntime } from "@xue-learn/core/client-runtime";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -95,18 +95,14 @@ function LocalAccountMenu(props: AccountMenuProps) {
           <DropdownMenuLabel>{displayName}</DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Link to="/settings">
-            <Settings className="size-4" />
-            {t("common.settings")}
-          </Link>
+        <DropdownMenuItem render={<Link to="/settings" />}>
+          <Settings className="size-4" />
+          {t("common.settings")}
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link to="/local/api-keys">
-            <KeyRound className="size-4" />
-            {t("desktop.deviceSettings.title")}
-          </Link>
-        </DropdownMenuItem>
+        {getClientRuntime().capabilities.localAdmin ? <DropdownMenuItem render={<Link to="/local/api-keys" />}>
+          <KeyRound className="size-4" />
+          {t("desktop.deviceSettings.title")}
+        </DropdownMenuItem> : null}
       </DropdownMenuContent>
     </DropdownMenu>
   );

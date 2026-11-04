@@ -351,6 +351,8 @@ export function ReadingSectionBody({
   onContinue,
   continueLabel,
   continuing = false,
+  allowPdfExport = true,
+  enableEvents = true,
 }: {
   unitId: string;
   sectionId: string;
@@ -359,6 +361,10 @@ export function ReadingSectionBody({
   onContinue?: () => void;
   continueLabel?: string;
   continuing?: boolean;
+  /** Hosts without Electron PDF support can omit native export controls. */
+  allowPdfExport?: boolean;
+  /** Authenticated hosts can use the existing polling fallback instead of EventSource. */
+  enableEvents?: boolean;
 }) {
   const t = useT();
   const client = useQueryClient();
@@ -374,7 +380,7 @@ export function ReadingSectionBody({
   });
   const streaming = hasActiveReading(query.data);
   useEffect(() => {
-    if (!streaming) return;
+    if (!streaming || !enableEvents) return;
     const events = new EventSource(apiUrl(`${path}/events`));
     events.onmessage = (event) => {
       try {
@@ -386,7 +392,7 @@ export function ReadingSectionBody({
       }
     };
     return () => events.close();
-  }, [streaming, path, unitId, client]);
+  }, [streaming, path, unitId, client, enableEvents]);
   const section = query.data?.sections.find((s) => s.id === sectionId);
   const reading = section?.reading;
   const mutate = useMutation({
@@ -477,7 +483,7 @@ export function ReadingSectionBody({
                   <BookOpenText className="size-4" />)}
           {reading?.status === "ready" ? t("reading.regenerate") : reading ? t("reading.continue") : t("reading.generate")}
         </Button>)}
-        {currentDocument && (
+        {currentDocument && allowPdfExport && (
               <>
           <select className="reading-pdf-layout" aria-label={t("reading.pdfLayout")} value={pdfLayout}
             onChange={(event ) => setPdfLayout(event.target.value as "mobile" | "desktop")}>

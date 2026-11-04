@@ -1,5 +1,6 @@
 import { invokeMultimodalStructured } from "../../../../llm/multimodal-structured-native.js";
 import { guidedImagePrompt, segmentGuidedImage } from "./provider.js";
+import { GUIDED_IMAGE_SEGMENT_INSTRUCTION } from "./policy.js";
 import type { GuidedImageIntent } from "../../../../../../domain/src/guided-image.js";
 
 jest.mock("../../../../llm/multimodal-structured-native.js", () => ({ invokeMultimodalStructured: jest.fn() }));
@@ -57,4 +58,17 @@ it("does not invent a repair history for a first-generation image", async () => 
   const call = jest.mocked(invokeMultimodalStructured).mock.calls[0]![0];
   expect(JSON.parse(call.prompt)).not.toHaveProperty("repairReview");
   expect(call.meta).toMatchObject({ previousImageIssueCount: 0 });
+});
+
+it("treats TeX delimiters as source markup for ordinary raster maths without weakening content checks", () => {
+  const mathIntent = { ...intent, composition: "Show $v=2\\,\\mathrm{m/s}$ with the correct sign and unit." };
+  const imagePrompt = guidedImagePrompt(mathIntent);
+  expect(imagePrompt).toContain(JSON.stringify(mathIntent.composition));
+  expect(imagePrompt).toMatch(/TeX delimiters as source markup/);
+  expect(imagePrompt).toMatch(/explicitly teaches literal markup or currency/);
+  // Keep the distinction near the front if a prompt budget trims the view.
+  const visibleReviewPolicy = GUIDED_IMAGE_SEGMENT_INSTRUCTION.slice(0, 3000);
+  expect(visibleReviewPolicy).toMatch(/never flag absent markup delimiters alone/i);
+  expect(visibleReviewPolicy).toMatch(/wrong or unreadable mathematical symbols, signs, values, units, exponents, subscripts, and relationships/i);
+  expect(visibleReviewPolicy).toMatch(/explicitly teaches literal markup or currency/i);
 });

@@ -71,6 +71,66 @@
   font-size: 18px;
   line-height: 1.7;
 }
+/* Current text and comparison boards contain an inner fitted canvas. Reflow
+ * that canvas too, so an auto-height chat board cannot collapse to zero. */
+.desktop-display-host[data-display-presentation="chat"] :is(
+  [data-display-artwork="general:text"] .rm-glass-reading-viewport,
+  [data-display-artwork="general:compare"] .rm-glass-fit
+) {
+  height: auto;
+  overflow: visible;
+}
+.desktop-display-host[data-display-presentation="chat"] :is(
+  [data-display-artwork="general:text"] .rm-glass-reading-canvas,
+  [data-display-artwork="general:compare"] .rm-glass-fit-canvas
+) {
+  position: relative;
+  width: 100% !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+}
+.desktop-display-host[data-display-presentation="chat"] .rm-glass-text {
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
+  gap: 0;
+  margin: 8px;
+  padding: 24px;
+}
+.desktop-display-host[data-display-presentation="chat"] .rm-glass-text-art {
+  display: none;
+}
+.desktop-display-host[data-display-presentation="chat"] .rm-glass-text-copy h2 {
+  font-size: 24px;
+  margin-bottom: 16px !important;
+}
+.desktop-display-host[data-display-presentation="chat"] .rm-glass-text-copy p {
+  font-size: 18px;
+  line-height: 1.8;
+}
+.desktop-display-host[data-display-presentation="chat"] .rm-glass-compare {
+  min-height: 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)) !important;
+  gap: 16px;
+}
+.desktop-display-host[data-display-presentation="chat"] .rm-glass-compare-side {
+  padding: 20px;
+}
+.desktop-display-host[data-display-presentation="chat"] .rm-glass-compare-top {
+  height: 88px;
+}
+.desktop-display-host[data-display-presentation="chat"] .rm-glass-compare-top .rm-glass-emblem {
+  width: 108px;
+  height: 96px;
+}
+.desktop-display-host[data-display-presentation="chat"] .rm-glass-compare .rm-glass-compare-title {
+  min-height: 0;
+  font-size: 22px;
+}
+.desktop-display-host[data-display-presentation="chat"] .rm-glass-compare .rm-glass-compare-point p {
+  font-size: 18px;
+  line-height: 1.7;
+}
 .desktop-display-host[data-display-presentation="chat"] :is(.rm-new-compare, .rm-new-cards) {
   height: auto;
   gap: 16px;

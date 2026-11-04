@@ -276,7 +276,10 @@ export class MikroOrmAssessmentTargetRepository implements AssessmentTargetRepos
   constructor(private readonly em: EntityManager) {}
 
   private execute(sql: string, params: unknown[] = []) {
-    return this.em.getConnection().execute(sql, params);
+    // Quiz-target repair runs inside the runtime adapter's transaction. Raw
+    // SQL must use that transaction's connection; otherwise SQLite waits for
+    // the sole connection already held by this very operation.
+    return this.em.getConnection().execute(sql, params, undefined, this.em.getTransactionContext());
   }
 
   private async assertOwned(

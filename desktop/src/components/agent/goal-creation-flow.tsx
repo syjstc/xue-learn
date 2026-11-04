@@ -23,6 +23,7 @@ import { AgentChatWorkspace } from "@/components/agent/agent-chat-workspace";
 import type { GoalCreationLiveProgress } from "@/components/agent/agent-chat";
 import type { PendingGoalStart } from "@/components/agent/assistant-provider";
 import { GoalCreationRetryButton } from "@/components/agent/goal-creation-retry-button";
+import { CreationProgress } from "@/components/agent/goal-creation-progress";
 import { GoalPlanStreamCard } from "@/components/agent/goal-plan-stream-card";
 import { goalPlanPreviewFromEvents } from "@/shared/agent/goal-plan-stream-preview";
 import { Button } from "@xue-learn/core/ui/button";
@@ -34,9 +35,7 @@ import {
   useGoalCreationSessionEvents,
 } from "@/hooks/use-goal-creation-session";
 import {
-  AGENTIC_GOAL_CREATION_PHASE_ORDER,
   GOAL_CREATION_PHASE_LABEL_KEYS,
-  GOAL_CREATION_PHASE_ORDER,
   goalCreationAutoOpenPath,
   goalCreationNeedsRetry,
   goalCreationShortStatus,
@@ -83,133 +82,6 @@ function statusCopy(session: GoalCreationSession, t: Translate) {
   if (session.phase === "first_unit" || session.phase === "first_unit_kacom")
     return t("goalCreation.preparingFirstLesson");
   return t("goalCreation.processingBackground");
-}
-
-function CreationProgress({ session }: { session: GoalCreationSession }) {
-  const t = useT();
-  const phaseOrder =
-    session.flowMode === "automatic"
-      ? ([
-          "goal_creation",
-          "icon",
-          "planning",
-          "module_shell",
-          "first_unit",
-          "ready",
-        ] satisfies GoalCreationSession["phase"][])
-      : session.flowMode === "agentic"
-        ? AGENTIC_GOAL_CREATION_PHASE_ORDER
-        : GOAL_CREATION_PHASE_ORDER;
-  const total = phaseOrder.length;
-  const current = phaseOrder.indexOf(
-    session.phase === "first_unit_kacom" ? "first_unit" : session.phase,
-  );
-  const completed = session.status === "completed";
-  const needsRetry = goalCreationNeedsRetry(session);
-  const progressIndex = completed ? total - 1 : Math.max(current, 0);
-  const progressPercent = Math.max(
-    8,
-    Math.min(100, ((progressIndex + 1) / total) * 100),
-  );
-
-  return (
-    <div className="space-y-2 sm:space-y-2.5">
-      <ol
-        className="hidden w-full items-center sm:flex"
-        aria-label={t("goalCreation.progress")}
-      >
-        {phaseOrder.map((phase, index) => {
-          const done = completed || index < current;
-          const active = !completed && index === current;
-          const segmentFilled = completed || index < current;
-          return (
-            <li
-              key={phase}
-              className={cn(
-                "flex items-center",
-                index < total - 1 ? "min-w-0 flex-1" : "shrink-0",
-              )}
-            >
-              <span
-                className={cn(
-                  "relative z-10 flex size-[22px] shrink-0 items-center justify-center rounded-full border text-[10px] font-semibold transition-colors",
-                  done && "border-primary bg-primary text-primary-foreground",
-                  active &&
-                    needsRetry &&
-                    "border-destructive bg-destructive/10 text-destructive ring-2 ring-destructive/25",
-                  active &&
-                    !needsRetry &&
-                    "border-primary bg-background text-primary ring-2 ring-primary/25",
-                  !done &&
-                    !active &&
-                    "border-border bg-[var(--bg-100)] text-muted-foreground",
-                )}
-                title={t(
-                  GOAL_CREATION_PHASE_LABEL_KEYS[phase] as TranslationKey,
-                )}
-                aria-current={active ? "step" : undefined}
-                aria-label={`${index + 1}. ${t(GOAL_CREATION_PHASE_LABEL_KEYS[phase] as TranslationKey)}${
-                  done
-                    ? ` (${t("goalCreation.completed")})`
-                    : active
-                      ? ` (${t("goalCreation.inProgress")})`
-                      : ""
-                }`}
-              >
-                {done ? (
-                  <Check className="size-3" strokeWidth={2.5} />
-                ) : active && needsRetry ? (
-                  <AlertTriangle className="size-3" />
-                ) : active && session.status === "running" ? (
-                  <LoaderCircle className="size-3 animate-spin" />
-                ) : (
-                  index + 1
-                )}
-              </span>
-              {index < total - 1 ? (
-                <span
-                  className={cn(
-                    "mx-1 h-0.5 min-w-2 flex-1 rounded-full transition-colors",
-                    segmentFilled ? "bg-primary" : "bg-border/70",
-                  )}
-                  aria-hidden
-                />
-              ) : null}
-            </li>
-          );
-        })}
-      </ol>
-      <div className="flex min-w-0 items-center justify-between gap-3">
-        <p className="min-w-0 text-sm leading-6 text-foreground sm:text-base">
-          <span className="text-muted-foreground">
-            {t("goalCreation.step", { current: progressIndex + 1, total })}
-          </span>
-          <span className="mx-1.5 text-border" aria-hidden>
-            ·
-          </span>
-          <span className="font-semibold">
-            {t(GOAL_CREATION_PHASE_LABEL_KEYS[session.phase] as TranslationKey)}
-          </span>
-        </p>
-        {session.status === "running" ? (
-          <LoaderCircle className="size-3.5 shrink-0 animate-spin text-primary" />
-        ) : null}
-      </div>
-      <div
-        className="h-1 overflow-hidden rounded-full bg-border/70 sm:hidden"
-        role="progressbar"
-        aria-label={t("goalCreation.progress")}
-        aria-valuemin={1}
-        aria-valuemax={total}
-        aria-valuenow={progressIndex + 1}
-      >
-        <div
-          className="h-full rounded-full bg-primary transition-[width]"
-          style={{ width: `${progressPercent}%` }}
-        />
-      </div>
-    </div>
-  );
 }
 
 function eventText(
@@ -525,6 +397,8 @@ export function GoalCreationFlow({
   const liveSession = response?.session ?? null;
   const lastSessionRef = useRef<GoalCreationSession | null>(null);
   const seenInProgressRef = useRef(false);
+  const awaitingFirstLessonRef = useRef(false);
+  if (liveSession?.status === "running" && !liveSession.firstUnitId) awaitingFirstLessonRef.current = true;
   const confirmedSessionIdRef = useRef<string | null>(null);
   const goalCreationConfirmedRef = useRef(false);
   if (liveSession) lastSessionRef.current = liveSession;
@@ -586,6 +460,12 @@ export function GoalCreationFlow({
   useEffect(() => {
     if (!seenInProgressRef.current) return;
     const known = liveSession ?? lastSessionRef.current;
+    if (variant !== "goal" && awaitingFirstLessonRef.current && known?.status === "running" && known.firstUnitId && known.goalId) {
+      awaitingFirstLessonRef.current = false;
+      onClose?.();
+      navigate(`/goals/${known.goalId}/units/${known.firstUnitId}`);
+      return;
+    }
     const events = eventsQuery.data?.events ?? [];
     const doneEvent = events
       .slice()
@@ -613,7 +493,7 @@ export function GoalCreationFlow({
     if (!destination) return;
     onClose?.();
     navigate(destination, { replace: true });
-  }, [eventsQuery.data?.events, liveSession, navigate, onClose]);
+  }, [eventsQuery.data?.events, liveSession, navigate, onClose, variant]);
 
   const isBusy =
     actions.retry.isPending ||
@@ -898,7 +778,13 @@ export function GoalCreationFlow({
           </div>
         )}
         <div className="mt-2 sm:mt-3.5">
-          <CreationProgress session={session} />
+          <CreationProgress
+            session={session}
+            message={
+              goalCreationProgress?.latestEvent || goalCreationProgress?.status
+            }
+            showActivity={!showLiveFeed}
+          />
         </div>
         {session.status === "stopped" ? (
           <div className="mt-3 flex flex-wrap gap-2 rounded-xl border border-destructive/20 bg-destructive/5 p-3">
@@ -923,8 +809,7 @@ export function GoalCreationFlow({
             </Button>
           </div>
         ) : null}
-        {session.status === "completed" &&
-        session.goalId &&
+        {session.goalId &&
         session.firstUnitId ? (
           <div className="mt-3">
             <Button

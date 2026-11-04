@@ -389,6 +389,7 @@ export class LearningOutboxProcessor {
                         payloadJson: event.payload,
                         repos: {
                             drafts: this.learningSpaceOrm!.moduleStructureDraft,
+                            moduleStructureQueue: this.learningSpaceOrm!.moduleStructureQueue,
                             moduleGenerationLease: this.learningSpaceOrm!.moduleGenerationLease,
                             deepPlanningResearch: this.learningSpaceOrm!.deepPlanningResearch,
                             preparedModulePublication: this.learningSpaceOrm!.preparedModulePublication,
@@ -409,6 +410,7 @@ export class LearningOutboxProcessor {
                         payloadJson: event.payload,
                         repos: {
                             drafts: this.learningSpaceOrm!.moduleStructureDraft,
+                            moduleStructureQueue: this.learningSpaceOrm!.moduleStructureQueue,
                             moduleGenerationLease: this.learningSpaceOrm!.moduleGenerationLease,
                             deepPlanningResearch: this.learningSpaceOrm!.deepPlanningResearch,
                             preparedModulePublication: this.learningSpaceOrm!.preparedModulePublication,
@@ -437,6 +439,7 @@ export class LearningOutboxProcessor {
                         payloadJson: event.payload,
                         repos: {
                             drafts: this.learningSpaceOrm!.moduleStructureDraft,
+                            moduleStructureQueue: this.learningSpaceOrm!.moduleStructureQueue,
                             moduleGenerationLease: this.learningSpaceOrm!.moduleGenerationLease,
                             deepPlanningResearch: this.learningSpaceOrm!.deepPlanningResearch,
                             preparedModulePublication: this.learningSpaceOrm!.preparedModulePublication,

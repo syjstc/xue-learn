@@ -10,9 +10,17 @@ import {
   type PathModuleContract,
   type PathEntity,
 } from "../../../domain/src/learning-path-contract.js";
-import { goalCurriculumJourneyBindingSchema } from "../llm/schemas.js";
+import { goalCurriculumJourneyBindingSchema, curriculumModuleJourneyStubSchema } from "../llm/schemas.js";
 
 const modulesSchema = goalCurriculumJourneyBindingSchema.shape.modules;
+/** Optional display-only alignment; structural curriculum edits use the module contract. */
+export const goalPathModuleBriefSchema = curriculumModuleJourneyStubSchema.extend({
+  title: z.string().trim().min(1).max(180),
+  summary: z.string().trim().min(1).max(1200),
+  objective: z.string().trim().min(1).max(600),
+  dependsOnPrevious: z.string().trim().min(1).max(600),
+}).strict();
+
 export const goalPathRegistrySchema = learningPathContractSchema
   .omit({ schemaVersion: true, modules: true })
   .extend({
@@ -29,6 +37,7 @@ export const goalPathPartBindingSchema = z.object({
   registry: goalPathRegistrySchema.nullish().describe("Only for part=registry: shared identities, baseline, goal, and module output targets. Omit or null otherwise."),
   entities: z.array(pathEntitySchema).max(240).nullish().describe("Only for part=module: new bridge identities. Do not redefine existing identities. Omit or null otherwise."),
   module: pathModuleSchema.nullish().describe("Only for part=module: the requested module and its unit contracts. Omit or null otherwise."),
+  moduleBrief: goalPathModuleBriefSchema.nullish().describe("Only for a metadata-only repair of the requested module: align its title/summary/objective/dependsOnPrevious to unchanged lesson contracts. Omit or null for ordinary authoring and structural repairs."),
 });
 
 /** Strict providers require all wire keys; null inactive fields carry no part. */
@@ -37,6 +46,7 @@ function pathPartResult<T extends z.ZodType>(schema: T) {
     if (!value || typeof value !== "object" || Array.isArray(value)) return value;
     const result = { ...value } as Record<string, unknown>;
     const active = result.part === "outline" ? "modules" : result.part === "registry" ? "registry" : "module";
+    if (result.moduleBrief === null) delete result.moduleBrief;
     for (const key of ["modules", "registry", "module", "entities"]) {
       if (key !== active && result[key] === null) delete result[key];
     }

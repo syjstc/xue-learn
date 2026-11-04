@@ -591,7 +591,10 @@ export function AgentChatWorkspace({
 
   const emptyHint = EMPTY_HINTS[initialScope] || EMPTY_HINTS.global;
   const pendingToolUi =
-    conversation.pendingToolUi ?? pendingToolUiFallback ?? null;
+    conversation.pendingToolUi ??
+    (!conversation.threadReady && !conversation.streaming
+      ? pendingToolUiFallback
+      : null);
   const showAgentRegistryDebug =
     import.meta.env.DEV &&
     typeof window !== "undefined" &&

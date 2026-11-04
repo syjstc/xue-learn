@@ -15,10 +15,12 @@ import { formatDeterministicPromptValue } from "../agents/goal-creation/contract
 import { runGoalAuthoringRound } from "../goal-authoring/runner.js";
 import { pathContextForModule } from "./learning-path.js";
 import { projectPathModule } from "./path-module-projection.js";
+import { goalPathModuleBriefSchema } from "../goal-authoring/path-parts.js";
 
 export type ModulePathRepair = {
   entities: PathEntity[];
   module: PathModuleContract;
+  moduleBrief?: z.infer<typeof goalPathModuleBriefSchema>;
 };
 
 /** Recover actionable findings even from retries saved by the old projection guard. */
@@ -103,14 +105,20 @@ export function modulePathRepairSchema(path: LearningPathContract, moduleRef: st
     // Strict providers send null for the inactive fields of the shared path tool.
     for (const key of ["modules", "registry"]) if (result[key] === null) delete result[key];
     if (result.entities === null) result.entities = [];
+    if (result.moduleBrief === null) delete result.moduleBrief;
     return result;
   }, z.object({
     part: z.literal("module"),
     entities: z.array(pathEntitySchema).max(240).default([]),
     module: pathModuleSchema,
+    moduleBrief: goalPathModuleBriefSchema.optional(),
   }).strict().superRefine((value, ctx) => {
     try {
       if (value.module.moduleRef !== moduleRef) throw new Error(`Repair only ${moduleRef}.`);
+      if (value.moduleBrief && (value.entities.length || formatDeterministicPromptValue(value.module) !==
+          formatDeterministicPromptValue(path.modules.find((module) => module.moduleRef === moduleRef)))) {
+        throw new Error("A metadata-only alignment must preserve every existing lesson, identity, dependency and output exactly. Structural repairs must omit moduleBrief.");
+      }
       mergeModulePathRepairs(path, [value]);
     } catch (error) {
       ctx.addIssue({ code: "custom", path: ["module"], message: error instanceof Error ? error.message : String(error) });
@@ -121,7 +129,8 @@ export function modulePathRepairSchema(path: LearningPathContract, moduleRef: st
 export function readCandidatePathRepair(candidateJson: string): ModulePathRepair | undefined {
   const raw = JSON.parse(candidateJson) as { pathRepair?: unknown };
   if (raw.pathRepair === undefined) return undefined;
-  return z.object({ entities: z.array(pathEntitySchema), module: pathModuleSchema }).parse(raw.pathRepair);
+  return z.object({ entities: z.array(pathEntitySchema), module: pathModuleSchema,
+    moduleBrief: goalPathModuleBriefSchema.optional() }).parse(raw.pathRepair);
 }
 
 export async function authorModulePathRepair(input: {
@@ -136,7 +145,8 @@ export async function authorModulePathRepair(input: {
   contentLanguage: string;
   meta: Record<string, unknown>;
 }) {
-  const approved = parseMapPlan(input.mapPlanJson)?.learningPath;
+  const owningPlan = parseMapPlan(input.mapPlanJson);
+  const approved = owningPlan?.learningPath;
   if (!approved) throw new Error("The bound module path has no valid owning goal path.");
   const previousRepair = readCandidatePathRepair(input.candidateJson);
   const path = previousRepair ? mergeModulePathRepairs(approved, [previousRepair]) : approved;
@@ -155,7 +165,12 @@ export async function authorModulePathRepair(input: {
 ${input.findings.join("\n")}
 
 Call commit_goal_path_part with {part:"module",entities:[],module:{...}} for this module only. Preserve the confirmed goal, baseline, all existing KACOM identities, this module's exact exit identities/dimensions/thresholds, and every existing unitRef and its outputs. Later modules depend on those sources. Do not renumber units; append a coherent new lesson when needed. Do not rewrite other modules, add baseline assumptions, lower difficulty targets, or author lesson prose/questions. Reuse existing identities and declare only necessary new local bridge identities in entities.
-Address each finding with explicit teaching/practice and an observable assessment, rather than claiming coverage in a rationale. Keep unaffected lessons. Every requires item needs an exact earlier source and rationale; expose external requirements at module entry. The server will validate the complete path including downstream consumers, and the revised catalog must pass a fresh audit before publication. Write learner-facing text in ${input.contentLanguage}.
+If the only finding is that this module's title/summary/objective no longer describes its actual lessons, and the existing lessons already cover the confirmed goal in the whole catalog, return moduleBrief:{title,summary,objective,dependsOnPrevious} to align ONLY that metadata. Keep the module contract byte-for-byte equivalent and entities:[] in a metadata-only alignment. Do not duplicate teaching already covered in other modules merely to match an outdated heading. The revised heading will itself be audited against the complete catalog before any persistence. For a genuine teaching/coverage/dependency gap, omit moduleBrief and repair the module contract within the frozen boundary below.
+
+Address each genuine teaching finding with explicit teaching/practice and an observable assessment, rather than claiming coverage in a rationale. Keep unaffected lessons. Every requires item needs an exact earlier source and rationale; expose external requirements at module entry. The server will validate the complete path including downstream consumers, and the revised catalog must pass a fresh audit before publication. Write learner-facing text in ${input.contentLanguage}.
+
+CURRENT MODULE BRIEF:
+${formatDeterministicPromptValue(previousRepair?.moduleBrief ?? owningPlan?.modules?.[index])}
 
 CURRENT MODULE CONTRACT AND ITS IDENTITIES:
 ${formatDeterministicPromptValue(pathContextForModule(path, index))}
@@ -181,6 +196,7 @@ ${formatDeterministicPromptValue(path.modules.slice(0, index).flatMap((module) =
     pathRepair: {
       entities: repairedPath.entities.filter((entity) => !approved.entities.some((original) => original.semanticKey === entity.semanticKey)),
       module: repairedPath.modules[index]!,
+      ...(result.moduleBrief ? { moduleBrief: result.moduleBrief } : {}),
     } satisfies ModulePathRepair,
   };
 }

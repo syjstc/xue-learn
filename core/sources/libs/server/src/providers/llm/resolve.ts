@@ -11,6 +11,7 @@ import { applyOperationReasoningOverride } from "./reasoning-policy.js";
 import { getActiveLlmOperationRoute } from "./operation-routing-context.js";
 import { getExplicitLlmSelection } from "./explicit-selection-context.js";
 import { getOpenAiBaseUrl } from "./vendors/openai/runtime-config.js";
+import { resolveHostLlmProvider } from "./host-provider.js";
 
 const cachedProviders = new ProviderCache<LlmProvider>();
 
@@ -39,6 +40,8 @@ export function resolveLlmProvider(
       getActiveLlmOperationRoute()?.selection ??
       llmRuntimeConfigToSelection(getLlmRuntimeConfig()),
   );
+  const hostProvider = resolveHostLlmProvider(resolvedSelection, env);
+  if (hostProvider) return hostProvider;
   if (!isActiveLlmProvider(resolvedSelection.id)) {
     throw new Error(`LLM provider "${resolvedSelection.id}" is disabled`);
   }
@@ -53,6 +56,8 @@ export function getLlmProvider(selection?: LlmProviderSelection): LlmProvider {
       getActiveLlmOperationRoute()?.selection ??
       llmRuntimeConfigToSelection(getLlmRuntimeConfig()),
   );
+  const hostProvider = resolveHostLlmProvider(resolvedSelection, getEnv());
+  if (hostProvider) return hostProvider;
   if (!isActiveLlmProvider(resolvedSelection.id)) {
     throw new Error(`LLM provider "${resolvedSelection.id}" is disabled`);
   }
@@ -79,5 +84,6 @@ export function hasLlmProviderCredentials(
   selection: LlmProviderSelection,
   env: Env = getEnv(),
 ): boolean {
+  if (resolveHostLlmProvider(selection, env)) return true;
   return getLlmProviderSpec(selection.id).hasCredentials(env);
 }

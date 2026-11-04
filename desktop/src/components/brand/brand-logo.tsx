@@ -36,13 +36,14 @@ type NavBrandSize = keyof typeof navBrandSizeClasses;
 type BrandLogoProps = {
   size?: BrandLogoSize;
   className?: string;
+  src?: string;
 };
 
 /** Transparent logo mark (book + tree), no icon frame or padding. */
-export function BrandLogo({ size = "sm", className }: BrandLogoProps) {
+export function BrandLogo({ size = "sm", className, src = "/logo-mark.png" }: BrandLogoProps) {
   return (
     <img
-      src="/logo-mark.png"
+      src={src}
       alt=""
       width={722}
       height={796}

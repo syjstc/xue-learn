@@ -30,7 +30,11 @@ if (!service) {
 
 const appDir = join(root, "apps", service);
 const tsconfigFile = join(appDir, "tsconfig.app.json");
-const entry = join(appDir, "src/main.ts");
+// Other local hosts reuse this exact learning service composition and build
+// pipeline, providing only their process/model transport entry point.
+const entry = service === "local-runtime" && process.env.XUELEARN_LOCAL_RUNTIME_ENTRY
+  ? resolve(process.env.XUELEARN_LOCAL_RUNTIME_ENTRY)
+  : join(appDir, "src/main.ts");
 const localRuntimeOutput =
   service === "local-runtime" && process.env.XUELEARN_LOCAL_RUNTIME_BUILD_DIR
     ? resolve(root, process.env.XUELEARN_LOCAL_RUNTIME_BUILD_DIR)

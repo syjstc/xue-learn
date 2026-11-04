@@ -161,8 +161,10 @@ export function goalCreationShortStatus(
     "status" | "phase" | "pendingInteraction" | "lastError"
   > & {
     flowMode?: GoalCreationSession["flowMode"];
+    firstUnitId?: string | null;
+    progress?: GoalCreationSession["progress"];
   },
-  t: (key: any) => string,
+  t: (key: any, values?: Record<string, string | number>) => string,
 ): string {
   if (session.status === "stopped") return t("assistant.creationStatus.stopped");
   if (session.status === "stop_requested") return t("assistant.creationStatus.stopping");
@@ -208,6 +210,15 @@ export function goalCreationShortStatus(
   }
 
   if (session.status === "running") {
+    if (session.firstUnitId) {
+      const progress = session.progress;
+      return progress && progress.moduleCount > 0
+        ? t("goalCreation.firstLessonBackgroundProgress", {
+            ready: progress.publishedModuleCount ?? progress.readyModuleCount,
+            total: progress.moduleCount,
+          })
+        : t("goalCreation.firstLessonBackground");
+    }
     if (session.flowMode === "agentic" && session.phase === "module_shell") {
       return t("assistant.creationStatus.preparingAllModules");
     }

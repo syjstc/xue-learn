@@ -94,7 +94,7 @@ export function GoalPlanStreamCard({
 
   return (
     <section
-      className="overflow-hidden rounded-2xl border border-[var(--course-content-border-accent)] bg-[var(--course-content-surface-accent)]"
+      className="min-w-0 max-w-full overflow-hidden rounded-2xl border border-[var(--course-content-border-accent)] bg-[var(--course-content-surface-accent)] [overflow-wrap:anywhere]"
       aria-live="polite"
       aria-label={t("assistant.plan.generatingAria")}
     >
@@ -183,7 +183,7 @@ export function GoalPlanStreamCard({
               variant="default"
             />
           ) : (
-            <p className="line-clamp-3 text-xs leading-5 text-foreground/80">
+            <p className="text-xs leading-5 text-foreground/80">
               {preview.topicOverview}
             </p>
           )
@@ -200,19 +200,14 @@ export function GoalPlanStreamCard({
               {t("assistant.plan.youWillGain")}
             </p>
             <div className="flex flex-wrap gap-1.5">
-              {preview.outcomes
-                .slice(0, ready ? preview.outcomes.length : 4)
-                .map((outcome) => (
-                  <span
-                    key={outcome}
-                    className={cn(
-                      "max-w-full rounded-full border border-[var(--course-content-border)] bg-[var(--bg-50)]/75 px-2.5 py-1 text-[11px] text-foreground",
-                      !ready && "truncate",
-                    )}
-                  >
-                    {outcome}
-                  </span>
-                ))}
+              {preview.outcomes.map((outcome) => (
+                <span
+                  key={outcome}
+                  className="max-w-full rounded-full border border-[var(--course-content-border)] bg-[var(--bg-50)]/75 px-2.5 py-1 text-[11px] text-foreground"
+                >
+                  {outcome}
+                </span>
+              ))}
             </div>
           </div>
         ) : null}
@@ -228,36 +223,26 @@ export function GoalPlanStreamCard({
                 : ""}
             </p>
             <ol className="space-y-1.5">
-              {preview.modules
-                .slice(ready ? 0 : -4)
-                .map((module, index, visibleModules) => (
-                  <li
-                    key={`${index}-${module.title}`}
-                    className="flex gap-2 rounded-lg border border-[var(--course-content-border)] bg-[var(--bg-50)]/70 px-2.5 py-2"
-                  >
-                    <span className="grid size-5 shrink-0 place-items-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
-                      {preview.modules.length -
-                        visibleModules.length +
-                        index +
-                        1}
+              {preview.modules.map((module, index) => (
+                <li
+                  key={`${index}-${module.title}`}
+                  className="flex gap-2 rounded-lg border border-[var(--course-content-border)] bg-[var(--bg-50)]/70 px-2.5 py-2"
+                >
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
+                    {index + 1}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-xs font-medium leading-5 text-foreground">
+                      {module.title}
                     </span>
-                    <span className="min-w-0">
-                      <span className="block truncate text-xs font-medium text-foreground">
-                        {module.title}
+                    {module.summary ? (
+                      <span className="mt-0.5 block text-[11px] leading-5 text-muted-foreground">
+                        {module.summary}
                       </span>
-                      {module.summary ? (
-                        <span
-                          className={cn(
-                            "mt-0.5 block text-[11px] text-muted-foreground",
-                            !ready && "line-clamp-1",
-                          )}
-                        >
-                          {module.summary}
-                        </span>
-                      ) : null}
-                    </span>
-                  </li>
-                ))}
+                    ) : null}
+                  </span>
+                </li>
+              ))}
             </ol>
           </div>
         ) : null}

@@ -1,0 +1,40 @@
+/* Only the host frame differs. Page padding, cards, type and controls come
+   directly from Desktop's globals.css and the shared learner components. */
+.xuelearn-workbench {
+  position: relative;
+  isolation: isolate;
+  contain: layout paint;
+  container: xuelearn / inline-size;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--background);
+  color: var(--foreground);
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  text-align: start;
+}
+.xuelearn-workbench [data-assistant-layout-root],
+.xuelearn-workbench [data-workspace-shell] {height:100%;min-height:0}
+.xuelearn-workbench [data-workspace-sidebar] {position:relative;top:auto;height:100%;min-height:0}
+.xuelearn-workbench [data-workspace-content] {height:100%;min-height:0;overflow:hidden}
+.xuelearn-workbench [data-workspace-scroll] {container:xuelearn / inline-size;overflow:auto;overscroll-behavior:contain}
+.xuelearn-workbench [data-workspace-shell] > [data-desktop-titlebar] {display:none}
+.xuelearn-workbench .xl-starting {padding:32px;color:var(--muted-foreground)}
+.xuelearn-workbench .xl-restore-error {position:absolute;top:8px;left:50%;z-index:120;max-width:90%;transform:translateX(-50%);padding:8px 16px;border:1px solid var(--destructive);border-radius:8px;background:var(--background);color:var(--destructive)}
+/* Shared controls already draw their own keyboard focus ring. An additional
+   blanket outline produces a second red frame around inputs and textareas. */
+.xuelearn-workbench [data-slot="input"]:focus-visible:not([aria-invalid="true"]),
+.xuelearn-workbench [data-slot="textarea"]:focus-visible:not([aria-invalid="true"]) {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ring) 18%, transparent);
+}
+.xuelearn-workbench .reading-actions svg {flex-shrink:0}
+.xuelearn-workbench [data-assistant-companion] {max-width:100%}
+.xuelearn-workbench > .xuelearn-dsh-portal {font:inherit;color:inherit}
+@media (prefers-reduced-motion:reduce) {
+  .xuelearn-workbench *, .xuelearn-workbench *::before, .xuelearn-workbench *::after {
+    animation-duration:1ms!important;transition-duration:1ms!important;
+  }
+}

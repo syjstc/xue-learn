@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Brain, CheckCircle2 } from "lucide-react";
-import { LlmMarkdownInline } from "@/components/markdown/llm-markdown";
 import { Button } from "@xue-learn/core/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { apiGet, apiPost } from "@/shared/api/http";
@@ -22,6 +21,7 @@ import { useTeachingPersonas } from "@/hooks/api/use-teaching-personas";
 import { teachingPersonaAvatarSrc } from "@/shared/teaching-persona-avatar";
 import { localizeTeachingPersonaName } from "@/shared/teaching-persona-i18n";
 import { AiGeneratedNotice } from "@/components/ui/ai-generated-notice";
+import { DiagnosticQuestionCard } from "@/components/wizard/diagnostic-question-card";
 import { diagnosticCompletionPath } from "@/shared/domain/diagnostic-navigation";
 
 type QuizQuestion = {
@@ -417,57 +417,15 @@ export function UnitDiagnosticPage() {
                 })}
               </p>
               {questions.map((question, questionIndex) => (
-                <Card key={`${questionIndex}-${question.question}`}>
-                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-medium">
-                    <span className="shrink-0 tabular-nums">
-                      {questionIndex + 1}.
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <LlmMarkdownInline content={question.question} />
-                    </div>
-                  </div>
-                  {question.type === "mcq_multi" && (
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {t("diagnostic.multi")}
-                    </p>
-                  )}
-                  <div className="mt-3 space-y-2">
-                    {question.options.map((option, optionIndex) => {
-                      const value = answers[String(questionIndex)];
-                      const checked = Array.isArray(value)
-                        ? value.includes(optionIndex)
-                        : value === optionIndex;
-                      return (
-                        <label
-                          key={optionIndex}
-                          className="flex cursor-pointer items-start gap-3 rounded-lg border px-3 py-2.5 hover:bg-muted/50"
-                        >
-                          <input
-                            type={
-                              question.type === "mcq_multi"
-                                ? "checkbox"
-                                : "radio"
-                            }
-                            name={`question-${questionIndex}`}
-                            checked={checked}
-                            onChange={() =>
-                              question.type === "mcq_multi"
-                                ? toggleMulti(questionIndex, optionIndex)
-                                : setAnswers((current) => ({
-                                    ...current,
-                                    [String(questionIndex)]: optionIndex,
-                                  }))
-                            }
-                            className="mt-1"
-                          />
-                          <span className="text-sm">
-                            <LlmMarkdownInline content={option} />
-                          </span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                </Card>
+                <DiagnosticQuestionCard
+                  key={`${questionIndex}-${question.question}`}
+                  question={question}
+                  index={questionIndex}
+                  value={answers[String(questionIndex)]}
+                  onChoose={(optionIndex) => question.type === "mcq_multi"
+                    ? toggleMulti(questionIndex, optionIndex)
+                    : setAnswers((current) => ({...current, [String(questionIndex)]: optionIndex}))}
+                />
               ))}
               <Button
                 className={

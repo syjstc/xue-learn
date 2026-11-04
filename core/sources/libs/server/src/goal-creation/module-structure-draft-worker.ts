@@ -9,6 +9,7 @@ import {
   type ModuleObjectiveCapability,
   type ModuleStructureDraftRepository,
   type PreparedModulePublicationRepository,
+  type ModuleStructureQueueRepository,
 } from "../../../domain/src/index.js";
 import { gatherGoalPathContext } from "../goals/goal-path-context.js";
 import { gatherDeepPlanningResearch } from "../goals/deep-planning-research.js";
@@ -77,6 +78,7 @@ import { classifyAuthoringCacheClass } from "./cache-telemetry.js";
 import { requireModuleStructureDraft } from "./module-structure-draft-persistence.js";
 import { requireAgentConversationPersistence } from "../agents/core/checkpoint.js";
 import { tBackend } from "../../../common/src/index.js";
+import { enqueueInitialModuleKacomOnGoalOpen } from "../goals/sequential-modules.js";
 import {
   emitGoalCreationProgress,
   withGoalCreationPlanningActivity,
@@ -89,6 +91,7 @@ type WorkerRepos = Readonly<{
   preparedModulePublication: PreparedModulePublicationRepository;
   explorationModulePublication: ExplorationModulePublicationRepository;
   cognitiveModelInvalidation: CognitiveModelInvalidationRepository;
+  moduleStructureQueue?: ModuleStructureQueueRepository;
 }>;
 
 function hashJson(value: unknown): string {
@@ -116,7 +119,10 @@ async function settleDraftBatch(params: {
   const rows = await params.drafts.listByGoal(params.goalId);
   const sessionId = params.sessionId ?? rows[0]?.sessionId;
   if (!sessionId) return;
-  if (moduleStructureDraftsNeedAttention(rows)) {
+  if (["ready_for_audit", "ready"].includes(rows[0]?.status ?? "") && !moduleStructureDraftsReadyForAudit(rows)) {
+    await params.drafts.enqueueCoordinateEvent({goalId: params.goalId, sessionId, reason: "starter_ready"});
+  }
+  if (rows[0]?.status === "failed" || moduleStructureDraftsNeedAttention(rows)) {
     await params.drafts.enqueueCoordinateEvent({
       goalId: params.goalId,
       sessionId,
@@ -144,6 +150,9 @@ export async function recoverStuckAgenticGoalCreation(
   const sessions = await drafts.listGoalSessionsWithStatuses([
     "ready_for_audit",
     "publishing",
+    "ready",
+    "queued",
+    "failed",
   ]);
   let enqueued = 0;
   for (const session of sessions) {
@@ -153,11 +162,19 @@ export async function recoverStuckAgenticGoalCreation(
       enqueued += 1;
     }
     if (
+      rows[0] &&
+      ["ready_for_audit", "ready", "queued", "failed"].includes(rows[0].status) &&
+      rows.some((row) => row.status === "queued")
+    ) {
+      await drafts.enqueueCoordinateEvent({ ...session, reason: "resume_starter" });
+      enqueued += 1;
+    }
+    if (
       draftsNeedingPublication(rows).some((row) => row.status === "publishing")
     ) {
       await drafts.enqueueCoordinateEvent({
         ...session,
-        reason: "audit_passed",
+        reason: "resume_publication",
         idempotencyKey: `goal-creation-coordinate:${session.goalId}:publish`,
       });
       enqueued += 1;
@@ -172,21 +189,16 @@ async function completeAgenticSession(goalId: string): Promise<void> {
       goalId,
     );
   if (!session) return;
-  const completed =
-    await requireAgentConversationPersistence().completeGoalCreationSession(
-      session.id,
-      "",
-      new Date(),
-    );
-  if (!completed) return;
+  // Structure readiness must not close the session before the first lesson's
+  // cognitive model is startable. Session reconciliation owns that milestone.
   await requireAgentConversationPersistence().appendGoalCreationEvent(
     session.id,
     {
-      type: "done",
+      type: "module_structures_ready",
       payload: {
-        type: "done",
+        type: "module_structures_ready",
         goalId,
-        navigateTo: `/goals/${goalId}`,
+        message: tBackend("status.planning.moduleStructuresReady"),
       },
     },
   );
@@ -684,7 +696,7 @@ export async function processModuleStructureAuditEvent(params: {
                 });
               return {
                 moduleId: row.moduleId,
-                title: String(context?.title ?? row.moduleId),
+                title: readCandidatePathRepair(row.candidateJson)?.moduleBrief?.title ?? String(context?.title ?? row.moduleId),
                 candidateJson: row.candidateJson,
               };
             }),
@@ -694,6 +706,12 @@ export async function processModuleStructureAuditEvent(params: {
     new Set(rows.map((row) => row.moduleId)),
   );
   const flagged = new Set(audited.findings.map((finding) => finding.moduleId));
+  if (!audited.passed && rows.some(row => row.status === "ready" && flagged.has(row.moduleId))) {
+    const session = await requireAgentConversationPersistence().findGoalCreationSessionByGoalId(goalId);
+    if (session) await requireAgentConversationPersistence().markGoalCreationSessionError(session.id,
+      "A published starter module needs review; existing learning progress was preserved");
+    return {goalId, status: "needs_attention"};
+  }
   if (audited.passed) {
     const repairs = rows.flatMap((row) => {
       const repair = readCandidatePathRepair(row.candidateJson);
@@ -711,7 +729,12 @@ export async function processModuleStructureAuditEvent(params: {
       repairedPlan = {
         ...plan, learningPath,
         modules: plan.modules?.map((module, index) => flaggedRefs.has(learningPath.modules[index]!.moduleRef)
-          ? { ...module, ...pathModuleBrief(learningPath, learningPath.modules[index]!) } : module),
+          ? { ...module, ...repairs.find(({ repair }) => repair.module.moduleRef === learningPath.modules[index]!.moduleRef)?.repair.moduleBrief,
+              ...pathModuleBrief(learningPath, learningPath.modules[index]!) } : module),
+        majorAreas: plan.majorAreas.map((area, index) => {
+          const metadata = repairs.find(({ repair }) => repair.module.moduleRef === learningPath.modules[index]?.moduleRef)?.repair.moduleBrief;
+          return metadata ? { ...area, title: metadata.title, description: metadata.summary } : area;
+        }),
         mapStructure: { ...plan.mapStructure, estimatedLeafUnits: learningPath.modules.reduce((count, module) => count + module.units.length, 0) },
       };
       const committed = await drafts.commitPathRepairs({
@@ -722,6 +745,7 @@ export async function processModuleStructureAuditEvent(params: {
           const brief = pathModuleBrief(learningPath, contract);
           return {
             moduleId: row.moduleId, expectedCandidateHash: row.candidateHash,
+            ...(repair.moduleBrief ? { metadata: repair.moduleBrief } : {}),
             plannedOutcomesJson: JSON.stringify(brief.plannedOutcomes),
             exitCapabilityBriefsJson: JSON.stringify(brief.exitCapabilityBriefs),
             estimatedUnitCount: brief.estimatedUnitCount,
@@ -798,6 +822,8 @@ export async function processModuleStructureAuditEvent(params: {
   }
   const unchanged = rows.filter((row) => !flagged.has(row.moduleId));
   for (const row of unchanged) {
+    // A published starter stays available while later drafts are repaired.
+    if (row.status === "ready") continue;
     const before = row.candidateHash;
     await drafts.patch({
       moduleId: row.moduleId,
@@ -959,6 +985,10 @@ async function publishDraft(params: {
       moduleId: params.row.moduleId,
       token,
     });
+    if (claimed.orderIndex === 0 && params.repos.moduleStructureQueue) {
+      await enqueueInitialModuleKacomOnGoalOpen(params.row.goalId, params.repos.moduleStructureQueue,
+        params.repos.cognitiveModelInvalidation, "first_lesson_priority");
+    }
     await emitGoalCreationProgress(params.row.sessionId, {
       type: "module_stage",
       stage: "ready",
@@ -993,7 +1023,56 @@ export async function processGoalCreationCoordinateEvent(params: {
     return { goalId: payload.goalId, status: "ignored" };
   }
   const drafts = params.repos.drafts ?? requireModuleStructureDraft();
-  const rows = await drafts.listByGoal(payload.goalId);
+  let rows = await drafts.listByGoal(payload.goalId);
+  const first = rows[0];
+  let starterReady = first?.status === "ready";
+  // The confirmed goal authorizes preparing the first lesson. Audit and
+  // publish the first module independently, before starting the background
+  // fan-out. The complete curriculum still receives its cross-module audit.
+  if (first && params.repos.moduleStructureQueue && payload.reason !== "audit_passed") {
+    const session = await requireAgentConversationPersistence().findGoalCreationSessionByGoalId(payload.goalId);
+    if (first.status === "failed") {
+      if (session) await requireAgentConversationPersistence().markGoalCreationSessionError(
+        session.id, "The first module could not be prepared",
+      );
+      return {goalId: payload.goalId, status: "needs_attention"};
+    }
+    const checkpoint = session ? await loadCheckpoint(session.threadId) as ThreadCheckpoint : undefined;
+    if (first.status === "ready_for_audit" && !checkpoint?.goalState?.starterAuditDeferred) {
+      const context = await params.repos.moduleGenerationLease.loadContext({goalId: payload.goalId, moduleId: first.moduleId, priorEntityLimit: 1});
+      const audit = sanitizeAuditFindings(await withGoalCreationPlanningActivity(first.sessionId, {
+        id: `starter_audit:${payload.goalId}`, category: "validation",
+        startedMessage: tBackend("status.planning.starterAudit"), pulseMessages: [],
+        completedMessage: tBackend("status.planning.starterAudit"), pulseIntervalMs: 8_000,
+      }, () => auditGoalModuleStructures({goalId: payload.goalId!, userId: context?.goal.userId,
+        learningMode: context?.goal.learningMode, planningMode: context?.goal.planningMode, scope: "starter",
+        drafts: [{moduleId: first.moduleId, title: String(context?.title ?? first.moduleId), candidateJson: first.candidateJson}]})), new Set([first.moduleId]));
+      if (audit.passed) {
+        await drafts.patch({moduleId: first.moduleId, status: "publishing"});
+        await publishDraft({row: {...first, status: "publishing"}, repos: {...params.repos, drafts}});
+        starterReady = true;
+        rows = rows.map(row => row.moduleId === first.moduleId ? {...row, status: "ready" as const} : row);
+      } else if (session && checkpoint) {
+        // A first-module issue falls back to the existing full audit/repair
+        // flow; it never grants premature learning access.
+        await saveCheckpoint(session.threadId, mergeGoalState(checkpoint, {starterAuditDeferred: true}) as ThreadCheckpoint);
+      }
+    }
+    if (starterReady) {
+      await enqueueInitialModuleKacomOnGoalOpen(payload.goalId, params.repos.moduleStructureQueue,
+        params.repos.cognitiveModelInvalidation, "first_lesson_priority");
+    }
+    const deferred = checkpoint?.goalState?.starterAuditDeferred || first.status === "ready_for_audit";
+    const queued = rows.filter(row => row.status === "queued" && (starterReady || deferred || row === first));
+    if (queued.length) {
+      await drafts.enqueuePrepareEvents({goalId: payload.goalId, sessionId: payload.sessionId ?? first.sessionId,
+        moduleIds: queued.map(row => row.moduleId), reason: starterReady ? "background_modules" : "cache_seed"});
+      return {goalId: payload.goalId, status: "seeded"};
+    }
+    if (["queued", "researching", "authoring", "validating"].includes(first.status)) {
+      return {goalId: payload.goalId, status: "waiting_for_starter"};
+    }
+  }
   if (moduleStructureDraftsNeedAttention(rows)) {
     const session =
       await requireAgentConversationPersistence().findGoalCreationSessionByGoalId(
@@ -1024,7 +1103,7 @@ export async function processGoalCreationCoordinateEvent(params: {
     });
     return { goalId: payload.goalId, status: "audit_enqueued" };
   }
-  const pendingPublication = draftsNeedingPublication(rows);
+  const pendingPublication = draftsNeedingPublication(rows).filter(row => payload.reason === "audit_passed" || row.status === "publishing");
   if (
     pendingPublication.length > 0 &&
     (payload.reason === "audit_passed" ||
@@ -1044,6 +1123,7 @@ export async function processGoalCreationCoordinateEvent(params: {
       await completeAgenticSession(payload.goalId);
       return { goalId: payload.goalId, status: "completed" };
     }
+    await drafts.enqueueCoordinateEvent({goalId: payload.goalId, sessionId: payload.sessionId ?? after[0]!.sessionId, reason: "starter_ready"});
     return { goalId: payload.goalId, status: "publishing" };
   }
   if (rows.some((row) => row.status === "queued")) {

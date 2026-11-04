@@ -146,6 +146,7 @@ export async function auditGoalModuleStructures(input: {
   planningMode?: string;
   drafts: ReadonlyArray<ModuleStructureAuditDraft>;
   signal?: AbortSignal;
+  scope?: "starter";
 }): Promise<ModuleStructureAuditResult> {
   const sources = input.planningMode === "docs_first"
     ? await readUploadedPlanningSources(input.goalId)
@@ -157,6 +158,9 @@ export async function auditGoalModuleStructures(input: {
     input.learningMode === "exploration"
       ? "This goal uses exploration mode. Do not require graded assessments, evidence contracts, or mastery gates. If the confirmed objective calls for independent application or analysis, check that the catalog offers a concrete ungraded learner-produced attempt on new material plus feedback or a comparison for revision. A worked demonstration alone does not satisfy that confirmed outcome."
       : "For mastery mode, check that the catalog supports the confirmed observable exit abilities and appropriate verification opportunities.";
+  const scopeInstruction = input.scope === "starter"
+    ? "Audit ONLY the first module for early learning access. Check its own confirmed milestone, entry prerequisites, teaching order, lesson grain, practice and language. The remaining frozen milestones will be prepared and audited in the background: their absence here is intentional, never a coverage gap. Do not require this first module to teach later milestones. All first-module prerequisites must be supplied by its declared entry foundation or an earlier lesson in this module. Return findings only for the supplied first module."
+    : MODULE_STRUCTURE_AUDIT_INSTRUCTION;
   const prompt = `${modeInstruction}${sources ? `\n\nCurrent uploaded source evidence for this audit:\n${sources.context}` : ""}\n\nUnpublished module-and-unit catalog:
 ${formatModuleStructureAuditInventory(input.drafts)}
 
@@ -168,9 +172,9 @@ Return passed=true with an empty findings list when the complete catalog is cohe
     return runGoalAuthoringRound({
       userId: input.userId,
       goalId: input.goalId,
-      branchId: "audit",
+      branchId: input.scope === "starter" ? "starter-audit" : "audit",
       expectedTool: "commit_module_audit",
-      prompt: `${MODULE_STRUCTURE_AUDIT_INSTRUCTION}\n\n${prompt}`,
+      prompt: `${scopeInstruction}\n\n${prompt}`,
       resultSchema: moduleStructureAuditResultSchema,
       operation: "goal.authoring_agent",
       signal: input.signal,
@@ -182,7 +186,7 @@ Return passed=true with an empty findings list when the complete catalog is cohe
     {
       mode: "object",
       schema: moduleStructureAuditResultSchema,
-      prompt: `${MODULE_STRUCTURE_AUDIT_INSTRUCTION}\n\n${prompt}`,
+      prompt: `${scopeInstruction}\n\n${prompt}`,
       options: {
         operation: "goal.module_structure.audit",
         bindingSchema: moduleStructureAuditResultSchema,

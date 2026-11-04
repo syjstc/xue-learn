@@ -30,6 +30,7 @@ import type {
   PendingToolUi,
 } from "@/shared/agent/types";
 import { orderAgentMessagesForDisplay } from "@/shared/agent/message-order";
+import { translateCurrent } from "@xue-learn/core/i18n";
 
 export type AgentSendOptions = {
   clientAction?: AgentClientAction;
@@ -238,6 +239,7 @@ type LastSend =
   | {
       kind: "resume";
       toolCallId: string;
+      toolName?: string;
       result: unknown;
       files?: File[];
     };
@@ -644,7 +646,9 @@ export function useAgentThread(
                     ...m,
                     streaming: true,
                     thinking: true,
-                    thinkingContent: ((m.thinkingContent ?? "") + (event.delta ?? "")).slice(-12000),
+                    thinkingContent: (
+                      (m.thinkingContent ?? "") + (event.delta ?? "")
+                    ).slice(-12000),
                   }
                 : m,
             );
@@ -756,14 +760,18 @@ export function useAgentThread(
           );
           if (alreadyShown) {
             return withoutStalePending.map((m) =>
-              m.id === assistantMsgId ? { ...m, streaming: false, thinking: false } : m,
+              m.id === assistantMsgId
+                ? { ...m, streaming: false, thinking: false }
+                : m,
             );
           }
           // Attach the card to the streamed assistant turn so prose stays visible.
           const host = withoutStalePending.find((m) => m.id === assistantMsgId);
           if (host) {
             return withoutStalePending.map((m) =>
-              m.id === assistantMsgId ? { ...m, streaming: false, thinking: false, toolUi } : m,
+              m.id === assistantMsgId
+                ? { ...m, streaming: false, thinking: false, toolUi }
+                : m,
             );
           }
           return [
@@ -834,10 +842,14 @@ export function useAgentThread(
       }
       if (event.type === "done") {
         const context = threadId
-          ? queryClient.getQueryData<AgentThreadResponse>(agentQueryKeys.thread(threadId))?.thread.conversationContext
+          ? queryClient.getQueryData<AgentThreadResponse>(
+              agentQueryKeys.thread(threadId),
+            )?.thread.conversationContext
           : undefined;
         if (context?.kind === "material_follow_up")
-          void queryClient.invalidateQueries({queryKey: queryKeys.units.followUps(context.unitId)});
+          void queryClient.invalidateQueries({
+            queryKey: queryKeys.units.followUps(context.unitId),
+          });
         planningActiveRef.current = false;
         goalPlanPhaseRef.current = false;
         setPendingToolUi(null);
@@ -1052,18 +1064,29 @@ export function useAgentThread(
   const resumeTool = useCallback(
     async (toolCallId: string, result: unknown, files?: File[]) => {
       if (!threadId) return null;
+      const toolMsg = messagesRef.current.find(
+        (m) => m.toolUi?.toolCallId === toolCallId,
+      );
+      const previousSend = lastSendRef.current;
+      const toolName =
+        toolMsg?.toolUi?.toolName ??
+        (pendingToolUi?.toolCallId === toolCallId
+          ? pendingToolUi.toolName
+          : undefined) ??
+        (previousSend?.kind === "resume" &&
+        previousSend.toolCallId === toolCallId
+          ? previousSend.toolName
+          : undefined) ??
+        "";
       lastSendRef.current = {
         kind: "resume",
         toolCallId,
+        toolName,
         result,
         files,
       };
       setCanRetryLastSend(true);
       try {
-        const toolMsg = messagesRef.current.find(
-          (m) => m.toolUi?.toolCallId === toolCallId,
-        );
-        const toolName = toolMsg?.toolUi?.toolName ?? "";
         const action =
           typeof result === "object" && result !== null
             ? String((result as Record<string, unknown>).action ?? "")
@@ -1126,20 +1149,48 @@ export function useAgentThread(
           { toolCallId, result },
           assistantMsgId,
         );
-        if (
-          toolName === "show_confirmation" &&
+        const revisingPlan =
+          toolName === "review_plan" &&
           typeof result === "object" &&
-          result &&
-          (result as { approved?: boolean }).approved
+          result !== null &&
+          (result as { approved?: boolean }).approved === false &&
+          typeof (result as { feedback?: unknown }).feedback === "string" &&
+          Boolean((result as { feedback: string }).feedback.trim());
+        if (revisingPlan) {
+          const message = translateCurrent("planning.revising");
+          goalPlanPhaseRef.current = true;
+          planningActiveRef.current = true;
+          setPhase("generating_plan");
+          setStatus(message);
+          setPlanningProgress({
+            active: true,
+            stage: "revising_plan",
+            stageMessage: message,
+            updates: [],
+            activities: [],
+            warnings: [],
+          });
+        }
+        if (
+          revisingPlan ||
+          (toolName === "show_confirmation" &&
+            typeof result === "object" &&
+            result &&
+            (result as { approved?: boolean }).approved)
         ) {
           queryClient.setQueriesData<GoalCreationSessionResponse>(
             { queryKey: goalCreationSessionKeys.all },
             (current) => {
               if (!current?.session) return current;
+              const expectedTool = revisingPlan
+                ? "review_plan"
+                : "show_confirmation";
+              const expectedPhase = revisingPlan
+                ? "plan_review"
+                : "confirmation";
               if (
-                current.session.pendingInteraction?.toolName !==
-                  "show_confirmation" &&
-                current.session.phase !== "confirmation"
+                current.session.pendingInteraction?.toolName !== expectedTool &&
+                current.session.phase !== expectedPhase
               ) {
                 return current;
               }
@@ -1148,7 +1199,7 @@ export function useAgentThread(
                 session: {
                   ...current.session,
                   status: "running",
-                  phase: "goal_creation",
+                  phase: revisingPlan ? "planning" : "goal_creation",
                   pendingInteraction: null,
                 },
               };
@@ -1167,7 +1218,7 @@ export function useAgentThread(
         return null;
       }
     },
-    [goalCreationSessionId, queryClient, runSse, threadId],
+    [goalCreationSessionId, pendingToolUi, queryClient, runSse, threadId],
   );
 
   const retryLastSend = useCallback(async () => {

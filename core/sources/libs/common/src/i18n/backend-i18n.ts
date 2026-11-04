@@ -655,6 +655,8 @@ const en = {
   "status.agent.goalCreationStopped":
     "Goal creation stopped. Delete this draft before creating a new goal.",
   "status.agent.firstLessonReady": "Your first lesson is ready",
+  "status.planning.starterAudit": "First module checks in progress; preparing early learning access.",
+  "status.planning.moduleStructuresReady": "Module structures are ready; preparing your first lesson.",
   "error.billing.insufficientCredits": "Insufficient credits",
   "error.payment.purchaseUnavailable":
     "Credit purchases are not available on this platform yet",
@@ -1322,6 +1324,8 @@ const zhHans: Record<BackendTranslationKey, string> = {
   "status.agent.goalCreationStopped":
     "目标创建已停止。删除此草稿后才能创建新目标。",
   "status.agent.firstLessonReady": "第一课已准备好",
+  "status.planning.starterAudit": "正在检查第一模块，优先准备第一课。",
+  "status.planning.moduleStructuresReady": "模块结构已准备好，正在准备第一课。",
   "error.billing.insufficientCredits": "积分不足",
   "error.payment.purchaseUnavailable": "当前平台暂未开放积分购买",
   "error.payment.productUnknown": "未知积分商品",
@@ -1849,6 +1853,8 @@ const zhHant: Record<BackendTranslationKey, string> = {
   "status.agent.goalCreationStopped":
     "目標建立已停止。刪除此草稿後才能建立新目標。",
   "status.agent.firstLessonReady": "第一課已準備好",
+  "status.planning.starterAudit": "正在檢查第一模組，優先準備第一課。",
+  "status.planning.moduleStructuresReady": "模組結構已準備好，正在準備第一課。",
   "error.billing.insufficientCredits": "積分不足",
   "error.payment.purchaseUnavailable": "目前平台尚未開放積分購買",
   "error.payment.productUnknown": "未知的積分商品",

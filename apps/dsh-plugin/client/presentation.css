@@ -1,0 +1,29 @@
+.xl-presentation {min-width:0;}
+.xl-presentation > h3 {font-size:18px;margin:0 0 16px;}
+.xl-presentation-controls {display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:14px 0;}
+.xl-presentation-controls [role=status] {margin:0 8px;color:var(--xl-muted);}
+.xl-presentation .course-conversation {--course-content:var(--xl-ink);--course-content-muted:var(--xl-muted);--course-content-bg:var(--xl-bg);--course-content-border:var(--xl-border);}
+.xl-presentation .course-conversation-frame {min-height:440px;}
+.xl-presentation .course-conversation-board-content {min-width:0;}
+.xl-presentation .course-conversation-frame svg {max-width:100%;}
+
+/* Desktop's chat layout makes text boards content-sized. GlassText's film
+   viewport still expects a fixed-height parent and absolutely positioned
+   canvas; inside that auto-height board it collapses to zero and clips all
+   copy. Keep the same Core artwork in normal reading flow in this host. */
+.xl-presentation .desktop-display-host[data-display-presentation="chat"] [data-display-artwork="general:text"] .rm-glass-reading-viewport {
+  height:auto;overflow:visible;
+}
+.xl-presentation .desktop-display-host[data-display-presentation="chat"] [data-display-artwork="general:text"] .rm-glass-reading-canvas {
+  position:relative;top:auto;left:auto;transform:none!important;
+}
+.xl-presentation .desktop-display-host[data-display-presentation="chat"] [data-display-artwork="general:text"] .rm-glass-text {
+  display:block;min-height:0;margin:0;padding:24px;
+}
+.xl-presentation .desktop-display-host[data-display-presentation="chat"] .rm-glass-text-copy h2 {
+  font-size:22px;line-height:1.5;margin-bottom:16px!important;
+}
+.xl-presentation .desktop-display-host[data-display-presentation="chat"] .rm-glass-text-copy p {
+  font-size:18px;line-height:1.85;
+}
+.xl-presentation .desktop-display-host[data-display-presentation="chat"] .rm-glass-text-art {display:none;}

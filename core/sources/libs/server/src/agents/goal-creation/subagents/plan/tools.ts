@@ -164,6 +164,9 @@ export async function applyPlanResumeResult(
     if (feedback) {
       const adjusted = await generatePlanForGoal(ctx.userId, state, ctx, {
         adjustment: feedback,
+        ...(typeof data.foundationEntityKey === "string"
+          ? { foundationEntityKey: data.foundationEntityKey }
+          : {}),
         learningGoalPlan: options.learningGoalPlan,
       });
       Object.assign(ctx.state, {

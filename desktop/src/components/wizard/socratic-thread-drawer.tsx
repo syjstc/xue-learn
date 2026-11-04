@@ -1,7 +1,7 @@
 "use client";
 import { translateCurrent } from "@xue-learn/core/i18n";
 
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import {
   CheckCircle2,
   ChevronDown,
@@ -189,20 +189,21 @@ function activeThreadLabel(
   );
 }
 
-function SocraticThreadTrigger({
+const SocraticThreadTrigger = forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button> & {
+  label: string;
+  doneCount?: number;
+  totalCount?: number;
+}>(function SocraticThreadTrigger({
   label,
   doneCount,
   totalCount,
   className,
   ...props
-}: React.ComponentProps<typeof Button> & {
-  label: string;
-  doneCount?: number;
-  totalCount?: number;
-}) {
+}, ref) {
   const t = useT();
   return (
     <Button
+      ref={ref}
       type="button"
       variant="outline"
       size="sm"
@@ -222,7 +223,7 @@ function SocraticThreadTrigger({
       />
     </Button>
   );
-}
+});
 
 export function SocraticThreadDrawer({
   threads,

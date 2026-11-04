@@ -101,6 +101,7 @@ export type GoalCreationState = {
   planAuthorAttempts: number;
   planRepairAttempts: number;
   moduleAuditRepairRound: number;
+  starterAuditDeferred?: boolean;
   auditStatus: "idle" | "pending" | "passed" | "repairing" | "failed";
 };
 

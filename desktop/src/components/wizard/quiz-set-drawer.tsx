@@ -3,7 +3,7 @@ import { translateCurrent } from "@xue-learn/core/i18n";
 
 import { useT, countVariant } from "@xue-learn/core/i18n";
 
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { ChevronDown, List } from "lucide-react";
 import { Button } from "@xue-learn/core/ui/button";
 import {
@@ -53,18 +53,19 @@ function activeSetLabel(
   });
 }
 
-function QuizSetTrigger({
+const QuizSetTrigger = forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button> & {
+  label: string;
+  activeSet?: QuizSetSummary;
+}>(function QuizSetTrigger({
   label,
   activeSet,
   className,
   ...props
-}: React.ComponentProps<typeof Button> & {
-  label: string;
-  activeSet?: QuizSetSummary;
-}) {
+}, ref) {
   const t = useT();
   return (
     <Button
+      ref={ref}
       type="button"
       variant="outline"
       size="sm"
@@ -88,7 +89,7 @@ function QuizSetTrigger({
       />
     </Button>
   );
-}
+});
 
 export function QuizSetDrawer({
   sets,

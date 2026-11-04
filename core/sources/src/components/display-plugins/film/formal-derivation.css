@@ -6,6 +6,9 @@
 }
 /* Warm charcoal uses product ink; the surrounding stage stays light. */
 .lp-stage-formula {
+  /* This chalkboard has its own dark surface in both app themes. */
+  --lp-ink: #3e3632;
+  --ds-inverse: #faf7f4;
   position: relative;
   width: 100%;
   height: 100%;

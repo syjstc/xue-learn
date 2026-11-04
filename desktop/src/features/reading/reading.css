@@ -1,5 +1,5 @@
 .reading-workspace {
-  --reading-page-width: 1240px;
+  --reading-page-width: 1040px;
   --reading-prose-width: 900px;
   --reading-page-padding: clamp(20px, 2.5vw, 36px);
   --course-content: var(--text-800);
@@ -15,7 +15,7 @@
   width: 100%;
   container: reading / inline-size;
 }
-[data-immersive-learning="true"] .reading-workspace { --reading-page-width: 1600px; }
+[data-immersive-learning="true"] .reading-workspace { --reading-page-width: 1100px; --reading-prose-width: 960px; }
 .reading-content { min-width: 0; }
 .reading-continue { display: flex; justify-content: flex-end; position: sticky; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); max-width: min(var(--reading-prose-width), calc(100% - 2 * var(--reading-page-padding))); margin: 20px auto 0; padding-block: 8px; pointer-events: none; }
 .reading-continue > button { pointer-events: auto; box-shadow: 0 3px 14px rgb(0 0 0 / 14%); }
@@ -26,9 +26,8 @@
 .reading-paper { max-width: var(--reading-page-width); min-width: 0; margin: 0 auto; padding: var(--reading-page-padding); background: var(--bg-50); border: 1px solid var(--border-200); border-radius: 16px; line-height: 1.85; font-size: 18px; overflow-wrap: anywhere; }
 ::highlight(reading-follow-up) { background-color: rgb(250 204 21 / 0.45); text-decoration: underline solid rgb(245 158 11 / 0.95) 2px; }
 .dark ::highlight(reading-follow-up) { background-color: rgb(245 158 11 / 0.4); text-decoration-color: rgb(251 191 36 / 0.9); }
-/* Keep every text block on the same reading column. Only visual components
-   may use the wider page, including in focus mode. */
-.reading-paper > h1, .reading-block:not([data-reading-block-type="component_slot"]), .reading-derivation, .reading-empty, .reading-paper > .reading-loading { max-width: var(--reading-prose-width); margin-inline: auto; }
+/* Text, figures and their controls share one stable reading column. */
+.reading-paper > h1, .reading-block, .reading-derivation, .reading-empty, .reading-paper > .reading-loading { max-width: var(--reading-prose-width); margin-inline: auto; }
 .reading-paper h1 { font-size: clamp(26px, 3vw, 34px); font-weight: 700; line-height: 1.45; margin-top: 0; margin-bottom: 28px; text-wrap: balance; }
 .reading-paper h2 { font-size: 25px; font-weight: 650; margin: 0; line-height: 1.5; }
 .reading-paper h3 { font-size: 20px; font-weight: 650; line-height: 1.6; margin-bottom: 12px; }

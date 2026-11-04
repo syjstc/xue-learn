@@ -1,7 +1,7 @@
 {
   "name": "xue-learn",
   "private": true,
-  "version": "0.3.3",
+  "version": "0.3.4",
   "packageManager": "pnpm@9.15.9",
   "scripts": {
     "setup": "pnpm install --frozen-lockfile",
@@ -10,7 +10,7 @@
     "check:desktop-core": "pnpm --dir desktop run check:core",
     "build:desktop": "pnpm --dir desktop run build",
     "test:desktop": "pnpm --dir desktop test",
-    "check": "pnpm run check:source && pnpm run check:i18n && pnpm run test:mac-release && pnpm run build:core && pnpm run test:core && pnpm run test:desktop && pnpm run check:renderer && pnpm run check:main && pnpm --dir desktop run build:desktop-renderer && pnpm --dir desktop run local-runtime:build",
+    "check": "pnpm run check:source && pnpm run check:i18n && pnpm run test:mac-release && pnpm run build:core && pnpm run test:core && pnpm run build:dsh && pnpm run test:dsh && pnpm run test:desktop && pnpm run check:renderer && pnpm run check:main && pnpm --dir desktop run build:desktop-renderer && pnpm --dir desktop run local-runtime:build",
     "dev": "node scripts/dev.mjs",
     "build:mac": "node scripts/build-mac-release.mjs",
     "release:mac": "node scripts/release-mac.mjs",
@@ -20,7 +20,10 @@
     "check:source": "node scripts/check-public-source.mjs",
     "check:i18n": "node scripts/check-i18n.mjs",
     "check:secrets": "node scripts/scan-secrets.mjs",
-    "check:security": "pnpm run check:source && pnpm run check:secrets && pnpm audit --audit-level high"
+    "check:security": "pnpm run check:source && pnpm run check:secrets && pnpm audit --audit-level high",
+    "build:dsh": "pnpm --dir apps/dsh-plugin run build",
+    "test:dsh": "pnpm --dir apps/dsh-plugin test",
+    "pack:dsh": "pnpm run build:core && pnpm run build:dsh && pnpm run test:dsh && pnpm --dir apps/dsh-plugin pack --pack-destination ../../.release/dsh"
   },
   "license": "MIT",
   "description": "好会学 · AI-guided personal learning with XueLearn Core and Desktop",

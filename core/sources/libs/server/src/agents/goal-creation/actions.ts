@@ -78,9 +78,14 @@ import { verifyAndRepairGoalPlan } from "../../content-verification/index.js";
 import { requireAgentGoalCreationPersistence } from "./persistence.js";
 import { getModuleStructureDraft } from "../../goal-creation/module-structure-draft-persistence.js";
 import { seedGoalAuthoringContract } from "../../goal-authoring/runner.js";
+import {
+  addFoundationBridge,
+  canAddFoundationBridge,
+} from "../../goal-authoring/foundation-bridge.js";
 
 type GoalPlanGenerationOptions = Readonly<{
   adjustment?: string;
+  foundationEntityKey?: string;
   learningGoalPlan?: LearningGoalPlanRepository;
 }>;
 
@@ -269,6 +274,106 @@ export async function generatePlanForGoal(
   const adjustment = options.adjustment?.trim() ?? "";
   const existingPlan = parseMapPlan(goal.mapPlanJson);
   const isRevision = Boolean(adjustment && existingPlan);
+  const foundationEntityKey = options.foundationEntityKey?.trim();
+  if (
+    foundationEntityKey &&
+    !existingPlan?.learningPath?.baseline.some(
+      (entry) => entry.entityKey === foundationEntityKey,
+    )
+  ) {
+    throw new Error(tBackend("error.agent.foundationSelectionStale"));
+  }
+  if (
+    foundationEntityKey &&
+    existingPlan &&
+    canAddFoundationBridge(existingPlan, foundationEntityKey)
+  ) {
+    // An explicit rejected baseline needs a small teaching bridge, not a new
+    // identity, outline, registry and every previously validated module.
+    await ctx.send({
+      type: "planning_stage",
+      stage: "revising_plan",
+      message: tBackend("status.goal.revisingPlanFromSources"),
+    });
+    await ctx.send(
+      buildPlanningOutlineEvent(existingPlan, { reusedSources: true }),
+    );
+    const plan = await withPlanningActivity(
+      ctx.send,
+      {
+        id: "foundation_bridge",
+        category: "synthesis",
+        startedMessage: tBackend("status.goal.revisingPlanFromSources"),
+        pulseMessages: [tBackend("status.planning.journey.pulse1")],
+        completedMessage: tBackend("status.planning.journey.completed"),
+        pulseIntervalMs: 8_000,
+      },
+      () =>
+        addFoundationBridge({
+          userId,
+          goalId,
+          plan: existingPlan,
+          entityKey: foundationEntityKey,
+          contentLanguage,
+          signal: ctx.signal,
+          onToken: async (delta) => {
+            await ctx.send({ type: "token", delta });
+          },
+        }),
+    );
+    ctx.signal?.throwIfAborted();
+    const revisedOptions = adjustment
+      ? mergeRegenerationAdjustment(
+          goal.generationOptions,
+          adjustment,
+          "Latest explicit learner correction (overrides only conflicting earlier requirements)",
+        )
+      : goal.generationOptions;
+    const pathSource =
+      goal.pathSource === "rag" || goal.pathSource === "search"
+        ? goal.pathSource
+        : "generic";
+    if (options.learningGoalPlan) {
+      const published = await options.learningGoalPlan.publishOwnedPlan({
+        userId,
+        goalId,
+        title: goal.title,
+        topicOverview: plan.topicOverview,
+        mapPlanJson: serializeMapPlan(plan),
+        pathSource,
+        domainTag: plan.domainAnalysis.domainTag,
+        topicCategory: plan.domainAnalysis.topicCategory,
+        contentLanguage,
+        resetIcon: false,
+        generationOptions: revisedOptions,
+      });
+      if (published.status === "not_found") throw new Error("目标不存在");
+      if (published.status === "locked")
+        throw new Error("当前学习地图已绑定学习计划，无法直接更新");
+    } else {
+      await requireAgentGoalCreationPersistence().goals.updateOwned(
+        userId,
+        goalId,
+        {
+          topicOverview: plan.topicOverview,
+          mapPlanJson: serializeMapPlan(plan),
+          mapPlanStatus: "ready",
+          generationOptions: revisedOptions,
+        },
+      );
+    }
+    await ctx.send(buildPlanningOutlineEvent(plan, { reusedSources: true }));
+    await createPathProgressReporter(ctx.send)({
+      moduleTitles: plan.modules!.map((module) => module.title),
+      unitCount: plan.learningPath!.modules.reduce(
+        (count, module) => count + module.units.length,
+        0,
+      ),
+      complete: true,
+      plan,
+    });
+    return plan;
+  }
   if (planningMode === "docs_first" && !hasRag && !isRevision) {
     throw new Error("DOCS_REQUIRED_FOR_PLANNING_MODE");
   }
@@ -441,7 +546,7 @@ export async function generatePlanForGoal(
         ? `[User-confirmed original learning goal from intake — authoritative]\n${state.topic.trim()}`
         : "",
       isRevision && existingPlan
-        ? `[Current validated plan — revise this plan in place; preserve unaffected decisions]\n${serializeMapPlan(existingPlan)}`
+        ? `[Current validated plan — revise this plan in place; preserve unaffected decisions]\n${serializeMapPlan(existingPlan)}\nDo not increase the module or lesson count merely because this is a revision. Keep all unaffected module boundaries and lesson contracts. A missing entry foundation needs only the smallest coherent bridge before first use; it must not trigger a larger curriculum.`
         : "",
       adjustment
         ? `User adjustment request for the revised goal contract:\n${adjustment}`
@@ -940,8 +1045,8 @@ export async function approveGoalPlan(
       await drafts.enqueuePrepareEvents({
         goalId,
         sessionId: options.sessionId,
-        moduleIds: createdModules,
-        reason: "agentic_approval",
+        moduleIds: createdModules.slice(0, 1),
+        reason: "starter_priority",
       });
       await drafts.enqueueCoordinateEvent({
         goalId,

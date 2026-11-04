@@ -1673,6 +1673,8 @@ export const en = {
   "goalCreation.needsAttention":
     "Goal creation needs attention. Retry it or stop it.",
   "goalCreation.firstLessonReady": "Your first lesson is ready",
+  "goalCreation.firstLessonBackground": "Your first lesson is ready; the remaining modules are preparing in the background.",
+  "goalCreation.firstLessonBackgroundProgress": "Your first lesson is ready; {ready}/{total} modules prepared in the background.",
   "goalCreation.allModulesReady": "Every module structure is ready",
   "goalCreation.agenticModuleProgress":
     "{prepared}/{modules} prepared · {published} published · {failed} failed · audit {audit}",

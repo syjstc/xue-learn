@@ -744,6 +744,10 @@ export class MikroOrmAgentConversationRepository implements AgentConversationRep
         params.push(input.sessionId);
         await this.execute(this.em, `UPDATE ${table(this.em, "GoalCreationSession")} SET ${assignments.join(", ")} WHERE "id" = ?`, params);
     }
+    async markGoalCreationFirstUnitReady(sessionId: string, firstUnitId: string) {
+        const updated = rows(await this.execute(this.em, `UPDATE ${table(this.em, "GoalCreationSession")} SET "firstUnitId"=?, "version"="version"+1, "updatedAt"=? WHERE "id"=? AND "status"='running' AND ("firstUnitId" IS NULL OR "firstUnitId"='') RETURNING "id"`, [firstUnitId, new Date(), sessionId]));
+        return updated.length > 0;
+    }
     async completeGoalCreationSession(sessionId: string, firstUnitId: string, completedAt: Date) {
         const updated = rows(await this.execute(this.em, `UPDATE ${table(this.em, "GoalCreationSession")} SET "status" = 'completed', "phase" = 'ready', "firstUnitId" = ?, "activeSlot" = NULL, "completedAt" = ?, "currentRunId" = NULL, "version" = "version" + 1, "updatedAt" = ? WHERE "id" = ? AND "status" NOT IN ('stopped', 'completed') RETURNING "id"`, [firstUnitId, completedAt, completedAt, sessionId]));
         return updated.length > 0;

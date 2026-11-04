@@ -18,7 +18,7 @@
 - **练习与复习**：通过测验与复习记录积累学习证据。
 - **本机工作区**：学习记录保存在本机，可自行选择模型服务商并管理扩展。
 
-本仓库包含 [Core 学习库](core/) 和 [Desktop 桌面应用](desktop/)，使用同一 pnpm workspace 和锁文件。Desktop 始终构建和使用仓库中的当前 Core。
+本仓库包含 [Core 学习库](core/)、[Desktop 桌面应用](desktop/)和 [DSH 插件](apps/dsh-plugin/)，使用同一 pnpm workspace 和锁文件。两个应用始终构建和使用仓库中的当前 Core。DSH 插件在 DeepSeek Harness 内运行，使用宿主默认文本模型，安装步骤见[插件说明](apps/dsh-plugin/README.md)。
 
 ## 安装与开始学习
 
@@ -26,7 +26,7 @@
 
 macOS 当前提供 Apple 芯片版本。打开 DMG，将「好会学」拖入「应用程序」。安装包包含应用和本地服务，无需另行安装 Node.js、pnpm 或 Core。正式 Mac 安装包执行 Developer ID 签名、Apple 公证和 Gatekeeper 检查。
 
-从 0.3.3 起，界面支持简体中文、繁體中文和 English，默认跟随系统，不支持的语言回退为英文。首次配置页和“设置中心 → 外观”均可切换并保存选择；课程内容的语言单独设置，切换界面不会改写已有课程。若下载页尚无 0.3.3，这些改进正在等待发行。
+0.3.4 安装包包含简体中文、繁體中文和 English 界面，默认跟随系统，不支持的语言回退为英文。首次配置页和“设置中心 → 外观”均可切换并保存选择；课程内容的语言单独设置，切换界面不会改写已有课程。
 
 首次启动时选择模型服务商，填写自己的 API Key，并读取可用模型列表。DeepSeek 为推荐选项，也支持其他服务商、通用 OpenAI 兼容服务和本机 Ollama。未提供模型列表的服务可手动填写模型 ID。随后按提示准备本机知识检索，创建学习目标即可开始。语音、图片和联网搜索可按需配置。
 
@@ -42,12 +42,13 @@ pnpm run check
 pnpm run dev
 ```
 
-`check` 检查源码边界、翻译词条与参数，构建和测试 Core、Desktop，执行类型检查，并构建渲染器和本地服务。开发启动会监听 Core 源码变化并重建，无需单独同步版本。安装依赖时需允许原生模块的构建脚本。
+`check` 检查源码边界、翻译词条与参数，构建和测试 Core、Desktop 与 DSH 插件，执行类型检查，并构建渲染器和本地服务。开发启动会监听 Core 源码变化并重建，无需单独同步版本。安装依赖时需允许原生模块的构建脚本。
 
 ```sh
 pnpm run check:i18n
 pnpm run test:core
 pnpm run test:desktop
+pnpm run pack:dsh       # 构建、测试并生成 .release/dsh 中的插件包
 pnpm run check:security  # 需要 Gitleaks 8.30.1+ 及联网的 npm advisory registry
 pnpm run build:mac      # 在 macOS 使用自己的签名与公证配置
 pnpm run release:mac    # 检查、正式打包并上传发布草稿

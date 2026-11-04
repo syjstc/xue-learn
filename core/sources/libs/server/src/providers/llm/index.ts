@@ -23,6 +23,18 @@ export {
 export { LLM_PROVIDER_REGISTRY, getLlmProviderSpec } from "./registry.js";
 export { llmRuntimeConfigToSelection } from "./runtime.js";
 export {
+  createHostLlmProvider,
+  registerHostLlmProvider,
+  type HostLlmMessage,
+  type HostLlmTool,
+  type HostLlmToolCall,
+  type HostLlmToolChoice,
+  type HostLlmStreamDelta,
+  type HostLlmStreamRequest,
+  type HostLlmProviderOptions,
+  type HostLlmProviderResolver,
+} from "./host-provider.js";
+export {
   resolveLlmProvider,
   getLlmProvider,
   resetLlmProviderCache,

@@ -3,3 +3,4 @@ packages:
   - 'desktop'
   - 'desktop/apps/*'
   - 'desktop/packages/*'
+  - 'apps/dsh-plugin'

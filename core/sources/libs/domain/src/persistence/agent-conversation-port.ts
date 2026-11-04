@@ -354,6 +354,8 @@ export interface AgentConversationRepository {
     firstUnitId: string,
     completedAt: Date,
   ): Promise<boolean>;
+  /** Claim the first-lesson notification without completing background work. */
+  markGoalCreationFirstUnitReady(sessionId: string, firstUnitId: string): Promise<boolean>;
   advanceGoalCreationSessionToFirstUnit(
     sessionId: string,
     phase: string,

@@ -1,4 +1,5 @@
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
+import { forwardRef } from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "../../lib/utils.js"
@@ -40,19 +41,25 @@ const buttonVariants = cva(
   }
 )
 
-function Button({
+// Embedded hosts may supply React 18. Keep the DOM ref used by Base UI's
+// render prop explicit so menus, selects and tooltips can locate their anchor.
+const Button = forwardRef<
+  HTMLButtonElement,
+  ButtonPrimitive.Props & VariantProps<typeof buttonVariants>
+>(function Button({
   className,
   variant = "default",
   size = "default",
   ...props
-}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+}, ref) {
   return (
     <ButtonPrimitive
+      ref={ref}
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />
   )
-}
+})
 
 export { Button, buttonVariants }

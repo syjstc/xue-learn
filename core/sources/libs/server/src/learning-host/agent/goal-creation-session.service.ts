@@ -448,7 +448,7 @@ export class GoalCreationSessionService implements OnModuleInit {
         flowMode,
         version: session.version,
         currentRunId: session.currentRunId,
-        firstUnitId: session.firstUnitId ?? journey?.firstReadyUnitId ?? null,
+        firstUnitId: session.firstUnitId || journey?.firstReadyUnitId || null,
         lastError:
           session.status === "needs_attention"
             ? tBackend("error.generation.failedFriendly")
@@ -537,8 +537,16 @@ export class GoalCreationSessionService implements OnModuleInit {
     );
     if (!thread) throw new NotFoundException();
     const checkpoint = parseCheckpoint(thread.stateJson);
+    const goalId = checkpoint.goalState?.goalId || session.goalId;
+    const goal = goalId
+      ? await this.learningSpaceOrm.learningGoalPlan.findOwnedContext(
+          userId,
+          goalId,
+        )
+      : null;
     const prepared = prepareGoalCreationRetryCheckpoint(
       checkpoint as ThreadCheckpoint,
+      goal ? parseMapPlan(goal.mapPlanJson) : null,
     );
     if (prepared !== checkpoint) {
       await saveCheckpoint(session.threadId, prepared);
@@ -735,8 +743,14 @@ export class GoalCreationSessionService implements OnModuleInit {
           session.goalId,
         );
       const total = drafts.modules.length;
-      if (total > 0 && drafts.publishedModuleCount === total) {
-        const journey = await this.resolveJourney(session.goalId);
+      const journey = await this.resolveJourney(session.goalId);
+      if (journey.firstReadyUnitId && !session.firstUnitId &&
+          await this.learningSpaceOrm.agentConversation.markGoalCreationFirstUnitReady(sessionId, journey.firstReadyUnitId)) {
+        await this.appendEvent(sessionId, {type: "first_unit_ready", message: tBackend("status.agent.firstLessonReady"),
+          goalId: session.goalId, firstUnitId: journey.firstReadyUnitId,
+          navigateTo: `/goals/${session.goalId}/units/${journey.firstReadyUnitId}`});
+      }
+      if (total > 0 && drafts.publishedModuleCount === total && journey.firstReadyUnitId) {
         const completed =
           await this.learningSpaceOrm.agentConversation.completeGoalCreationSession(
             sessionId,
@@ -846,7 +860,7 @@ export class GoalCreationSessionService implements OnModuleInit {
     const isReady = (unit: { cognitiveModelStatus: string }) =>
       !requiresCognitiveModel ||
       STARTABLE_MODEL_STATUSES.has(unit.cognitiveModelStatus);
-    const firstReady = units.find(isReady);
+    const firstReady = units[0] && isReady(units[0]) ? units[0] : undefined;
     return {
       moduleCount: modules.length,
       readyModuleCount: modules.filter(

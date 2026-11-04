@@ -98,6 +98,9 @@ export class MikroOrmModuleStructureDraftRepository implements ModuleStructureDr
             await execute(`UPDATE ${goalTable} SET "mapPlanJson"=?, "updatedAt"=? WHERE "id"=?`, [input.mapPlanJson, new Date(), input.goalId]);
             for (const module of input.modules) {
                 await execute(`UPDATE ${moduleTable} SET "plannedOutcomes"=?, "exitCapabilityBriefs"=?, "estimatedUnitCount"=?, "unitPlanningBrief"=? WHERE "id"=? AND "goalId"=?`, [module.plannedOutcomesJson, module.exitCapabilityBriefsJson, module.estimatedUnitCount, module.unitPlanningBriefJson, module.moduleId, input.goalId]);
+                if (module.metadata) {
+                    await execute(`UPDATE ${moduleTable} SET "title"=?, "summary"=?, "objective"=? WHERE "id"=? AND "goalId"=?`, [module.metadata.title, module.metadata.summary, module.metadata.objective, module.moduleId, input.goalId]);
+                }
             }
             await execute(`UPDATE ${draftTable} SET "planHash"=? WHERE "goalId"=? AND "sessionId"=?`, [createHash("sha256").update(input.mapPlanJson).digest("hex"), input.goalId, input.sessionId]);
             return true;

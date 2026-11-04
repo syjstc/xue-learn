@@ -22,7 +22,7 @@ For example: “I’m new to statistics. I want to understand averages, probabil
 
 The currently validated platform is an Apple silicon Mac. Download the `mac-arm64.dmg`, open it, and drag **好会学** into **Applications**. The installer includes the app and its local service; you do not need Node.js or other development tools to use it. Formal Mac installers use Developer ID signing, Apple notarization and Gatekeeper verification.
 
-Starting with **0.3.3**, the interface supports **English, Simplified Chinese and Traditional Chinese**. It initially follows your system language, with English as the fallback for unsupported languages. You can change the language on the first setup screen or under **Settings → Appearance**. Course content has its own language setting; changing the interface does not rewrite existing lessons. If 0.3.3 is not listed on the download page yet, these improvements are awaiting release.
+The **0.3.4** release includes **English, Simplified Chinese and Traditional Chinese** interfaces. It initially follows your system language, with English as the fallback for unsupported languages. You can change the language on the first setup screen or under **Settings → Appearance**. Course content has its own language setting; changing the interface does not rewrite existing lessons.
 
 At first launch, connect your learning assistant: choose a model service, enter your own API key, read the available models and save your choice. Then prepare local knowledge search and create your first learning goal. Voice, image generation and web search are optional and can be configured later.
 
@@ -30,7 +30,7 @@ Cloud model services may charge for usage. XueLearn does not include API keys or
 
 ## Develop from source
 
-This repository contains [Core](core/) and the [Desktop app](desktop/) in one pnpm workspace. Desktop builds and uses the current Core source.
+This repository contains [Core](core/), the [Desktop app](desktop/) and the [DSH plugin](apps/dsh-plugin/) in one pnpm workspace. Both apps build and use the current Core source. The DSH plugin runs inside DeepSeek Harness and uses its default text model; see its [installation guide](apps/dsh-plugin/README.md).
 
 Use Node.js 24 LTS from `.nvmrc` and pnpm `9.15.9`:
 
@@ -40,12 +40,13 @@ pnpm run check
 pnpm run dev
 ```
 
-`check` audits source boundaries and translations, builds and tests Core and Desktop, checks types, and builds the renderer and local service. Development watches Core source and rebuilds it when needed.
+`check` audits source boundaries and translations, builds and tests Core, Desktop and the DSH plugin, checks types, and builds the renderer and local service. Development watches Core source and rebuilds it when needed.
 
 ```sh
 pnpm run check:i18n     # Translation keys, placeholders and static UI copy
 pnpm run test:core
 pnpm run test:desktop
+pnpm run pack:dsh       # Build, test and pack the DSH bundle into .release/dsh
 pnpm run check:security # Gitleaks and dependency advisories
 pnpm run build:mac      # macOS with your signing/notarization credentials
 pnpm run release:mac    # Full checks, formal build and a draft GitHub Release

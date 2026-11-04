@@ -60,6 +60,7 @@ export function ReadingFigure({artifact, title}: {artifact: Figure; title?: stri
 
   const expandedFitWidth = Math.max(canvasPadding, Math.min(expandedSize.width,
     (expandedSize.height - canvasPadding) * geometry.ratio + canvasPadding));
+  const inlineFitWidth = Math.min(geometry.readableWidth, 640 * geometry.ratio + canvasPadding);
   const media = () => artifact.type === "svg"
     ? <StageStaticSvg markup={prepareStageSvgMarkup(artifact.svg)} alt={artifact.alt} stage={false} />
     : <img src={artifact.imageUrl} alt={artifact.caption} loading="lazy" />;
@@ -67,7 +68,7 @@ export function ReadingFigure({artifact, title}: {artifact: Figure; title?: stri
     const value = modal ? expandedZoom : zoom;
     const setValue = modal ? setExpandedZoom : setZoom;
     const changeZoom = (factor: number) => setValue(current => {
-      const fitWidth = modal ? expandedFitWidth : inlineViewport.current?.clientWidth ?? geometry.readableWidth;
+      const fitWidth = modal ? expandedFitWidth : Math.min(inlineViewport.current?.clientWidth ?? geometry.readableWidth, inlineFitWidth);
       return Math.min(3, Math.max(.05, (current ?? fitWidth / geometry.readableWidth) * factor));
     });
     return <div className="reading-figure-controls reading-no-print">
@@ -86,7 +87,7 @@ export function ReadingFigure({artifact, title}: {artifact: Figure; title?: stri
       ref={modal ? setExpandedViewport : inlineViewport} data-zoomed={value !== null}
       tabIndex={0} role="region" aria-label={title || t("reading.figure")}>
       <div className="reading-figure-canvas" ref={modal ? undefined : measure}
-        style={{width: value === null ? modal ? `${expandedFitWidth}px` : "100%" : `${geometry.readableWidth * value}px`}}>{media()}</div>
+        style={{width: value === null ? modal ? `${expandedFitWidth}px` : `min(100%, ${inlineFitWidth}px)` : `${geometry.readableWidth * value}px`}}>{media()}</div>
     </div>;
   };
   return <figure className="reading-figure" data-reading-figure-type={artifact.type}>

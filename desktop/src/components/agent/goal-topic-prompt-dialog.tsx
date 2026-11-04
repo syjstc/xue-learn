@@ -41,6 +41,8 @@ export function GoalTopicPromptDialog({
   onSubmit,
   loading = false,
   loadingStatus = "",
+  portalClassName,
+  allowInstantMicroCourse = true,
 }: {
   open: boolean;
   initialTopic?: string;
@@ -49,6 +51,8 @@ export function GoalTopicPromptDialog({
   onSubmit: (input: GoalTopicPromptSubmit) => void;
   loading?: boolean;
   loadingStatus?: string;
+  portalClassName?: string;
+  allowInstantMicroCourse?: boolean;
 }) {
   const t = useT();
   const [topic, setTopic] = useState("");
@@ -59,7 +63,7 @@ export function GoalTopicPromptDialog({
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const instantMicroEnabled = supportsGoalInstantMicroGeneration();
+  const instantMicroEnabled = allowInstantMicroCourse && supportsGoalInstantMicroGeneration();
 
   useEffect(() => {
     if (!open) {
@@ -125,6 +129,7 @@ export function GoalTopicPromptDialog({
     >
       <DialogContent
         showCloseButton={false}
+        portalClassName={portalClassName}
         className="flex max-h-[min(92dvh,calc(100dvh-1rem))] w-[calc(100%-1rem)] max-w-none flex-col gap-0 overflow-hidden p-0 sm:w-full sm:max-w-2xl"
       >
         <DialogHeader className="shrink-0 gap-2 border-b border-border/60 px-4 pt-4 pb-3 sm:px-6 sm:pt-5 sm:pb-4">

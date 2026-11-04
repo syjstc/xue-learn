@@ -64,6 +64,26 @@ Desktop 和 Video 的新入口使用 `/display/runtime` 和 `/display/workspace`
 
 领域与服务库支持模块子路径，例如 `/domain/persistence/course-source-port`、`/server/agenda/queries`。目录 `index` 入口使用简短名称，例如 `/server/assessment`、`/server/observability`、`/server/providers/audio`、`/server/teaching-skills`。renderer 子路径逐项声明，未声明的组件与共享模块不自动成为公共 API。包内测试文件不属于支持的 API。
 
+## 宿主提供模型
+
+`/server/providers/llm` 的 `createHostLlmProvider` 将宿主的模型流适配为 Core 学习服务使用的模型。`registerHostLlmProvider((selection, env) => provider)` 安装可撤销的进程内路由；返回 `undefined` 的选择继续使用内置服务商。宿主路由先于内置凭据检查和缓存，宿主切换模型后立即生效；销毁宿主时调用注册返回的 disposer。多个宿主共用进程时应按 `selection` 或当前用户上下文明确限定路由范围。
+
+```ts
+import {createHostLlmProvider, registerHostLlmProvider} from "@xue-learn/core/server/providers/llm";
+
+const provider = createHostLlmProvider({
+  id: "custom",
+  stream: request => host.stream(request),
+  getEmbeddings: () => host.embeddings,
+});
+const dispose = registerHostLlmProvider(() => provider);
+// 宿主停止时：dispose();
+```
+
+请求携带 `system` / `user` / `assistant` / `tool` 消息、输出长度、停止序列和取消信号。工具轮次的 assistant 消息保留 `toolCalls: [{id, name, args}]`，工具结果保留 `toolCallId`。`bindTools` 将 Core 的工具 schema 转为 `tools: [{name, description?, parameters}]`，并把选择约束归一化为 `toolChoice: "auto" | "required" | "none" | {name}`。宿主流逐块返回文本字符串，或完整工具调用 `{type: "tool-call", id, name, args}`；Core 将它们还原为 LangChain 工具调用及关联历史，课程规划、阅读生成和追问继续使用原来的工具执行与校验逻辑。宿主应保留工具选择、取消及错误语义；非文本输入会明确报错。
+
+结构化生成复用 Core 的 prompt JSON 解析、schema 校验和修复流程，不声明原生严格 schema 保证。使用 `id: "custom"` 表示宿主管理传输，而实际模型与调用记录由宿主保存。Embedding 由宿主另行提供，不会自动使用聊天模型或复制宿主凭据。
+
 ## 源入口与状态身份
 
 能力入口保留源码，由宿主现有 TypeScript/SWC/Vite/esbuild 配置编译。这样 Nest 装饰器 metadata 仍按宿主规则生成，语言 provider、客户端 runtime 和组件内部 import 也指向同一份源模块。把每个能力独立 bundle 会产生独立状态副本，导致配置 runtime 后另一个组件仍读取默认值，或 provider 和 hook 使用不同的 React context。

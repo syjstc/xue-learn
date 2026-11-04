@@ -20,7 +20,11 @@ export function PlanEditorCard({
   plan: GoalMapPlan | null;
   isMicroCourse?: boolean;
   disabled?: boolean;
-  onSubmit: (result: { approved: boolean; feedback?: string }) => void;
+  onSubmit: (result: {
+    approved: boolean;
+    feedback?: string;
+    foundationEntityKey?: string;
+  }) => void;
   onCancel?: () => void;
 }) {
   const t = useT();
@@ -43,10 +47,11 @@ export function PlanEditorCard({
         <CapabilityPathDetails
           plan={plan}
           disabled={disabled}
-          onMissingFoundation={(title) =>
+          onMissingFoundation={(title, foundationEntityKey) =>
             onSubmit({
               approved: false,
               feedback: t("capabilityPath.bridgeFeedback", { title }),
+              foundationEntityKey,
             })
           }
         />

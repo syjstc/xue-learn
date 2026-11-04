@@ -1550,6 +1550,8 @@ export const zhHans = {
   "goalCreation.stoppedCannotContinue": "此目标创建已停止，不能继续",
   "goalCreation.needsAttention": "创建遇到问题，可以重试或停止",
   "goalCreation.firstLessonReady": "第一课已准备好",
+  "goalCreation.firstLessonBackground": "第一课已可开始，后续模块正在后台准备。",
+  "goalCreation.firstLessonBackgroundProgress": "第一课已可开始，后台已准备 {ready}/{total} 个模块。",
   "goalCreation.allModulesReady": "全部模块结构已准备完成",
   "goalCreation.agenticModuleProgress":
     "已准备 {prepared}/{modules} · 已发布 {published} · 失败 {failed} · 审计 {audit}",

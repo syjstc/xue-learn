@@ -5,6 +5,8 @@ import type {
   UserSettingsRepository,
 } from "../../../domain/src/index.js";
 import { GODOT_RUIYU_CODE, godotRuiyuPersona } from "./godot-ruiyu.js";
+import {resolveHostTeachingPersona} from './host-resolver.js';
+export {registerHostTeachingPersonaResolver} from './host-resolver.js';
 import {
   hostedPublicTeachingPersonaRef,
   isDesktopOnlyBuiltinTeachingPersona,
@@ -121,7 +123,7 @@ export type TeachingPersona = {
   code: string;
   /** Catalog grouping only. Custom personas have no inherited archetype. */
   archetypeCode: TeachingPersonaArchetypeCode | null;
-  gender: "male" | "female";
+  gender: "male" | "female" | "neutral";
   name: string;
   avatarCode: string;
   tagline: string;
@@ -340,6 +342,8 @@ export async function resolveTeachingPersona(
   goalId?: string,
   locale: PersonaPromptLocale = "zh-Hans",
 ): Promise<TeachingPersona> {
+  const hostPersona = await resolveHostTeachingPersona({userId, goalId, locale});
+  if (hostPersona) return hostPersona;
   if (getRuntimeEnvironment().XUELEARN_CLIENT_KIND === "godot") return godotRuiyuPersona(locale);
   const repositories = persistence();
   const [settings, goal] = await Promise.all([

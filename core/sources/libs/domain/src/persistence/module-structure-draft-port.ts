@@ -79,6 +79,7 @@ export type CommitModulePathRepairsInput = Readonly<{
   modules: readonly Readonly<{
     moduleId: string;
     expectedCandidateHash: string;
+    metadata?: Readonly<{ title: string; summary: string; objective: string }>;
     plannedOutcomesJson: string;
     exitCapabilityBriefsJson: string;
     estimatedUnitCount: number;

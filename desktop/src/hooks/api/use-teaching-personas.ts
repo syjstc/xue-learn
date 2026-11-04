@@ -15,7 +15,7 @@ export type TeachingPersona = {
   archetypeCode?: string | null;
   name: string;
   avatarCode: string;
-  gender: "male" | "female";
+  gender: "male" | "female" | "neutral";
   tagline: string;
   introduction: string;
   traits: string[];

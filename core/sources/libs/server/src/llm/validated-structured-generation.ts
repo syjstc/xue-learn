@@ -2,6 +2,7 @@ import { z } from "zod";
 import {
   canonicalLlmOperationKey,
   getActiveLlmOperationRoute,
+  getLlmProvider,
   markActiveLlmRouteOutputStarted,
   withLlmOperationRoute,
 } from "../providers/llm/index.js";
@@ -618,7 +619,10 @@ async function runItemArray<TItem, TPartial, TResult>(
     let lastNativeError: unknown;
     const requireDeepseekStrict =
       contract.deepseekStrictOnly === true &&
-      getActiveLlmOperationRoute()?.provider === "deepseek";
+      // A host can replace this logical route with a separately validated
+      // transport. Enforce the wire guarantee on the resolved provider, as the
+      // object generation path does, rather than the saved model selection.
+      getLlmProvider().id === "deepseek";
     if (!contract.preferRawStream && generationAttempt < nativeAttemptLimit) {
       for (
         let methodIndex = generationAttempt;

@@ -1535,7 +1535,29 @@ export async function resumeGoalCreation(
   }
 
   if (toolName) {
-    const goalState = (checkpoint.goalState ?? {}) as Record<string, unknown>;
+    let goalState = (checkpoint.goalState ?? {}) as Record<string, unknown>;
+    const revisingPlan =
+      toolName === "review_plan" &&
+      result &&
+      typeof result === "object" &&
+      (result as { approved?: boolean }).approved === false &&
+      typeof (result as { feedback?: unknown }).feedback === "string" &&
+      Boolean((result as { feedback: string }).feedback.trim());
+    const reviewCheckpoint = checkpoint;
+    if (revisingPlan) {
+      // The old review interrupt remains a recovery checkpoint, but must not
+      // mask the active planning phase or invite a duplicate submission.
+      checkpoint = clearInterrupt(
+        mergeGoalState(checkpoint, {
+          currentPhase: "generating_plan",
+          currentSubagent: "plan",
+          mapPlanStatus: "pending",
+        }) as ThreadCheckpoint,
+      );
+      checkpoint.planRevisionRecovery = reviewCheckpoint;
+      goalState = checkpoint.goalState as Record<string, unknown>;
+      await saveCheckpoint(ctx.threadId, checkpoint);
+    }
     if (toolName === "ask_discovery_questions") {
       const current = goalStateFromCheckpoint({ goalState }).discoveryQuestions;
       goalState.discoveryQuestions = mergeDiscoveryQuestionHistory(
@@ -1544,22 +1566,29 @@ export async function resumeGoalCreation(
       );
     }
     applyIntakeResumeResult(toolName, result, { state: goalState });
-    await applyPlanResumeResult(
-      toolName,
-      result,
-      {
-        state: goalState,
-        userId,
-        threadId: ctx.threadId,
-        traceId: ctx.traceId,
-        send: ctx.send,
-        signal: ctx.signal,
-      },
-      {
-        learningGoalPlan: options.learningSpaceApplication?.learningGoalPlan,
-      },
-    );
+    try {
+      await applyPlanResumeResult(
+        toolName,
+        result,
+        {
+          state: goalState,
+          userId,
+          threadId: ctx.threadId,
+          traceId: ctx.traceId,
+          send: ctx.send,
+          signal: ctx.signal,
+        },
+        {
+          learningGoalPlan: options.learningSpaceApplication?.learningGoalPlan,
+        },
+      );
+    } catch (error) {
+      // Failed or cancelled edits keep the last valid review card usable.
+      if (revisingPlan) await saveCheckpoint(ctx.threadId, reviewCheckpoint);
+      throw error;
+    }
     checkpoint.goalState = goalState;
+    if (revisingPlan) delete checkpoint.planRevisionRecovery;
 
     if (
       toolName === "review_plan" &&
